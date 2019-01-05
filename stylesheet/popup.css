@@ -1,0 +1,78 @@
+
+#popup_css_tag  { content: "popup_css (180104:16h)"; }
+
+body { /*{{{*/
+    padding        : .5em;
+    background     : #000;
+    color          : #DDD;
+/*
+    margin         : .5em;
+    border         : .5em solid #888;
+    margin         : .5em;
+    border-radius  : 1em;
+    box-shadow     : 0 0 10px #000000 inset;
+*/
+    white-space    : nowrap;
+}
+/*}}}*/
+h1 { /*{{{*/
+font-size: 15px;
+}
+/*}}}*/
+hr { /*{{{*/
+    background-color : rgba(64, 64, 64, 0.9);
+    height           : .5em;
+    border           : none;
+}
+/*}}}*/
+em { /*{{{*/
+    border-radius  : .3em;
+    padding        : .1em;
+}
+/*}}}*/
+
+ body.dark       { background     : rgba( 16,16, 16, 1); }
+ body.light      { background     : rgba(255,16, 16, 1); }
+
+.popup_div.dark  { background     : rgba( 16,16,128,.8); }
+.popup_div.light { background     : rgba(255,16,128,.8); }
+
+.cursive         { font-family    : cursive   !important; }
+.monospace       { font-family    : monospace !important; }
+.initial         { font-family    : initial;                    }
+
+.popup_div { /*{{{*/
+    border         : 5px solid #422;
+    border-radius  : 1em 1em 1em 1em;
+    background     : rgba(16,16,16,.9);
+    box-shadow     : 0 0 10px #000000 inset;
+    margin         : .1em;
+    padding        : .1em .1em .5em .1em;
+    font-weight    : 900;
+    text-align     : center;
+}
+/*}}}*/
+.popup_div * { font-size: 8px; }
+.popup_div hr { margin: 1em 1em 1em 1em; }
+
+#color_badge_container>em {
+    user-select    : none;
+    cursor         : pointer;
+    box-shadow     : rgba(0, 0, 0, 0.3) 0 0.3em 0.3em inset;
+}
+.selected {
+    outline:2px solid orange;
+}
+
+/* .cc1 .. .cc0 {{{*/
+.cc1 { color: #FFF; background-color:#964B00; }
+.cc2 { color: #FFF; background-color:#FF0000; }
+.cc3 { color: #000; background-color:#FFA500; }
+.cc4 { color: #000; background-color:#FFFF00; }
+.cc5 { color: #000; background-color:#9ACD32; }
+.cc6 { color: #000; background-color:#6495ED; }
+.cc7 { color: #000; background-color:#EE82EE; }
+.cc8 { color: #000; background-color:#A0A0A0; }
+.cc9 { color: #000; background-color:#FFFFFF; }
+.cc0 { color: #000; background-color:#808080; font-weight:bold; }
+/*}}}*/

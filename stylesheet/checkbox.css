@@ -1,0 +1,718 @@
+
+#checkbox_css_tag  { content: "checkbox_css (180519:18h)"; }
+
+/* checkbox_css_tag {{{ */
+#checkbox_css_tag {
+    border        : 5px dashed #FF00A5;
+    border-radius : 2em;
+    margin        : 1em;
+    float         : right;
+    clear         : right;
+}
+/*}}}*/
+/* box-sizing - (padding and border to be included in width and height) {{{*/
+* {
+    box-sizing     : border-box;
+}
+/*}}}*/
+/* .box_div {{{*/
+.box_div {
+
+    width          : 100%;
+    border         : none;
+    vertical-align : middle;
+    text-align     : left;
+/*
+    background     : initial;
+    display        : flex;
+    text-align     : left;
+*/}
+
+.box_div>div {
+    border-radius  : 1em 1em 1em 1em;
+    padding        : .2em;
+    box-shadow     : 0 2px 3px #000000 inset;
+    border         : none;
+    text-align     : left;
+/*
+    background     : none;
+    background     : initial;
+*/
+}
+
+/*}}}*/
+/* .box_container {{{*/
+.box_container {
+    cursor         : pointer;
+    user-select    : none;
+    display:inline;
+/*
+    display:inline-block;
+    display        : flex;
+    padding        : .01em;
+    border         : 1px solid white;
+    border-color   : #666;
+    border-bottom  : 1px;
+    border         : 0 0 1px 0 solid white;
+    box-shadow     : 0 0 5px #777;
+    box-shadow     : 0 0 9px #F77;
+*/
+}
+.box_container>div {
+/*
+    width      : 2em;
+    text-align : right;
+border: 1px dotted red;
+*/
+}
+/*}}}*/
+/* .box {{{*/
+.box {
+    position:relative;
+    display:inline-block;
+/*
+    border         : 1px solid #404040      ;
+*/
+    border-radius  : 5px 5px 5px 5px        ;
+     color         : black                  ;
+    font-weight    : 900                    ;
+    background     : rgba(16,16,16,.8)      ;
+    vertical-align : middle;
+    text-align     : center;
+    box-shadow     : 0 0 10px #000000 inset ;
+    padding:0;
+    margin:.3em;
+}
+.box  label { cursor: pointer; }
+
+.box.dark                          { background : rgba( 16, 16, 16,.8)  !important; }
+.box.light                         { opacity: 1 !important;}
+.box.light                         { box-shadow : .1em .1em .5em #444 !important; }
+.box.light                         { background : rgba(255,255,255,.5)  !important; }
+.box.light            label:before { background : linear-gradient(to top, rgba(0,0,0,.1) 20%, rgba(0,0,0,.5) 70%, rgba(255,255,255,.9) 100%) !important; }
+.box.light :checked + label:before { background : linear-gradient(to top, rgba(0,0,0,.1) 20%, rgba(0,0,0,.5) 70%, rgba(255,255,255,.9) 100%) !important; }
+/*
+.box.light label:before            { box-shadow : .1em .1em .5em #444 !important; }
+.box.light label:before            { opacity    : .4     !important; }
+.box.light label:before            { visibility : hidden !important; }
+
+.box.light                         { background : rgba(192,192,192, 1)  !important; }
+.box.light                         { background : linear-gradient(to top, #000  0%, #FFF 100%) !important; }
+*/
+
+/*
+.box.light            label        { background : linear-gradient(to top, #FFF 50%, #AAA 100%) !important; }
+*/
+.box.light            label        { background : linear-gradient(to top, #FFF 20%, #AAA  95%) !important; }
+
+.box.light                 :before { background : linear-gradient(to top, #222 50%, #FFF 100%) !important; }
+/*
+.box.light            label        { background : rgba(255,255,255,.3)  !important; }
+.box.light :checked                { background : rgba(  0,  0,  0,.9)  !important; }
+
+
+
+.box.light            label:before          { box-shadow : .1em .1em .05em black !important; }
+
+
+.box.light                           { background : rgba(0,0,0,.1) !important; }
+.box.light label                     { background : rgba(0,0,0,.3) !important; }
+.box.light       :before             { background : rgba(0,0,0,.3) !important; }
+
+.light.cb_0 label             { background : #FFFFFF !important; }
+.light.cb_1 label             { background : #964B00 !important; }
+.light.cb_2 label             { background : #FF0000 !important; }
+.light.cb_3 label             { background : #FFA500 !important; }
+.light.cb_4 label             { background : #FFFF00 !important; }
+.light.cb_5 label             { background : #9ACD32 !important; }
+.light.cb_6 label             { background : #6161ff !important; }
+.light.cb_7 label             { background : #EE82EE !important; }
+.light.cb_8 label             { background : #A0A0A0 !important; }
+.light.cb_9 label             { background : #FFFFFF !important; }
+*/
+
+/*
+.box.light                           { background : rgba(255,255,255,.5) !important; }
+.box.light label                     { background : rgba(128,128,128,.3) !important; }
+.box.light :before                   { background : transparent          !important; }
+
+
+
+.box.light :before                   { background : rgba(255,255,255,.1) !important; }
+.box.light :after                    { background : rgba(255,64,64,.9) !important; }
+
+.box.light label       .label_after  { background : rgba(255,255,255,.6) !important; }
+.box.light label       *             { background : rgba(255,255,255,.6) !important; }
+
+.box.light                           { background : rgba(255,255,255,.2); }
+
+.box.light label                     { background : rgba( 96, 96, 96,.4) !important; }
+
+.box.light label:after               { background : rgba(128,255,128,.6) !important; }
+.box.light label:after               { background : rgba(255,128,128,.6); }
+
+.box.light label:before              { background : rgba(128,128,128,.4) !important; }
+.box.light label:before              { background : rgba(255,128,128,.6); }
+.box.light label:before              { background : rgba(255,255,255,.6) !important; }
+
+.box.light label:hover               { background : rgba(0,0,255,.6) !important; }
+.box.light label:hover .label_after  { background : rgba(255,  0,255,.6) !important; }
+
+.box.light label:hover:before        { background : rgba(0,0,255,.6) !important; }
+.box.light label:hover:before        { background : rgba(255,255,255,.4) !important; }
+.box.light label:hover:before        { background : rgba(255,255,255,.6) !important; }
+
+.box.light span                      { background : rgba(128,128,255,.9); }
+
+.box.light                           { opacity    : .4 !important; }
+.box.light label                     { opacity    : .8 !important; }
+.box.light label:before              { opacity    : .8 !important; }
+.box.light label:hover:before        { opacity    : .8 !important; }
+
+*/
+/*}}}*/
+
+/* .cb_slider_cap {{{*/
+.cb_slider_cap {
+    border-radius  : 2em;
+    width          : 8em;
+    height         : 3em;
+    box-shadow     : inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+    top            : -.2em;
+}
+
+.cb_slider_cap:before { content:'ON' ; color:#0F0; font-size:150%; font-weight:bold; position:absolute;  left:.2em; top:.2em; }
+.cb_slider_cap:after  { content:'OFF'; color:#444; font-size:150%; font-weight:bold; position:absolute; right:.2em; top:.2em; }
+
+.cb_slider_cap label {
+    z-index        : 1;
+    border-radius  : 40%;
+    background     : #eee ;
+    position       : absolute;
+    left           : .2em;
+    top            : .3em;
+    width          : 3em;
+    height         : 2.2em;
+
+    background     : linear-gradient(to bottom, #fff 0%, #aaa 40%, #444 100%) !important;
+    border         : .2em solid #666;
+    transition     : all 0.4s ease;
+}
+
+.cb_slider_cap input[type=checkbox]                 { visibility : hidden; }
+.cb_slider_cap input[type=checkbox]:checked + label { left       :  4.8em; }
+
+/*}}}*/
+/* .cb_slider_dot {{{*/
+.cb_slider_dot {
+    width          : 50px;
+    height         : 10px;
+    border-radius  : 50px;
+    padding        : 0;
+    box-shadow     : inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+}
+.cb_slider_dot:before {
+    content        : '';
+    position       : absolute;
+    left           : -6em;
+}
+.cb_slider_dot label {
+    position       : absolute;
+    top            : -3px;
+    left           : -3px;
+    width          : 16px;
+    height         : 16px;
+    border-radius  : 50px;
+    background     : linear-gradient(to bottom, #fff 0%, #aaa 40%, #444 100%) !important;
+    box-shadow     : 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+    transition     : all 0.2s ease;
+}
+
+.cb_slider_dot input[type=checkbox]                 { visibility : hidden; }
+.cb_slider_dot input[type=checkbox]:checked + label { left       : 37px;   }
+
+/*}}}*/
+/* .cb_slider_pin {{{*/
+.cb_slider_pin {
+    width          : 80px;
+    height         : 30px;
+    border-radius  : 50px;
+    padding        : 0;
+    box-shadow     : inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+}
+.cb_slider_pin:before {
+    content        : '';
+    position       : absolute;
+    top            :   25%;
+    left           : -6em;
+}
+.cb_slider_pin:after {
+    content        : '';
+    height         : 2px;
+    width          : 52px;
+    position       : absolute;
+    top            : 14px;
+    left           : 14px;
+    background     : #111;
+    border-radius  : 50px;
+    box-shadow     : inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.2);
+}
+
+.cb_slider_pin label {
+    z-index        : 1;
+    width          : 22px;
+    height         : 22px;
+    position       : absolute;
+    top            : 4px;
+    left           : 4px;
+    border-radius  : 50px;
+    transition     : all 0.4s ease;
+    background     : #fcfff4;
+    background     : linear-gradient(to top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%) !important;
+    box-shadow     : 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+}
+
+.cb_slider_pin label:after {
+    content        : '';
+    width          : 10px;
+    height         : 10px;
+    position       : absolute;
+    top            : 6px;
+    left           : 6px;
+    background     : #333;
+    border-radius  : 50px;
+    box-shadow     : inset 0px 1px 1px black, 0px 1px 0px rgba(255, 255, 255, 0.9);
+}
+
+.cb_slider_pin input[type=checkbox]                       { visibility : hidden;  }
+.cb_slider_pin input[type=checkbox]:checked + label       { left       : 54px;    }
+.cb_slider_pin input[type=checkbox]:checked + label:after { background : #00Fe00; }
+
+/*}}}*/
+/* .cb_filled_tab {{{*/
+.cb_filled_tab {
+    position       : relative; width: 28px; height: 28px;
+    box-shadow     : inset 0px 1px 1px white, 0px 1px 3px rgba(0, 0, 0, 0.5);
+    background     : #fcfff4;
+    background     : linear-gradient(to top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%) !important;
+}
+.cb_filled_tab:before {
+    content        : '';
+    position       : absolute;
+    top            :   20%;
+    left           : -7em;
+}
+
+.cb_filled_tab label {
+    position       : absolute; width: 20px; height: 20px; top: 4px; left: 4px;
+    box-shadow     : inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px white;
+    background     : linear-gradient(to top, #222 0%, #45484d 100%) !important;
+}
+
+.cb_filled_tab label:after {
+    content        : '';
+    position       : absolute; left: 2px; top: 2px; width: 16px; height: 16px;
+    box-shadow     : inset 0px 1px 1px white, 0px 1px 3px rgba(0, 0, 0, 0.5);
+    background     : #00Fe00;
+    background     : linear-gradient(to top, #00Fe00 0%, #009800 100%) !important;
+    opacity        : 0.2;
+    transition     : all 0.2s ease;
+}
+
+.cb_filled_tab label:hover::after                         { opacity    : 0.5;    }
+.cb_filled_tab input[type=checkbox]                       { visibility : hidden; }
+.cb_filled_tab input[type=checkbox]:checked + label:after { opacity    : 1;      }
+
+/*}}}*/
+/* .cb_marker_dot {{{*/
+.cb_marker_dot {
+    width          : 28px;
+    height         : 28px;
+    background     : #fcfff4;
+    background     : linear-gradient(to top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%) !important;
+    border-radius  : 50px;
+    box-shadow     : inset 0px 1px 1px white, 0px 1px 3px rgba(0, 0, 0, 0.5);
+}
+.cb_marker_dot:before {
+    content        : '';
+    position       : absolute;
+    top            :   20%;
+    left           : -7em;
+}
+
+.cb_marker_dot label {
+    width          : 20px;
+    position       : absolute;
+    top            : 4px;
+    left           : 4px;
+    height         : 20px;
+    border-radius  : 50px;
+    background     : linear-gradient(to top, #222 0%, #45484d 100%) !important;
+    box-shadow     : inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px white;
+}
+
+.cb_marker_dot label:after {
+    content        : '';
+    position       : absolute;
+    top            : 5px;
+    left           : 4px;
+    width          : 9px;
+    height         : 5px;
+    border         : 3px solid #fcfff4;
+    border-top     : none;
+    border-right   : none;
+    opacity        : 0;
+    background     : transparent;
+    transform      : rotate(-45deg);
+}
+
+.cb_marker_dot label:hover::after                         { opacity    : 0.3;    }
+.cb_marker_dot input[type=checkbox]                       { visibility : hidden; }
+.cb_marker_dot input[type=checkbox]:checked + label:after { opacity    : 1;      }
+
+/*}}}*/
+/* .cb_marker_box {{{*/
+.cb_marker_box {
+    width          : 28px;
+    height         : 28px;
+    background     : #fcfff4;
+    background     : linear-gradient(to top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%) !important;
+    box-shadow     : inset 0px 1px 1px white, 0px 1px 3px rgba(0, 0, 0, 0.5);
+}
+.cb_marker_box:before {
+    content        : '';
+    position       : absolute;
+    top            :   20%;
+    left           : -7em;
+}
+
+.cb_marker_box label {
+    width          : 20px;
+    height         : 20px;
+    position       : absolute;
+    left           : 4px;
+    top            : 4px;
+    background     : linear-gradient(to top, #222 0%, #45484d 100%) !important;
+    box-shadow     : inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px white;
+}
+
+.cb_marker_box label:after {
+    content        : '';
+    width          : 9px;
+    height         : 5px;
+    position       : absolute;
+    top            : 4px;
+    left           : 4px;
+    border         : 3px solid #fcfff4;
+    border-top     : none;
+    border-right   : none;
+    background     : transparent;
+    opacity        : 0;
+    transform      : rotate(-45deg);
+}
+
+.cb_marker_box label:hover::after                         { opacity    : 0.3; }
+.cb_marker_box input[type=checkbox]                       { visibility : hidden; }
+.cb_marker_box input[type=checkbox]:checked + label:after { opacity    : 1; }
+
+/*}}}*/
+/* .cb_marker_low {{{*/
+
+.cb_marker_low {
+    width          : 20px;
+}
+.cb_marker_low:before {
+    content        : '';
+    position       : absolute;
+    top            :   20%;
+    left           : -7em;
+}
+
+.cb_marker_low label {
+    position       : absolute;
+    width          : 20px;
+    height         : 20px;
+    top            : 0;
+    left           : 0;
+    background     : linear-gradient(to top, #222 0%, #45484d 100%) !important;
+    border-radius  : 4px;
+    box-shadow     : inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px rgba(255, 255, 255, 0.4);
+}
+
+.cb_marker_low label:after {
+    content        : '';
+    position       : absolute;
+    width          : 9px;
+    height         : 5px;
+    top            : 4px;
+    left           : 4px;
+    border         : 3px solid #fcfff4;
+    border-top     : none;
+    border-right   : none;
+    background     : transparent;
+    opacity        : 0;
+    transform      : rotate(-45deg);
+}
+
+.cb_marker_low label:hover::after                         { opacity    : 0.3; }
+.cb_marker_low input[type=checkbox]                       { visibility : hidden; }
+.cb_marker_low input[type=checkbox]:checked + label:after { opacity    : 1; }
+
+/*}}}*/
+/* .cb_marker_out {{{*/
+
+.cb_marker_out {
+    width          : 20px;
+}
+.cb_marker_out:before {
+    content        : '';
+    position       : absolute;
+    top            :   20%;
+    left           : -7em;
+}
+
+.cb_marker_out label {
+    width          : 20px;
+    height         : 20px;
+    position       : absolute;
+    top            : 0;
+    left           : 0;
+/*
+    background     : #fcfff4;
+*/
+    background     : linear-gradient(to top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%) !important;
+    border-radius  : 4px;
+    box-shadow     : inset 0px 1px 1px white, 0px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.cb_marker_out label:after {
+    content        : '';
+    width          : 9px;
+    height         : 5px;
+    position       : absolute;
+    top            : 4px;
+    left           : 4px;
+    border         : 3px solid #333;
+    border-top     : none;
+    border-right   : none;
+    background     : transparent;
+    opacity        : 0;
+    transform      : rotate(-45deg);
+}
+
+.cb_marker_out label:hover::after                         { opacity    : 0.5; }
+.cb_marker_out input[type=checkbox]                       { visibility : hidden; }
+.cb_marker_out input[type=checkbox]:checked + label:after { opacity    : 1; }
+/*}}}*/
+
+/* .cb_filled_pin {{ {*/
+.cb_filled_pin_spacer { /*{{{*/
+    font-size      : 300%;
+    position       : relative; width: 2em; height: 2em;
+    border-radius  : 50%;
+    box-shadow     :       0em .05em .1em white, 0em .1em .1em rgba(0, 0, 0, 0.5);
+    background     : linear-gradient(to bottom, #000 0%, #222 80%, #444 100%);
+    opacity        : .2;
+    user-select    : none    !important;
+}
+/*}}}*/
+.cb_filled_pin:before { /*{{{*/
+    font-size      : 100%;
+    content        : '';
+    position       : absolute;
+    top            : 20%;
+    left           : -2em;
+}
+/*}}}*/
+.cb_filled_pin { /* upper edge {{{*/
+    font-size      : 300%;
+    position       : relative; width: 2em; height: 2em;
+    border-radius  : 50%;
+    box-shadow     : inset 0em .05em .1em white, 0em .1em .5em rgba(0, 0, 0, 0.5);
+    background     : linear-gradient(to top, #000 0%, #222 40%, #666 100%);
+    margin-bottom : .5em;
+}
+/*}}}*/
+.cb_filled_pin label { /* lower edge {{{*/
+    font-size      : 120%;
+    position       : absolute; left: .1em; top: .1em; width: 1.4em; height: 1.4em;
+    border-radius  : 50%;
+/*
+    box-shadow     : inset 0em .1em 1em rgba(128, 128, 128, 0.9), 0em .1em 0em rgba(128, 128, 128, 0.5);
+    background     : linear-gradient(to top, #222 0%, #000 100%);
+    background     : linear-gradient(to top, #DDD 0%, #444 100%);
+*/
+    background     : linear-gradient(to top, #444 0%, #000 20%,               #000 80%, #444 90%, #000 100%);
+}
+/*}}}*/
+.cb_filled_pin label:hover {/*{{{*/
+    background     : linear-gradient( 5deg , #666 0%, #000 20%,               #000 80%,           #DDD 100%);
+}/*}}}*/
+.cb_filled_pin label:before { /* filled circle {{{*/
+    font-size      : 100%;
+    content        : '';
+    position       : absolute; left: .1em; top: .1em; width: 1.2em; height: 1.2em;
+    border-radius  : 50%;
+    box-shadow     : inset 0em .05em .1em white, 0em .1em .3em rgba(0, 0, 0, 0.3);
+    transition     : all 0.2s ease;
+}
+/*}}}*/
+/* label_after {{{*/
+.cb_filled_pin /*...input..........................label......*/ .label_after {
+    pointer-events  : none;
+    position        : absolute;
+    margin-right    :-50%;
+    top             : 50%;
+    left            : 50%;
+    font-size       : .4em;
+    transform       : translate(-50%, 2.5em);
+}
+
+.cb_filled_pin      input[type=checkbox]         + label:hover + .label_after {
+    font-size       : 1em;
+    transform       : translate(-50%,-2em);
+    transition      : all 0.2s ease;
+    transition-delay: .2s;
+}
+.cb_filled_pin      input[type=checkbox]:checked + label:hover + .label_after {
+    font-size       : 1.5em;
+    transform       : translate(-50%,-1.5em);
+    transition      : all 0.2s ease;
+    transition-delay: 0ms;
+}
+.cb_filled_pin      input[type=checkbox]:checked + label       + .label_after {
+    transform       : translate(-50%, 2.5em) scale(1.5);
+    text-shadow     : black 0 0 .2em;
+    transition      : all 0.2s ease;
+    transition-delay: 0ms;
+}
+
+/*}}}*/
+/* .caption {{{*/
+
+.caption {
+    pointer-events  : none;
+    display         : inline-block;
+    opacity         : 0;
+    position        : absolute;
+    top             :-100%;
+    left            :-75%;
+    height          : 220%;
+    width           : 150%;
+    border-radius   : .5em;
+    white-space     : normal;
+
+    background      : #211;
+    text-shadow     : black .1em .1em .4em;
+
+    font-size       : .5em;
+    transition      : all .2s ease;
+    transition-delay: .5s;
+}
+
+.cb_filled_pin      input[type=checkbox]         + label:hover + .label_after + .caption {
+    opacity         : 1;
+    transform       : translate(25%, 0%);
+    transition      : all .2s ease;
+    transition-delay: 2s;
+}
+
+/*}}}*/
+/* :checked {{{*/
+.cb_filled_pin                                     label:before        { opacity    : 0.5; }
+.cb_filled_pin                                     label:hover::before { opacity    : 0.1; }
+/*
+.cb_filled_pin      input[type=checkbox]:checked + label:hover::before { opacity       : 0.5;         }
+.cb_filled_pin      input[type=checkbox]:checked + label:hover::before { transform     : scale(0.9 ); }
+.cb_filled_pin      input[type=checkbox]:checked + label:hover::before { transform     : translate(0,100%) scale(0.9); }
+.cb_filled_pin      input[type=checkbox]:checked + label:hover::before { border-radius : 30%;  transform: scale(.95);  }
+*/
+
+.cb_filled_pin      input[type=checkbox]                               { visibility    : hidden;            }
+.cb_filled_pin      input[type=checkbox]:checked + label:before        { border-radius : 50% 50% 10% 10%; transform: scale(.90);  }
+.cb_filled_pin      input[type=checkbox]:checked + label:hover:before  { transform     : rotate( 540deg) scale(1.2);  }
+.cb_filled_pin      input[type=checkbox]:checked + label:before        { z-index:-1; opacity : 1;     }
+.cb_filled_pin      input[type=checkbox]:checked + label               { z-index: 0; color   : white; }
+/*
+.cb_filled_pin      input[type=checkbox]:checked + label               { z-index: 0; color         : white; text-shadow: rgba(0,0,0, .5) 2px 2px 5px; }
+.cb_filled_pin      input[type=checkbox]:checked + label               { color         : #ddd; z-index: 0; }
+.cb_filled_pin      input[type=checkbox]:checked + label               { opacity       :   .2; z-index: 0; }
+*/
+
+.cb_filled_pin.cb_0 input[type=checkbox]:checked + label:before        { box-shadow    : inset 0em .05em .1em white, 0em .5em 1.0em #FFFFFF; }
+.cb_filled_pin.cb_1 input[type=checkbox]:checked + label:before        { box-shadow    : inset 0em .05em .1em white, 0em .5em 1.0em #964B00; }
+.cb_filled_pin.cb_2 input[type=checkbox]:checked + label:before        { box-shadow    : inset 0em .05em .1em white, 0em .5em 1.0em #FF0000; }
+.cb_filled_pin.cb_3 input[type=checkbox]:checked + label:before        { box-shadow    : inset 0em .05em .1em white, 0em .5em 1.0em #FFA500; }
+.cb_filled_pin.cb_4 input[type=checkbox]:checked + label:before        { box-shadow    : inset 0em .05em .1em white, 0em .5em 1.0em #FFFF00; }
+.cb_filled_pin.cb_5 input[type=checkbox]:checked + label:before        { box-shadow    : inset 0em .05em .1em white, 0em .5em 1.0em #9ACD32; }
+.cb_filled_pin.cb_6 input[type=checkbox]:checked + label:before        { box-shadow    : inset 0em .05em .1em white, 0em .5em 1.0em #6161ff; }
+.cb_filled_pin.cb_7 input[type=checkbox]:checked + label:before        { box-shadow    : inset 0em .05em .1em white, 0em .5em 1.0em #EE82EE; }
+.cb_filled_pin.cb_8 input[type=checkbox]:checked + label:before        { box-shadow    : inset 0em .05em .1em white, 0em .5em 1.0em #A0A0A0; }
+.cb_filled_pin.cb_9 input[type=checkbox]:checked + label:before        { box-shadow    : inset 0em .05em .1em white, 0em .5em 1.0em #FFFFFF; }
+
+/*}}}*/
+/* ECC colors {{{*/
+.cb_filled_pin.cb_0 { color : #FFFFFF; text-shadow: rgba(  0,  0,  0, .6) 2px 2px 3px; }
+.cb_filled_pin.cb_1 { color : #964B00; text-shadow: rgba(  0,  0,  0, .6) 2px 2px 3px; }
+.cb_filled_pin.cb_2 { color : #FF0000; text-shadow: rgba(  0,  0,  0, .6) 2px 2px 3px; }
+.cb_filled_pin.cb_3 { color : #FFA500; text-shadow: rgba(  0,  0,  0, .6) 2px 2px 3px; }
+.cb_filled_pin.cb_4 { color : #FFFF00; text-shadow: rgba(  0,  0,  0, .6) 2px 2px 3px; }
+.cb_filled_pin.cb_5 { color : #9ACD32; text-shadow: rgba(  0,  0,  0, .6) 2px 2px 3px; }
+.cb_filled_pin.cb_6 { color : #6161ff; text-shadow: rgba(  0,  0,  0, .6) 2px 2px 3px; }
+.cb_filled_pin.cb_7 { color : #EE82EE; text-shadow: rgba(  0,  0,  0, .6) 2px 2px 3px; }
+.cb_filled_pin.cb_8 { color : #A0A0A0; text-shadow: rgba(  0,  0,  0, .6) 2px 2px 3px; }
+.cb_filled_pin.cb_9 { color : #FFFFFF; text-shadow: rgba(  0,  0,  0, .6) 2px 2px 3px; }
+
+.cb_filled_pin      input[type=checkbox]         + label:before        { background : linear-gradient(to top, #000    80%, #222 50%, #AAA 100%); }
+.cb_filled_pin      input[type=checkbox]:checked + label:before        { background : linear-gradient(to top, #000    80%, #222 50%, #AAA 100%); }
+
+.cb_filled_pin.cb_0 input[type=checkbox]:checked + label:before        { background : linear-gradient(to top, #FFFFFF 10%, #222 50%, #000 100%); }
+.cb_filled_pin.cb_1 input[type=checkbox]:checked + label:before        { background : linear-gradient(to top, #964B00 10%, #222 50%, #000 100%); }
+.cb_filled_pin.cb_2 input[type=checkbox]:checked + label:before        { background : linear-gradient(to top, #FF0000 10%, #222 50%, #000 100%); }
+.cb_filled_pin.cb_3 input[type=checkbox]:checked + label:before        { background : linear-gradient(to top, #FFA500 10%, #222 50%, #000 100%); }
+.cb_filled_pin.cb_4 input[type=checkbox]:checked + label:before        { background : linear-gradient(to top, #FFFF00 10%, #222 50%, #000 100%); }
+.cb_filled_pin.cb_5 input[type=checkbox]:checked + label:before        { background : linear-gradient(to top, #9ACD32 10%, #222 50%, #000 100%); }
+.cb_filled_pin.cb_6 input[type=checkbox]:checked + label:before        { background : linear-gradient(to top, #6161ff 10%, #222 50%, #000 100%); }
+.cb_filled_pin.cb_7 input[type=checkbox]:checked + label:before        { background : linear-gradient(to top, #EE82EE 10%, #222 50%, #000 100%); }
+.cb_filled_pin.cb_8 input[type=checkbox]:checked + label:before        { background : linear-gradient(to top, #A0A0A0 10%, #222 50%, #000 100%); }
+.cb_filled_pin.cb_9 input[type=checkbox]:checked + label:before        { background : linear-gradient(to top, #FFFFFF 10%, #222 50%, #000 100%); }
+
+/*}}}*/
+/*}}}*/
+/*{{{
+.cb_filled_pin.light                                                            { background: rgba(96,96,96,.6) !important; }
+.cb_filled_pin.light                                 label                      { background: rgba(96,96,96,.6) !important; }
+.cb_filled_pin.light                                 label:before               { background: rgba(96,96,96,.6) !important; }
+
+.cb_filled_pin.light                                                            { opacity: .2) !important; }
+.cb_filled_pin.light                                 label                      { opacity: .2) !important; }
+.cb_filled_pin.light                                 label:before               { opacity: .2) !important; }
+
+.cb_filled_pin.light                                                            { background: rgba(255,0,0,.6) !important; }
+.cb_filled_pin.light                                 label                      { background: rgba(0,255,0,.6) !important; }
+.cb_filled_pin.light                                 label:before               { background: rgba(0,0,255,.6) !important; }
+
+.cb_filled_pin.light  input[type=checkbox]         + label:hover::before        { background: rgba(255,255,0,.6) !important; }
+.cb_filled_pin.light                                 label:hover::before        { background: rgba(255,255,0,.6) !important; }
+.cb_filled_pin.light  input[type=checkbox]                                      { background: rgba(255,255,0,.6) !important; }
+.cb_filled_pin.light  input[type=checkbox]         + label:before               { background: rgba(255,255,0,.6) !important; }
+.cb_filled_pin.light  input[type=checkbox]         + label:hover + .label_after { background: rgba(255,255,0,.6) !important; }
+
+.cb_filled_pin.light  input[type=checkbox]         + label:hover::before        { background: rgba(255,0,0,.6) !important; }
+.cb_filled_pin.light  input[type=checkbox]:checked + label                      { background: rgba(255,0,0,.6) !important; }
+.cb_filled_pin.light  input[type=checkbox]:checked + label       + .label_after { background: rgba(255,0,0,.6) !important; }
+.cb_filled_pin.light  input[type=checkbox]:checked + label:before               { background: rgba(255,0,0,.6) !important; }
+.cb_filled_pin.light  input[type=checkbox]:checked + label:hover + .label_after { background: rgba(255,0,0,.6) !important; }
+.cb_filled_pin.light  input[type=checkbox]:checked + label:hover::before        { background: rgba(255,0,0,.6) !important; }
+.cb_filled_pin.light  input[type=checkbox]:checked + label:hover:before         { background: rgba(255,0,0,.6) !important; }
+.cb_filled_pin:before.light                                                     { background: rgba(255,0,0,.6) !important; }
+
+}}}*/
+
+/* disabled {{{*/
+.disabled { pointer-events  : none        !important; }
+.disabled { cursor          : not-allowed !important; }
+.disabled { color           : lightgray   !important; }
+
+/*}}}*/
+

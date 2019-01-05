@@ -1,0 +1,137 @@
+<!DOCTYPE HTML>
+<html>
+ <!-- COMMENT {{{
+  This page is shown when the extension button is clicked,
+  because the "browser_action" field in manifest.json
+  contains the "default_popup" key with value "popup.html".
+  - JavaScript and HTML must be in separate files: see our Content Security
+  - Policy documentation[1] for details and explanation.
+  - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+  }}}-->
+  <head><!--{{{-->
+   <title>RTabs Popup</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <link rel='stylesheet' type='text/css' href='stylesheet/popup.css'/>
+   <link rel='stylesheet' type='text/css' href='stylesheet/checkbox.css'/>
+   <script src="javascript/log.js"></script>
+   <script src="javascript/popup.js"></script>
+  </head>
+  <!--}}}-->
+  <body>
+   <h1 id="title" style="color:#666; text-align:center;">RTabs Settings</h1>
+   <span id = "popup_html_tag" style="display:none">RTabs popup (181019:14h)</span>
+   <!-- [settings_div] {{{-->
+   <div id="settings_div">
+    <div class="popup_div">
+     <div>
+      <div class="box_container"><div class="box cb_filled_pin cb_6"><input id="start"          type="checkbox"/><label for="start"          >&#9654;</label><div class="label_after"></div><div class="caption"></div></div></div>
+      <div class="box_container"><div class="box cb_filled_pin cb_5"><input id="FILTER5_RELAX"  type="checkbox"/><label for="FILTER5_RELAX"  >X</label><div class="label_after"></div><div class="caption"></div></div></div>
+      <div class="box_container"><div class="box cb_filled_pin cb_4"><input id="FILTER4_CUSTOM" type="checkbox"/><label for="FILTER4_CUSTOM" >C</label><div class="label_after"></div><div class="caption"></div></div></div>
+      <div class="box_container"><div class="box cb_filled_pin cb_3"><input id="FILTER3_REMOVE" type="checkbox"/><label for="FILTER3_REMOVE" >R</label><div class="label_after"></div><div class="caption"></div></div></div>
+     </div>
+    </div>
+   </div>
+   <!--}}}-->
+   <!-- [popup_settings_div] {{{-->
+   <div id="popup_settings_div">
+    <!-- .popup_div cancelreq LOG_IPC {{{
+    -->
+    <!--
+    <div class="popup_div">
+     <div>
+      <div class="box_container"><div class="box cb_filled_pin cb_7"><input id="cancelreq"  type="checkbox"/><label for="cancelreq"     >X</label><div class="label_after"></div><div class="caption"></div></div></div>
+      <div class="box_container"><div class="box cb_filled_pin cb_7"><input id="LOG_IPC"    type="checkbox"/><label for="LOG_IPC"       >L</label><div class="label_after"></div><div class="caption"></div></div></div>
+     </div>
+    </div>
+     }}}-->
+    <!-- (.popup_div#font) {{{-->
+    <!--
+    <div class="popup_div">
+     <div>
+      <div class="box_container"><div class="box cb_filled_pin cb_0"><input id="theme_dark"      type="checkbox"        /><label for="theme_dark"    >T</label><div class="label_after"></div><div class="caption"></div></div></div>
+      <div class="box_container"><div class="box cb_filled_pin cb_9"><input id="font_initial"    type="checkbox" checked/><label for="font_initial"  >F</label><div class="label_after"></div><div class="caption"></div></div></div>
+      <div class="box_container"><div class="box cb_filled_pin cb_0"><input id="font_cursive"    type="checkbox"        /><label for="font_cursive"  >F</label><div class="label_after"></div><div class="caption"></div></div></div>
+      <div class="box_container"><div class="box cb_filled_pin cb_0"><input id="font_monospace"  type="checkbox"        /><label for="font_monospace">F</label><div class="label_after"></div><div class="caption"></div></div></div>
+     </div>
+    </div>
+    -->
+    <!--}}}-->
+    <!-- (.popup_div#color_badge_container) {{{-->
+    <!--
+     <div class="popup_div">
+     <div id="color_badge_container">
+     <em       class="cc0"    id="cc0">cc0</em>
+     <em       class="cc1"    id="cc1">cc1</em>
+     <em       class="cc2"    id="cc2">cc2</em>
+     <em       class="cc3"    id="cc3">cc3</em>
+     <em       class="cc4"    id="cc4">cc4</em>
+     <hr>
+     <em       class="cc5"    id="cc5">cc5</em>
+     <em       class="cc6"    id="cc6">cc6</em>
+     <em       class="cc7"    id="cc7">cc7</em>
+     <em       class="cc8"    id="cc8">cc8</em>
+     <em       class="cc9"    id="cc9">cc9</em>
+     </div>
+     </div>
+    -->
+    <!--}}}-->
+    <!-- (.popup_div#color_dropdown) {{{-->
+    <!--
+     <div class="popup_div">
+     <span>Choose a color</span>
+     <select id="color_dropdown">
+     <option selected disabled hidden value=''></option>
+     <option class='cc0' value="cc0">cc0</option>
+     <option class='cc1' value="cc1">cc1</option>
+     <option class='cc2' value="cc2">cc2</option>
+     <option class='cc3' value="cc3">cc3</option>
+     <option class='cc4' value="cc4">cc4</option>
+     <option class='cc5' value="cc5">cc5</option>
+     <option class='cc6' value="cc6">cc6</option>
+     <option class='cc7' value="cc7">cc7</option>
+     <option class='cc8' value="cc8">cc8</option>
+     <option class='cc9' value="cc9">cc9</option>
+     </select>
+     </div>
+    -->
+    <!--}}}-->
+    <!-- (.popup_div#chrome_container) {{{-->
+    <!--
+     <div class="popup_div">
+     <div id="chrome_container">
+     <a target="browserAction" href="https://developer.chrome.com/extensions/browserAction"><em>chrome.browserAction</em></a>
+     </div>
+     </div>
+    -->
+    <!--}}}-->
+   </div>
+   <!--}}}-->
+  </body>
+</html>
+
+<!-- {{{
+ cb_filled_pin
+ cb_filled_tab
+
+ cb_slider_cap
+ cb_slider_dot
+ cb_slider_pin
+
+ cb_marker_dot
+ cb_marker_box
+ cb_marker_low
+ cb_marker_out
+ }}} -->
+ <!--{{{
+  <div class="box_container"><span>cb_filled_pin</span><div class="box cb_filled_pin"><input type="checkbox" id="cb_filled_pin" checked /><label></label></div></div>
+  <div class="box_container"><span>cb_filled_tab</span><div class="box cb_filled_tab"><input type="checkbox" id="cb_filled_tab" checked /><label></label></div></div>
+
+  <div class="box_container"><span>cb_slider_cap</span><div class="box cb_slider_cap"><input type="checkbox" id="cb_slider_cap" checked /><label></label></div></div>
+  <div class="box_container"><span>cb_slider_dot</span><div class="box cb_slider_dot"><input type="checkbox" id="cb_slider_dot" checked /><label></label></div></div>
+  <div class="box_container"><span>cb_slider_pin</span><div class="box cb_slider_pin"><input type="checkbox" id="cb_slider_pin" checked /><label></label></div></div>
+
+  <div class="box_container"><span>cb_marker_dot</span><div class="box cb_marker_dot"><input type="checkbox" id="cb_marker_dot" checked /><label></label></div></div>
+  <div class="box_container"><span>cb_marker_box</span><div class="box cb_marker_box"><input type="checkbox" id="cb_marker_box" checked /><label></label></div></div>
+  <div class="box_container"><span>cb_marker_low</span><div class="box cb_marker_low"><input type="checkbox" id="cb_marker_low" checked /><label></label></div></div>
+  <div class="box_container"><span>cb_marker_out</span><div class="box cb_marker_out"><input type="checkbox" id="cb_marker_out" checked /><label></label></div></div>
+  }}}-->

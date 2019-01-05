@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+ <head> <!--{{{-->
+  <meta charset="utf-8"/>
+  <title>RTabs options</title>
+  <link   rel="stylesheet" type="text/css"       href="stylesheet/options.css"/>
+  <link   rel="stylesheet" type="text/css"       href="stylesheet/checkbox.css"/>
+  <script src="javascript/log.js"></script>
+  <script src="javascript/options.js"></script>
+ </head> <!--}}}-->
+  <body>
+   <div style="position:absolute; top:.5em; right:.5em; z-index:2; font-style:italic;">
+    <span id="options_html_tag" style="color:#BBB;margin-right:1em; font-size:80%; font-weight:900;">RTabs options (180405:17h)</span>
+    <a target="json" title="Introducing JSON" href="http://www.json.org/">json.org</a>
+   </div>
+   <div id="statusline" title="Last error"></div>
+   <div class="buttons">
+    <!-- title {{{-->
+    <b title="Content Security Policy">HEADERS&nbsp;CSP&nbsp;FILTERS&nbsp;</b>
+    <span class="note"> Content Security Policy override </span>
+    <br>
+
+    <!--}}}-->
+    RELAX <!--{{{-->
+    <div title="...to make extension work on protected sites" class="box_container">
+     <div  class="box cb_filled_pin cb_6 light">
+      <input  id="FILTER5_RELAX" type="checkbox"/>
+      <label for="FILTER5_RELAX">R</label>
+      <div class="label_after"></div>
+      <div class="caption"></div>
+     </div>
+    </div>
+
+    <!--}}}-->
+    CUSTOM <!--{{{-->
+    <div title="...enforce site protections" class="box_container">
+     <div  class="box cb_filled_pin cb_4 light">
+      <input  id="FILTER4_CUSTOM" type="checkbox"/>
+      <label for="FILTER4_CUSTOM">C</label>
+      <div class="label_after"></div>
+      <div class="caption"></div>
+     </div>
+    </div>
+
+    <!--}}}-->
+    REMOVE <!--{{{-->
+    <div  title="...delete paranoid protections" class="box_container">
+     <div  class="box cb_filled_pin cb_3 light">
+      <input  id="FILTER3_REMOVE" type="checkbox"/>
+      <label for="FILTER3_REMOVE">X</label>
+      <div class="label_after"></div>
+      <div class="caption"></div>
+     </div>
+    </div>
+
+    <!--}}}-->
+    DO NOT FILTER <!--{{{-->
+    <div title="...your rules" class="box_container">
+     <div  class="box cb_filled_pin cb_9 light">
+      <input  id="FILTER6_NONE" type="checkbox"/>
+      <label for="FILTER6_NONE">?</label>
+      <div class="label_after"></div>
+      <div class="caption"></div>
+     </div>
+    </div>
+
+    <!--}}}-->
+    LOG_PANEL <!--{{{-->
+    <div  title="LOG_PANEL" class="box_container">
+     <div  class="box cb_filled_pin cb_9 light">
+      <input  id="LOG_PANEL" type="checkbox"/>
+      <label for="LOG_PANEL">L</label>
+      <div class="label_after"></div>
+      <div class="caption"></div>
+     </div>
+    </div>
+
+    <!--}}}-->
+    RESET <!--{{{-->
+    <div  title="STORAGE_CLEAR" class="box_container">
+     <div  class="box cb_filled_pin cb_2 light on_hold" style="float: right; background-color:black !important;" >
+      <input  id="STORAGE_CLEAR" type="checkbox"/>
+      <label for="STORAGE_CLEAR">&#x274C;</label>
+      <div class="label_after"></div>
+      <div class="caption"></div>
+     </div>
+    </div>
+
+    <!--}}}-->
+   </div>
+   <!-- FILTER_TEXTAREA {{{-->
+   <textarea id="FILTER_TEXTAREA" spellcheck="false" placeholder="Configuration"></textarea>
+
+   <!--}}}-->
+   <!-- LOG_MAP_DIV {{{-->
+   <div id="LOG_MAP_DIV">
+    <em>background</em><br>
+    <div id="LOG_MAP_DIV_background"> <!--{{{-->
+     <div class="box_container"><div class="box cb_filled_pin cb_1"><input id="B_LOG1_MESSAGE"   type="checkbox"/><label for="B_LOG1_MESSAGE"  >1</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_2"><input id="B_LOG2_ERROR"     type="checkbox"/><label for="B_LOG2_ERROR"    >2</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_3"><input id="B_LOG3_PRESERVE"  type="checkbox"/><label for="B_LOG3_PRESERVE" >3</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_8"><input id="B_LOG4_PARSE"     type="checkbox"/><label for="B_LOG4_PARSE"    >4</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_5"><input id="B_LOG5_ONREQUEST" type="checkbox"/><label for="B_LOG5_ONREQUEST">5</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_6"><input id="B_LOG6_ONHEADER"  type="checkbox"/><label for="B_LOG6_ONHEADER" >6</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_7"><input id="B_LOG7_TABS"      type="checkbox"/><label for="B_LOG7_TABS"     >7</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_4"><input id="B_LOG8_STORE"     type="checkbox"/><label for="B_LOG8_STORE"    >8</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_9"><input id="B_LOG9_STAGE"     type="checkbox"/><label for="B_LOG9_STAGE"    >9</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_0"><input id="B_LOG0_MORE"      type="checkbox"/><label for="B_LOG0_MORE"     >0</label><div class="label_after"></div><div class="caption"></div></div></div>
+
+    </div> <!--}}}-->
+    <em>options</em><br>
+    <div id="LOG_MAP_DIV_options"> <!--{{{-->
+     <div class="box_container"><div class="box cb_filled_pin_spacer">                                                                                                                                             </div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_2"><input id="O_LOG2_ERROR"     type="checkbox"/><label for="O_LOG2_ERROR"    >2</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_3"><input id="O_LOG3_GET"       type="checkbox"/><label for="O_LOG3_GET"      >3</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_4"><input id="O_LOG4_SET"       type="checkbox"/><label for="O_LOG4_SET"      >4</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_5"><input id="O_LOG5_SUCCESS"   type="checkbox"/><label for="O_LOG5_SUCCESS"  >5</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_6"><input id="O_LOG6_UI"        type="checkbox"/><label for="O_LOG6_UI"       >6</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin_spacer">                                                                                                                                             </div></div>
+     <div class="box_container"><div class="box cb_filled_pin_spacer">                                                                                                                                             </div></div>
+     <div class="box_container"><div class="box cb_filled_pin_spacer">                                                                                                                                             </div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_0"><input id="O_LOG0_MORE"      type="checkbox"/><label for="O_LOG0_MORE"     >0</label><div class="label_after"></div><div class="caption"></div></div></div>
+
+    </div> <!--}}}-->
+    <em>popup</em><br>
+    <div id="LOG_MAP_DIV_popup"> <!--{{{-->
+     <div class="box_container"><div class="box cb_filled_pin_spacer">                                                                                                                                             </div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_2"><input id="P_LOG2_ERROR"     type="checkbox"/><label for="P_LOG2_ERROR"    >2</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin_spacer">                                                                                                                                             </div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_4"><input id="P_LOG4_STORE"     type="checkbox"/><label for="P_LOG4_STORE"    >3</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin_spacer">                                                                                                                                             </div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_6"><input id="P_LOG6_UI"        type="checkbox"/><label for="P_LOG6_UI"       >6</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_7"><input id="P_LOG7_TABS"      type="checkbox"/><label for="P_LOG7_TABS"     >7</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_8"><input id="P_LOG8_EVENTS"    type="checkbox"/><label for="P_LOG8_EVENTS"   >8</label><div class="label_after"></div><div class="caption"></div></div></div>
+     <div class="box_container"><div class="box cb_filled_pin_spacer">                                                                                                                                             </div></div>
+     <div class="box_container"><div class="box cb_filled_pin cb_0"><input id="P_LOG0_MORE"      type="checkbox"/><label for="P_LOG0_MORE"     >0</label><div class="label_after"></div><div class="caption"></div></div></div>
+
+    </div> <!--}}}-->
+   </div>
+   <!--}}}-->
+
+  </body>
+</html>
