@@ -1,5 +1,5 @@
 "use strict";
-let B_SCRIPT_ID = "background_js";  let SCRIPT_TAG = B_SCRIPT_ID +" (181103:00h)";
+let B_SCRIPT_ID = "background_js";  let SCRIPT_TAG = B_SCRIPT_ID +" (190703:18h)";
 /* NOTES: {{{*/
 /*
  * BACKGROUND in responsible for user [EDITED CSP FILTERS STORAGE]
