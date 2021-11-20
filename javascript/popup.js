@@ -1,5 +1,5 @@
 "use strict";
-let P_SCRIPT_ID = "popup_js";       let SCRIPT_TAG = P_SCRIPT_ID +" (180519:19h)";
+let P_SCRIPT_ID = "popup_js";       let SCRIPT_TAG = P_SCRIPT_ID +" (200927:20h:19)";
 /* NOTES: {{{*/
 /* 
  * BACKGROUND in responsible for user [EDITED CSP FILTERS STORAGE]
@@ -7,6 +7,53 @@ let P_SCRIPT_ID = "popup_js";       let SCRIPT_TAG = P_SCRIPT_ID +" (180519:19h)
  * POPUP in responsible for USER [SETTINGS STORAGE]
 */
 /*}}}*/
+
+/* IMPORT log_js */
+/*_ {{{*/
+//let log_js = {};
+
+let   lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX;
+let   lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb          ;
+let   lf0, lf1, lf2, lf3, lf4, lf5, lf6, lf7, lf8, lf9, lfX;
+
+let   SAU, SAR, SAD, SAL, SHV, SYN, SBS, SD0, SD1, SD2, SD3, SD4, SD5, SD6, SD7, SD8, SD9;
+let   L_CHK, L_NEW, L_ARD, L_ARL, L_ARR, L_ARU, L_CLR, L_FNC, L_WRN;
+let   SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP;
+
+let   log
+    , log_json
+    , log_members
+    , log_object
+    , log_permission
+    , log_sep_bot
+    , log_sep_top
+;
+
+/*}}}*/
+/*_ popup_require_dom_log {{{*/
+let popup_require_dom_log = function()
+{
+
+    [ lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX ] = log_js.LOG_BG_ARR;
+    [ lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb           ] = log_js.LOG_XX_ARR;
+    [ lf0, lf1, lf2, lf3, lf4, lf5, lf6, lf7, lf8, lf9, lfX ] = log_js.LOG_FG_ARR;
+
+    [ SAU, SAR, SAD, SAL, SHV, SYN, SBS, SD0, SD1, SD2, SD3, SD4, SD5, SD6, SD7, SD8, SD9 ] = log_js.LOG_SXX;
+    [ L_CHK, L_NEW, L_ARD, L_ARL, L_ARR, L_ARU, L_CLR, L_FNC, L_WRN                       ] = log_js.LOG_CHR;
+    [ SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP] = log_js.LOG_SYM;
+
+    log                                 = log_js.log;
+    log_json                            = log_js.log_json;
+    log_members                         = log_js.log_members;
+    log_object                          = log_js.log_object;
+    log_permission                      = log_js.log_permission;
+    log_sep_bot                         = log_js.log_sep_bot;
+    log_sep_top                         = log_js.log_sep_top;
+
+};
+/*}}}*/
+popup_require_dom_log();
+
 /* LOG_MAP {{{*/
 /*_ P_LOG {{{*/
 let LOG_MAP = {
@@ -853,10 +900,6 @@ let p_storage_sync_set_LOG_MAP = function()
   //log_members(SBS+"LOG_MAP", items, lbR+lf0);
 };
 /*}}}*/
-/* l c {{{*/
-let l = logn;
-let c = clear;
-/*}}}*/
 
 /* STORAGE */ // log_this= P_LOG8_EVENTS
 // ............ SETTINGS1_tabs_onActivated      ... background_js responsibility
@@ -958,7 +1001,7 @@ if( log_this) log_members("tab_settings", items, lbH+lf9);
 
 /* LISTENERS */
 /*_ p_sync_get_LOG_MAP_CB {{{*/
-let p_sync_get_LOG_MAP_CB = function(items)
+let p_sync_get_LOG_MAP_CB = function(items={})
 {
 let log_this = LOG_MAP.P_LOG0_MORE;
 let log_more = log_this && LOG_MAP.P_LOG0_MORE;
@@ -1179,5 +1222,12 @@ log("...%c "+script_id+": %c Listening to window.postMessage ", lbb+lbL+lf7, lbb
     window.addEventListener("message", p_IPC_message_CB, false);
 };
 p_IPC_addListener(P_SCRIPT_ID);
+/*}}}*/
+
+/* l c {{{*/
+let c = log_js.clear;
+let l = logn;
+
+
 /*}}}*/
 

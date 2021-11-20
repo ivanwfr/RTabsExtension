@@ -1,5 +1,5 @@
 "use strict";
-let B_SCRIPT_ID = "background_js";  let SCRIPT_TAG = B_SCRIPT_ID +" (190703:18h)";
+let B_SCRIPT_ID = "background_js";  let SCRIPT_TAG = B_SCRIPT_ID +" (210906:23h:03)";
 /* NOTES: {{{*/
 /*
  * BACKGROUND in responsible for user [EDITED CSP FILTERS STORAGE]
@@ -16,8 +16,102 @@ let B_SCRIPT_ID = "background_js";  let SCRIPT_TAG = B_SCRIPT_ID +" (190703:18h)
 
 }}}*/
 /*}}}*/
+
+/* IMPORT log_js */
+/*_ {{{*/
+//let log_js = {};
+
+let   lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX;
+let   lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb          ;
+let   lf0, lf1, lf2, lf3, lf4, lf5, lf6, lf7, lf8, lf9, lfX;
+
+let   SAU, SAR, SAD, SAL, SHV, SYN, SBS, SD0, SD1, SD2, SD3, SD4, SD5, SD6, SD7, SD8, SD9;
+let   L_CHK, L_NEW, L_ARD, L_ARL, L_ARR, L_ARU, L_CLR, L_FNC, L_WRN;
+let   SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP;
+
+let   clear
+    , ellipsis
+    , get_callers
+    , get_ex_stack_line_match
+    , log
+    , logBIG
+    , logXXX
+    , log_CSP
+    , log_SYN
+    , log_caller
+    , log_console_clear
+    , log_json
+    , log_json_one_liner
+    , log_key_val
+    , log_key_val_group
+    , log_members
+    , log_object
+    , log_object_val_format
+    , log_pause
+    , log_permission
+    , log_sep_bot
+    , log_sep_top
+    , mPadEnd
+    , mPadStart
+    , parse_ex_stack_FUNC_FILE_LINE_COL
+    , pause
+    , reload
+    , strip_CR_LF
+    , strip_QUOTE
+    , truncate
+;
+
+/*}}}*/
+/*_ background_require_dom_log {{{*/
+let background_require_dom_log = function()
+{
+
+    [ lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX ] = log_js.LOG_BG_ARR;
+    [ lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb           ] = log_js.LOG_XX_ARR;
+    [ lf0, lf1, lf2, lf3, lf4, lf5, lf6, lf7, lf8, lf9, lfX ] = log_js.LOG_FG_ARR;
+
+    [ SAU, SAR, SAD, SAL, SHV, SYN, SBS, SD0, SD1, SD2, SD3, SD4, SD5, SD6, SD7, SD8, SD9 ] = log_js.LOG_SXX;
+    [ L_CHK, L_NEW, L_ARD, L_ARL, L_ARR, L_ARU, L_CLR, L_FNC, L_WRN                       ] = log_js.LOG_CHR;
+    [ SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP] = log_js.LOG_SYM;
+
+    clear                               = log_js.clear;
+    ellipsis                            = log_js.ellipsis;
+    get_callers                         = log_js.get_callers;
+    get_ex_stack_line_match             = log_js.get_ex_stack_line_match;
+    log                                 = log_js.log;
+    logBIG                              = log_js.logBIG;
+    logXXX                              = log_js.logXXX;
+    log_CSP                             = log_js.log_CSP;
+    log_SYN                             = log_js.log_SYN;
+    log_caller                          = log_js.log_caller;
+    log_console_clear                   = log_js.log_console_clear;
+    log_json                            = log_js.log_json;
+    log_json_one_liner                  = log_js.log_json_one_liner;
+    log_key_val                         = log_js.log_key_val;
+    log_key_val_group                   = log_js.log_key_val_group;
+    log_members                         = log_js.log_members;
+    log_object                          = log_js.log_object;
+    log_object_val_format               = log_js.log_object_val_format;
+    log_pause                           = log_js.log_pause;
+    log_permission                      = log_js.log_permission;
+    log_sep_bot                         = log_js.log_sep_bot;
+    log_sep_top                         = log_js.log_sep_top;
+    mPadEnd                             = log_js.mPadEnd;
+    mPadStart                           = log_js.mPadStart;
+    parse_ex_stack_FUNC_FILE_LINE_COL   = log_js.parse_ex_stack_FUNC_FILE_LINE_COL;
+    pause                               = log_js.pause;
+    reload                              = log_js.reload;
+    strip_CR_LF                         = log_js.strip_CR_LF;
+    strip_QUOTE                         = log_js.strip_QUOTE;
+    truncate                            = log_js.truncate;
+
+};
+/*}}}*/
+background_require_dom_log();
+
 /* LOG_MAP {{{*/
-/*_ B_LOG {{{*/
+/*_ b_is_logging {{{*/
+/*{{{*/
 let LOG_MAP = {
     B_LOG1_MESSAGE    : false,
     B_LOG2_ERROR      :  true,
@@ -32,11 +126,24 @@ let LOG_MAP = {
    };
 
 /*}}}*/
-/*_ log_LOG_MAP {{{*/
-let log_LOG_MAP = function(collapsed=true)
+let b_is_logging = function()
 {
-    let args = [""];            let s  = "%c "+SCRIPT_TAG        ; args.push(lbH+lf9);
-    /*...........................*/ s += "%c "                   ; args.push(lbL+lf8);
+    return LOG_MAP.B_LOG1_MESSAGE
+        || LOG_MAP.B_LOG2_ERROR
+        || LOG_MAP.B_LOG3_PRESERVE
+        || LOG_MAP.B_LOG4_PARSE
+        || LOG_MAP.B_LOG5_ONREQUEST
+        || LOG_MAP.B_LOG6_ONHEADER
+        || LOG_MAP.B_LOG7_TABS
+        || LOG_MAP.B_LOG8_STORE
+        || LOG_MAP.B_LOG9_STAGE
+    ;
+}
+/*}}}*/
+/*_ log_LOG_MAP {{{*/
+let log_LOG_MAP = function()
+{
+    let args = [""];            let s  = "%c CURRENT LOG_MAP"    ; args.push(lbL    );
     if( LOG_MAP.B_LOG1_MESSAGE  ) { s += "%c 1 MESSAGE "         ; args.push(lbC+lb1); }
     if( LOG_MAP.B_LOG2_ERROR    ) { s += "%c 2 ERROR "           ; args.push(lbC+lb2); }
     if( LOG_MAP.B_LOG3_PRESERVE ) { s += "%c 3 PRESERVE "        ; args.push(lbC+lb3); }
@@ -47,12 +154,10 @@ let log_LOG_MAP = function(collapsed=true)
     if( LOG_MAP.B_LOG8_STORE    ) { s += "%c 8 STORE "           ; args.push(lbC+lb8); }
     if( LOG_MAP.B_LOG9_STAGE    ) { s += "%c 9 STAGE "           ; args.push(lbC+lb9); }
     if( LOG_MAP.B_LOG0_MORE     ) { s += "%c 0 MORE "            ; args.push(lbC+lb0); }
-    /*...........................*/ s += "%c "                   ; args.push(lbR+lf8);
+    /*...........................*/ s += "%c "                   ; args.push(lbR    );
 
     args[0] = s;
     console.log.apply(console, Array.prototype.slice.call(args));
-
-    log_members("LOG_MAP", LOG_MAP, lbH+lf8, collapsed);
 };
 /*}}}*/
 /*}}}*/
@@ -796,7 +901,7 @@ if(log_this) log(SAR+" %c STORING URL CSP FILTER %c "+csp_filter+" ", lbb+lbL+lf
 
     /* RETURN FILTERED HEADERS */
 if( log_more) log("%c"+caller+": ...return { responseHeaders : headers }:", lbb+lbH+lf6);
-if(log_more) console.dir(headers);
+if( log_this) console.table(headers);
 
     return { responseHeaders : headers };
 } finally {
@@ -840,7 +945,7 @@ if(log_more) {
 if(log_this) {
     if(result) log("%c "+caller+": FOUND CSP IN "+get_url_domain(url)+" "+headers.length+" HEADERS ", lbb+lbH+lf3);
     else       log("%c "+caller+": ...NO CSP IN "+get_url_domain(url)+" "+headers.length+" HEADERS ", lbb+lbH+lf2);
-    console.dir( headers );
+    console.table( headers );
 }
     return result;
 };
@@ -1009,23 +1114,14 @@ let b_onMessage_CB_set_log_map = function(message)
         case "B_LOG0_MORE"      : LOG_MAP.B_LOG0_MORE      = message.set_log_state; break;
     }
 
-    let some_log
-        =  LOG_MAP.B_LOG1_MESSAGE
-        || LOG_MAP.B_LOG2_ERROR
-        || LOG_MAP.B_LOG3_PRESERVE
-        || LOG_MAP.B_LOG4_PARSE
-        || LOG_MAP.B_LOG5_ONREQUEST
-        || LOG_MAP.B_LOG6_ONHEADER
-        || LOG_MAP.B_LOG7_TABS
-        || LOG_MAP.B_LOG8_STORE
-        || LOG_MAP.B_LOG9_STAGE
-    ;
-    if(some_log) LOG_MAP.B_LOG2_ERROR = true;
+    if( b_is_logging() ) {
+        LOG_MAP.B_LOG2_ERROR = true;
 
-//if(LOG_MAP.B_LOG0_MORE) log("%c b_onMessage_CB_set_log_map", lb1);
-//if(LOG_MAP.B_LOG0_MORE) log_object("message", message, lb1);
-if(some_log           ) log_LOG_MAP();
+      //if(LOG_MAP.B_LOG0_MORE) log("%c b_onMessage_CB_set_log_map", lb1);
+      //if(LOG_MAP.B_LOG0_MORE) log_object("message", message, lb1);
 
+        log_LOG_MAP();
+    }
     return "LOG9_TAG";
 };
 /*}}}*/
@@ -1289,21 +1385,38 @@ if( log_this) log("%c SELECTING ["+message.csp_filter+"] FOR %c"+get_url_domain(
 /*_ b_onHeader2_received_addListener {{{*/
 let b_onHeader2_received_addListener = function()
 {
-    if( !log_permission(B_SCRIPT_ID, chrome.webRequest        , "Filtering Headers CSP", "webRequest"        )) return;
-/*  if( !log_permission(B_SCRIPT_ID, chrome.webRequestBlocking,  "Blocking Headers CSP", "webRequestBlocking")) return; */
+    /*....................SCRIPT_ID..NAMESPACE...................FUNCTIONALITY............PERMISSION.........*/
+    if( !log_permission(B_SCRIPT_ID, chrome.webRequest        , "Filtering Headers CSP", "webRequest"        , b_is_logging())) return;
+/*  if( !log_permission(B_SCRIPT_ID, chrome.webRequestBlocking,  "Blocking Headers CSP", "webRequestBlocking", b_is_logging())) return; */
 
-    chrome.webRequest.onHeadersReceived.addListener(
-        b_onHeader2_received                              /* listener */
-        , {   urls  : [ "*://*/*"]                          /* filter */
-            , types : [ "main_frame"      , "sub_frame" ] }
-        ,             [ "responseHeaders" , "blocking"  ]   /* extraInfoSpec */
-    );
+/* onHeadersReceived {{{
+:!start explorer "https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onHeadersReceived"
+:!start explorer "https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Match_patterns"
+:e $LOCAL/DATA/ANDROID/PROJECTS/RTabsExtension/javascript/background.js
+:e $LOCAL/DATA/ANDROID/PROJECTS/iwintoo/wss_mirror_extension/wss_mirror_bg.js
+}}}*/
+
+    chrome
+        .webRequest
+        .onHeadersReceived
+        .addListener( b_onHeader2_received                                  // LISTENER
+                      , { //         <scheme>
+                          //         |   <host>
+                          //         |   | <path>
+                          //         |   | |
+                          //         v   v v
+                          urls  : [ "*://*/*"]                              // FILTER
+                          , types : [ "main_frame"      , "sub_frame" ] }
+                      ,             [ "responseHeaders" , "blocking"  ]     // [extraInfoSpec]
+                    );
+
 };
 /*}}}*/
 /*_ b_onActivated_addListener {{{*/
 let b_onActivated_addListener = function()
 {
-    if( !log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to Extension tabs activation", "tabs"))
+    /*....................SCRIPT_ID..NAMESPACE...................FUNCTIONALITY............PERMISSION.........*/
+    if( !log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to Extension tabs activation", "tabs", b_is_logging()))
         return;
 
     chrome.tabs.onActivated.addListener( SETTINGS1_tabs_onActivated );
@@ -1312,7 +1425,8 @@ let b_onActivated_addListener = function()
 /*_ b_onUpdated_addListener {{{*/
 let b_onUpdated_addListener = function()
 {
-    if( !log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to Extension tabs updated", "tabs"))
+    /*....................SCRIPT_ID..NAMESPACE...................FUNCTIONALITY............PERMISSION.........*/
+    if( !log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to Extension tabs updated", "tabs", b_is_logging()))
         return;
 
     chrome.tabs.onUpdated.addListener( SETTINGS1_tabs_onUpdated );
@@ -1321,7 +1435,8 @@ let b_onUpdated_addListener = function()
 /*_ b_onRemoved_addListener {{{*/
 let b_onRemoved_addListener = function()
 {
-    if( !log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to Extension tabs removed", "tabs"))
+    /*....................SCRIPT_ID..NAMESPACE...................FUNCTIONALITY............PERMISSION.........*/
+    if( !log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to Extension tabs removed", "tabs", b_is_logging()))
         return;
 
     chrome.tabs.onRemoved.addListener( SETTINGS8_tabs_onRemoved );
@@ -1330,7 +1445,8 @@ let b_onRemoved_addListener = function()
 /*_ b_onMessage_addListener {{{*/
 let b_onMessage_addListener = function()
 {
-    if( !log_permission(B_SCRIPT_ID, chrome.runtime, "Listening to Extension message", "runtime") )
+    /*....................SCRIPT_ID..NAMESPACE...................FUNCTIONALITY............PERMISSION.........*/
+    if( !log_permission(B_SCRIPT_ID, chrome.runtime, "Listening to Extension message", "runtime", b_is_logging()) )
         return;
 
     chrome.runtime.onMessage.addListener( b_onMessage_CB );
@@ -1742,8 +1858,9 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
     /*}}}*/
     /* [active_tab] .. (tabs[0]) {{{*/
-    if(!tabs[0]) {
-if( log_more) log("!tabs[0]");
+    if(!tabs || !tabs[0])
+    {
+if( log_more) log("NO tabs");
 
         return;
     }
@@ -3282,8 +3399,12 @@ if( log_this) log("%c"+caller+": %c ...calling response_handler:", lbF+lbL+lf8, 
 };
 /*}}}*/
 /*_ b_STORAGE_LOAD_LOG_MAP_CB {{{*/
-let b_STORAGE_LOAD_LOG_MAP_CB = function(items)
+let b_STORAGE_LOAD_LOG_MAP_CB = function(items={})
 {
+/*{{{*/
+    let caller = "b_STORAGE_LOAD_LOG_MAP_CB";
+
+/*}}}*/
     /* LOAD LOG_MAP [background] {{{*/
     /*(____________.____________________!=____________)________.________________=______.________________;*/
     if(typeof items.B_LOG1_MESSAGE      != "undefined") LOG_MAP.B_LOG1_MESSAGE  = items.B_LOG1_MESSAGE  ;
@@ -3298,31 +3419,29 @@ let b_STORAGE_LOAD_LOG_MAP_CB = function(items)
     if(typeof items.B_LOG0_MORE         != "undefined") LOG_MAP.B_LOG0_MORE     = items.B_LOG0_MORE     ;
     /*(____________.____________________!=____________)________.________________=______.________________;*/
 
-    let some_log
-        =  LOG_MAP.B_LOG1_MESSAGE   /* _1_ */
-        || LOG_MAP.B_LOG2_ERROR     /* _2_ */
-        || LOG_MAP.B_LOG3_PRESERVE  /* _3_ */
-        || LOG_MAP.B_LOG4_PARSE     /* _4_ */
-        || LOG_MAP.B_LOG5_ONREQUEST /* _5_ */
-        || LOG_MAP.B_LOG6_ONHEADER  /* _6_ */
-        || LOG_MAP.B_LOG7_TABS      /* _7_ */
-        || LOG_MAP.B_LOG8_STORE     /* _8_ */
-        || LOG_MAP.B_LOG9_STAGE     /* _9_ */
-    ;
-    if(some_log) LOG_MAP.B_LOG2_ERROR = true;
+    let some_log = b_is_logging();
+    if( some_log ) {
+        log("%c"+SCRIPT_TAG, lbH+lbb+lf3);
 
-    if(some_log           ) log_LOG_MAP();
-    if(LOG_MAP.B_LOG0_MORE) log("%c b_STORAGE_LOAD_LOG_MAP_CB", lb3);
-    if(LOG_MAP.B_LOG0_MORE) log_object("items", items, lb3);
+        LOG_MAP.B_LOG2_ERROR = true;
 
+        if(LOG_MAP.B_LOG0_MORE) log_members(caller+"(items):", items , lf3, /*collapsed*/true);
+
+        log_LOG_MAP();
+
+        logn_USAGE();
+    }
     /*}}}*/
     /* ADD LISTENERS {{{*/
+    if(some_log) console.groupCollapsed("%c ADDING LISTENERS "+SAD, lbH+lf3);
+
     b_onHeader2_received_addListener();
     b_onActivated_addListener();
     b_onUpdated_addListener();
     b_onRemoved_addListener();
     b_onMessage_addListener();
 
+    if(some_log) console.groupEnd();
     /*}}}*/
 };
 /* INITIAL LOAD-TIME CALL */
@@ -3459,19 +3578,25 @@ let get_url_domain = function(url)
 };
 /*}}}*/
 /*_ parseURL {{{*/
+const regexp_URL = new RegExp("^([^:]+):\\/\\/(?:([^@]+)@)?([^\\/:]*)?(?::([\\d]+))?(?:(\\/[^#]*)(?:#(.*))?)?$", "i");
+/*..............................scheme_.........userinfo...host______.....port_____....path______....frag...........*/
+/*..............................1111111.........22222222...3333333333.....44444444.....5555555555....6666...........*/
 let parseURL = function(url)
 {
-  var result = {};
-  var match = url.match(
-      /^([^:]+):\/\/([^\/:]*)(?::([\d]+))?(?:(\/[^#]*)(?:#(.*))?)?$/i);
-  if (!match)
+    var result = {};
+    var match  = url.match(regexp_URL);
+    if( match ) {
+        result.scheme   = match[1].toLowerCase();
+        result.userinfo = match[2];
+        result.host     = match[3];
+        result.port     = match[4];
+        result.path     = match[5] || "/";
+        result.fragment = match[6];
+    }
+/*{{{
+log_members(url, result, lf9, false);
+}}}*/
     return result;
-  result.scheme = match[1].toLowerCase();
-  result.host = match[2];
-  result.port = match[3];
-  result.path = match[4] || "/";
-  result.fragment = match[5];
-  return result;
 };
 /*}}}*/
 /*}}}*/
@@ -3738,7 +3863,29 @@ if( log_this) log("%c "+caller+": ...return rules %c"+rules, lbL+lf4, lbR+lf4);
 /*}}}*/
 /*}}}*/
 
-/*_ CONSOLE */
+/*_ CONSOLE LOG */
+/*_ logn_USAGE {{{*/
+let logn_USAGE = function()
+{
+    let args = [""];            let s  = "";
+    /*...........................*/ s += "%c logn()  .. logging states\n"   ; args.push(lbR+lf9);
+    /*...........................*/ s += "%c logn(1) .. toggle MESSAGE\n"   ; args.push(lbR+lf1);
+    /*...........................*/ s += "%c logn(2) .. toggle ERROR\n"     ; args.push(lbR+lf2);
+    /*...........................*/ s += "%c logn(3) .. toggle PRESERVE\n"  ; args.push(lbR+lf3);
+    /*...........................*/ s += "%c logn(4) .. toggle PARSE\n"     ; args.push(lbR+lf4);
+    /*...........................*/ s += "%c logn(5) .. toggle ONREQUEST\n" ; args.push(lbR+lf5);
+    /*...........................*/ s += "%c logn(6) .. toggle ONHEADER\n"  ; args.push(lbR+lf6);
+    /*...........................*/ s += "%c logn(7) .. toggle TABS\n"      ; args.push(lbR+lf7);
+    /*...........................*/ s += "%c logn(8) .. toggle STORE\n"     ; args.push(lbR+lf8);
+    /*...........................*/ s += "%c logn(9) .. toggle STAGE\n"     ; args.push(lbR+lf9);
+    /*...........................*/ s += "%c logn(0) .. toggle MORE\n"      ; args.push(lbR+lf0);
+    args[0] = s;
+
+    console.groupCollapsed("%c logn USAGE "+SAD, lbH);
+    console.log.apply     (console, Array.prototype.slice.call(args));
+    console.groupEnd();
+};
+/*}}}*/
 /*_ logn {{{*/
 let logn = function(n)
 {
@@ -3768,25 +3915,19 @@ let caller   = "logn("+n+")";
         b_onMessage_CB_set_log_map(message)
 
         b_storage_sync_set_LOG_MAP();
-
-        log_LOG_MAP(false); // not collapsed
     }
     /* LOG */
     else {
         log_LOG_MAP();
     }
+    /* USAGE */
+    logn_USAGE();
 
     if(chrome.runtime.lastError) return chrome.runtime.lastError.message;
     if(!log_tag                ) return SYN;
     let    mark = LOG_MAP[log_tag] ? SYMBOL_CHECK_MARK : SYMBOL_NOT_CHECKED;
     return mark+" "+log_tag+"="+LOG_MAP[log_tag];
 };
-/*}}}*/
-/* l r c p {{{*/
-let l = logn;
-let r = reload;
-let c = clear;
-let p = pause;
 /*}}}*/
 
 /*_ POPUP */                                            // B_LOG9_STAGE
@@ -3812,6 +3953,7 @@ const TOOLS5_UNLOADED           = "TOOLS UNLOADED";
 /*_ b_sync_pageAction {{{*/
 let b_sync_pageAction = function(tabId)
 {
+    if(tabId < 0) return; /* (190106) */
     /*{{{*/
 let caller   = "b_sync_pageAction";
 let log_this = LOG_MAP.B_LOG9_STAGE;
@@ -3869,9 +4011,15 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
     b_tabs_set_tabId_key_val(tabId, "icon_path", icon_path);
     b_tabs_set_tabId_key_val(tabId,     "title", title    );
 
-    chrome.pageAction.setIcon ( { tabId:tabId ,  path:icon_path } );
-    chrome.pageAction.setTitle( { tabId:tabId , title:title     } );
-    chrome.pageAction.show    (   tabId );
+    try {
+        chrome.pageAction.setIcon ( { tabId:tabId ,  path:icon_path } );
+        chrome.pageAction.setTitle( { tabId:tabId , title:title     } );
+        chrome.pageAction.show    (   tabId );
+    }
+    catch(ex) {
+        last_parse_error= caller+": "+ ex;
+        if( log_this || LOG_MAP.B_LOG2_ERROR) log("%c *** last_parse_error=[%c "+last_parse_error+" ]", lb2, lb0);
+    }
 
     let message =
         {     tabId            : tabId
@@ -3986,5 +4134,24 @@ let log_this = LOG_MAP.B_LOG9_STAGE;
     ;
     return title;
 };
+/*}}}*/
+
+/* l r c p {{{*/
+let l = logn;
+let r = reload;
+let c = log_js.clear;
+/* l_paused {{{*/
+let l_paused;
+let p = function()
+{
+    let pausable =  { l_paused , id:B_SCRIPT_ID };  /* [pausable] containing current [l_paused value] */
+
+    let      sym = pause( pausable );
+
+    l_paused     = pausable.l_paused;               /* set l_paused to be the [pausable value] */
+
+    log(sym +" .. l_paused=["+l_paused+"]");
+}
+/*}}}*/
 /*}}}*/
 

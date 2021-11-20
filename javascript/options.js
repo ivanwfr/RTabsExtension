@@ -1,5 +1,5 @@
 "use strict";
-let O_SCRIPT_ID = "options_js";     let SCRIPT_TAG = O_SCRIPT_ID +" (181103:00h)";
+let O_SCRIPT_ID = "options_js";     let SCRIPT_TAG = O_SCRIPT_ID +" (200927:20h:17)";
 /* NOTES: {{{*/
 /* 
  * BACKGROUND in responsible for user [EDITED CSP FILTERS STORAGE]
@@ -7,6 +7,99 @@ let O_SCRIPT_ID = "options_js";     let SCRIPT_TAG = O_SCRIPT_ID +" (181103:00h)
  * POPUP in responsible for USER [SETTINGS STORAGE]
 */
 /*}}}*/
+
+/* IMPORT log_js */
+/*_ {{{*/
+//let log_js = {};
+
+let   lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX;
+let   lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb          ;
+let   lf0, lf1, lf2, lf3, lf4, lf5, lf6, lf7, lf8, lf9, lfX;
+
+let   SAU, SAR, SAD, SAL, SHV, SYN, SBS, SD0, SD1, SD2, SD3, SD4, SD5, SD6, SD7, SD8, SD9;
+let   L_CHK, L_NEW, L_ARD, L_ARL, L_ARR, L_ARU, L_CLR, L_FNC, L_WRN;
+let   SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP;
+
+let   clear
+    , ellipsis
+    , get_callers
+    , get_ex_stack_line_match
+    , log
+    , logBIG
+    , logXXX
+    , log_CSP
+    , log_SYN
+    , log_caller
+    , log_console_clear
+    , log_json
+    , log_json_one_liner
+    , log_key_val
+    , log_key_val_group
+    , log_members
+    , log_object
+    , log_object_val_format
+    , log_pause
+    , log_permission
+    , log_sep_bot
+    , log_sep_top
+    , mPadEnd
+    , mPadStart
+    , parse_ex_stack_FUNC_FILE_LINE_COL
+    , pause
+    , reload
+    , strip_CR_LF
+    , strip_QUOTE
+    , truncate
+;
+
+/*}}}*/
+/*_ options_require_dom_log {{{*/
+let options_require_dom_log = function()
+{
+
+    [ lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX ] = log_js.LOG_BG_ARR;
+    [ lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb           ] = log_js.LOG_XX_ARR;
+    [ lf0, lf1, lf2, lf3, lf4, lf5, lf6, lf7, lf8, lf9, lfX ] = log_js.LOG_FG_ARR;
+
+    [ SAU, SAR, SAD, SAL, SHV, SYN, SBS, SD0, SD1, SD2, SD3, SD4, SD5, SD6, SD7, SD8, SD9 ] = log_js.LOG_SXX;
+    [ L_CHK, L_NEW, L_ARD, L_ARL, L_ARR, L_ARU, L_CLR, L_FNC, L_WRN                       ] = log_js.LOG_CHR;
+    [ SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP] = log_js.LOG_SYM;
+
+    clear                               = log_js.clear;
+    ellipsis                            = log_js.ellipsis;
+    get_callers                         = log_js.get_callers;
+    get_ex_stack_line_match             = log_js.get_ex_stack_line_match;
+    log                                 = log_js.log;
+    logBIG                              = log_js.logBIG;
+    logXXX                              = log_js.logXXX;
+    log_CSP                             = log_js.log_CSP;
+    log_SYN                             = log_js.log_SYN;
+    log_caller                          = log_js.log_caller;
+    log_console_clear                   = log_js.log_console_clear;
+    log_json                            = log_js.log_json;
+    log_json_one_liner                  = log_js.log_json_one_liner;
+    log_key_val                         = log_js.log_key_val;
+    log_key_val_group                   = log_js.log_key_val_group;
+    log_members                         = log_js.log_members;
+    log_object                          = log_js.log_object;
+    log_object_val_format               = log_js.log_object_val_format;
+    log_pause                           = log_js.log_pause;
+    log_permission                      = log_js.log_permission;
+    log_sep_bot                         = log_js.log_sep_bot;
+    log_sep_top                         = log_js.log_sep_top;
+    mPadEnd                             = log_js.mPadEnd;
+    mPadStart                           = log_js.mPadStart;
+    parse_ex_stack_FUNC_FILE_LINE_COL   = log_js.parse_ex_stack_FUNC_FILE_LINE_COL;
+    pause                               = log_js.pause;
+    reload                              = log_js.reload;
+    strip_CR_LF                         = log_js.strip_CR_LF;
+    strip_QUOTE                         = log_js.strip_QUOTE;
+    truncate                            = log_js.truncate;
+
+};
+/*}}}*/
+options_require_dom_log();
+
 /* LOG_MAP {{{*/
 /*_ O_LOG {{{*/
 let LOG_MAP = {
@@ -621,7 +714,7 @@ if(LOG_MAP.O_LOG6_UI) log("%c handler", lb1);
 /*_ o_sync_get_LOG_MAP_CB {{{*/
 let o_addEventListeners_has_been_called;
 
-let o_sync_get_LOG_MAP_CB = function(items)
+let o_sync_get_LOG_MAP_CB = function(items={})
 {
     /* LOAD LOG_MAP [options_js] {{{*/
     /*(____________.____________________!=____________)________.________________=______.________________;*/
