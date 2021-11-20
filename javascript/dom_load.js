@@ -1,1 +1,1 @@
-../../../../../../STORE/DEV/PROJECTS/RTabs/Util/RTabs_Profiles/DEV/javascript/dom_load.js
+../../../../../../STORE/DEV/PROJECTS/RTabs/Util/RTabs_Profiles/DEV/script/dom_load.js
