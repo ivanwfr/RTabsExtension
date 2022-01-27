@@ -1,5 +1,5 @@
 
-#options_css_tag  { content: "options_css (180324:16h)"; }
+#options_css_tag  { content: "options_css (200922:19h:53)"; }
 body /*{{{*/
 {
 /*
@@ -36,8 +36,9 @@ button /*{{{*/
 /*}}}*/
 .buttons /*{{{*/
 {
-    user-select: none;
-    font-weight:900;
+    user-select : none;
+    font-weight : 900;
+    font-size   : 80%;
 }
 /*}}}*/
 .on_hold /*{{{*/
@@ -78,7 +79,7 @@ button /*{{{*/
 {
     margin-top       :  1em;
     width            : 75em;
-    height           : 30em;
+    height           : 25em;
     background-color : #DDF;
     font-size        : 12px;
     font-weight      :  900;
