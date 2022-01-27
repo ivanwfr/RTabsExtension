@@ -507,7 +507,7 @@ border: 1px dotted red;
 
 /* .cb_filled_pin {{ {*/
 .cb_filled_pin_spacer { /*{{{*/
-    font-size      : 300%;
+    font-size      : 250%;
     position       : relative; width: 2em; height: 2em;
     border-radius  : 50%;
     box-shadow     :       0em .05em .1em white, 0em .1em .1em rgba(0, 0, 0, 0.5);
@@ -525,7 +525,7 @@ border: 1px dotted red;
 }
 /*}}}*/
 .cb_filled_pin { /* upper edge {{{*/
-    font-size      : 300%;
+    font-size      : 250%;
     position       : relative; width: 2em; height: 2em;
     border-radius  : 50%;
     box-shadow     : inset 0em .05em .1em white, 0em .1em .5em rgba(0, 0, 0, 0.5);
