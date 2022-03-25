@@ -9,7 +9,7 @@ javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 let DOM_LOAD_ID         = "dom_load";
-let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (220323:19h:39)";
+let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (220325:18h:50)";
 let DOM_HOST_CSS_ID     = "dom_host_css";
 let DOM_TOOLS_CSS_ID    = "dom_tools_css";
 let DOM_GRID_CSS_ID     = "dom_grid_css";
@@ -34609,7 +34609,7 @@ let dom_sentence_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220323:19h:15)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220325:18h:47)";
 
 let dom_sentence            = (function() {
 "use strict";
@@ -35019,7 +35019,8 @@ if( tag_this) {
 
     container.style.touchAction = "none";
 
-    let style =      " float: right;"
+    let button_style
+        =                " float: right;"
         +            " clear: right;"
         +           " border: none;"
         +           " margin: 0;"
@@ -35030,14 +35031,17 @@ if( tag_this) {
         +      " font-weight: 900;"
         +      " line-height: 1em;"
     ;
+    let span_style
+        = "pointer-events: none"
+    ;
 
 
 
     let tools = ""
-        +    "<button id='dom_sentence_theme_dark' title='THEME DARK' style='"+style+"'>"+ SYMBOL_THEME     +"</button>"
+        +    "<button id='dom_sentence_theme_dark' title='THEME DARK' style='"+button_style+"'><span style='"+span_style+"'>"+ SYMBOL_THEME     +"</span></button>"
 
         + ((typeof dom_popup != "undefined")
-           ? "<button id='dom_sentence_xpath_show' title='XPATH SHOW' style='"+style+"'>"+ SYMBOL_GEAR      +"</button>" : "")
+           ? "<button id='dom_sentence_xpath_show' title='XPATH SHOW' style='"+button_style+"'><span style='"+span_style+"'>"+ SYMBOL_GEAR      +"</span></button>" : "")
     ;
 
     let   theme_style
