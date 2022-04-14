@@ -9,7 +9,7 @@
 /* eslint-disable prefer-rest-params */
 
 const LOG_JS_ID         = "log_js";
-const LOG_JS_TAG        =  LOG_JS_ID +" (220414:17h:39)";
+const LOG_JS_TAG        =  LOG_JS_ID +" (220414:17h:38)";
 /*}}}*/
 let log_js = (function() {
 "use strict";

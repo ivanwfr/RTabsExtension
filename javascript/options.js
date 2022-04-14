@@ -1,6 +1,6 @@
 /* eslint-disable strict */
 "use strict";
-let O_SCRIPT_ID = "options_js";     let SCRIPT_TAG = O_SCRIPT_ID +" (220414:17h:09)";
+let O_SCRIPT_ID = "options_js";     let SCRIPT_TAG = O_SCRIPT_ID +" (220414:17h:39)";
 /* NOTES: {{{*/
 /*
  * BACKGROUND in responsible for user [EDITED CSP FILTERS STORAGE]
