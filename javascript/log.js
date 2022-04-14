@@ -1,20 +1,20 @@
-/* log_js {{{*/
+/* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true {{{*/
 
-/* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true */
-/* globals chrome, module */
-/* exported LOG_JS_TAG */
-/*
-:update|1,$y *
-:!start explorer https://jshint.com/
-*/
+/* globals console, module, chrome */
+
+/* exported DOM_LOG_JS_TAG */
+
+/* eslint-disable no-warning-comments */
+/* eslint-disable prefer-spread */
+/* eslint-disable prefer-rest-params */
 
 const LOG_JS_ID         = "log_js";
-const LOG_JS_TAG        =  LOG_JS_ID +" (201029:17h:50)";
+const LOG_JS_TAG        =  LOG_JS_ID +" (220414:17h:39)";
 /*}}}*/
 let log_js = (function() {
 "use strict";
 
-let log_this=false;//true;//FIXME
+let log_this = false; /* eslint-disable-line no-unused-vars */
 
 /* CSS {{{*/
 const lbA  = "background-color:inherit;   color:inherit;";
@@ -84,7 +84,7 @@ const L_CHK =         "✔ ";
 const L_NEW =         "☀ ";
 
 const L_ARD =         "↓ ";
-const L_ARL = "	← ";
+const L_ARL =       "\t← ";
 const L_ARR =         "→ ";
 const L_ARU =         "↑ ";
 
@@ -110,7 +110,7 @@ const LOG_SYM = [SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_
 /* CHAR {{{*/
 const LF        = String.fromCharCode(10);
 
-/*}}}*/ 
+/*}}}*/
 /* LOG_UTIL {{{*/
 /*➔ log_socket {{{*/
 let log_socket = function(socket)
@@ -135,7 +135,7 @@ const R_LINE_INDENT = "   │ request.headers.user-agent  ➔";
 let log_request = function(request)
 {
 
-    let user_agent = (" "+request.headers['user-agent']).replace(regexp_UA, "\n"+R_LINE_INDENT+"$&")
+    let user_agent = (" "+request.headers['user-agent']).replace(regexp_UA, "\n"+R_LINE_INDENT+"$&"); /* eslint-disable-line quotes */
 
     log(  "...request:\n"
         + "   ┌ request.url                .. "+ request.url                +"\n"
@@ -279,17 +279,14 @@ let strip_CR_LF   = function(text)
 /* log_members {{{*/
 let log_members = function(o_name, o, lxx=lb0, collapsed=true)
 {
-    if(!o) {
-        log(o_name+": %c null object ", lxx);
-        return "";
-    }
-
-  //log("%c"+o_name+" "+SAD, lbR+lxx);
+    if(!o) log(o_name+": %c null object ", lxx);
 
     if(collapsed) console.groupCollapsed("%c"+o_name+" "+SAD, lbR+lxx);
     else          console.group         ("%c"+o_name+" "+SAD, lbR+lxx);
 
     //let tdata = "";
+
+    if(typeof o != "object") { log("%c "+o_name+" %c IS NOT AN OBJECT ", lb4+lf2, lb2+lf4); return; }
 
     Object.keys(o).forEach(
         function(key) {
@@ -313,10 +310,7 @@ let log_members = function(o_name, o, lxx=lb0, collapsed=true)
 /* log_object {{{*/
 let log_object = function(o_name, o,lxx=lb0)
 {
-    if(!o) {
-        log(o_name+": %c null object ", lxx);
-        return "";
-    }
+    if(!o) log(o_name+": %c null object ", lxx);
 
     let txt = "";
     txt += SAD+" "+o_name+"\n";
@@ -415,7 +409,7 @@ let log_object_val_format = function(val)
 /* log_json {{{*/
 let regexp_BRACES = new RegExp("^{|}$"                    , "g");
 let regexp_BSLASH = new RegExp("\\\\"                     , "g");
-let regexp_URL_64 = new RegExp('"url":"([^"]{1,64})[^"]*"', "g");
+let regexp_URL_64 = new RegExp('"url":"([^"]{1,64})[^"]*"', "g"); /* eslint-disable-line quotes */
 let log_json = function(val)
 {
     if(val == null     ) return "null";
@@ -424,7 +418,7 @@ let log_json = function(val)
     if(val.tagName     ) return     val.tagName;
 
     return JSON.stringify(val)
-        .   replace(regexp_URL_64, '"url":"$1..."')
+        .   replace(regexp_URL_64, '"url":"$1..."') /* eslint-disable-line quotes */
         .   replace(regexp_BRACES, "")
         .   replace(regexp_QUOTE , "")
         .   replace(regexp_BSLASH, "")
@@ -446,7 +440,7 @@ let  LOG_TAGS  = {
     "LOG7_TAG" : 7,  "7" : 7,
     "LOG8_TAG" : 8,  "8" : 8,
     "LOG9_TAG" : 9,  "9" : 9,
-    "LOG0_TAG" : 0,  "0" : 0,
+    "LOG0_TAG" : 0,  "0" : 0
    };
 
 /*}}}*/
@@ -535,12 +529,12 @@ let log_permission = function(script_id, namespace, functionality, permission, l
 {
     if(namespace != undefined)
     {
-if(logging) log("%c "+script_id+" %c "+functionality+' %c ... manifest permission specified %c "'+permission+'" ', lbL,lbC,     lbC+lf5,     lbR+lf5);
+if(logging) log("%c "+script_id+" %c "+functionality+' %c ... manifest permission specified %c "'+permission+'" ', lbL,lbC,     lbC+lf5,     lbR+lf5); /* eslint-disable-line quotes */ /* eslint-disable-line quotes */
 
         return true;
     }
     else {
-log("%c "+script_id+" %c "+functionality+' %c *** manifest permission required  %c "'+permission+'" ', lbL,lbR, lbb+lbL+lf2, lbb+lbR+lf2);
+log("%c "+script_id+" %c "+functionality+' %c *** manifest permission required  %c "'+permission+'" ', lbL,lbR, lbb+lbL+lf2, lbb+lbR+lf2); /* eslint-disable-line quotes */
 
         return false;
     }
