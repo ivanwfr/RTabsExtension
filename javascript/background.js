@@ -1,5 +1,22 @@
+/* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true {{{*/
+
+/* globals console, confirm, chrome */
+/* globals Map */
+/* globals log_js */
+/* globals setTimeout, clearTimeout */
+
+/* exported background_js, B_SCRIPT_TAG */
+
+/* eslint-disable no-warning-comments */
+/* eslint-disable prefer-spread */
+/* eslint-disable prefer-rest-params */
+/* eslint-disable valid-jsdoc */
+
+const B_SCRIPT_ID         = "background_js";
+const B_SCRIPT_TAG        =  B_SCRIPT_ID +" (220414:16h:29)";
+/*}}}*/
+let background_js = (function() {
 "use strict";
-let B_SCRIPT_ID = "background_js";  let SCRIPT_TAG = B_SCRIPT_ID +" (210906:23h:03)";
 /* NOTES: {{{*/
 /*
  * BACKGROUND in responsible for user [EDITED CSP FILTERS STORAGE]
@@ -18,6 +35,7 @@ let B_SCRIPT_ID = "background_js";  let SCRIPT_TAG = B_SCRIPT_ID +" (210906:23h:
 /*}}}*/
 
 /* IMPORT log_js */
+/* eslint-disable no-unused-vars */
 /*_ {{{*/
 //let log_js = {};
 
@@ -108,6 +126,7 @@ let background_require_dom_log = function()
 };
 /*}}}*/
 background_require_dom_log();
+/* eslint-ensable no-unused-vars */
 
 /* LOG_MAP {{{*/
 /*_ b_is_logging {{{*/
@@ -138,7 +157,7 @@ let b_is_logging = function()
         || LOG_MAP.B_LOG8_STORE
         || LOG_MAP.B_LOG9_STAGE
     ;
-}
+};
 /*}}}*/
 /*_ log_LOG_MAP {{{*/
 let log_LOG_MAP = function()
@@ -186,10 +205,11 @@ if( log_this) log_sep_top(caller+" .. "+_caller+" .. "+status, log_tag);
 if( log_this) log_members("TAB #"+tabId, b_tabs.get(tabId), lbH+lf8);
 if( log_more) log_members("message", message, lf9);
 // {{{
+/* eslint-disable no-caller */
 if(!message.status) logXXX("%c !message.status ", lbB+lf2);
-if(!message.status) logXXX("arguments.caller=["+arguments.caller+"]");
+if(!message.status) logXXX("arguments.caller=["+arguments.caller+"]"); /* eslint-disable-line no-caller */
 if(!message.status) log_object("arguments", arguments);
-if(!message.status) console.trace()//FIXME
+/* eslint-enable no-caller */
 //}}}
 
     let url                         = b_tabs_get_tabId_key        (tabId, "url")
@@ -209,17 +229,17 @@ if( log_more) log_members("TAB #"+tabId+" (UPDATED)", b_tabs.get(tabId), lbH+lf9
 
 if(log_more) {
     let b_tabs_sync_details
-        = {   b_TOOLS_QUERY_called_once    : b_TOOLS_QUERY_called_once
-            , tools_GET_REPLY_called_once  : tools_GET_REPLY_called_once
-            , start                        : start
-            , t_load                       : t_load
-            , csp_filter                   : csp_filter
-            , csp_filter_effect            : csp_filter_effect
-            , cancelreq                    : cancelreq
-            , onBeforeRequest_is_canceling : onBeforeRequest_is_canceling
-            , tools4_polling_reply         : tools4_polling_reply
-            , url                          : url
-            , status                       : status
+        = {   b_TOOLS_QUERY_called_once
+            , tools_GET_REPLY_called_once
+            , start
+            , t_load
+            , csp_filter
+            , csp_filter_effect
+            , cancelreq
+            , onBeforeRequest_is_canceling
+            , tools4_polling_reply
+            , url
+            , status
         };
 
     log("%c" +log_json(b_tabs_sync_details), lbH+lf7);
@@ -305,7 +325,7 @@ if( log_this) log("%c SWITCHING start [OFF]: %c t_load=["+t_load+"] %c csp_filte
         log_tag = "LOG3_TAG";
 
         start = b_tabs_set_tabId_key_val(tabId, "start", "OFF");
-        b_STORAGE_SET_url_settings(tabId, caller)
+        b_STORAGE_SET_url_settings(tabId, caller);
     }
     /*}}}*/
     //  LOG6_TAG LOG1_TAG LOG0_TAG .. f(SETTINGS6_CHECK_TOOLS_LOADED)
@@ -387,7 +407,7 @@ if(log_more) log("%c"+SBS+" %c SET TAB"+tabId+"%c"+key+" %c"+val
     else val = b_tabs_get_tabId_key    (tabId, key     );
 
     /* ...return [LAST SET VALUE] */
-    return val
+    return val;
 
 };
 /*}}}*/
@@ -410,7 +430,7 @@ let b_tabs_del_tabId_key     = function(tabId, key         )
 */
     let o;
     if( o = b_tabs.get(tabId)) delete o[key];
-}
+};
 /*}}}*/
 /*_ b_tabs_del_tabId {{{*/
 let b_tabs_del_tabId = function(tabId)
@@ -432,7 +452,7 @@ if( log_more) log("%c"+SYMBOL_CONSTRUCTION +"%c"+caller , lbB+lf2,lbL+lf2);
 
 if( log_more) log_members(SAR+" INTO CACHE", item, lbH+lbF+lf2, lbH+lf2);
     }
-}
+};
 /*}}}*/
 /*_ b_tabs_url_settings_from_cached {{{*/
 let b_tabs_url_settings_from_cached = function(url)
@@ -473,7 +493,7 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 if( log_more) log("%c b_tabs_url_settings_from_others", lbF+lf9);
     /* current entry for the specified url {{{*/
     let item = null; let tabId;
-    for(var key of  b_tabs.keys())
+    for(let key of b_tabs.keys())
     {
         let value = b_tabs.get(key);
         if( value.url == url) {
@@ -575,16 +595,16 @@ if( log_this) log("%c"+SYMBOL_GEAR+"%c "+B_RELOAD_FOR_CSP_FILTERING+" %c"+CSP_Ru
 
     b_set_csp_filter_onHeadersReceived_timeout = null;
 if( log_this) log_sep_bot(caller, "LOG2_TAG");
-}
+};
 /*}}}*/
 /*_ b_onHeader1_reload_cancel {{{*/
 let b_onHeader1_reload_cancel = function()
 {
-    if(! b_set_csp_filter_onHeadersReceived_timeout) return;
+    if(!b_set_csp_filter_onHeadersReceived_timeout) return;
 
 let caller   = "b_onHeader1_reload_cancel";
 let log_this = LOG_MAP.B_LOG6_ONHEADER;
-if( log_this) log(caller+": clearTimeout( b_set_csp_filter_onHeadersReceived_timeout );")
+if( log_this) log(caller+": clearTimeout( b_set_csp_filter_onHeadersReceived_timeout );");
 
     clearTimeout( b_set_csp_filter_onHeadersReceived_timeout );
     b_set_csp_filter_onHeadersReceived_timeout = null;
@@ -598,8 +618,8 @@ const B_HEADER_FILTERING  = "CSP FILTERING";
 let b_onHeader2_received = function(details)
 {
     /* NO [tab_url] {{{*/
-let tab_url = b_tabs_get_tabId_key(details.tabId, "url")
-if( tab_url && (details.url != tab_url)) return;
+let tab_url = b_tabs_get_tabId_key(details.tabId, "url");
+if( tab_url && (details.url != tab_url)) return details.responseHeaders;
 
     /*}}}*/
     // MAY HAVE RETURNED .. f(NOT THIS TAB URL)
@@ -610,6 +630,7 @@ let log_this = PROVIDING_DEFAULT_HEADER_CSP_TO_FILTER || LOG_MAP.B_LOG6_ONHEADER
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
     let log_tag = "LOG6_TAG";
+if(log_this && !LOG_MAP.B_LOG3_PRESERVE) log_console_clear(caller);
      /*}}}*/
 try { if( log_this) log_sep_top(caller+(PROVIDING_DEFAULT_HEADER_CSP_TO_FILTER ? " PROVIDING_DEFAULT_HEADER_CSP_TO_FILTER" : ""), log_tag);
 if( log_more) log_members("details", details, lbH+lf2);
@@ -630,7 +651,7 @@ if( log_this) log("%c"+SD3+"%c SKIPPING "+B_GET_ACTIVE_TAB_URL_CB, lbb+lf3, lf8)
         if( !SETTINGS4_GET_URL_SETTINGS(details.tabId, details.url) )
         {
             log_tag = "LOG4_TAG";
-            return;
+            return details.responseHeaders;
         }
     }
     /*}}}*/
@@ -644,11 +665,11 @@ if( log_this) log("%c"+SD3+"%c SKIPPING "+B_GET_ACTIVE_TAB_URL_CB, lbb+lf3, lf8)
     {
 log(  "%c"+SYMBOL_CONSTRUCTION +"%c DOMAIN SKIPPED TAB#"+details.tabId+" %c "+url_domain
     ,  lbB+lf6                  ,lbL+lf6                                ,lbR+lf4);
-if(log_more) ("...............details.initiator...=["+                 details.initiator  +"]")
-if(log_more) ("get_url_domain(details.url)........=["+ get_url_domain( details.url      ) +"]")
+if(log_more) log("...............details.initiator...=["+                 details.initiator  +"]");
+if(log_more) log("get_url_domain(details.url)........=["+ get_url_domain( details.url      ) +"]");
 
         log_tag = "LOG2_TAG";
-        return;
+        return details.responseHeaders;
     }
     let csp_filter = b_tabs_get_tabId_key(details.tabId, "csp_filter");
 if( log_more) log("...csp_filter...=["+csp_filter+"]");
@@ -679,7 +700,7 @@ if( log_this) log(SYN+" %c PROVIDING DEFAULT HEADER CSP TO FILTER:", lbb+lbH+lf6
         //  +           "form-action 'self'; "
         //  +       "frame-ancestors ; "
         ;
-        headers.push({ name:name, value:value });
+        headers.push({ name, value });
         has_CSP = true;
 /* CSP ERROR REPORT {{{
 
@@ -708,7 +729,7 @@ if( log_more) log(SYN+" %c THIS HEADER CSP FILTERING: %c NOT REQUESTED ", lbb+lb
         b_tabs_set_tabId_key_val(details.tabId, "last_reload_not_filtered", caller);
 
         log_tag = "LOG8_TAG";
-        return;
+        return details.responseHeaders;
     }
     else if( has_CSP )
     {
@@ -748,7 +769,7 @@ if( log_this) log("%c"+SYMBOL_CONSTRUCTION +"%c UNMATCHED %c"+get_url_domain(det
     ,              lbB+lf6                  ,lbL+lf4     ,lbC+lf4                             ,lbR+lf4);
 
         log_tag = "LOG8_TAG";
-        return;
+        return details.responseHeaders;
     }
     /*}}}*/
     // MAY HAVE RETURNED .. f(NO URL MATCH)
@@ -762,7 +783,7 @@ if(log_this) log(SAR+" %c NEXT HEADER CSP FILTERING: %c "+CSP_FILTER_EFFECT2_RUL
         b_tabs_set_tabId_key_val(details.tabId, "csp_filter_effect" , CSP_FILTER_EFFECT2_RULES_LOADING);
 
         log_tag = "LOG2_TAG";
-        return;
+        return details.responseHeaders;
     }
     /*}}}*/
     // MAY HAVE RETURNED .. f(CSP RULE NOT LOADED)
@@ -791,7 +812,7 @@ if(log_more) log("%c .......headers.length=["+ headers.length   +"]", lb6);
         csp_filter_applied = CSP_FILTER_APPLIED8_NO_CSP;
     }
     else {
-        let header_csp
+        let header_csp;
         for(let i=0, iLen = CSP_Rules.length; i !== iLen; ++i)
         {
 
@@ -888,10 +909,10 @@ if(log_this) log(SAR+" %c CSP FILTER EFFECT  %c "+csp_filter_effect +" ", lbb+lb
     /* STORE EFFECTIVE [csp_filter] {{{*/
 if(log_this) log(SAR+" %c STORING URL CSP FILTER %c "+csp_filter+" ", lbb+lbL+lf6, lbb+lbR+lf4);
 
-    b_STORAGE_SET_url_settings (details.tabId, caller)
+    b_STORAGE_SET_url_settings (details.tabId, caller);
     /*}}}*/
     /* TAB SYNC .. HEADER FILTERED {{{*/
-    let message = { csp_filter_effect : csp_filter_effect  /* THIS SHOULD BE THE SINGLE POINT OF ASSIGNMENT */
+    let message = { csp_filter_effect /* THIS SHOULD BE THE SINGLE POINT OF ASSIGNMENT */
         ,                         url : details.url
         ,                      status : "FILTER APPLIED: "+csp_filter_applied
     };
@@ -903,7 +924,7 @@ if(log_this) log(SAR+" %c STORING URL CSP FILTER %c "+csp_filter+" ", lbb+lbL+lf
 if( log_more) log("%c"+caller+": ...return { responseHeaders : headers }:", lbb+lbH+lf6);
 if( log_this) console.table(headers);
 
-    return { responseHeaders : headers };
+    return { responseHeaders : headers }; /* XXX .. this is the expected return value */
 } finally {
     if(log_this) log_sep_bot(caller, log_tag);
 }
@@ -934,8 +955,8 @@ if(log_more) {
     for(let j=0; j < values.length; ++j)
     {
         let v = values[j].trim();
-        if(v.indexOf(" ") < 0) log("%c"+v                  , lbH+lf9         )
-        else                   log("%c"+v.replace(" ","%c"), lbL+lf8, lbR+lf3)
+        if(v.indexOf(" ") < 0) log("%c"+v                  , lbH+lf9         );
+        else                   log("%c"+v.replace(" ","%c"), lbL+lf8, lbR+lf3);
     }
 }
 /*}}}*/
@@ -990,15 +1011,15 @@ let caller   = "b_onMessage_CB";
 let log_this = LOG_MAP.B_LOG1_MESSAGE;
 if( typeof message.set_log_map != "undefined") log_this = false;
 
-if( log_this ) log_console_clear(caller);
-if( l_paused ) { log("%c"+SYMBOL_CONSTRUCTION+"%c PAUSED in "+caller, lbb+lbH+lf1); return; }
+if( log_this && !LOG_MAP.B_LOG3_PRESERVE) log_console_clear(caller);
+if( l_paused ) { log("%c"+SYMBOL_CONSTRUCTION+"%c PAUSED in "+caller, lbb+lbH+lf1); return false; }
 /*}}}*/
     let log_tag  = "LOG8_TAG";
 try { if(log_this) log_sep_top(caller, log_tag);
 if( log_this) log_members("b_onMessage_CB: message", message, lbF+lbH+lf1);
 
     // LOG8_TAG .. [returns response_async]
-    /* option_CB {{{*/
+    /*  option_CB {{{*/
     let option_CB
         =          message.caller.startsWith("options_js")
         && (typeof message.caller          != "undefined")
@@ -1037,6 +1058,8 @@ if( log_this) log_members("b_onMessage_CB: message", message, lbF+lbH+lf1);
         log_tag = b_onMessage_CB_tab( message );
 
     /*}}}*/
+
+    return false;
 
 } finally { if(log_this) log_sep_bot(caller, log_tag); }
 };
@@ -1162,7 +1185,7 @@ if( log_this) log("%c 1/3 NO LAST ACTIVATED TAB", lbH+lf2);
         {
             let message_reply =
                 {              tab_url : url
-                    ,            tabId : tabId /* to be specified by following popup_js message */
+                    ,            tabId   /* to be specified by following popup_js message */
                     ,     b_tabx_start : b_tabs_get_tabId_key(tabId, "start")
                     ,           caller : message.caller || B_SCRIPT_ID
                 };
@@ -1277,7 +1300,7 @@ if(log_more) log("csp_filter_changed=["+csp_filter_changed+"] ["+ message.csp_fi
         let        start  = b_tabs_get_tabId_key(message.tabId, "start");
         if(message.start != start)
         {
-            start_changed = (message.start != start)
+            start_changed = (message.start != start);
 
         }
     }
@@ -1308,7 +1331,7 @@ if( log_this) log_members("b_tabs["+message.tabId+"]", b_tabs.get(message.tabId)
         b_tabs_set_tabId_key_message(message.tabId, "csp_filter", message);
         b_tabs_set_tabId_key_message(message.tabId, "cancelreq" , message);
 
-        b_STORAGE_SET_url_settings(message.tabId, caller)
+        b_STORAGE_SET_url_settings(message.tabId, caller);
         /*}}}*/
         /* [tabId SYNC ] {{{*/
         let what_changed
@@ -1445,8 +1468,11 @@ let b_onRemoved_addListener = function()
 /*_ b_onMessage_addListener {{{*/
 let b_onMessage_addListener = function()
 {
+/*{{{*/
+let log_this = b_is_logging();
+/*}}}*/
     /*....................SCRIPT_ID..NAMESPACE...................FUNCTIONALITY............PERMISSION.........*/
-    if( !log_permission(B_SCRIPT_ID, chrome.runtime, "Listening to Extension message", "runtime", b_is_logging()) )
+    if( !log_permission(B_SCRIPT_ID, chrome.runtime, "Listening to Extension message", "runtime", log_this) )
         return;
 
     chrome.runtime.onMessage.addListener( b_onMessage_CB );
@@ -1556,7 +1582,7 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
     if( cancelreq )
     {
         let is_page_url = (details.url == b_tabs_get_tabId_key(details.tabId, "url"));
-if(log_more) log("...is_page_url=["+is_page_url+"]")
+if(log_more) log("...is_page_url=["+is_page_url+"]");
 
         canceling
             =  !is_page_url
@@ -1576,12 +1602,6 @@ if(log_more) log("...is_page_url=["+is_page_url+"]")
 if( log_this) log("%c"+SYMBOL_GEAR+"%c "+canceling_label+" FOR %c"+ ellipsis(  details.url,64), lbF+lbH+lf2 , lbL+lfx, lbR+lfx);
 if( log_more) log_members("details"                                  ,details        , lbH+lf9);
 if( log_more) log_members("TAB #"+details.tabId, b_tabs.get(details.tabId) , lbH+lf8);
-//{{{
-//logXXX("canceling = true//FIXME")
-//canceling = true//FIXME
-//console.trace()
-//debugger
-//}}}
     return { cancel : (canceling ? true : false) };
 };
 /*}}}*/
@@ -1695,7 +1715,7 @@ if( log_more) log("%c "+onUpdated_label, lbF+lbH+lf2);
     if(tab.status == "loading")
     {
         if(url) {
-            let get_settings_called   = b_tabs_get_tabId_key(tab.id, "get_settings_called"  )
+            let get_settings_called   = b_tabs_get_tabId_key(tab.id, "get_settings_called"  );
             /* URL SETTINGS LOADING {{{*/
             if(!get_settings_called )
             {
@@ -1707,7 +1727,7 @@ if( log_more) log("%c "+onUpdated_label
             }
             /*}}}*/
             /* URL SETTINGS LOADED {{{*/
-            let get_settings_answered = b_tabs_get_tabId_key(tab.id, "get_settings_answered")
+            let get_settings_answered = b_tabs_get_tabId_key(tab.id, "get_settings_answered");
             if( get_settings_answered )
             {
                 onUpdated_label += " .. URL SETTINGS LOADED";
@@ -1827,7 +1847,7 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 if( log_this) log("%c"+SD2+"%c "+B_GET_ACTIVE_TAB_URL+"%c"+ label+" %c CALLED BY %c "+_caller, lbB+lf2, lbL+lf2, lbR+lf2, lbL+lf2, lbR+lf2);
 //( log_more) log("%c"+caller, lbb+lbH+lf2);
     /* assert access to chrome.tabs interface {{{*/
-    if(!chrome.tabs) { confirm("javascript/popup.js: (!chrome.tabs)"); return; }
+    if(!chrome.tabs) { confirm("javascript/popup.js: (!chrome.tabs)"); return; } /* eslint-disable-line no-alert */
 
     /*}}}*/
     /* [onMessage_caller] {{{*/
@@ -1908,7 +1928,7 @@ if( log_more) log_members("active_tab", active_tab, lbH+lf3);
     {
         let message =
             {     tab_url : url
-                ,   tabId : tabId
+                ,   tabId
                 ,  caller : B_SCRIPT_ID+" "+caller
             };
 if( log_this) log("%c Sending IPC reply message to caller process: %c"+log_json(message), lbR+lf3, lb0);
@@ -1976,7 +1996,7 @@ if( log_this) log_members(url_tab.from, url_tab, lbH+lf4);
     /*}}}*/
     /* SETTINGS5_GET_URL_SETTINGS_CB {{{*/
     let storage_url_key = b_STORAGE_GET_url_key(url);
-if(log_more) log("...storage_url_key=["+storage_url_key+"]")
+if(log_more) log("...storage_url_key=["+storage_url_key+"]");
 
     chrome.storage.sync.get(
         storage_url_key
@@ -1997,7 +2017,7 @@ if(log_more) log("...storage_url_key=["+storage_url_key+"]")
 if( log_this) log("%c"+SD4    +"%c "+B_GET_URL_SETTINGS+" %c ASYNC "+B_GET_URL_SETTINGS+" ... %c"+SD5
     ,              lbB+lf4     ,lbF+lbL+lf4              ,lbF+lbR+lf5                        ,lbB+lf5);
     return false;
-}
+};
 /*}}}*/
 /*_ SETTINGS5_GET_URL_SETTINGS_CB {{{*/
 const       B_GET_URL_SETTINGS_CB = "GET URL SETTINGS CB";
@@ -2047,7 +2067,7 @@ if(log_more) log("....cancelreq_changed=["+ cancelreq_changed  +"] ["+ items.can
         {
 if( log_this) log_members("TAB #"+tabId, b_tabs.get(tabId), lbH+lf8);
 
-            items["status"] = b_tabs_get_tabId_key(tabId, "status") || B_GET_URL_SETTINGS_CB;
+            items.status = b_tabs_get_tabId_key(tabId, "status") || B_GET_URL_SETTINGS_CB;
 
             b_tabs_sync(tabId, items, "onURLSettings");
         }
@@ -2332,9 +2352,9 @@ let b_tools1_req_start = function(tabId)
     if(start != "ON") { yes = false;     why_not += ". start=["            + start +"]\n"; }
     if( !t_on_idle  ) { yes = false;     why_not += ". !t_on_idle [t_load="+t_load +"]\n"; }
 
-    return { yes      : yes
-        ,    why      : why
-        ,    why_not  : why_not
+    return { yes
+        ,    why
+        ,    why_not
     };
 };
 /*}}}*/
@@ -2363,9 +2383,9 @@ let b_tools0_req_stop = function(tabId)
     if(!t_out_of_sync             ) { yes = false;     why_not += ". !t_out_of_sync [t_load="+t_load+"]\n"; }
   //if( b_TOOLS_QUERY_called_once ) { yes = false;     why_not += ". TOOLS QUERY ALREADY CALLED ONCE\n";    }
 
-    return { yes      : yes
-        ,    why      : why
-        ,    why_not  : why_not
+    return { yes
+        ,    why
+        ,    why_not
     };
 };
 /*}}}*/
@@ -2392,9 +2412,9 @@ let b_tools2_req_query = function(tabId, tools1_req_start)
     if( b_TOOLS_QUERY_called_once) { yes = false;     why_not += ". TOOLS QUERY ALREADY CALLED ONCE\n"; }
     if(         lastError_message) { yes = false;     why_not +=  lastError_message;                    }
 
-    return { yes      : yes
-        ,    why      : why
-        ,    why_not  : why_not
+    return { yes
+        ,    why
+        ,    why_not
     };
 
 };
@@ -2428,9 +2448,9 @@ let b_tools3_req_reply = function(tabId)
     if(!t_out_of_sync              ) { yes = false;     why_not += ". !t_out_of_sync [t_load="+t_load+"]\n"; }
     if(!tools_GET_REPLY_called_once) { yes = false;     why_not += ". !tools_GET_REPLY_called_once\n";       }
 
-    return { yes      : yes
-        ,    why      : why
-        ,    why_not  : why_not
+    return { yes
+        ,    why
+        ,    why_not
     };
 
 };
@@ -2510,9 +2530,9 @@ let b_page4_req_reload = function(tabId, tools3_req_reply)
 //  if( tools3_req_reply.yes                     ) { yes = false;     why_not +=  tools3_req_reply.why;               }
     if( reloaded_once                            ) { yes = false;     why_not += ". reloaded_once\n";                 }
 
-    return { yes      : yes
-        ,    why      : why
-        ,    why_not  : why_not
+    return { yes
+        ,    why
+        ,    why_not
     };
 
 };
@@ -2536,9 +2556,9 @@ let b_page5_req_filter_missing = function(tabId)
     if(    t_load != TOOLS3_NEED_RELAXED_CSP) { yes = false;     why_not += ". t_load=["    + t_load     +"]\n"; }
     if(csp_filter != ""                     ) { yes = false;     why_not += ". csp_filter=["+ csp_filter +"]\n"; }
 
-    return { yes      : yes
-        ,    why      : why
-        ,    why_not  : why_not
+    return { yes
+        ,    why
+        ,    why_not
     };
 
 };
@@ -2579,9 +2599,9 @@ let b_page6_req_filter_apply = function(tabId)
     if( t_not_locked  ) { yes = false;     why_not += ". t_not_locked [t_load="+ t_load            +"]\n"; }
     if( reloaded_once ) { yes = false;     why_not += ". ALREADY RELOADED ONCE\n";                         }
 
-    return { yes      : yes
-        ,    why      : why
-        ,    why_not  : why_not
+    return { yes
+        ,    why
+        ,    why_not
     };
 
 };
@@ -2706,7 +2726,7 @@ if( log_this) log("%c PENDING POLL CANCELED", lbb+lbH+lf4);
     b_page2_TOOLS_GET_REPLY(tabId, caller);
 
     /*}}}*/
-}
+};
 /*----------------------------------------------------------------------------*/
 /*}}}*/
 /** SETTINGS */                                         // B_LOG1_MESSAGE
@@ -2723,11 +2743,11 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
     let csp_filter        = b_tabs_get_tabId_key(tabId, "csp_filter"       );
 //  let csp_filter_effect = b_tabs_get_tabId_key(tabId, "csp_filter_effect");
 
-    let b_page2_TOOLS_START_sequence_number = parseInt(new Date().getTime() / 1000) % 86400; // seconds per day
-    let                     message={ sequence_number         : b_page2_TOOLS_START_sequence_number };
-    if( start             ) message [   "start"             ] = start;
-    if( csp_filter        ) message [   "csp_filter"        ] = csp_filter;
-//  if( csp_filter_effect ) message [   "csp_filter_effect" ] = csp_filter_effect;
+    b_page2_TOOLS_START_sequence_number = parseInt(new Date().getTime() / 1000) % 86400; // seconds per day
+    let                     message={ sequence_number   : b_page2_TOOLS_START_sequence_number };
+    if( start             ) message  .start             = start;
+    if( csp_filter        ) message  .csp_filter        = csp_filter;
+//  if( csp_filter_effect ) message  .csp_filter_effect = csp_filter_effect;
 
     let message_json = JSON.stringify( message );
     let script = "document.body.setAttribute('"+B_SCRIPT_ID+"', '"+message_json+"');";
@@ -2751,7 +2771,7 @@ let log_this = LOG_MAP.B_LOG1_MESSAGE;
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
     b_page2_TOOLS_GET_REPLY_callers_add(_caller);
-if( log_this) b_page2_TOOLS_GET_REPLY_calls_log()
+if( log_this) b_page2_TOOLS_GET_REPLY_calls_log();
 
     let check_more = B_TABS_TOOLS_CHECK_COUNT_MAX - b_page3_TOOLS_GET_REPLY_POLL_get_check_count(tabId);
     /*}}}*/
@@ -2814,7 +2834,7 @@ let b_page2_TOOLS_GET_REPLY_callers_add = function(_caller)
 {
     if(!_caller) {
         logXXX("!_caller");
-        console.trace()
+        console.trace();
     }
     if(!b_page2_TOOLS_GET_REPLY_callers.includes(_caller) )
         b_page2_TOOLS_GET_REPLY_callers += " ["+ _caller+"]";
@@ -2875,7 +2895,7 @@ if( log_this) log("%c"+SYMBOL_GEAR+"%c "+B_TOOLS_MESSAGE_CALLBACK+" %c GET REPLY
         :         array_of_any[0]              ?            array_of_any[0]
         :                                        { t_load : TOOLS0_CHECKING }
     ;
-    message["stage"] = (check_count < 1) ? "HANGING REPLY" : "POLL #"+check_count;
+    message.stage = (check_count < 1) ? "HANGING REPLY" : "POLL #"+check_count;
 
     /*}}}*/
 if( log_this) log("%c"+SYMBOL_GEAR+"%c "+B_TOOLS_MESSAGE_CALLBACK+" %c"+ log_json(message), lbB+lf4, lbH+lf4, lbH+lf4);
@@ -2942,12 +2962,12 @@ if( log_more) log_object("t3_script", t3_script, lbR+lf4);
 
 if( log_more) {
         let details
-        = (    0 == b1_sequence_number) ? (" "+B_SCRIPT_ID+" request removed") // request removed (through a reload)
-        : (delay ==-b1_sequence_number) ? (""                                ) // no reply yet
-        : (delay >  0)                  ? (" .. "+ delay+"s later"           ) // yes!
-        : (delay <  0)                  ? (" .. "+-delay+"s old answer"      ) //  no!
-        : (delay == 0)                  ? (" .. same timestamp"              ) // maybe
-        :                                 (""                                ) // cannot happen
+        = (    0 == b1_sequence_number) ? (" "+B_SCRIPT_ID+" request removed") /* request removed (through a reload) */ /* eslint-disable-line yoda */
+        : (delay ==-b1_sequence_number) ? (""                                ) /* no reply yet                       */
+        : (delay >  0)                  ? (" .. "+ delay+"s later"           ) /* yes!                               */
+        : (delay <  0)                  ? (" .. "+-delay+"s old answer"      ) /*  no!                               */
+        : (delay == 0)                  ? (" .. same timestamp"              ) /* maybe                              */
+        :                                 (""                                ) /* cannot happen                      */
     ;
     log("%c"
         + "SEQUENCE MATCH      ["+ message.sequence_match+"]"+ details+ "\n"
@@ -3059,7 +3079,7 @@ if( log_more) b_page3_TOOLS_GET_REPLY_POLL_log(tabId);
     {
         if(b_page2_TOOLS_GET_REPLY_timeout) clearTimeout(b_page2_TOOLS_GET_REPLY_timeout);
         b_page2_TOOLS_GET_REPLY_timeout
-            = setTimeout(function() { b_page2_TOOLS_GET_REPLY(tabId, caller) }
+            = setTimeout(function() { b_page2_TOOLS_GET_REPLY(tabId, caller); }
             ,                         B_TOOLS_GET_REPLY_DELAY);
 
         return;
@@ -3198,7 +3218,7 @@ if(LOG_MAP.LOG2_ERROR) log("%c"+_caller+"(TAB#"+tabId+"): ABORTING ON ERROR:\n"+
         let message
             = {   status            : "ERROR"
                 , caller            : _caller
-                , lastError_message : lastError_message
+                , lastError_message
             };
         b_tabs_sync(tabId , message, lastError_message);
     }
@@ -3233,7 +3253,6 @@ let b_STORAGE_CLEAR_STORED_FILTER_CACHE = function()
 /*{{{*/
 let   caller = "b_STORAGE_CLEAR_STORED_FILTER_CACHE";
 let log_this = LOG_MAP.B_LOG4_PARSE || LOG_MAP.B_LOG8_STORE;
-//  log_this=true//FIXME
 /*}}}*/
     let cache_length = Object.keys(csp_SELECT_STORED_FILTER_CACHE).length;
 if( log_this) log_members(caller+": csp_SELECT_STORED_FILTER_CACHE(x"+cache_length+")", csp_SELECT_STORED_FILTER_CACHE, lb7);
@@ -3256,7 +3275,6 @@ let b_STORAGE_SELECT_csp_filter = function(csp_filter)
 /*{{{*/
 let   caller = "b_STORAGE_SELECT_csp_filter("+csp_filter+")";
 let log_this = LOG_MAP.B_LOG4_PARSE || LOG_MAP.B_LOG8_STORE;
-//  log_this=true//FIXME
 /*}}}*/
     let cache_length = Object.keys(csp_SELECT_STORED_FILTER_CACHE).length;
 if( log_this) log_members(caller+": csp_SELECT_STORED_FILTER_CACHE(x"+cache_length+")", csp_SELECT_STORED_FILTER_CACHE, lb7);
@@ -3283,8 +3301,8 @@ let b_STORAGE_LOAD_csp_filter = function(csp_filter, response_handler=null)
 {
 let log_this = LOG_MAP.B_LOG4_PARSE || LOG_MAP.B_LOG8_STORE;
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
-if( log_this) log("b_STORAGE_LOAD_csp_filter");
-//if( log_more && response_handler) console.dir(response_handler);
+if( log_this) log("b_STORAGE_LOAD_csp_filter(response_handler=["+typeof response_handler+"])");
+if( log_more && response_handler) console.dir(response_handler);
 
     CSP_Rules_key = csp_filter;
 
@@ -3307,7 +3325,7 @@ if( log_this) log("b_STORAGE_LOAD_csp_filter");
 let b_STORAGE_LOAD_csp_filter_get = function(csp_filter, items, response_handler)
 {
     /*{{{*/
-    let caller = "b_STORAGE_LOAD_csp_filter_get("+csp_filter+")";
+let caller = "b_STORAGE_LOAD_csp_filter_get("+csp_filter+". items, response_handler=["+typeof response_handler+"])";
 let log_this = LOG_MAP.B_LOG4_PARSE || LOG_MAP.B_LOG8_STORE;
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 //( log_this) log("%c"+caller+": %c"+csp_filter+" ", lbL+lf8, lbR+lf9);
@@ -3322,11 +3340,11 @@ if( log_more) log_object("items", items, lb8);
     let cache_length = Object.keys(csp_SELECT_STORED_FILTER_CACHE).length;
 if( log_this) log_members(caller+": csp_SELECT_STORED_FILTER_CACHE(x"+cache_length+")", csp_SELECT_STORED_FILTER_CACHE, lb7);
 
-if(log_this && (CSP_Rules != null)) log("%c CSP_Rules.length=["+CSP_Rules.length+"]", lb8);
+if( log_this && (CSP_Rules != null)) log("%c CSP_Rules.length=["+CSP_Rules.length+"]", lb8);
 
     if(response_handler)
     {
-if(log_this) log("%c"+caller+": %c ...calling response_handler:"
+if( log_this) log("%c"+caller+": %c ...calling response_handler(items["+csp_filter+"].length=["+items[csp_filter].length+"]):"
     ,             lbF+lbL+lf8  ,lbF+lbR+lf8);
 
         if(items[csp_filter]) response_handler(            items[csp_filter]);
@@ -3334,11 +3352,12 @@ if(log_this) log("%c"+caller+": %c ...calling response_handler:"
     }
     else
     {
-if(log_this) log("%c"+caller+": %c *** NO response_handler TO CALL ***"
-    ,            lbF+lbL+lf8   ,lbF+lbR+lf8);
+if( log_this) log("%c"+caller+": %c *** NO response_handler TO CALL ***"
+    ,              lbF+lbL+lf8   ,lbF+lbR+lf8);
 
     }
 
+if( log_this) console.trace();
 if( log_this) log_sep_bot(caller, "LOG8_TAG");
 };
 /*}}}*/
@@ -3421,7 +3440,7 @@ let b_STORAGE_LOAD_LOG_MAP_CB = function(items={})
 
     let some_log = b_is_logging();
     if( some_log ) {
-        log("%c"+SCRIPT_TAG, lbH+lbb+lf3);
+        log("%c"+B_SCRIPT_TAG, lbH+lbb+lf3);
 
         LOG_MAP.B_LOG2_ERROR = true;
 
@@ -3444,9 +3463,9 @@ let b_STORAGE_LOAD_LOG_MAP_CB = function(items={})
     if(some_log) console.groupEnd();
     /*}}}*/
 };
+/*}}}*/
 /* INITIAL LOAD-TIME CALL */
 chrome.storage.sync.get(LOG_MAP, b_STORAGE_LOAD_LOG_MAP_CB);
-/*}}}*/
 /*}}}*/
 /* STORAGE URL */                                       // B_LOG8_STORE
 /* URL {{{*/
@@ -3526,7 +3545,7 @@ if( log_this) log_SYN("%c REMOVING UNNECESSARY CSP FILTER", lb8);
     b_tabs_del_tabId_key(tabId, "csp_filter"        );
     b_tabs_del_tabId_key(tabId, "csp_filter_effect" );
 
-    b_STORAGE_SET_url_settings(tabId, caller)
+    b_STORAGE_SET_url_settings(tabId, caller);
 
 if( log_this) log_sep_bot(caller+" .. "+_caller, "LOG2_TAG");
 };
@@ -3570,8 +3589,8 @@ let get_url_domain = function(url)
 
     let domain
         = (url.indexOf("://" ) > 0)
-        ?  url.split  (  '/' )[2]
-        :  url.split  (  '/' )[0]
+        ?  url.split  (  "/" )[2]
+        :  url.split  (  "/" )[0]
     ;
 
     return  domain.replace(regex_DOMAIN, "$1") || parseURL(url).scheme+"://";
@@ -3583,8 +3602,8 @@ const regexp_URL = new RegExp("^([^:]+):\\/\\/(?:([^@]+)@)?([^\\/:]*)?(?::([\\d]
 /*..............................1111111.........22222222...3333333333.....44444444.....5555555555....6666...........*/
 let parseURL = function(url)
 {
-    var result = {};
-    var match  = url.match(regexp_URL);
+    let result = {};
+    let match  = url.match(regexp_URL);
     if( match ) {
         result.scheme   = match[1].toLowerCase();
         result.userinfo = match[2];
@@ -3607,16 +3626,16 @@ let b_storage_sync_set_LOG_MAP = function()
 {
     log("%c SAVING [LOG_MAP]", lb4);
     let log_map_items
-        = {     B_LOG1_MESSAGE      : LOG_MAP[ "B_LOG1_MESSAGE"   ]
-            ,   B_LOG2_ERROR        : LOG_MAP[ "B_LOG2_ERROR"     ]
-            ,   B_LOG3_PRESERVE     : LOG_MAP[ "B_LOG3_PRESERVE"  ]
-            ,   B_LOG4_PARSE        : LOG_MAP[ "B_LOG4_PARSE"     ]
-            ,   B_LOG5_ONREQUEST    : LOG_MAP[ "B_LOG5_ONREQUEST" ]
-            ,   B_LOG6_ONHEADER     : LOG_MAP[ "B_LOG6_ONHEADER"  ]
-            ,   B_LOG7_TABS         : LOG_MAP[ "B_LOG7_TABS"      ]
-            ,   B_LOG8_STORE        : LOG_MAP[ "B_LOG8_STORE"     ]
-            ,   B_LOG9_STAGE        : LOG_MAP[ "B_LOG9_STAGE"     ]
-            ,   B_LOG0_MORE         : LOG_MAP[ "B_LOG0_MORE"      ]
+        = {     B_LOG1_MESSAGE      : LOG_MAP.B_LOG1_MESSAGE
+            ,   B_LOG2_ERROR        : LOG_MAP.B_LOG2_ERROR
+            ,   B_LOG3_PRESERVE     : LOG_MAP.B_LOG3_PRESERVE
+            ,   B_LOG4_PARSE        : LOG_MAP.B_LOG4_PARSE
+            ,   B_LOG5_ONREQUEST    : LOG_MAP.B_LOG5_ONREQUEST
+            ,   B_LOG6_ONHEADER     : LOG_MAP.B_LOG6_ONHEADER
+            ,   B_LOG7_TABS         : LOG_MAP.B_LOG7_TABS
+            ,   B_LOG8_STORE        : LOG_MAP.B_LOG8_STORE
+            ,   B_LOG9_STAGE        : LOG_MAP.B_LOG9_STAGE
+            ,   B_LOG0_MORE         : LOG_MAP.B_LOG0_MORE
         };
     chrome.storage.sync.set( log_map_items );
 
@@ -3838,18 +3857,18 @@ if(log_this || LOG_MAP.B_LOG2_ERROR) log("%c *** last_parse_error=[%c "+last_par
     rules.forEach(
         function(rule) {
             if(                  rule.length !== 2       ) { last_parse_error = "rule.length       !== 2"       ; return null; }
-            if(typeof            rule[0]     !== 'string') { last_parse_error = "typeof rule[0]    !== 'string'"; return null; }
+            if(typeof            rule[0]     !== "string") { last_parse_error = "typeof rule[0]    !== 'string'"; return null; }
             if( !Array.isArray(  rule[1])                ) { last_parse_error = "!Array.isArray(rule[1])";        return null; }
 
             rule[1].forEach(
                 function(subrule) {
                     if(       subrule.length !== 2       ) { last_parse_error = "subrule.length    !== 2";        return null; }
-                    if(typeof subrule[0]     !== 'string') { last_parse_error = "typeof subrule[0] !== 'string'"; return null; }
-                    if(typeof subrule[1]     !== 'string') { last_parse_error = "typeof subrule[1] !== 'string'"; return null; }
-
+                    if(typeof subrule[0]     !== "string") { last_parse_error = "typeof subrule[0] !== 'string'"; return null; }
+                    if(typeof subrule[1]     !== "string") { last_parse_error = "typeof subrule[1] !== 'string'"; return null; }
+                    return null;
                 });
 
-            if(last_parse_error) return null;
+            return null;
         });
     /*}}}*/
 
@@ -3912,7 +3931,7 @@ let caller   = "logn("+n+")";
                 , set_log_state : !LOG_MAP[log_tag]
                 , caller        : B_SCRIPT_ID
             };
-        b_onMessage_CB_set_log_map(message)
+        b_onMessage_CB_set_log_map( message );
 
         b_storage_sync_set_LOG_MAP();
     }
@@ -3933,7 +3952,7 @@ let caller   = "logn("+n+")";
 /*_ POPUP */                                            // B_LOG9_STAGE
 /*{{{*/
 const ICON_PATH_0_INITIAL       = "../images/rtabs16.png"    ;
-const ICON_PATH_1_BROWN         = "../images/rtabs16_1_b.png";//FIXME
+const ICON_PATH_1_BROWN         = "../images/rtabs16_1_b.png";
 const ICON_PATH_2_X             = "../images/rtabs16_2_r.png";
 const ICON_PATH_3_O             = "../images/rtabs16_3_o.png";
 const ICON_PATH_4_YELLOW        = "../images/rtabs16_4_y.png";
@@ -3957,8 +3976,8 @@ let b_sync_pageAction = function(tabId)
     /*{{{*/
 let caller   = "b_sync_pageAction";
 let log_this = LOG_MAP.B_LOG9_STAGE;
-let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
+let log_more = log_this && LOG_MAP.B_LOG0_MORE;
     /*}}}*/
     /* b_tabs[tabId] {{{*/
     let url               = b_tabs_get_tabId_key(tabId, "url"              );
@@ -3994,7 +4013,7 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
     let icon_path
         = (icon_color == lb7                         ) ? ICON_PATH_7_X       /* REQUESTS BLOCKED */
         : (t_load.startsWith(TOOLS3_NEED_RELAXED_CSP)) ? ICON_PATH_2_X       /* TOOLS LOCKED     */
-        : (start      != "ON"                        ) ? ICON_PATH_8_OFF     /* TOOLS OFF        */
+//      : (start      != "ON"                        ) ? ICON_PATH_8_OFF     /* TOOLS OFF        */
         : (icon_color == lb2                         ) ? ICON_PATH_2_X       /* TOOLS LOCKED     */
         : (icon_color == lb3                         ) ? ICON_PATH_3_O       /* filtered HARD    */
         : (icon_color == lb4                         ) ? ICON_PATH_4_YELLOW  /* filtered SOFT    */
@@ -4005,6 +4024,7 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
         :/*csp_filter == undefined                  */   ICON_PATH_0_INITIAL /* ...default       */
     ;
     /*}}}*/
+if( log_more) log_members("...icon_path", { t_load, csp_filter_effect, start, icon_color, icon_path }, lf4);
     /* POPUP UPDATE MESSAGE {{{*/
     let title = b_get_pageAction_title(tabId, status, url, start, csp_filter, cancelreq, t_load);
 
@@ -4012,8 +4032,8 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
     b_tabs_set_tabId_key_val(tabId,     "title", title    );
 
     try {
-        chrome.pageAction.setIcon ( { tabId:tabId ,  path:icon_path } );
-        chrome.pageAction.setTitle( { tabId:tabId , title:title     } );
+        chrome.pageAction.setIcon ( { tabId ,  path:icon_path } );
+        chrome.pageAction.setTitle( { tabId , title           } );
         chrome.pageAction.show    (   tabId );
     }
     catch(ex) {
@@ -4022,19 +4042,19 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
     }
 
     let message =
-        {     tabId            : tabId
+        {     tabId
             , tab_url          : url
-            , status           : status
+            , status
 
-            , start            : start
-            , has_CSP          : has_CSP
-            , csp_filter       : csp_filter
-            , cancelreq        : cancelreq
+            , start
+            , has_CSP
+            , csp_filter
+            , cancelreq
 
-            , t_load           : t_load
+            , t_load
 
-            , title            : title
-            , icon_path        : icon_path
+            , title
+            , icon_path
 
             , caller           : B_SCRIPT_ID+" "+caller
         };
@@ -4047,7 +4067,7 @@ if( log_more) log_members("popup_js message", message, lbH+lf9);
 //let icon_url =  chrome.runtime.getURL(icon_path);
 //let icon_url = "chrome-extension://dacmekaboflbchiediclenlddhhaghhj/../images/rtabs16_8_g.png"
   let icon_url = "https://lh5.googleusercontent.com/-PYloDT5xI-Q/ULIE0ajx7LI/AAAAAAAAA1Y/Oh528Yh63mE/s32/com.google.Chrome.png";
-logXXX("icon_url=["+icon_url+"]")//FIXME;
+logXXX("icon_url=["+icon_url+"]");
 let lbI  = "background: url('"+icon_url+"') no-repeat;";
 log("%c  ", lbI+lbb);
 }}}*/
@@ -4151,7 +4171,9 @@ let p = function()
     l_paused     = pausable.l_paused;               /* set l_paused to be the [pausable value] */
 
     log(sym +" .. l_paused=["+l_paused+"]");
-}
+};
 /*}}}*/
 /*}}}*/
+
+})();
 

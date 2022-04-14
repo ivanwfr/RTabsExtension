@@ -1,7 +1,8 @@
+/* eslint-disable strict */
 "use strict";
-let O_SCRIPT_ID = "options_js";     let SCRIPT_TAG = O_SCRIPT_ID +" (200927:20h:17)";
+let O_SCRIPT_ID = "options_js";     let SCRIPT_TAG = O_SCRIPT_ID +" (220414:17h:39)";
 /* NOTES: {{{*/
-/* 
+/*
  * BACKGROUND in responsible for user [EDITED CSP FILTERS STORAGE]
  * OPTIONS calls chrome.storage.sync.set only when storing [LOGING OPTIONS STORAGE]
  * POPUP in responsible for USER [SETTINGS STORAGE]
@@ -9,6 +10,8 @@ let O_SCRIPT_ID = "options_js";     let SCRIPT_TAG = O_SCRIPT_ID +" (200927:20h:
 /*}}}*/
 
 /* IMPORT log_js */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 /*_ {{{*/
 //let log_js = {};
 
@@ -99,6 +102,8 @@ let options_require_dom_log = function()
 };
 /*}}}*/
 options_require_dom_log();
+/* eslint-enaable no-unused-vars */
+/* eslint-enaable no-undef */
 
 /* LOG_MAP {{{*/
 /*_ O_LOG {{{*/
@@ -131,7 +136,7 @@ let log_LOG_MAP = function(collapsed=true)
     if( LOG_MAP.O_LOG0_MORE     ) { s += "%c O_LOG0_MORE "            ; args.push(lb0); }
 
     args[0] = s;
-    console.log.apply(console, Array.prototype.slice.call(args));
+    console.log.apply(console, Array.prototype.slice.call(args)); /* eslint-disable-line prefer-spread */
 
     log_members("LOG_MAP", LOG_MAP, lbH+lf8, collapsed);
 };
@@ -156,26 +161,28 @@ const STORAGE_CLEAR     = "STORAGE_CLEAR";
 /*_ o_UI_titles_to_tooltips {{{*/
 let o_UI_titles_to_tooltips = function(id)
 {
+let log_this = LOG_MAP.O_LOG6_UI;
     let input_list  = document.getElementsByTagName( "INPUT" );
-if(LOG_MAP.O_LOG6_UI) log("%c o_UI_titles_to_tooltips: %c input_list.length=["+ input_list.length+"]", lb6,lb0);
+if( log_this) log("%c o_UI_titles_to_tooltips: %c input_list.length=["+ input_list.length+"]", lb6,lb0);
 
     for(let i = 0; i < input_list.length; ++i)
     {
         let input =    input_list[i];
+        let title =    input.id;
+if( log_this) log((i+1)+" %c["+title+"]", lb6);
         try {
-            /* HTML {{{                                    
+            /* HTML {{{
              *
-             * <span  class="box_container">          
-             *  <div  class="box cb_filled_pin cb_6"> 
-             *   <input  id="start" type="checkbox"/> 
-             *   <label for="start" >S</label>        
-             *   <div class="label_after"></div>      
-             *  </div>                                
-             * </span>                                
+             * <span  class="box_container">
+             *  <div  class="box cb_filled_pin cb_6">
+             *   <input  id="start" type="checkbox"/>
+             *   <label for="start" >S</label>
+             *   <div class="label_after"></div>
+             *  </div>
+             * </span>
              *
              *}}}*/
             /* TITLE FROM INPUT ID {{{*/
-            let    title =           input.id;
             if(    title.startsWith( "CSP_"    )
                ||  title.includes  ( "_LOG"    ) /* i.e. O_LOG4_SET */
                ||  title.startsWith( "STORAGE" )
@@ -184,8 +191,6 @@ if(LOG_MAP.O_LOG6_UI) log("%c o_UI_titles_to_tooltips: %c input_list.length=["+ 
                 if(idx > 0)
                     title = title.substring(idx+1);
             }
-
-if(LOG_MAP.O_LOG6_UI) log((i+1)+" %c["+title+"]", lb6);
             /*}}}*/
             /* LABEL HTML {{{*/
             let label             = input.nextElementSibling;
@@ -199,11 +204,11 @@ if(LOG_MAP.O_LOG6_UI) log((i+1)+" %c["+title+"]", lb6);
             {
                 caption.innerHTML = o_get_badge_for_title(title);
 
-if(LOG_MAP.O_LOG6_UI) log("...caption.innerHTML=["+caption.innerHTML+"]");
+if( log_this) log("...caption.innerHTML=["+caption.innerHTML+"]");
             }
             /*}}}*/
         }
-        catch(ex) { console.warn("*** o_UI_titles_to_tooltips: "+ ex); }
+        catch(ex) { console.warn("*** o_UI_titles_to_tooltips(input.id=["+input.id+"]): "+ ex); }
     }
 
 };
@@ -214,7 +219,7 @@ let o_get_badge_for_title = function(title)
     switch(title) {
         case "PARSE"    : return "logs CSP and MESSAGES parsing";
         case "ERROR"    : return "logs script error (!silent)";
-        case "STORE"    : return "logs storage set and storage get";
+        case "STORE"    : return "logs popup storage";
         case "PRESERVE" : return "do not clear console between requests";
         case "ONHEADER" : return "logs onBeforeRequest header filtering";
         case "HEADER"   : return "logs header filtering";
@@ -222,7 +227,6 @@ let o_get_badge_for_title = function(title)
         case "EVENTS"   : return "logs event listeners";
         case "STAGE"    : return "logs runtime major steps";
         case "MORE"     : return "logs more processing details";
-        case "ERROR"    : return "logs script errors (!silent)";
 
         case "GET"      : return "logs storage GET";
         /* O_LOG3_GET
@@ -230,7 +234,7 @@ let o_get_badge_for_title = function(title)
          */
 
         case "SET"      :
-        /* O_LOG4_SET 
+        /* O_LOG4_SET
          * o_on_set_csp_filter_response_handler
          */
         return "logs storage SET";
@@ -255,13 +259,7 @@ let o_get_badge_for_title = function(title)
          */
         return "logs UI callbacks";
 
-        case "STORE"    : return "logs popup storage";
-        case "ERROR"    : return "logs script errors (!silent)";
-        case "TABS"     : return "logs tabs activation and updates";
-        case "EVENTS"   : return "logs event listeners";
-        case "UI"       : return "logs UI callbacks";
-
-        default         : return '<h2>TODO</h2>Fetch and return a captionfor "'+ title +'"';
+        default         : return '<h2>TODO</h2>Fetch and return a captionfor "'+ title +'"'; /* eslint-disable-line quotes */
     }
 
 };
@@ -276,8 +274,9 @@ let o_set_statusline_text = function(text)
 /*_ o_show_FAILURE {{{*/
 let o_show_FAILURE = function(response)
 {
-if(LOG_MAP.O_LOG2_ERROR) log("%c o_show_FAILURE"     , lb2);
-if(LOG_MAP.O_LOG2_ERROR) log("...response=%c["+response+"]", lb2);
+let log_this = LOG_MAP.O_LOG2_ERROR;
+if( log_this) log("%c o_show_FAILURE"           , lb2);
+if( log_this) log("...response=%c["+response+"]", lb2);
 
     let textarea = document.getElementById(FILTER_TEXTAREA);
     textarea.style.backgroundColor = FAILURE_BG_COLOR;
@@ -288,8 +287,9 @@ if(LOG_MAP.O_LOG2_ERROR) log("...response=%c["+response+"]", lb2);
 /*_ o_show_SUCCESS {{{*/
 let o_show_SUCCESS = function(response)
 {
-if(LOG_MAP.O_LOG5_SUCCESS) log("%c o_show_SUCCESS"     , lb5);
-if(LOG_MAP.O_LOG5_SUCCESS) log("...response=%c["+response+"]", lb5);
+let log_this = LOG_MAP.O_LOG5_SUCCESS;
+if( log_this) log("%c o_show_SUCCESS"           , lb5);
+if( log_this) log("...response=%c["+response+"]", lb5);
 
     let textarea = document.getElementById(FILTER_TEXTAREA);
     textarea.style.backgroundColor =        "";
@@ -309,7 +309,7 @@ if(LOG_MAP.O_LOG5_SUCCESS) log("...response=%c["+response+"]", lb5);
 
     textarea.style.backgroundColor = bg_color;
     textarea.style.          color = fg_color;
-    textarea.title = "";
+    textarea.                title = "";
 };
 /*}}}*/
 
@@ -319,7 +319,6 @@ let o_UI_CB = function(e, button_id="input")
 {
 let log_this = LOG_MAP.O_LOG6_UI;
 if( log_this) log_console_clear("o_UI_CB");
-if( log_this) log("%c o_UI_CB%c("+button_id+")", lb6,lb0);
     /* clicked UI element {{{*/
     let csp_filter    = null;
     let log_panel     = null;
@@ -349,10 +348,7 @@ if( log_this) log("%c o_UI_CB%c("+button_id+")", lb6,lb0);
         break;
 
     }
-if( log_this) log("csp_filter.....=["+ csp_filter   +"]");
-if( log_this) log("log_panel......=["+ log_panel    +"]");
-if( log_this) log("log_map_div....=["+ log_map_div  +"]");
-if( log_this) log("clear_button...=["+ clear_button +"]");
+if( log_this) log_key_val_group("o_UI_CB("+button_id+")", { csp_filter , log_panel , log_map_div , clear_button }, lb6);
 
     /*}}}*/
     /* FILTER PANEL {{{*/
@@ -414,7 +410,6 @@ if( log_this) log("...el=%c["+el.id+"]", lb4);
             case "O_LOG5_SUCCESS"        : o_sync_get_LOG_MAP_CB( { O_LOG5_SUCCESS:el.checked }); break;
             case "O_LOG6_UI"             : o_sync_get_LOG_MAP_CB( { O_LOG6_UI     :el.checked }); break;
             case "O_LOG0_MORE"           : o_sync_get_LOG_MAP_CB( { O_LOG0_MORE   :el.checked }); break;
-            break;
 
             /*}}}*/
             /* popup_js {{{*/
@@ -501,26 +496,27 @@ if(LOG_MAP.O_LOG6_UI) log("%c o_send_LOG_MAP_toggle_message%c("+el_id+" , "+el_c
         case "O_LOG4_SET"       : LOG_MAP.O_LOG4_SET     = el_checked; break;
         case "O_LOG5_SUCCESS"   : LOG_MAP.O_LOG5_SUCCESS = el_checked; break;
         case "O_LOG6_UI"        : LOG_MAP.O_LOG6_UI      = el_checked; break;
-
-        default:
-        let message
-            = {   set_log_map   : el_id
-                , set_log_state : el_checked
-                , caller        : O_SCRIPT_ID
-            };
+        default: {
+            let message
+                = {   set_log_map   : el_id
+                    , set_log_state : el_checked
+                    , caller        : O_SCRIPT_ID
+                };
 if(LOG_MAP.O_LOG6_UI) log_object("message", message, lb1);
-        try {
-            chrome.runtime.sendMessage( message );
+            try {
+                chrome.runtime.sendMessage( message );
+            }
+            catch(ex) { alert(O_SCRIPT_ID+" ERROR:\n"+ ex); } /* eslint-disable-line no-alert */
         }
-        catch(ex) { alert(O_SCRIPT_ID+" ERROR:\n"+ ex); }
     }
 };
 /*}}}*/
 /*_ o_sync_csp_filter_checked_state {{{*/
 let o_sync_csp_filter_checked_state = function(checked_id)
 {
-if(LOG_MAP.O_LOG6_UI) log_console_clear("o_sync_csp_filter_checked_state");
-if(LOG_MAP.O_LOG6_UI) log("%c o_sync_csp_filter_checked_state%c("+checked_id+")", lbR,lb0);
+let log_this = LOG_MAP.O_LOG6_UI;
+if( log_this) log_console_clear("o_sync_csp_filter_checked_state");
+if( log_this) log("%c o_sync_csp_filter_checked_state%c("+checked_id+")", lbR,lb0);
 
     /* RADIO BHEVIOR */
     let id;
@@ -539,14 +535,15 @@ if(LOG_MAP.O_LOG6_UI) log("%c o_sync_csp_filter_checked_state%c("+checked_id+")"
 let o_on_set_csp_filter;
 let o_on_set_csp_filter_CB = function(csp_filter,caller)
 {
-if(LOG_MAP.O_LOG6_UI) log("%c o_on_set_csp_filter_CB%c("+csp_filter+", caller=["+caller+"])", lb6,lb0);
+let log_this = LOG_MAP.O_LOG6_UI;
+if( log_this) log("%c o_on_set_csp_filter_CB%c("+csp_filter+", caller=["+caller+"])", lb6,lb0);
 
     o_ui_show_panel(FILTER_TEXTAREA);
 
     let textarea = document.getElementById( FILTER_TEXTAREA );
 
     if(csp_filter == "input") {
-        chrome.runtime.sendMessage({ csp_filter:csp_filter , csp_json:textarea.value , caller:O_SCRIPT_ID }, o_on_set_csp_filter_response_handler);
+        chrome.runtime.sendMessage({ csp_filter , csp_json:textarea.value , caller:O_SCRIPT_ID }, o_on_set_csp_filter_response_handler);
     }
     else {
         /* SELECT CURRENT FILTER */
@@ -559,9 +556,8 @@ if(LOG_MAP.O_LOG6_UI) log("%c o_on_set_csp_filter_CB%c("+csp_filter+", caller=["
         o_storage_sync_set("called by o_on_set_csp_filter_CB to save [csp_filter]");
 
         /* IPC SYNC */
-        chrome.runtime.sendMessage({ csp_filter:csp_filter , csp_json:""             , caller:O_SCRIPT_ID }, o_on_get_csp_filter_response_handler);
+        chrome.runtime.sendMessage({ csp_filter , csp_json:""             , caller:O_SCRIPT_ID }, o_on_get_csp_filter_response_handler);
     }
-
 
 };
 /*}}}*/
@@ -601,13 +597,14 @@ if(LOG_MAP.O_LOG4_SET) log("...response=[%c"+response+"]", lb4);
         o_set_statusline_text("");
         break;
 
-        default       :
+        default       : {
         let textarea   = document.getElementById( FILTER_TEXTAREA );
         textarea.value = response;
         textarea.title = "";
 
         o_show_SUCCESS( success_failure_or_value );
         o_set_statusline_text("");
+        }
         break;
     }
 };
@@ -615,7 +612,8 @@ if(LOG_MAP.O_LOG4_SET) log("...response=[%c"+response+"]", lb4);
 /*_ o_on_get_csp_filter_response_handler {{{*/
 let o_on_get_csp_filter_response_handler = function(response="NO RESPONSE")
 {
-if(LOG_MAP.O_LOG3_GET) log("%c o_on_get_csp_filter_response_handler", lb3);
+let log_this = LOG_MAP.O_LOG3_GET;
+if( log_this) log("%c o_on_get_csp_filter_response_handler", lb3);
 
     if( response.startsWith("FAILURE") )
     {
@@ -762,7 +760,7 @@ let o_sync_get_LOG_MAP_CB = function(items={})
 
     /*}}}*/
     /* ADD LISTENERS {{{*/
-    if(! o_addEventListeners_has_been_called )
+    if(!o_addEventListeners_has_been_called )
     {
         o_addEventListeners_has_been_called = true;
         o_addEventListeners();
@@ -818,40 +816,40 @@ let log_this = LOG_MAP.O_LOG6_UI;
 if( log_this) log("%c o_storage_sync_set: %c "+caller, lb1, lbR+lf4);
 
     let items
-        = { B_LOG1_MESSAGE      : document.getElementById( "B_LOG1_MESSAGE"   ).checked
-        ,   B_LOG2_ERROR        : document.getElementById( "B_LOG2_ERROR"     ).checked
-        ,   B_LOG3_PRESERVE     : document.getElementById( "B_LOG3_PRESERVE"  ).checked
-        ,   B_LOG4_PARSE        : document.getElementById( "B_LOG4_PARSE"     ).checked
-        ,   B_LOG5_ONREQUEST    : document.getElementById( "B_LOG5_ONREQUEST" ).checked
-        ,   B_LOG6_ONHEADER     : document.getElementById( "B_LOG6_ONHEADER"  ).checked
-        ,   B_LOG7_TABS         : document.getElementById( "B_LOG7_TABS"      ).checked
-        ,   B_LOG8_STORE        : document.getElementById( "B_LOG8_STORE"     ).checked
-        ,   B_LOG9_STAGE        : document.getElementById( "B_LOG9_STAGE"     ).checked
-        ,   B_LOG0_MORE         : document.getElementById( "B_LOG0_MORE"      ).checked
+        = { B_LOG1_MESSAGE      : (document.getElementById( "B_LOG1_MESSAGE"   ) || {}).checked
+        ,   B_LOG2_ERROR        : (document.getElementById( "B_LOG2_ERROR"     ) || {}).checked
+        ,   B_LOG3_PRESERVE     : (document.getElementById( "B_LOG3_PRESERVE"  ) || {}).checked
+        ,   B_LOG4_PARSE        : (document.getElementById( "B_LOG4_PARSE"     ) || {}).checked
+        ,   B_LOG5_ONREQUEST    : (document.getElementById( "B_LOG5_ONREQUEST" ) || {}).checked
+        ,   B_LOG6_ONHEADER     : (document.getElementById( "B_LOG6_ONHEADER"  ) || {}).checked
+        ,   B_LOG7_TABS         : (document.getElementById( "B_LOG7_TABS"      ) || {}).checked
+        ,   B_LOG8_STORE        : (document.getElementById( "B_LOG8_STORE"     ) || {}).checked
+        ,   B_LOG9_STAGE        : (document.getElementById( "B_LOG9_STAGE"     ) || {}).checked
+        ,   B_LOG0_MORE         : (document.getElementById( "B_LOG0_MORE"      ) || {}).checked
 
-        ,   O_LOG2_ERROR        : document.getElementById( "O_LOG2_ERROR"     ).checked
-        ,   O_LOG3_GET          : document.getElementById( "O_LOG3_GET"       ).checked
-        ,   O_LOG4_SET          : document.getElementById( "O_LOG4_SET"       ).checked
-        ,   O_LOG5_SUCCESS      : document.getElementById( "O_LOG5_SUCCESS"   ).checked
-        ,   O_LOG6_UI           : document.getElementById( "O_LOG6_UI"        ).checked
-        ,   O_LOG0_MORE         : document.getElementById( "O_LOG0_MORE"      ).checked
+        ,   O_LOG2_ERROR        : (document.getElementById( "O_LOG2_ERROR"     ) || {}).checked
+        ,   O_LOG3_GET          : (document.getElementById( "O_LOG3_GET"       ) || {}).checked
+        ,   O_LOG4_SET          : (document.getElementById( "O_LOG4_SET"       ) || {}).checked
+        ,   O_LOG5_SUCCESS      : (document.getElementById( "O_LOG5_SUCCESS"   ) || {}).checked
+        ,   O_LOG6_UI           : (document.getElementById( "O_LOG6_UI"        ) || {}).checked
+        ,   O_LOG0_MORE         : (document.getElementById( "O_LOG0_MORE"      ) || {}).checked
 
-        ,   P_LOG2_ERROR        : document.getElementById( "P_LOG2_ERROR"     ).checked
-        ,   P_LOG4_STORE        : document.getElementById( "P_LOG4_STORE"     ).checked
-        ,   P_LOG6_UI           : document.getElementById( "P_LOG6_UI"        ).checked
-        ,   P_LOG7_TABS         : document.getElementById( "P_LOG7_TABS"      ).checked
-        ,   P_LOG8_EVENTS       : document.getElementById( "P_LOG8_EVENTS"    ).checked
-        ,   P_LOG0_MORE         : document.getElementById( "P_LOG0_MORE"      ).checked
+        ,   P_LOG2_ERROR        : (document.getElementById( "P_LOG2_ERROR"     ) || {}).checked
+        ,   P_LOG4_STORE        : (document.getElementById( "P_LOG4_STORE"     ) || {}).checked
+        ,   P_LOG6_UI           : (document.getElementById( "P_LOG6_UI"        ) || {}).checked
+        ,   P_LOG7_TABS         : (document.getElementById( "P_LOG7_TABS"      ) || {}).checked
+        ,   P_LOG8_EVENTS       : (document.getElementById( "P_LOG8_EVENTS"    ) || {}).checked
+        ,   P_LOG0_MORE         : (document.getElementById( "P_LOG0_MORE"      ) || {}).checked
 
-        ,   o_on_set_csp_filter : o_on_set_csp_filter
-        ,   o_ui_show_panel_id  : o_ui_show_panel_id
+        ,   o_on_set_csp_filter
+        ,   o_ui_show_panel_id /* eslint-disable-line no-alert */
     };
 
-if( log_this) log("STORAGE SYNC SET %c"+log_json(items), lbR);
+if( log_this) log_key_val("items",items, lf4);
     try {
         chrome.storage.sync.set( items );
     }
-    catch(ex) { alert(O_SCRIPT_ID+" ERROR:\n"+ ex); }
+    catch(ex) { alert(O_SCRIPT_ID+" ERROR:\n"+ ex); } /* eslint-disable-line no-alert */
 };
 /*}}}*/
 /*_ o_UI_sync_settings_el {{{*/
@@ -891,5 +889,4 @@ if(LOG_MAP.O_LOG6_UI) log("%c"+key+"=%c"+items[key], lb1, lb0);
 
 /* POPUP UI */
 chrome.storage.sync.get(null, o_sync_get_LOG_MAP_CB);
-
 

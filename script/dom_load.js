@@ -9,7 +9,7 @@ javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 let DOM_LOAD_ID         = "dom_load";
-let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (220325:18h:50)";
+let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (220414:17h:54)";
 let DOM_HOST_CSS_ID     = "dom_host_css";
 let DOM_TOOLS_CSS_ID    = "dom_tools_css";
 let DOM_GRID_CSS_ID     = "dom_grid_css";
@@ -241,10 +241,10 @@ let dom_tools_html_data = `
 let dom_host_css_data ="data:text/css,"+ escape(`
 /*INLINE{{{*/
 @charset "utf-8";
-#dom_host_css_tag   { content: "dom_host_css (220307:16h:37)"; }
+#dom_host_css_tag   { content: "dom_host_css (220325:20h:06)"; }
 
 
-body.dark { background : #430; }
+.dark * { background : #430; color: #DDD; }
 
 body.dimmed {
     filter : blur(2px) grayscale(100%) !important;
@@ -34609,7 +34609,7 @@ let dom_sentence_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220325:18h:47)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220412:16h:56)";
 
 let dom_sentence            = (function() {
 "use strict";
@@ -35155,11 +35155,11 @@ let strip_HTML = function(text)
 let t_SENTENCE_SPLIT_set_parent_theme_dark = function (container)
 {
 
-    let el_array = Array.from(document.getElementsByTagName("DIV"));
+    let el_array = get_parent_chain(container);
 
     el_array.forEach((el) => {
-        el.style.backgroundColor_saved         = el.style.backgroundColor;
-        el.style.backgroundColor               = THEME_STYLE_BG_DARK;
+        el.style.background_saved         = el.style.background;
+        el.style.background               = THEME_STYLE_BG_DARK;
 
     });
 };
@@ -35168,11 +35168,11 @@ let t_SENTENCE_SPLIT_set_parent_theme_dark = function (container)
 let t_SENTENCE_SPLIT_clr_parent_theme_dark = function (container)
 {
 
-    let el_array = Array.from(document.getElementsByTagName("DIV"));
+    let el_array = get_parent_chain(container);
 
     el_array.forEach((el) => {
-        el.style.backgroundColor         = el.style.backgroundColor_saved || "";
-        delete                             el.style.backgroundColor_saved;
+        el.style.background         = el.style.background_saved || "";
+        delete                             el.style.background_saved;
 
     });
 };
@@ -35512,15 +35512,15 @@ if( tag_this && (was_is_scrolling != is_scrolling)) log("%c SCROLLING", lbH+lfX[
 
 
     let split_or_font = move_H_or_V;
-    let size_offset   = (move_delta > 0) ? 1 : -1;
+    let split_delta   = (move_delta > 0) ? 1 : -1;
 
 
 if( log_this) log_key_val_group(  caller
                                   , { move_delta
                                     , split_or_font
-                                    , size_offset
+                                    , split_delta
                                   }
-                                  , lfX[split_or_font ? ((size_offset > 0) ? 3:4) : ((size_offset > 0) ? 5:6)]
+                                  , lfX[split_or_font ? ((split_delta > 0) ? 3:4) : ((split_delta > 0) ? 5:6)]
                                   , true);
 
 
@@ -35528,12 +35528,12 @@ if( log_this) log_key_val_group(  caller
 
     if( split_or_font )
     {
-        t_SENTENCE_split_at_offset(from_container, size_offset);
+        t_SENTENCE_split_at_offset(from_container, split_delta);
     }
 
 
     else {
-        t_SENTENCE_FONTSIZE_OFFSET( size_offset );
+        t_SENTENCE_FONTSIZE_OFFSET( split_delta );
         t_tools.t_scrollIntoViewIfNeeded( from_container );
     }
 
@@ -35544,7 +35544,7 @@ if(tag_this) log("%c  DRAG DONE", lbb+lbH+lf3);
 };
 
 
-let t_SENTENCE_split_at_offset = function(from_container,size_offset)
+let t_SENTENCE_split_at_offset = function(from_container,split_delta)
 {
 
 let   caller = "t_SENTENCE_split_at_offset";
@@ -35553,21 +35553,21 @@ let log_this = DOM_SENTENCE_LOG || LOG_MAP.EV0_LISTEN;
 
 
 
-    let offset_container = t_util.get_node_sibling_at_offset( from_container, size_offset);
+    let sibling_container = t_util.get_node_sibling_at_offset(from_container, split_delta);
 
-if( log_this) log_key_val_group( caller+"(size_offset=["+size_offset+"])"
+if( log_this) log_key_val_group( caller+"(split_delta=["+split_delta+"])"
                                 , {   from_container
-                                  , offset_container
+                                  , sibling_container
                                 });
 
-    if( offset_container )
+    if( sibling_container )
     {
-        t_SENTENCE_RESTORE_EL    ( from_container   );
-        t_SENTENCE_SPLIT         ( offset_container );
-        t_SENTENCE_FONTSIZE_APPLY( offset_container );
-        t_SENTENCE_OUTLINE       ( offset_container );
+        t_SENTENCE_RESTORE_EL    ( from_container    );
+        t_SENTENCE_SPLIT         ( sibling_container );
+        t_SENTENCE_FONTSIZE_APPLY( sibling_container );
+        t_SENTENCE_OUTLINE       ( sibling_container );
 
-        t_tools.t_scrollIntoViewIfNeeded( offset_container );
+        t_tools.t_scrollIntoViewIfNeeded( sibling_container );
     }
 };
 
@@ -35579,7 +35579,7 @@ let t_SENTENCE_OUTLINE = function(sentence_el)
 };
 
 
-let t_SENTENCE_FONTSIZE_OFFSET = function(size_offset=0)
+let t_SENTENCE_FONTSIZE_OFFSET = function(split_delta=0)
 {
 
 let   caller = "t_SENTENCE_FONTSIZE_OFFSET";
@@ -35587,7 +35587,7 @@ let log_this = DOM_SENTENCE_LOG || LOG_MAP.S2_SELECT;
 
 
 
-    let num = size_offset + parseInt( e12_font_size.substring(2) );
+    let num = split_delta + parseInt( e12_font_size.substring(2) );
     num     = Math.max( 1, num);
     num     = Math.min(12, num);
 
@@ -35646,6 +35646,7 @@ if( log_this && e) log("%c type=["+e.type+"] e.target.id=["+e.target.id+"]", lbH
 
 
         t_util.del_el_class(    container, CSS_SENTENCE_CONTAINER);
+        t_util.add_el_class(    container, CSS_OUTLINE);
         t_util.del_el_class(    container, CSS_DARK);
         t_util.del_el_class(document.body, CSS_DARK);
 
