@@ -9,7 +9,7 @@ javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 let DOM_LOAD_ID         = "dom_load";
-let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (220420:16h:05)";
+let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (220422:17h:54)";
 let DOM_HOST_CSS_ID     = "dom_host_css";
 let DOM_TOOLS_CSS_ID    = "dom_tools_css";
 let DOM_GRID_CSS_ID     = "dom_grid_css";
@@ -33885,7 +33885,7 @@ let dom_wot_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_WOT_JS_ID      = "dom_wot_js";
-const DOM_WOT_JS_TAG     = DOM_WOT_JS_ID  +" (220308:16h:26)";
+const DOM_WOT_JS_TAG     = DOM_WOT_JS_ID  +" (220422:17h:54)";
 
 let dom_wot             = (function() {
 "use strict";
@@ -34122,6 +34122,9 @@ const regexp_FUNCTION_JS    = new RegExp("\\/\\*[_ ]*(\\S+).*\\{\\{\\{\\*\\/");
 
 const regexp_FUNCTION_LUA   = new RegExp(    "--[_ ]*(\\S+).*\\{\\{\\{");
 
+const regexp_IMAGE_ASCIIDOC = new RegExp(    '^image::([^\\[]*)(?:\\[([^\\]]+))\\]?');
+
+
 
 let   wot_split_done = false;
 
@@ -34297,9 +34300,11 @@ let get_lines_innerHTML = function(lines, line_num)
 
             let h_line = escapeHTML(this_line);
 
-            h_line     = h_line.replace(regexp_REGIONFOLD   , "<span class='"+WALL_OF_TEXT_BLOCK+"'>$1</span> "+h_line);
-            h_line     = h_line.replace(regexp_FUNCTION_JS  , "<span class='"+WALL_OF_TEXT_BLOCK+"'>$1</span> "+h_line);
-            h_line     = h_line.replace(regexp_FUNCTION_LUA , "<span class='"+WALL_OF_TEXT_BLOCK+"'>$1</span> "+h_line);
+            h_line = h_line.replace(regexp_REGIONFOLD    , "<span class='"+WALL_OF_TEXT_BLOCK+"'>$1</span> "+h_line);
+            h_line = h_line.replace(regexp_FUNCTION_JS   , "<span class='"+WALL_OF_TEXT_BLOCK+"'>$1</span> "+h_line);
+            h_line = h_line.replace(regexp_FUNCTION_LUA  , "<span class='"+WALL_OF_TEXT_BLOCK+"'>$1</span> "+h_line);
+
+            h_line = h_line.replace(regexp_IMAGE_ASCIIDOC, "<img src='$1' alt=$1 title=$2 />");
 
 
 
@@ -34310,19 +34315,21 @@ let get_lines_innerHTML = function(lines, line_num)
             }
 
 
-            else if( next_line )
+            else if(       next_line
+                    && (   next_line.includes(" function(")
+                        || next_line.includes("function " )
+                        || next_line.includes("private "  )
+                        || next_line.includes("protected ")
+                        || next_line.includes("public "   )
+                        || next_line.includes("static "   )
+                        || next_line.includes("void "     )
+                       )
+                   )
             {
-                if(      next_line.includes  (  " function(" )
-                      || next_line.includes  (  "function "  )
-                      || next_line.includes  (  "private "   )
-                      || next_line.includes  (  "protected " )
-                      || next_line.includes  (  "public "    )
-                      || next_line.includes  (  "static "    )
-                      || next_line.includes  (  "void "      )
-                  )
-                    h_line = h_line.replace("'>", " function'>");
-
+                h_line = h_line.replace("'>", " function'>");
             }
+
+
             else {
                 h_line = "<span class='text_line'>"+h_line+"</span>";
             }
