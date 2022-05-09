@@ -9,7 +9,7 @@ javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 let DOM_LOAD_ID         = "dom_load";
-let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (220422:17h:54)";
+let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (220509:17h:09)";
 let DOM_HOST_CSS_ID     = "dom_host_css";
 let DOM_TOOLS_CSS_ID    = "dom_tools_css";
 let DOM_GRID_CSS_ID     = "dom_grid_css";
@@ -241,10 +241,10 @@ let dom_tools_html_data = `
 let dom_host_css_data ="data:text/css,"+ escape(`
 /*INLINE{{{*/
 @charset "utf-8";
-#dom_host_css_tag   { content: "dom_host_css (220420:16h:02)"; }
+#dom_host_css_tag   { content: "dom_host_css (220509:14h:40)"; }
 
 
-.dark * { background : #111; color: #DDD; }
+.dark * { background : rgba(17,17,17,0.5); color: rgba(221,221,221,0.5); }
 
 body.dimmed {
     filter : blur(2px) grayscale(100%) !important;
@@ -907,12 +907,13 @@ em.select0 { cursor : all-scroll !important; }
     border-radius    : 0.5em;
     margin           : 0.5em;
     padding          : 0.5em;
+    white-space      : pre-line;
     transition       : all 500ms ease;
 }
 .sentence_container.outlined {
     transition       : transform 150ms ease-in;
     transform        : rotate(1deg) scale(0.9);
-    opacity          : 0.8;
+
     outline          : 5px #000 dashed;
     box-shadow       : 3px 3px 12px 6px rgba(0,0,0,0.5);
     border           : 5px #000 dashed;
@@ -34610,7 +34611,7 @@ let dom_sentence_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220412:16h:56)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220509:16h:27)";
 
 let dom_sentence            = (function() {
 "use strict";
@@ -34718,7 +34719,7 @@ const CSS_SENTENCE_CONTAINER = "sentence_container";
 const CSS_SENTENCE           = "sentence";
 const CSS_CLAUSE             = "clause";
 const CSS_LAST_CLAUSE        = "last_clause";
-const CSS_OUTLINE            = "outlined";
+const CSS_OUTLINED           = "outlined";
 const CSS_DARK               = "dark";
 
 
@@ -34753,10 +34754,10 @@ let log_this = _log_this || LOG_MAP.S2_SELECT;
 
 
     let container
-        =  t_util.get_el_parent_with_class(el,  CSS_OUTLINE     );
+        =  t_util.get_el_parent_with_class(el,  CSS_OUTLINED    );
     if( container )
     {
-if(log_this) log(caller+": ...return CSS_OUTLINE container=["+t_util.get_n_lbl(container)+"]");
+if(log_this) log(caller+": ...return CSS_OUTLINED container=["+t_util.get_n_lbl(container)+"]");
 
         return { container };
     }
@@ -34928,6 +34929,7 @@ const MAGNIFIED_STYLE      = "font-size  : 200% !important;";
 const LINE_HEIGHT_STYLE    = "line-height: 1em  !important;";
 
 const THEME_STYLE_BG_DARK  = "rgba( 32, 32, 32,0.8)";
+const THEME_STYLE_FG_DARK  = "rgba(255,255,255,0.8)";
 const THEME_STYLE_BG_LIGHT = "rgba(255,255,255,0.8)";
 const THEME_STYLE_DARK     = "color: #DDD !important; background-color: "+ THEME_STYLE_BG_DARK  +" !important; border-radius:1em;";
 const THEME_STYLE_LIGHT    = "color: #222 !important; background-color: "+ THEME_STYLE_BG_LIGHT +" !important; border-radius:1em;";
@@ -35162,6 +35164,8 @@ let t_SENTENCE_SPLIT_set_parent_theme_dark = function (container)
         el.style.background_saved         = el.style.background;
         el.style.background               = THEME_STYLE_BG_DARK;
 
+        el.style.color_saved              = el.style.color;
+        el.style.color                    = THEME_STYLE_FG_DARK;
     });
 };
 
@@ -35172,9 +35176,11 @@ let t_SENTENCE_SPLIT_clr_parent_theme_dark = function (container)
     let el_array = get_parent_chain(container);
 
     el_array.forEach((el) => {
-        el.style.background         = el.style.background_saved || "";
-        delete                             el.style.background_saved;
+        el.style.background               = el.style.background_saved || "";
+        delete                              el.style.background_saved;
 
+        el.style.color                    = el.style.color_saved      || "";
+        delete                              el.style.color_saved;
     });
 };
 
@@ -35236,14 +35242,14 @@ let tag_this = DOM_SENTENCE_TAG || log_this;
 
 if( tag_this) log("%c"+caller, lbH+lf7);
 
-    restore_text_containers_in_view();
+    t_SENTENCE_restore_text_containers_outlined();
     let { text_container_in_view_array } = get_el_text_container_in_view_array( root );
 if(tag_this) console_dir("text_container_in_view_array", text_container_in_view_array);
 
 if(log_this) log("...outlining "+text_container_in_view_array.length+" containers");
     text_container_in_view_array.forEach(
                                          (el) => {
-                                             t_util.add_el_class(el, CSS_OUTLINE);
+                                             t_util.add_el_class(el, CSS_OUTLINED);
                                              el.addEventListener("transitionend", outlined_transitionend_handler);
                                          }
                                         );
@@ -35262,10 +35268,10 @@ if(log_this) console_dir(caller+": propertyName=["+e.propertyName+"] .. elapsedT
 };
 
 
-let restore_text_containers_in_view = function()
+let t_SENTENCE_restore_text_containers_outlined = function()
 {
 
-let   caller = "restore_text_containers_in_view";
+let   caller = "t_SENTENCE_restore_text_containers_outlined";
 let log_this = DOM_SENTENCE_LOG || LOG_MAP.S2_SELECT;
 let tag_this = DOM_SENTENCE_TAG || log_this;
 
@@ -35273,15 +35279,15 @@ if( tag_this) log("%c"+caller, lbH+lf8);
 
     node_in_view_filter_clear();
 
-    let outlined_containers = document.querySelectorAll("."+CSS_OUTLINE);
+    let outlined_containers = document.querySelectorAll("."+CSS_OUTLINED);
     if( outlined_containers.length)
     {
-        if(log_this) log("...restoring "+outlined_containers.length+" outlined containers");
+if(log_this) log("...restoring "+outlined_containers.length+" outlined containers");
         for(let i=0; i < outlined_containers.length; ++i)
         {
             let node = outlined_containers[i] ;
 
-            node.classList.remove( CSS_OUTLINE );
+            node.classList.remove( CSS_OUTLINED );
 
             if(typeof node.title_saved != "undefined") { node.title = node.title_saved; delete       node.title_saved; }
         }
@@ -35576,7 +35582,7 @@ if( log_this) log_key_val_group( caller+"(split_delta=["+split_delta+"])"
 let t_SENTENCE_OUTLINE = function(sentence_el)
 {
     let sentence_container = t_util.get_el_parent_with_class(sentence_el, CSS_SENTENCE_CONTAINER);
-    if( sentence_container ) sentence_container.classList.add(            CSS_OUTLINE           );
+    if( sentence_container ) sentence_container.classList.add(            CSS_OUTLINED          );
 };
 
 
@@ -35647,7 +35653,7 @@ if( log_this && e) log("%c type=["+e.type+"] e.target.id=["+e.target.id+"]", lbH
 
 
         t_util.del_el_class(    container, CSS_SENTENCE_CONTAINER);
-        t_util.add_el_class(    container, CSS_OUTLINE);
+        t_util.add_el_class(    container, CSS_OUTLINED);
         t_util.del_el_class(    container, CSS_DARK);
         t_util.del_el_class(document.body, CSS_DARK);
 
@@ -35870,11 +35876,12 @@ return { name : "dom_sentence"
     ,    t_SENTENCE_onresize
 
     ,    t_SENTENCE_set_theme_dark
+    ,    t_SENTENCE_restore_text_containers_outlined
 
 
-    ,    o : outline_text_containers_in_view
-    ,    r : restore_text_containers_in_view
     ,    f : node_in_view_filter_clear
+    ,    o : outline_text_containers_in_view
+    ,    r : t_SENTENCE_restore_text_containers_outlined
 };
 
 }());
@@ -37911,7 +37918,7 @@ let dom_tools_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_TOOLS_JS_ID       = "dom_tools_js" ;
-const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (220309:19h:13)";
+const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (220509:14h:53)";
 
 let dom_tools   = (function() {
 "use strict";
@@ -47268,6 +47275,11 @@ if( log_this) t_fly.t_log_event_status(caller, lf4);
     if( t_get_current_sel_text() ) rejected_by = "t_get_current_sel_text";
 
 
+
+    check_has_moved(caller);
+
+    if(  has_moved )               rejected_by = "has_moved=["+has_moved+"]";
+
     if(rejected_by)
     {
 if( log_this && rejected_by) log("%c"+rejected_by, lb4);
@@ -50087,9 +50099,11 @@ if(log_this) t_log_option_changes(changes);
            ||   changes.includes( t_data.THEME_DARK     )
            ||   changes.includes("theme_DARK"           )
            ||   changes.includes("theme_LIGHT"          )
-      )
+      ) {
         t_select.t_sync_containers_hi();
+        t_sentence.t_SENTENCE_restore_text_containers_outlined();
 
+    }
 
 
     if(         changes.includes( t_data.ANCHOR_FREEZE  )
