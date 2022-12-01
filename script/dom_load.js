@@ -9,7 +9,7 @@ javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 let DOM_LOAD_ID         = "dom_load";
-let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (220509:17h:09)";
+let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (221201:14h:53)";
 let DOM_HOST_CSS_ID     = "dom_host_css";
 let DOM_TOOLS_CSS_ID    = "dom_tools_css";
 let DOM_GRID_CSS_ID     = "dom_grid_css";
@@ -42,7 +42,7 @@ let   console_warn  = function(  msg=null) { try {                          cons
 let dom_tools_html_data = `
 <!--INLINE{{{-->
 <!DOCTYPE html>
- <span id = "dom_tools_html_tag" style="display:none">dom_tools_html (210929:21h:31)</span>
+ <span id = "dom_tools_html_tag" style="display:none">dom_tools_html (221124:17h:59)</span>
 
  <!-- hotspot {{{-->
  <div   id="hotspot"       class="hotspot_frame"            title="hotspot">
@@ -56,6 +56,7 @@ let dom_tools_html_data = `
  <div id="headsup"         class="transcript hidden"        title="headsup">
 
   <em  id="user_lang"      class="toolbag_button cc9"       title="user_lang">&nbsp;</em>
+  <em  id="dom_freeze"     class="toolbag_button cc9"       title="dom_freeze">&#x2744;</em>
 
   <em  id="thumb_p"                                         title="thumb_p">&#x0020;</em>
   <em  id="theme_dark"     class="toolbag_button cc8"       title="theme_dark">LIGHT</em>
@@ -234,14 +235,14 @@ let dom_tools_html_data = `
 ;
 /*}}}*/
 
-  /**    2 HOST    CSS dom_host_css_data .. ESCAPE=[OR HOST CSS WONT WORK]  {{{*/
+  /**    2 HOST     CSS  dom_host_css_data .. ESCAPE=[OR HOST CSS WONT WORK]  {{{*/
 /*
 ../stylesheet/dom_host.css
  */
 let dom_host_css_data ="data:text/css,"+ escape(`
 /*INLINE{{{*/
 @charset "utf-8";
-#dom_host_css_tag   { content: "dom_host_css (220509:14h:40)"; }
+#dom_host_css_tag   { content: "dom_host_css (220916:18h:32)"; }
 
 
 .dark * { background : rgba(17,17,17,0.5); color: rgba(221,221,221,0.5); }
@@ -895,6 +896,8 @@ em.select0 { cursor : all-scroll !important; }
     user-select   : none;
 
 }
+UL.sentence_container { display: block; }
+OL.sentence_container { display: block; }
 
 
 .rejected {
@@ -956,6 +959,7 @@ em.select0 { cursor : all-scroll !important; }
 
     .dark *::before   {          display : none            !important; }
     .dark *::after    {          display : none            !important; }
+body.dark IMG         {           filter : brightness(50%) !important; }
 body.dark .sentence   {           filter : brightness(80%) !important; }
 body.dark .sentence   {            color : #FFF                      ; }
 body.dark .clause     {            color : #111                      ; }
@@ -6074,7 +6078,7 @@ let dom_data_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_DATA_JS_ID        = "dom_data_js";
-const DOM_DATA_JS_TAG       = DOM_DATA_JS_ID  +" (220126:18h:04)";
+const DOM_DATA_JS_TAG       = DOM_DATA_JS_ID  +" (221124:17h:57)";
 
 let dom_data    = (function() {
 "use strict";
@@ -6182,6 +6186,7 @@ const SYMBOL_PENCIL                 = "\u270E";
 const SYMBOL_CHECK_MARK_LIGHT       = "\u2713";
 const SYMBOL_CHECK_MARK             = "\u2714";
 const SYMBOL_HEAVY_BALLOT           = "\u2718";
+const SYMBOL_SNOWFLAKE              = "\u2744";
 const SYMBOL_RIGHT_ANGLE_BRACKET    = "\u276F";
 const SYMBOL_HEAVY_RIGHT_ARROW      = "\u2794";
 const SYMBOL_ROUND_RIGHT_ARROW      = "\u279C";
@@ -6442,6 +6447,8 @@ const CSS_STICKY_TOOL           = "sticky";
 const FLOATLOG                  = "FLOATLOG";
 
 const USER_LANG                 = "user_lang";
+const DOM_FREEZE                = "dom_freeze";
+
 const ANCHOR_FREEZE             = "anchor_freeze";
 const CONTAINERS_HI             = "containers_hi";
 const SCROLL_SMOOTH             = "scroll_smooth";
@@ -6878,6 +6885,8 @@ const DOC_TOOLS_ID            = "doc_tools";
 
 
         , FLOATLOG
+
+        , DOM_FREEZE
 
         , USER_LANG
         , ANCHOR_FREEZE
@@ -8869,7 +8878,7 @@ let dom_util_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_UTIL_JS_ID        = "dom_util";
-const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (220309:19h:24)";
+const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (221124:17h:42)";
 
 let dom_util    = (function() {
 "use strict";
@@ -9570,6 +9579,89 @@ let position_fixed_transitionend = function(event)
 
 
 
+
+
+
+
+const MOUSE_EVENT_ATTRIBUTES
+= [ "onclick"
+  , "ondblclick"
+  , "onmousedown"
+  , "onmousemove"
+  , "onmouseout"
+  , "onmouseover"
+  , "onmouseup"
+  , "onmousewheel"
+  , "onwheel"
+];
+
+const KEYBOARD_EVENT_ATTRIBUTES
+= [ "onkeydown"
+  , "onkeypress"
+  , "onkeyup"
+];
+
+const FORM_EVENT_ATTRIBUTES
+= [ "onblur"
+  , "onchange"
+  , "onfocus"
+  , "oninput"
+  , "oninvalid"
+  , "onreset"
+  , "onsearch"
+  , "onselect"
+  , "onsubmit"
+];
+
+const ALL_EVENT_ATTRIBUTES
+    =       MOUSE_EVENT_ATTRIBUTES
+    .concat(KEYBOARD_EVENT_ATTRIBUTES)
+    .concat(FORM_EVENT_ATTRIBUTES    );
+
+
+
+let t_REMOVE_EventListeners = function()
+{
+
+let log_this = DOM_UTIL_TAG || DOM_UTIL_LOG || LOG_MAP.EV0_LISTEN;
+
+
+    let removed_count = 0;
+    for(let i = 0;         i <=  ALL_EVENT_ATTRIBUTES.length; ++i)
+    {
+        let attribute_name    =  ALL_EVENT_ATTRIBUTES[i];
+
+        let el_array          =  Array.from( document.querySelectorAll("["+attribute_name+"]") );
+if(!removed_count && el_array.length) log("%c REMOVING EVENT LISTENERS:", lb7);
+
+        el_array.forEach((el) => {
+if(log_this) log("["+attribute_name+"] .. "+get_id_or_node_path_tail(el));
+                             el.removeAttribute(attribute_name);
+                             removed_count += 1;
+                         });
+    }
+    if( !removed_count ) log("%c NO EVENT LISTENERS TO REMOVE"                 , lf8);
+    else                 log("%c ... "+removed_count+" event listeners removed", lf7);
+
+
+    document.body.replaceWith( document.body.cloneNode(true) );
+};
+
+
+let get_parent_with_scrollbar = function(el)
+{
+    while(el && !has_scrollbar(el))
+        el = el.parentElement;
+    return el;
+};
+
+
+let get_scrollable_parent = function(el)
+{
+    while(el && el.parentElement && !el.parentElement.style.overflow)
+        el =    el.parentElement;
+    return el ? el.parentElement : null;
+};
 
 
 
@@ -12387,6 +12479,7 @@ let   caller = "get_el_caption_lang";
 
         else if(el_id == "scroll_smooth"        ) el_caption_lang = i18n_get(dom_i18n.SCROLL_SMOOTH     , el_id);
         else if(el_id == "user_lang"            ) el_caption_lang = i18n_get(dom_i18n.USER_LANG         , el_id);
+        else if(el_id == "dom_freeze"           ) el_caption_lang = i18n_get(dom_i18n.DOM_FREEZE        , el_id);
         else if(el_id == "anchor_freeze"        ) el_caption_lang = i18n_get(dom_i18n.ANCHOR_FREEZE     , el_id);
         else if(el_id == "containers_hi"        ) el_caption_lang = i18n_get(dom_i18n.CONTAINERS_HI     , el_id);
         else if(el_id == "deny_or_allow"        ) el_caption_lang = i18n_get(dom_i18n.DENY_OR_ALLOW     , el_id);
@@ -12858,6 +12951,8 @@ return { name : "dom_util"
     , getPageHeight
     , get_el_transformOrigin
     , get_xy_tlbr_dist
+    , get_parent_with_scrollbar
+    , get_scrollable_parent
     , has_scrollbar
     , has_scrollbar_x
     , has_scrollbar_y
@@ -12901,6 +12996,7 @@ return { name : "dom_util"
     , has_a_fixed_parent
     , node_toString
 
+    , t_REMOVE_EventListeners
     , t_REMOVE_ADS
     , t_REMOVE_ADS_results
     , t_TEXT_LINES_to_COLORED_HTML
@@ -13138,7 +13234,7 @@ let dom_i18n_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_I18N_JS_ID        = "dom_i18n_js";
-const DOM_I18N_JS_TAG       = DOM_I18N_JS_ID  +" (211122:23h:56)";
+const DOM_I18N_JS_TAG       = DOM_I18N_JS_ID  +" (221124:17h:20)";
 
 let dom_i18n    = (function() {
 "use strict";
@@ -13388,6 +13484,7 @@ const SORT_SELECTION                 = "Sort selection";
 
 
 const SCROLL_SMOOTH                  = "Smooth or Instant scrolling";
+const DOM_FREEZE                     = "DOM freeze (Remove All Event Listeners)";
 const USER_LANG                      = "Interface language";
 const ANCHOR_FREEZE                  = "Disable links navigation";
 const CONTAINERS_HI                  = "Highlight paragraph containers";
@@ -13556,6 +13653,7 @@ const ARRAY_FR  = [
 
         , [ SCROLL_SMOOTH                    , "Défilement progressif ou instantané"                                    ]
         , [ USER_LANG                        , "Language de l'interface"                                                ]
+        , [ DOM_FREEZE                       , "DOM freeze (Suppression des Event Listeners)"                           ]
         , [ ANCHOR_FREEZE                    , "Blocage des liens de navigation"                                        ]
         , [ CONTAINERS_HI                    , "Coloration des paragraphes sélectionnés"                                ]
         , [ DENY_OR_ALLOW                    , "Deny or Allow (no-op pour le moment)"                                   ]
@@ -13718,6 +13816,7 @@ return { name : "dom_i18n"
 
 
     , SCROLL_SMOOTH
+    , DOM_FREEZE
     , USER_LANG
     , ANCHOR_FREEZE
     , CONTAINERS_HI
@@ -17526,7 +17625,7 @@ let dom_select_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SELECT_JS_ID      = "dom_select_js";
-const DOM_SELECT_JS_TAG     = DOM_SELECT_JS_ID  +" (220323:19h:39)";
+const DOM_SELECT_JS_TAG     = DOM_SELECT_JS_ID  +" (220917:03h:11)";
 
 let dom_select  = (function() {
 "use strict";
@@ -17747,11 +17846,7 @@ let CCS = function()
         let thumb_p_str = "";
         if( thumb_p ) {
             thumb_p_str = t_get_thumb_p_str( thumb_p );
-            if(!thumb_p_str)
-            {
-log("%c *** INVALID thumb_p=["+thumb_p+"] .. container=["+t_util.get_n_lbl(container)+"] ccs_node=["+t_util.get_n_lbl(ccs_node)+"] ***", lbH+lf2);
 
-            }
         }
         this.thumbs[num-1] = thumb_p_str;
 
@@ -30205,6 +30300,10 @@ let tag_this = DOM_SEEK_TAG || log_this;
 
 
 
+    delete node.scrolledIntoViewHandled;
+    t_tools.t_scrollIntoViewIfNeeded(node,0);
+
+
     let bcr = node.getBoundingClientRect();
     let   x = bcr.x + window.scrollX;
     let   y = bcr.y + window.scrollY;
@@ -30308,11 +30407,11 @@ let t_seeker_get_last_seeked_slot_num = function()
 
 
 
-let SEEKER_MOVE_ABOVE_XY_DELAY = 2000;
+
 
 let seeker_move_above_XY_timer;
 
-let   seeker_move_above_XY = function(tool, xy, node)
+let   seeker_move_above_XY = function(tool, xy)
 {
 
 let   caller = "seeker_move_above_XY";
@@ -30339,12 +30438,8 @@ if( log_this) log(caller+"("+t_util.get_n_lbl(tool)+", "+x+" "+y+"): body_zoom_p
     t_util.del_el_class(tool, "seek_bellow");
     t_util.add_el_class(tool, "seek_above" );
 
-    delete node.scrolledIntoViewHandled;
-    t_tools.t_scrollIntoViewIfNeeded(node,0);
 
 
-    if( seeker_move_above_XY_timer ) clearTimeout( seeker_move_above_XY_timer );
-    seeker_move_above_XY_timer     =   setTimeout( function() { t_tools.t_scrollIntoViewIfNeeded(node,0); }, SEEKER_MOVE_ABOVE_XY_DELAY);
 
 
 
@@ -30369,7 +30464,7 @@ if( log_this) log(caller+": PENDING RECENTER INTERRUPTED BY "+ _caller);
 };
 
 
-let   seeker_move_below_XY = function(tool, xy, node)
+let   seeker_move_below_XY = function(tool, xy)
 {
 
 let   caller = "seeker_move_below_XY";
@@ -30393,8 +30488,7 @@ if( log_this) log(caller+"("+t_util.get_n_lbl(tool)+", "+x+" "+y+"): body_zoom_p
     t_util.del_el_class(tool, "seek_above" );
     t_util.add_el_class(tool, "seek_bellow");
 
-    delete node.scrolledIntoViewHandled;
-    t_tools.t_scrollIntoViewIfNeeded(node,0);
+
 };
 
 
@@ -34611,7 +34705,7 @@ let dom_sentence_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220509:16h:27)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220828:20h:20)";
 
 let dom_sentence            = (function() {
 "use strict";
@@ -34710,7 +34804,8 @@ let localStorage_delItem = function(key    ) { localStorage.removeItem(key); };
 
 
 
-const LF    = String.fromCharCode(10);
+const LF                = String.fromCharCode(10);
+const UNICODE_BULLET    = "&#x2022;";
 
 let sentence_containers = [];
 
@@ -34739,114 +34834,116 @@ let   e12_font_size      =  "fs8";
 let t_SENTENCE_GET_EL_CONTAINER = function(el,_log_this)
 {
 
+
+
+
+
+
+
+
 let   caller = "t_SENTENCE_GET_EL_CONTAINER";
 let log_this = _log_this || LOG_MAP.S2_SELECT;
 
-
-
-
-
-
-
-
-
     if(!t_util) console.warn("MISSING STUB FOR: [dom_util]");
+    let container;
 
 
-    let container
-        =  t_util.get_el_parent_with_class(el,  CSS_OUTLINED    );
-    if( container )
-    {
-if(log_this) log(caller+": ...return CSS_OUTLINED container=["+t_util.get_n_lbl(container)+"]");
-
-        return { container };
-    }
-
-
-    container
-        =  t_util.get_el_parent_with_class(el, "container_light")
-        || t_util.get_el_parent_with_class(el, "container_dark" )
-
-
-        || t_util.get_el_parent_with_tag  (el,  "LI"       )
-
-
-
-
-        || t_util.get_el_parent_with_tag  (el, "PRE"       )
-        || t_util.get_el_parent_with_tag  (el, "P"         )
-
-
-
-        || t_util.get_el_parent_with_tag  (el,  "TD"       )
-
-
-
-
-
-        || t_util.get_el_parent_with_tag  (el, "TABLE"     )
-
-
-
-
-
-
-
-        || t_util.get_el_parent_with_tag  (el, "BLOCKQUOTE")
-        || t_util.get_el_parent_with_tag  (el, "DIR"       )
-        || t_util.get_el_parent_with_tag  (el, "DIV"       )
-
-
-
-        || t_util.get_el_parent_with_tag  (el, "DETAILS"   )
-    ;
 
     if(!container)
     {
-if(log_this) log(caller+": ...return NO container");
-        return "";
+        container =  null
+
+
+
+
+
+            || t_util.get_el_parent_with_tag  (el, "UL"             )
+            || t_util.get_el_parent_with_tag  (el, "OL"             )
+
+
+            || t_util.get_el_parent_with_tag  (el, "PRE"            )
+            || t_util.get_el_parent_with_tag  (el, "P"              )
+
+
+
+            || t_util.get_el_parent_with_tag  (el,  "TD"            )
+
+
+
+
+
+            || t_util.get_el_parent_with_tag  (el, "TABLE"          )
+
+
+
+
+
+
+
+            || t_util.get_el_parent_with_tag  (el, "BLOCKQUOTE"      )
+            || t_util.get_el_parent_with_tag  (el, "DIR"             )
+            || t_util.get_el_parent_with_tag  (el, "DIV"             )
+
+
+
+            || t_util.get_el_parent_with_tag  (el, "DETAILS"        )
+        ;
+
+    }
+
+
+    if(!container)
+    {
+        container
+        =  t_util.get_el_parent_with_class(el,  CSS_OUTLINED    );
+
+if(log_this && container) log(caller+": ...CSS_OUTLINED container=["+t_util.get_n_lbl(container)+"]");
     }
 
 
 
-    let c_next = container              .nextElementSibling;
+    let cells;
+    if(container)
+    {
+        let c_next = container              .nextElementSibling;
 
-    let p_next = container.parentElement
-        ?        container.parentElement.nextElementSibling
-        :        null
-    ;
+        let p_next = container.parentElement
+            ?        container.parentElement.nextElementSibling
+            :        null
+        ;
 
-    let group
-        = (!container)                          ? null
-
-
-        :                                         null
-    ;
-
-
-    let dlist
-        = (!container)                        ? null
-        : ( container.nodeName == "DL"      ) ? container
-        : ( container.nodeName == "DT"      ) ? container.parentElement
-        :                                       null
-    ;
-
-    let table
-        = (!container)                        ? null
-        : ( container.nodeName ==  "THEAD"  ) ? container.parentElement
-        : ( container.nodeName ==  "TFOOT"  ) ? container.parentElement
-        : ( container.nodeName ==  "TBODY"  ) ? container.parentElement
-        : ( container.nodeName ==  "CAPTION") ? container.parentElement
-        : ( container.nodeName == "TABLE"   ) ? container
-        :                                      null
-    ;
-
-    let cells
-        =   group ?                        group
+        let group
+            = (!container)                          ? null
 
 
-        :           null
-    ;
+            :                                         null
+        ;
+
+
+        let dlist
+            = (!container)                          ? null
+            : ( container.nodeName == "DL"      )   ? container
+            : ( container.nodeName == "DT"      )   ? container.parentElement
+            :                                         null
+        ;
+
+        let table
+            = (!container)                          ? null
+            : ( container.nodeName ==  "THEAD"  )   ? container.parentElement
+            : ( container.nodeName ==  "TFOOT"  )   ? container.parentElement
+            : ( container.nodeName ==  "TBODY"  )   ? container.parentElement
+            : ( container.nodeName ==  "CAPTION")   ? container.parentElement
+            : ( container.nodeName == "TABLE"   )   ? container
+            :                                         null
+        ;
+
+        cells
+            =   group ?                        group
+
+
+            :                                        null
+        ;
+
 
 if(log_this && (log_key_val_group != console.log))
     log_key_val_group(caller
@@ -34863,8 +34960,19 @@ if(log_this && (log_key_val_group != console.log))
 if(log_this) log(caller+": ...return container=["+t_util.get_n_lbl(container)+"] .. cells=["+(cells ? "x"+cells.length : "")+"]");
 
 
+    }
 
-    return { container, cells };
+
+
+    if(container)
+    {
+        return { container, cells };
+    }
+    else {
+if(log_this) log(caller+": ...return NO container");
+        return "";
+    }
+
 };
 
 
@@ -34910,7 +35018,7 @@ let t_SENTENCE_GET_SENTENCE_CONTAINERS_IN_VIEWPORT = function()
 
 
 const                 WORD = "\\s*(?:\\p{L}|_|\\(|-|\\))"    ;
-const             BOUNDARY =     "[\\.,;:?\)\\n\\r]+(?!\\w)" ;
+const             BOUNDARY =     "[\\.,;:?\\n\\r]+(?!\\w)"   ;
 const            LAST_WORD = WORD    +"{1,}";
 const           FIRST_WORD = WORD    +"+";
 
@@ -34924,6 +35032,7 @@ const CAPTURING_NEXT_START = "(\\n+|"+ FIRST_WORD +")?"      ;
 
 const SYMBOL_GEAR          = "\u2699";
 const SYMBOL_THEME         = "\u262F";
+const SYMBOL_SCROLL        = "\u2933";
 
 const MAGNIFIED_STYLE      = "font-size  : 200% !important;";
 const LINE_HEIGHT_STYLE    = "line-height: 1em  !important;";
@@ -34937,6 +35046,7 @@ const THEME_STYLE_LIGHT    = "color: #222 !important; background-color: "+ THEME
 let     theme_dark = false;
 let     magnified  = false;
 let     xpath_show = false;
+let  scroll_smooth =  true;
 let  last_container;
 let regexp_SENTENCE;
 
@@ -34952,15 +35062,32 @@ if( tag_this) log("%c"+caller+"("+t_util.get_n_lbl(container)+")", lbH+lf1);
 if( log_this) console_dir("container",container        );
 if( log_this && e) log("%c type=["+e.type+"] e.target.id=["+e.target.id+"]", lbH+lf3);
 
+
     if( check_tool_event(e) ) return;
+
+
 
     if((typeof dom_prop) != "undefined") theme_dark = dom_prop.get        ("theme_dark");
     else                                 theme_dark = localStorage_getItem("theme_dark");
 
+
+
+
+    document.getElementsByTagName("HTML")[0].style.scrollBehavior
+        = scroll_smooth
+        ? "smooth"
+        : "auto"
+    ;
+
+
     if(!sentence_containers.includes( container ))
         sentence_containers.push    ( container );
 
+
+
     if(container.nodeName == "DETAILS") container.open = true;
+
+
 
     if(!regexp_SENTENCE ) {
         try {
@@ -35041,10 +35168,11 @@ if( tag_this) {
 
 
     let tools = ""
-        +    "<button id='dom_sentence_theme_dark' title='THEME DARK' style='"+button_style+"'><span style='"+span_style+"'>"+ SYMBOL_THEME     +"</span></button>"
+        +    "<button id='dom_sentence_theme_dark' title='THEME DARK'    style='"+button_style+"'><span style='"+span_style+"'>"+ SYMBOL_THEME     +"</span></button>"
+        +    "<button id='dom_scroll_smooth'       title='SCROLL SMOOTH' style='"+button_style+"'><span style='"+span_style+"'>"+ SYMBOL_SCROLL    +"</span></button>"
 
         + ((typeof dom_popup != "undefined")
-           ? "<button id='dom_sentence_xpath_show' title='XPATH SHOW' style='"+button_style+"'><span style='"+span_style+"'>"+ SYMBOL_GEAR      +"</span></button>" : "")
+           ? "<button id='dom_sentence_xpath_show' title='XPATH SHOW'    style='"+button_style+"'><span style='"+span_style+"'>"+ SYMBOL_GEAR      +"</span></button>" : "")
     ;
 
     let   theme_style
@@ -35117,6 +35245,7 @@ if( log_this) log_key_val_group(            caller
                                  ,            text : "(length: "+        text.length+") "       + t_util.ellipsis(text               )
                                  ,       container : "(length: "+container.innerHTML.length+") "+ t_util.ellipsis(container.innerHTML)
                                  ,      theme_dark
+                                 ,   scroll_smooth
                                  ,       magnified
                                  ,      xpath_show
                                  ,         callers : dom_log.get_callers && dom_log.get_callers()
@@ -35136,22 +35265,35 @@ if( log_this) log_key_val_group(            caller
 
 
 
-const regexp_LI                 = new RegExp("\\s*([\\.,;]\\s*)*<\/(li|LI|)>", "g");
-const regexp_HTML               = new RegExp("<[^>]*>"                       , "g");
-const regexp_PUNC               = new RegExp("\\s*([\\.,;]\\s*)"             , "g");
-const regexp_BLANK              = new RegExp("\\s+|(&nbsp;)+"                , "g");
+const regexp_BRLI               = new RegExp("(<br>\\n*)+<\/li>"       , "gi");
+const regexp_BR                 = new RegExp("<br>"                    , "gi");
+const regexp_LI                 = new RegExp("\\s*([\\.,;]\\s*)*<\/li>", "gi");
+const regexp_MULTI              = new RegExp("(\\s*:\\n*\\s*)+"        , "gms");
+
+const regexp_HTML               = new RegExp("<[^>]*>"                 , "g" );
+const regexp_PUNC               = new RegExp("\\s*([\\.,;]\\s*)"       , "g" );
+const regexp_BLANK              = new RegExp("\\s+|(&nbsp;)+"          , "g" );
 
 
 let strip_HTML = function(text)
 {
     if(   !text) return "";
-    return text
-        .   replace(regexp_LI   , "."+LF)
-        .   replace(regexp_HTML , " "   )
-        .   replace(regexp_PUNC , "$1"  )
-        .   replace(regexp_BLANK , " "  )
-        .trim()
+
+
+    text = text
+        .   replace(regexp_BRLI  , "</li>")
+        .   replace(regexp_LI    , "."+LF+UNICODE_BULLET)
+        .   replace(regexp_BR    , ":"    )
+        .   replace(regexp_MULTI , ":"+LF )
     ;
+
+    text = text
+        .   replace(regexp_HTML  , " "    )
+        .   replace(regexp_PUNC  , "$1"   )
+        .   replace(regexp_BLANK , " "    )
+    ;
+
+    return text.trim();
 };
 
 
@@ -35768,12 +35910,41 @@ if(!e) return false;
        &&  e.target
        && (e.target.id == "dom_sentence_theme_dark")
       ) {
+
+
         theme_dark = !theme_dark;
+
+
         localStorage_setItem("theme_dark", theme_dark);
+
 
         if((typeof dom_prop) != "undefined") dom_prop.set("theme_dark", theme_dark);
 
+
         t_SENTENCE_SPLIT( last_container );
+
+        return true;
+    }
+
+
+    if(    last_container
+       &&  e
+       &&  e.target
+       && (e.target.id == "dom_scroll_smooth")
+      ) {
+
+
+        scroll_smooth = !scroll_smooth;
+
+
+        document.getElementsByTagName("HTML")[0] .style.scrollBehavior
+            = scroll_smooth ? "smooth" : "auto";
+
+
+        let distance = scroll_smooth ? 128 :  32;
+        let delay    = scroll_smooth ? 500 : 250;
+        window                   .scrollBy(0, distance);
+        setTimeout(() => { window.scrollBy(0,-distance); }, delay);
 
         return true;
     }
@@ -37918,7 +38089,7 @@ let dom_tools_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_TOOLS_JS_ID       = "dom_tools_js" ;
-const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (220509:14h:53)";
+const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (221201:14h:51)";
 
 let dom_tools   = (function() {
 "use strict";
@@ -38774,6 +38945,9 @@ if(log_this) log(caller, "info");
 
 
 
+    if( t_store.t_store_getItem(t_data.DOM_FREEZE) ) t_util.t_REMOVE_EventListeners( document.body );
+
+
     dom_i18n.i18n_set_args({ lang: t_store.t_store_getItem(t_data.USER_LANG) , caller });
 
     load0_get_LOADER_ID();
@@ -39247,6 +39421,7 @@ if( log_this) log("%c"+t_data.SD2+"%c "+caller, lbS+lf2, lbH+lf2);
     id = "headsup"          ;             headsup = t_get_tool(id); if( is_a_DOM_LOAD_panel(id) ) TOOL_panels.push( headsup );
     id = "thumb_p"          ;       toolbar_thumb = t_get_tool(id);
 
+    id =  t_data.DOM_FREEZE        ; if(           tool = t_get_tool(id)) load2_TOOLS_prop_set_EL(id, tool);
     id =  t_data.USER_LANG         ; if(           tool = t_get_tool(id)) load2_TOOLS_prop_set_EL(id, tool);
     {
         let el = prop.get_EL(t_data.USER_LANG);
@@ -39531,6 +39706,7 @@ if( log_this) log("%c"+t_data.SD4+"%c "+caller, lbS+lf4, lbH+lf4);
     let el;
 
     if( el = toolbar_thumb                        ) { el.style.position   = "absolute"; el.style.left = " 7%"; el.style.top    = "  2%"; el.style.transform = ""; }
+    if( el = prop.get_EL( t_data.DOM_FREEZE      )) { el.style.position   = "absolute"; el.style.left = "70%"; el.style.top    = " 40%"; el.style.transform = ""; }
     if( el = prop.get_EL( t_data.USER_LANG       )) { el.style.position   = "absolute"; el.style.left = "45%"; el.style.top    = " 36%"; el.style.transform = ""; }
     if( el = prop.get_EL( t_data.ANCHOR_FREEZE   )) { el.style.position   = "absolute"; el.style.left = " 0%"; el.style.top    = " 19%"; el.style.transform = ""; }
     if( el = prop.get_EL( t_data.WORDING         )) { el.style.position   = "absolute"; el.style.left = " 0%"; el.style.top    = " 47%"; el.style.transform = ""; }
@@ -39613,6 +39789,7 @@ if( log_this) log("%c"+t_data.SD5+"%c "+caller, lbS+lf5, lbH+lf5);
 
     let id, state, value;
 
+    id = t_data.DOM_FREEZE           ; value =  t_store.t_store_getItem(id)           ; prop.set(id, value);
     id = t_data.USER_LANG            ; value =  t_store.t_store_getItem(id)           ; prop.set(id, value);
     id = t_data.ANCHOR_FREEZE        ; state = (t_store.t_store_getItem(id) == "true"); prop.set(id, state);
     id = t_data.CONTAINERS_HI        ; state = (t_store.t_store_getItem(id) == "true"); prop.set(id, state);
@@ -40543,6 +40720,7 @@ if( log_this) log(caller);
 
 
 
+    key = t_data.DOM_FREEZE    ; value = prop.get( key )       ; t_store.t_store_set_value(key, value);
     key = t_data.USER_LANG     ; value = prop.get( key )       ; t_store.t_store_set_value(key, value);
     key = t_data.ANCHOR_FREEZE ; value = prop.get( key )       ; t_store.t_store_set_state(key, value);
     key = t_data.CONTAINERS_HI ; value = prop.get( key )       ; t_store.t_store_set_state(key, value);
@@ -40597,7 +40775,7 @@ if( log_this) log(caller);
 
 
 const STORE_CYCLE_CLASSLIST   = ["store_count1","store_count2","store_count3"];
-const STORE_CYCLE_CLEAR_DELAY = 1000;
+const STORE_CYCLE_CLEAR_DELAY = 250;
 
 let t_store4_save_site_layout_step = 0;
 
@@ -46356,7 +46534,8 @@ let log_this = !onDown_SHIFT && LOG_MAP.EV3_UP;
 
     if(!id) return false;
     let result
-        =  (id ==  t_data.USER_LANG       )
+        =  (id ==  t_data.DOM_FREEZE      )
+        || (id ==  t_data.USER_LANG       )
         || (id ==  t_data.ANCHOR_FREEZE   )
         || (id ==  t_data.CONTAINERS_HI   )
         || (id ==  t_data.SCROLL_SMOOTH   )
@@ -49441,6 +49620,7 @@ let t_log_option_changes = function(changes)
         +"<tr><th>OPTIONS:</th></tr>"+LF
         +"<tr>"
         +" <td>"+ get_log_option_state( t_data.TOOLS_SCROLL       , prop.get( t_data.TOOLS_SCROLL      ) ) +"</td>"
+        +" <td>"+ get_log_option_state( t_data.DOM_FREEZE         , prop.get( t_data.DOM_FREEZE        ) ) +"</td>"
         +" <td>"+ get_log_option_state( t_data.USER_LANG          , prop.get( t_data.USER_LANG         ) ) +"</td>"
         +" <td>"+ get_log_option_state( t_data.ANCHOR_FREEZE      , prop.get( t_data.ANCHOR_FREEZE     ) ) +"</td>"
         +" <td>"+ get_log_option_state( t_data.CONTAINERS_HI      , prop.get( t_data.CONTAINERS_HI     ) ) +"</td>"
@@ -49884,7 +50064,7 @@ if( log_this) log("...return %c"+state, lbX[state ? 4 : 6]);
 
 
 
-const TOGGLE_LANG_RELOAD_DELAY = 2000;
+const TOGGLE_RELOAD_DELAY = 2000;
 
 let   location_reload_timeout;
 
@@ -49962,7 +50142,7 @@ logBIG("RELOADING: changing from "+lang_applied+" to "+lang, 7);
             if( el ) t_util.add_el_class(el, "reloading");
 
             if( location_reload_timeout ) clearTimeout( location_reload_timeout );
-            location_reload_timeout     =   setTimeout(function() { document.location.reload(); }, TOGGLE_LANG_RELOAD_DELAY);
+            location_reload_timeout     =   setTimeout(function() { document.location.reload(); }, TOGGLE_RELOAD_DELAY);
         }
         else {
             if( el ) t_util.del_el_class(el, "reloading");
@@ -49976,9 +50156,29 @@ if( log_this)
                       , { user_lang
                         , array
                         , lang
-                        , TOGGLE_LANG_RELOAD_DELAY
+                        , TOGGLE_RELOAD_DELAY
                       } , lf5, false);
 
+    }
+    break;
+
+    case  t_data.DOM_FREEZE      : changes += keyword; prop.toggle( keyword          );
+    {
+
+
+        let state = prop.get(     t_data.DOM_FREEZE);
+        t_store.t_store_set_value(t_data.DOM_FREEZE, state);
+
+
+        if( state )
+            t_util.t_REMOVE_EventListeners();
+
+
+        if(!state)
+        {
+            if( location_reload_timeout ) clearTimeout( location_reload_timeout );
+            location_reload_timeout     =   setTimeout(function() { document.location.reload(); }, 0);
+        }
     }
     break;
 
@@ -53749,6 +53949,14 @@ if( log_this) log("%c "+caller+" %c "+t_util.get_id_or_tag(el)+"%c el.scrolledIn
     t_scrollIntoView_EL                 = el;
     if(t_scrollIntoView_EL)
     {
+
+
+            set_scrollBehavior( "instant" );
+            t_scrollIntoView_EL.scrollIntoView({ block:"nearest", behavior:"auto" });
+            sync_scroll_smooth();
+
+
+
         t_scrollIntoView_EL.to_the_top  = to_the_top;
         delete t_scrollIntoView_EL.scrolledIntoViewHandled;
 
@@ -53827,7 +54035,7 @@ if( log_this) log("%c "+caller+" %c "+t_util.get_id_or_tag(el)+"%c el.scrolledIn
         let since_handled = this_MS - el.scrolledIntoViewHandled;
         let  just_handled = (since_handled < SCROLL_RECENTER_DELAY*3);
 
-if( log_this) log("%c  just_handled=["+just_handled+"]", lbH+lfX[just_handled ? 8:7]);
+if( log_this) log("%c  just_handled=["+just_handled+"] "+parseInt(since_handled / 1000)+"s", lbH+lfX[just_handled ? 8:7]);
 
         if( just_handled ) return;
     }
@@ -60499,6 +60707,7 @@ return { name : "dom_tools"
     , get_onMoveDXY
     , remove_listener_capture_active
     , set_onDown_XY
+    , t_CURSOR_del_MOVE_LISTENER
     , t_pat_bag3_dump_all_csv
     , t_preventDefault
     , wording_3_CB_WORDS_RECYCLE

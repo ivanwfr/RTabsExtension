@@ -5,7 +5,7 @@
     "short_name"        : "RTabs",
     "description"       : "Find In Page .. made a bit smarter",
     "homepage_url"      : "https://remotetabs.com",
-    "version"           : "1.21.08.11",
+    "version"           : "1.22.06.16",
     "icons"             : {
         "16"              : "images/rtabs16.png",
         "24"              : "images/rtabs24.png",
