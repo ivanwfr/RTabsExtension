@@ -9,7 +9,7 @@ javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 let DOM_LOAD_ID         = "dom_load";
-let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (221201:14h:53)";
+let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (230206:18h:01)";
 let DOM_HOST_CSS_ID     = "dom_host_css";
 let DOM_TOOLS_CSS_ID    = "dom_tools_css";
 let DOM_GRID_CSS_ID     = "dom_grid_css";
@@ -242,7 +242,7 @@ let dom_tools_html_data = `
 let dom_host_css_data ="data:text/css,"+ escape(`
 /*INLINE{{{*/
 @charset "utf-8";
-#dom_host_css_tag   { content: "dom_host_css (220916:18h:32)"; }
+#dom_host_css_tag   { content: "dom_host_css (230201:14h:13)"; }
 
 
 .dark * { background : rgba(17,17,17,0.5); color: rgba(221,221,221,0.5); }
@@ -923,7 +923,7 @@ OL.sentence_container { display: block; }
     background-color : rgba(221,255,221,0.5);
 }
 .sentence { max-width   : 64ch     !important; }
-.sentence { min-width   : 32ch     !important; }
+.sentence { min-width   : 50ch     !important; }
 .sentence { overflow    : visible  !important; }
 
 .sentence { white-space : normal   !important; }
@@ -8878,7 +8878,7 @@ let dom_util_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_UTIL_JS_ID        = "dom_util";
-const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (221124:17h:42)";
+const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (230124:17h:12)";
 
 let dom_util    = (function() {
 "use strict";
@@ -9837,7 +9837,7 @@ let log_this = DOM_UTIL_LOG;
 
     let event_XY = get_event_XY(e);
 
-    let    e_target = e.path ? e.path[0] : e.target;
+    let    e_target = get_event_target(e);
     if(   !e_target                 ) return false;
     if(   !e_target.scrollWidth     ) return false;
     if(   !e_target.scrollHeight    ) return false;
@@ -9848,7 +9848,7 @@ let log_this = DOM_UTIL_LOG;
     let          bcr = e_target.getBoundingClientRect();
     let     bcr_left = (bcr.left                                ).toFixed(0);
     let     bcr_top  = (bcr.top                                 ).toFixed(0);
-    let     scale = t_get_panel_scale(e_target);
+    let        scale = t_get_panel_scale(e_target);
     let        x_max = (bcr.left + e_target.scrollWidth  * scale).toFixed(0);
     let        y_max = (bcr.top  + e_target.scrollHeight * scale).toFixed(0);
 
@@ -10012,18 +10012,52 @@ let get_event_XY = function(e)
 };
 
 
+let get_event_target = function(e,_log_this)
+{
+
+    let e_target = e.currentTarget || e.target;
+
+
+
+
+
+
+    let     e_path = e.composedPath();
+    if     (e_path[0] && (e_path[0].tagName != "IMG")) e_target = e_path[0]               ;
+    else if(e_path[1]                                ) e_target = e_path[1]               ;
+    else if(e_path[0]                                ) e_target = e_path[0]               ;
+
+    else if(e.originalTarget                         ) e_target = e.originalTarget        ;
+    else if(e.explicitOriginalTarget                 ) e_target = e.explicitOriginalTarget;
+
+if( _log_this )
+    log_key_val_group("...get_event_target("+e.type+")"
+                      , { e_target                 : get_id_or_tag(e_target                )
+                        , e_path_0                 : get_id_or_tag(e_path[0]               )
+                        , e_path_1                 : get_id_or_tag(e_path[1]               )
+                        , e_currentTarget          : get_id_or_tag(e.currentTarget         )
+                        , e_originalTarget         : get_id_or_tag(e.originalTarget        )
+                        , e_explicitOriginalTarget : get_id_or_tag(e.explicitOriginalTarget)
+                        ,                  callers : t_log.get_callers()
+                      }, lf7, false
+                     );
+
+    return e_target;
+};
+
+
 
 let t_get_event_target_last_e;
 let t_get_event_target_last_e_target;
 
 
-let t_get_event_target = function(e)
+let t_get_event_target = function(e,_log_this)
 {
 
 let caller = "t_get_event_target";
-let log_this = DOM_UTIL_LOG;
+let log_this = _log_this || DOM_UTIL_LOG;
 
-if( log_this) caller += "("+e.type+" on "+get_id_or_tag((e.path ? e.path[0] : e.e_target))+")";
+if( log_this) caller += "("+e.type+" on "+get_id_or_tag((e.path ? e.path[0] : e.target))+")";
 if( log_this) log("%c"+caller, lbH+lf7);
 if( log_this) console.dir(e);
 
@@ -10039,32 +10073,7 @@ if( log_this)
     }
 
 
-    let e_target = e.target ? e.target  : undefined;
-    let e_path_0 =  e.path  ? e.path[0] : undefined;
-    let e_path_1 =  e.path  ? e.path[1] : undefined;
-
-if( log_this ) {
-    log_key_val_group("...event path and target"
-                      , { e_target
-                        , e_path_0
-                        , e_path_1
-                        , e_originalTarget         : e.originalTarget
-                        , e_explicitOriginalTarget : e.explicitOriginalTarget
-                        ,                  callers : t_log.get_callers()
-                      }, lf7, false
-                     );
-
-}
-
-
-
-
-
-    if     (e.path && (e_path_0.tagName != "IMG")) {  e_target = e_path_0; }
-    else if(e.path &&  e_path_1                  ) {  e_target = e_path_1; }
-    else if(e.originalTarget                     ) {  e_target = e.originalTarget; }
-    else if(e.explicitOriginalTarget             ) {  e_target = e.explicitOriginalTarget; }
-    else if(e_target                             ) { }
+    let e_target = get_event_target(e,log_this);
 
 
 
@@ -10106,7 +10115,7 @@ if( log_this)
 };
 
 
-let et_handled_target = function(e, e_target, log_this)
+let get_handled_target = function(e, e_target, log_this)
 {
 let caller = "get_handled_target";
 
@@ -12905,6 +12914,39 @@ let get_parent_chain = function(el)
 
 
 
+let get_el_methodNames = function(obj,_filter_str)
+{
+    let    propertyNames = new Set();
+    let    current_obj   = obj;
+    do {
+        Object.getOwnPropertyNames( current_obj ).map((p_name) => propertyNames.add( p_name ) );
+    }
+    while((current_obj   = Object.getPrototypeOf( current_obj )));
+
+    let    propKeys      = [ ...propertyNames.keys() ];
+
+    let    methodNames   =  propKeys.filter((key) => typeof obj[key] === "function");
+
+    if(_filter_str)
+    {
+        let filter_str   = _filter_str.toLowerCase();
+        methodNames      = methodNames.filter((name) => name.toLowerCase().includes(filter_str));
+    }
+
+    return methodNames.sort();
+};
+
+
+let log_el_methodNames = function(_obj,_filter_str)
+{
+    console.dir( _obj );
+
+    console.dir(get_el_methodNames(_obj, _filter_str));
+};
+
+
+
+
 
 let t_store_set_state = function(label,state)
 {
@@ -12935,9 +12977,9 @@ return { name : "dom_util"
     , get_el_parent_with_any_event_handler
     , is_event_on_scrollbar
     , send_onchange_event_to
-    ,    get_event_XY
-    ,    t_get_event_target
-    ,    t_prevent_reload
+    , get_event_XY
+    , t_get_event_target
+    , t_prevent_reload
 
 
 
@@ -13196,11 +13238,14 @@ return { name : "dom_util"
 
 
 
+    , get_el_methodNames
+    , log_el_methodNames
 
 };
 
 
 }());
+
 
 
 
@@ -24991,7 +25036,8 @@ let log_this = DOM_STICKY_LOG;
 
 
 
-    let e_target = e ? e.path[0] : undefined;
+    let e_path   = e      ? e.composedPath() : undefined;
+    let e_target = e_path ? e_path[0]        : undefined;
     let sticky_pad_msg = get_sticky_pad_msg( sticky );
     let event_on_scrollbar
         =  e
@@ -34705,7 +34751,7 @@ let dom_sentence_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220828:20h:20)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230206:17h:46)";
 
 let dom_sentence            = (function() {
 "use strict";
@@ -35144,7 +35190,7 @@ if( tag_this) {
     t_util.add_el_class(container, CSS_SENTENCE_CONTAINER);
     if( theme_dark ) {
         t_util.add_el_class(    container, CSS_DARK);
-        t_util.add_el_class(document.body, CSS_DARK);
+
     }
 
     container.style.touchAction = "none";
@@ -35764,7 +35810,8 @@ let t_SENTENCE_FONTSIZE_APPLY = function(container)
 
     container.classList.add( e12_font_size );
 
-    container.parentElement.style.maxHeight = "fit-content";
+    if( container.parentElement )
+        container.parentElement.style.maxHeight = "fit-content";
 };
 
 
@@ -35797,7 +35844,7 @@ if( log_this && e) log("%c type=["+e.type+"] e.target.id=["+e.target.id+"]", lbH
         t_util.del_el_class(    container, CSS_SENTENCE_CONTAINER);
         t_util.add_el_class(    container, CSS_OUTLINED);
         t_util.del_el_class(    container, CSS_DARK);
-        t_util.del_el_class(document.body, CSS_DARK);
+
 
         if( container.innerHTML_SAVED )
         {
@@ -35868,10 +35915,15 @@ check_tool_event_timer = setTimeout(check_tool_event, CHECK_TOOL_EVENT_DELAY, e)
 };
 
 
-let t_SENTENCE_set_theme_dark = function(_theme_dark)
+let t_SENTENCE_set_theme_dark = function(state)
 {
-    theme_dark = !!_theme_dark;
-    localStorage_setItem("theme_dark", theme_dark);
+    localStorage_setItem("theme_dark", state);
+};
+
+
+let t_SENTENCE_get_theme_dark = function()
+{
+    return !!theme_dark;
 };
 
 
@@ -36047,6 +36099,7 @@ return { name : "dom_sentence"
     ,    t_SENTENCE_onresize
 
     ,    t_SENTENCE_set_theme_dark
+    ,    t_SENTENCE_get_theme_dark
     ,    t_SENTENCE_restore_text_containers_outlined
 
 
@@ -38089,7 +38142,7 @@ let dom_tools_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_TOOLS_JS_ID       = "dom_tools_js" ;
-const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (221201:14h:51)";
+const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (230124:18h:02)";
 
 let dom_tools   = (function() {
 "use strict";
@@ -40098,6 +40151,8 @@ logBIG(caller+" *** t_get_tool('dom_load_tags') failed");
     id =   "dom_grid_css";                              DOM_GRID_CSS_TAG   = load6_TOOL_CSS( id );
 
     let m_class = "em_missing";
+
+
     dom_load_tags_el.innerHTML = ""
 
 + ("LOADER"+LF)
@@ -41235,22 +41290,22 @@ let log_this = LOG_MAP.T3_LAYOUT;
 
 if( log_this) log("%c"+caller, lbH+lf5);
 
-    if( value ) t_dom_EDIT_OR_STAGE_start(id, value);
-    else        t_dom_EDIT_OR_STAGE_end  (id, value);
+    if( value ) dom_EDIT_OR_STAGE_start(id, value);
+    else        dom_EDIT_OR_STAGE_end  (id, value);
 
 };
 
 
-let t_dom_EDIT_OR_STAGE_start = function()
+let dom_EDIT_OR_STAGE_start = function()
 {
 
-let   caller = "t_dom_EDIT_OR_STAGE_start"; if(typeof dom_prop_notify != "undefined") dom_prop_notify(caller);
+let   caller = "dom_EDIT_OR_STAGE_start"; if(typeof dom_prop_notify != "undefined") dom_prop_notify(caller);
 let log_this = LOG_MAP.T3_LAYOUT;
 
 if( log_this) log("%c"+caller, lbH+lf5);
 
 
-    t_start_DOM_EDITING();
+    start_DOM_EDITING();
 
     t_seek.t_seekzone8_show_gutter_xywh(0, 0, window.innerWidth, window.innerHeight);
 
@@ -41272,19 +41327,19 @@ if( log_this) log("%c"+caller, lbH+lf5);
 };
 
 
-let t_dom_EDIT_OR_STAGE_end = function ()
+let dom_EDIT_OR_STAGE_end = function ()
 {
 
-let   caller = "t_dom_EDIT_OR_STAGE_end"; if(typeof dom_prop_notify != "undefined") dom_prop_notify(caller);
+let   caller = "dom_EDIT_OR_STAGE_end"; if(typeof dom_prop_notify != "undefined") dom_prop_notify(caller);
 let log_this = LOG_MAP.T3_LAYOUT;
 
 if( log_this) log("%c"+caller, lbH+lf5);
 
 
     prop.set(t_data.EDIT_OR_STAGE, false);
-    t_stop_DOM_EDITING();
+    stop_DOM_EDITING();
 
-    t_dom_EDIT_drag_hotspot_off_gutter();
+    dom_EDIT_drag_hotspot_off_gutter();
     let xy = t_gutter.get_WINDOW_XY();
     if( xy ) t_tools_set_top_xy(xy.x, xy.y);
 
@@ -41305,10 +41360,10 @@ if( log_this) log("%c"+caller, lbH+lf5);
 };
 
 
-let t_dom_EDIT_drag_hotspot_off_gutter = function(x, y)
+let dom_EDIT_drag_hotspot_off_gutter = function(x, y)
 {
 
-let   caller = "t_dom_EDIT_drag_hotspot_off_gutter";
+let   caller = "dom_EDIT_drag_hotspot_off_gutter";
 let log_this = LOG_MAP.T3_LAYOUT;
 
 if( log_this) log("%c"+caller+"("+x+", "+y+")", lbH+lf5);
@@ -41322,7 +41377,7 @@ if( log_this) log("%c"+caller+"("+x+", "+y+")", lbH+lf5);
 };
 
 
-let t_start_DOM_EDITING = function()
+let start_DOM_EDITING = function()
 {
     add_el_class(hotspot, t_data.DOM_EDITING);
 
@@ -41334,7 +41389,7 @@ let t_start_DOM_EDITING = function()
 };
 
 
-let t_stop_DOM_EDITING = function()
+let stop_DOM_EDITING = function()
 {
     del_el_class(hotspot, t_data.MARKED_TO_HIDE);
 
@@ -46912,7 +46967,7 @@ if( log_this) t_fly.t_log_event_status(caller, lf9);
        &&  prop.get( t_data.EDIT_OR_STAGE )
        && !t_gutter.get_XY_URDL(h_x, h_y, "EDITING DONE .. dragging [hotspot] back IN-WINDOW")
       ) {
-        t_dom_EDIT_drag_hotspot_off_gutter(h_x, h_y);
+        dom_EDIT_drag_hotspot_off_gutter(h_x, h_y);
     }
 
 
@@ -61012,39 +61067,48 @@ const lfX = [ lf0 ,lf1 ,lf2 ,lf3 ,lf4 ,lf5 ,lf6 ,lf7 ,lf8 ,lf9 ];
 
 /*}}}*/
 /*➔ dom_load {{{*/
-let dom_load = function() /* eslint-disable-line complexity */
+let dom_load = function(_dom_load_id=DOM_LOAD_ID) /* eslint-disable-line complexity */
 {
+/*{{{*/
 let log_this = IPC_LOG;
-if( log_this) console.log(DOM_LOAD_ID+": LOADING DATA");
-if( log_this) console.log(DOM_LOAD_ID+": document.contentType=["+document.contentType+"]");
-/*{{{
-}}}*/
-/*
+if( log_this) console.log(_dom_load_id+": LOADING DATA");
+if( log_this) console.log(_dom_load_id+": document.contentType=["+document.contentType+"]");
+/*}}}*/
+    /* CHECK ALREADY LOADED CONTENT-SCRIPT {{{*/
+    if(    typeof dom_log      != "undefined") {
+        if(typeof dom_sentence != "undefined") console.log(_dom_load_id+": dom_sentence is already loaded");
+        if(typeof dom_tools    != "undefined") console.log(_dom_load_id+   ": dom_tools is already loaded");
+        return false;
+    }
+    /*}}}*/
+/* Content-Security-Policy {{{
 let csp = document.querySelectorAll("[http-equiv='Content-Security-Policy']")[0];
 if( csp ) {
     console.log("%c"+csp.content, "font-size:200%; background-color:navy");
     csp.httpEquiv = "Content-Security-Policy";
     csp.content   = "default-src 'self' 'unsafe-inline' http://* https://* file://* data://*";
 }
-*/
-
+}}}*/
     let dom_load_success = true; /* the optimist at work */
     try {
-if( log_this) console.log(DOM_LOAD_ID+": LOADING DATA .. try");
+/* log {{{*/
+if( log_this) console.log(_dom_load_id+": LOADING DATA .. try");
 if( log_this) window.addEventListener("error", load_onerror, false);
-
+/*}}}*/
+        /* LOAD HTML {{{*/
         if(    dom_load_success && !load_html  ( "dom_tools_html" , dom_tools_html_data ) ) dom_load_success = false;
-
-        if(    dom_load_success && document.contentType.includes("XXXxml") ) {
-            if(dom_load_success && !load_css_pi( DOM_HOST_CSS_ID  , dom_host_css_data   ) ) dom_load_success = false;
-            if(dom_load_success && !load_css_pi( DOM_TOOLS_CSS_ID , dom_tools_css_data  ) ) dom_load_success = false;
+        /*}}}*/
+        /* LOAD CSS {{{*/
+        if(    dom_load_success && document.contentType.includes("xml") ) {
+            if(dom_load_success && !load_css_pi( DOM_HOST_CSS_ID        , dom_host_css_data         ) ) dom_load_success = false;
         }
         else {
             if(dom_load_success && !load_css   ( DOM_HOST_CSS_ID  , dom_host_css_data   ) ) dom_load_success = false;
             if(dom_load_success && !load_css   ( DOM_GRID_CSS_ID  , dom_grid_css_data   ) ) dom_load_success = false;
             if(dom_load_success && !load_css   ( DOM_TOOLS_CSS_ID , dom_tools_css_data  ) ) dom_load_success = false;
         }
-
+        /*}}}*/
+        /* LOAD JS - data .. tools {{{*/
         if(    dom_load_success && !load_js    ( "dom_data_js"    , dom_data_js_data    ) ) dom_load_success = false;
 
         if(    dom_load_success && !load_js    ( "dom_log_js"     , dom_log_js_data     ) ) dom_load_success = false;
@@ -61073,17 +61137,24 @@ if( log_this) window.addEventListener("error", load_onerror, false);
 
         if(    dom_load_success && !load_js    ( "dom_ipc_js"     , dom_ipc_js_data     ) ) dom_load_success = false;
         if(    dom_load_success && !load_js    ( "dom_tools_js"   , dom_tools_js_data   ) ) dom_load_success = false;
+        /*}}}*/
     }
     catch(ex) {
-if( log_this) console.log(DOM_LOAD_ID+": LOADING DATA .. catch");
+/*{{{*/
+if( log_this) console.log(_dom_load_id+": LOADING DATA .. catch");
         console.dir(ex);
         dom_load_success = false;
+/*}}}*/
     }
     finally {
-if( log_this) console.log(DOM_LOAD_ID+": LOADING DATA .. finally");
+/*{{{*/
+if( log_this) console.log(_dom_load_id+": LOADING DATA .. finally");
 if( log_this) window.removeEventListener("error", load_onerror, false);
+/*}}}*/
     }
-if( log_this) console.log(DOM_LOAD_ID+": LOADING DATA .. [dom_load_success = "+dom_load_success+"]");
+/*{{{*/
+if( log_this) console.log(_dom_load_id+": LOADING DATA .. [dom_load_success = "+dom_load_success+"]");
+/*}}}*/
     return dom_load_success;
 };
 /*}}}*/
