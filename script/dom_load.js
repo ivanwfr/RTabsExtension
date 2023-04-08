@@ -9,7 +9,7 @@ javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 let DOM_LOAD_ID         = "dom_load";
-let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (230206:18h:01)";
+let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (230405:21h:53)";
 let DOM_HOST_CSS_ID     = "dom_host_css";
 let DOM_TOOLS_CSS_ID    = "dom_tools_css";
 let DOM_GRID_CSS_ID     = "dom_grid_css";
@@ -7334,7 +7334,7 @@ let get_callers = function(level_max)
 {
     let xx, ex_stack;
     try {   xx.raise(); } catch(ex) { ex_stack = parse_ex_stack_FUNC_FILE_LINE_COL(ex.stack, level_max); }
-    return  ex_stack;
+    return  ex_stack.trim();
 };
 
 
@@ -61093,7 +61093,7 @@ if( csp ) {
     try {
 /* log {{{*/
 if( log_this) console.log(_dom_load_id+": LOADING DATA .. try");
-if( log_this) window.addEventListener("error", load_onerror, false);
+              window.addEventListener("error", load_onerror, false);
 /*}}}*/
         /* LOAD HTML {{{*/
         if(    dom_load_success && !load_html  ( "dom_tools_html" , dom_tools_html_data ) ) dom_load_success = false;
@@ -61149,7 +61149,7 @@ if( log_this) console.log(_dom_load_id+": LOADING DATA .. catch");
     finally {
 /*{{{*/
 if( log_this) console.log(_dom_load_id+": LOADING DATA .. finally");
-if( log_this) window.removeEventListener("error", load_onerror, false);
+              window.removeEventListener("error", load_onerror, false);
 /*}}}*/
     }
 /*{{{*/
@@ -61225,8 +61225,7 @@ let load_js = function(id, scheme_arg) {
     el.defer         = true;
     el.addEventListener("error", load_onerror);
 
-    document.getElementsByTagName("head")[0].appendChild(el);
-
+try { document.getElementsByTagName("head")[0].appendChild(el); } catch(error) { console.log("load_js",error); }
     return true;
 };
 /*}}}*/
@@ -61243,7 +61242,7 @@ let load_css = function(id, scheme_arg) {
     el.rel           = "stylesheet";
     el.addEventListener("error", load_onerror);
 
-    document.getElementsByTagName("head")[0].appendChild(el);
+try { document.getElementsByTagName("head")[0].appendChild(el); } catch(error) { console.log("load_js",error); }
 
     return true;
 };
@@ -61275,7 +61274,7 @@ let load_html = function(id, html) {
     el.style.display = "none";
     el.addEventListener("error", load_onerror);
 
-    document.body.appendChild (el);
+try { document.body.appendChild(el); } catch(error) { console.log("load_js",error); }
 
     return true;
 };

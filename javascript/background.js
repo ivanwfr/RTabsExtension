@@ -1,20 +1,28 @@
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ background_v2.js............................. GITHUB BACKGROUND SCRIPT │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 /* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true {{{*/
+/* eslint-disable no-redeclare              */
+/* globals console, confirm, chrome         */
+/* globals setTimeout, clearTimeout         */
 
-/* globals console, confirm, chrome */
-/* globals Map */
-/* globals log_js */
-/* globals setTimeout, clearTimeout */
+/* globals log_js                           */
+/* globals Map                              */
 
-/* exported background_js, B_SCRIPT_TAG */
+/* exported background_js, B_SCRIPT_TAG     */
 
-/* eslint-disable no-warning-comments */
-/* eslint-disable prefer-spread */
-/* eslint-disable prefer-rest-params */
-/* eslint-disable valid-jsdoc */
+/* eslint-disable no-warning-comments       */
+/* eslint-disable prefer-spread             */
+/* eslint-disable prefer-rest-params        */
+/* eslint-disable valid-jsdoc               */
+/* globals importScripts                    */ /* eslint-disable-line no-unused-vars */
+/* eslint-enable  no-redeclare              */
 
 const B_SCRIPT_ID         = "background_js";
-const B_SCRIPT_TAG        =  B_SCRIPT_ID +" (220414:16h:29)";
+const B_SCRIPT_TAG        =  B_SCRIPT_ID +" V2(230408:17h:15)";
 /*}}}*/
+
+
 let background_js = (function() {
 "use strict";
 /* NOTES: {{{*/
@@ -34,7 +42,7 @@ let background_js = (function() {
 }}}*/
 /*}}}*/
 
-/* IMPORT log_js */
+/* IMPORT log_js {{{*/
 /* eslint-disable no-unused-vars */
 /*_ {{{*/
 //let log_js = {};
@@ -133,16 +141,16 @@ background_require_dom_log();
 /*{{{*/
 let LOG_MAP = {
     B_LOG1_MESSAGE    : false,
-    B_LOG2_ERROR      :  true,
+    B_LOG2_ERROR      : false,
     B_LOG3_PRESERVE   : false,
     B_LOG4_PARSE      : false,
     B_LOG5_ONREQUEST  : false,
-    B_LOG6_ONHEADER   : false,
+    B_LOG6_ONHEADER   :  true,
     B_LOG7_TABS       : false,
     B_LOG8_STORE      : false,
     B_LOG9_STAGE      : false,
     B_LOG0_MORE       : false
-   };
+};
 
 /*}}}*/
 let b_is_logging = function()
@@ -180,10 +188,13 @@ let log_LOG_MAP = function()
 };
 /*}}}*/
 /*}}}*/
+/*}}}*/
 
-/** SYNC */                                             // B_LOG7_TABS
-// TODO REMOVE FILTER WHEN no effect after b_onHeader2_received with !csp_filter_effect
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ TABS                                                                   │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 /*_ b_tabs_sync {{{*/
+// TODO REMOVE FILTER WHEN no effect after b_onHeader2_received with !csp_filter_effect
 let b_tabs_sync = function(tabId, message, _caller)
 {
     /*{{{*/
@@ -428,6 +439,7 @@ let b_tabs_del_tabId_key     = function(tabId, key         )
 /*
     b_tabs.delete(key+"_"+tabId);
 */
+if(b_tabs.length > 0) log_members("b_tabs_del_tabId_key: b_tabs",b_tabs);//FIXME
     let o;
     if( o = b_tabs.get(tabId)) delete o[key];
 };
@@ -517,8 +529,34 @@ if( log_more && item) log_members(SAL+" "+item.from, item, lbF+lbH+lf8);
 /*}}}*/
 /*}}}*/
 
-/** EVENTS */
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ EVENTS                                                                 │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 /*{{{*/
+/* ADD LISTENERS */
+/*_ b_add_listeners {{{*/
+let b_add_listeners = function(items={})
+{
+/*{{{*/
+    let caller = "b_add_listeners";
+
+    let some_log = b_is_logging();
+/*}}}*/
+
+    if(some_log) console.groupCollapsed("%c ADDING LISTENERS "+SAD, lbH+lf3);
+
+    b_onHeader2_received_addListener();
+    b_onActivated_addListener();
+    b_onUpdated_addListener();
+    b_onRemoved_addListener();
+    b_onMessage_addListener();
+log_members(B_SCRIPT_TAG+"chrome.alarms", chrome.alarms);
+//  if(chrome.alarms)
+//      b_onAlarm_addListener();
+
+    if(some_log) console.groupEnd();
+};
+/*}}}*/
 
 /* RELOAD */                                            // B_LOG6_ONHEADER
 /*{{{*/
@@ -552,8 +590,9 @@ const STATUS_COLORS      = {
 /*}}}*/
 /*_ b_onHeader1_reload {{{*/
 /*{{{*/
-const B_ONHEADER1_RELOAD_DELAY = 500;
+const B_ONHEADER1_RELOAD_DELAY_MS = 500;
 let b_set_csp_filter_onHeadersReceived_timeout;
+
 
 /*}}}*/
 let b_onHeader1_reload = function(tabId)
@@ -566,9 +605,24 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 /*}}}*/
 if( log_this) log_sep_top(caller, "LOG2_TAG");
 if( log_this) log(SAR+" %c READY TO FILTER NEXT TAB#"+tabId+" PAGE HEADER CSP WITH %c"+CSP_Rules_key, lbR+lf0, lbR+lf2);
-    /* POST A RELOAD {{{*/
-    if(b_set_csp_filter_onHeadersReceived_timeout) clearTimeout(b_set_csp_filter_onHeadersReceived_timeout);
-    b_set_csp_filter_onHeadersReceived_timeout =     setTimeout(function() { b_onHeader1_reload_handler(tabId); }, B_ONHEADER1_RELOAD_DELAY);
+
+
+
+
+
+
+
+
+
+    /* TIMEOUT {{{*/
+
+        if( b_set_csp_filter_onHeadersReceived_timeout) clearTimeout(b_set_csp_filter_onHeadersReceived_timeout);
+        /**/b_set_csp_filter_onHeadersReceived_timeout
+            = setTimeout(function() {
+logXXX("b_set_csp_filter_onHeadersReceived_timeout .. HANDLING");//FIXME
+                b_onHeader1_reload_handler(tabId);
+                b_set_csp_filter_onHeadersReceived_timeout = null;
+            }, B_ONHEADER1_RELOAD_DELAY_MS);
 
     /*}}}*/
 if( log_this) log_sep_bot(caller, "LOG2_TAG");
@@ -593,21 +647,21 @@ if( log_this) log("%c"+SYMBOL_GEAR+"%c "+B_RELOAD_FOR_CSP_FILTERING+" %c"+CSP_Ru
 
     b_page1_RELOAD(tabId);
 
-    b_set_csp_filter_onHeadersReceived_timeout = null;
 if( log_this) log_sep_bot(caller, "LOG2_TAG");
 };
 /*}}}*/
 /*_ b_onHeader1_reload_cancel {{{*/
 let b_onHeader1_reload_cancel = function()
 {
-    if(!b_set_csp_filter_onHeadersReceived_timeout) return;
-
+/*{{{*/
 let caller   = "b_onHeader1_reload_cancel";
 let log_this = LOG_MAP.B_LOG6_ONHEADER;
+/*}}}*/
+    if(               b_set_csp_filter_onHeadersReceived_timeout ) {
+        clearTimeout( b_set_csp_filter_onHeadersReceived_timeout );
+        /**/          b_set_csp_filter_onHeadersReceived_timeout = null;
 if( log_this) log(caller+": clearTimeout( b_set_csp_filter_onHeadersReceived_timeout );");
-
-    clearTimeout( b_set_csp_filter_onHeadersReceived_timeout );
-    b_set_csp_filter_onHeadersReceived_timeout = null;
+    }
 };
 /*}}}*/
 
@@ -756,7 +810,7 @@ if(log_more) log("...taburl_domain=["+taburl_domain+"]");
 /*
 logXXX("TAB %c"+taburl_domain+"%c DOMAIN MATCHED WITH HEADER %c"+header_domain, lbR+lf3, lbA, lbR+lf8);
 */
-    tab_header_domain_match=true//FIXME
+    tab_header_domain_match=true;//FIXME
 
     if( tab_header_domain_match ) {
 if( log_this) log("%c"+SYMBOL_CONSTRUCTION +"%c FILTERING %c"+get_url_domain(details.url)+"... %c WITH ["+csp_filter+"]"
@@ -915,6 +969,7 @@ if(log_this) log(SAR+" %c STORING URL CSP FILTER %c "+csp_filter+" ", lbb+lbL+lf
     let message = { csp_filter_effect /* THIS SHOULD BE THE SINGLE POINT OF ASSIGNMENT */
         ,                         url : details.url
         ,                      status : "FILTER APPLIED: "+csp_filter_applied
+        ,                      caller : B_SCRIPT_ID+"."+caller
     };
 
     b_tabs_sync(details.tabId, message, "onHeadersReceived");
@@ -1002,14 +1057,14 @@ let b_tabs_get_last_activated_tabId = function(caller)
 
 /*}}}*/
 
-/* [onMessage] .. (called by popup_js options_js) */    // B_LOG1_MESSAGE
+/* HANDLE [onMessage] .. (called by popup_js options_js) */    // B_LOG1_MESSAGE
 /*_ b_onMessage_CB {{{*/
 let b_onMessage_CB = function(message, sender, response_handler=null)
 {
 /*{{{*/
 let caller   = "b_onMessage_CB";
 let log_this = LOG_MAP.B_LOG1_MESSAGE;
-if( typeof message.set_log_map != "undefined") log_this = false;
+//if( typeof message.set_log_map != "undefined") log_this = false;//FIXME
 
 if( log_this && !LOG_MAP.B_LOG3_PRESERVE) log_console_clear(caller);
 if( l_paused ) { log("%c"+SYMBOL_CONSTRUCTION+"%c PAUSED in "+caller, lbb+lbH+lf1); return false; }
@@ -1331,7 +1386,7 @@ if( log_this) log_members("b_tabs["+message.tabId+"]", b_tabs.get(message.tabId)
         b_tabs_set_tabId_key_message(message.tabId, "csp_filter", message);
         b_tabs_set_tabId_key_message(message.tabId, "cancelreq" , message);
 
-        b_STORAGE_SET_url_settings(message.tabId, caller);
+        b_STORAGE_SET_url_settings  (message.tabId, caller);
         /*}}}*/
         /* [tabId SYNC ] {{{*/
         let what_changed
@@ -1408,9 +1463,9 @@ if( log_this) log("%c SELECTING ["+message.csp_filter+"] FOR %c"+get_url_domain(
 /*_ b_onHeader2_received_addListener {{{*/
 let b_onHeader2_received_addListener = function()
 {
-    /*....................SCRIPT_ID..NAMESPACE...................FUNCTIONALITY............PERMISSION.........*/
-    if( !log_permission(B_SCRIPT_ID, chrome.webRequest        , "Filtering Headers CSP", "webRequest"        , b_is_logging())) return;
-/*  if( !log_permission(B_SCRIPT_ID, chrome.webRequestBlocking,  "Blocking Headers CSP", "webRequestBlocking", b_is_logging())) return; */
+    /*....................SCRIPT_TAG..NAMESPACE....................FUNCTIONALITY............PERMISSION.........*/
+    if( !log_permission(B_SCRIPT_TAG, chrome.webRequest         , "Filtering Headers CSP", "webRequest"        , b_is_logging())) return;
+/*  if( !log_permission(B_SCRIPT_TAG, chrome.webRequestBlocking , "Blocking Headers CSP" , "webRequestBlocking", b_is_logging())) return; */
 
 /* onHeadersReceived {{{
 :!start explorer "https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/onHeadersReceived"
@@ -1419,6 +1474,14 @@ let b_onHeader2_received_addListener = function()
 :e $LOCAL/DATA/ANDROID/PROJECTS/iwintoo/wss_mirror_extension/wss_mirror_bg.js
 }}}*/
 
+    /* XXX blocking requires webRequestBlocking {{{*/
+    let extraInfoSpec
+        = log_permission(B_SCRIPT_TAG, chrome.webRequestBlocking,  "Blocking Headers CSP", "webRequestBlocking", b_is_logging())
+        ? [ "responseHeaders" , "blocking" ]
+        : [ "responseHeaders"              ]
+    ;
+    /*}}}*/
+try {
     chrome
         .webRequest
         .onHeadersReceived
@@ -1430,16 +1493,16 @@ let b_onHeader2_received_addListener = function()
                           //         v   v v
                           urls  : [ "*://*/*"]                              // FILTER
                           , types : [ "main_frame"      , "sub_frame" ] }
-                      ,             [ "responseHeaders" , "blocking"  ]     // [extraInfoSpec]
+                      , extraInfoSpec
                     );
-
+} catch(ex) { console.log("b_onHeader2_received:", ex); }
 };
 /*}}}*/
 /*_ b_onActivated_addListener {{{*/
 let b_onActivated_addListener = function()
 {
-    /*....................SCRIPT_ID..NAMESPACE...................FUNCTIONALITY............PERMISSION.........*/
-    if( !log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to Extension tabs activation", "tabs", b_is_logging()))
+    /*....................SCRIPT_TAG..NAMESPACE...................FUNCTIONALITY............PERMISSION.........*/
+    if( !log_permission(B_SCRIPT_TAG, chrome.tabs              , "Listening to tabs activation", "tabs", b_is_logging()))
         return;
 
     chrome.tabs.onActivated.addListener( SETTINGS1_tabs_onActivated );
@@ -1448,8 +1511,8 @@ let b_onActivated_addListener = function()
 /*_ b_onUpdated_addListener {{{*/
 let b_onUpdated_addListener = function()
 {
-    /*....................SCRIPT_ID..NAMESPACE...................FUNCTIONALITY............PERMISSION.........*/
-    if( !log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to Extension tabs updated", "tabs", b_is_logging()))
+    /*....................SCRIPT_TAG..NAMESPACE...................FUNCTIONALITY............PERMISSION.........*/
+    if( !log_permission(B_SCRIPT_TAG, chrome.tabs              , "Listening to tabs updated", "tabs", b_is_logging()))
         return;
 
     chrome.tabs.onUpdated.addListener( SETTINGS1_tabs_onUpdated );
@@ -1458,8 +1521,8 @@ let b_onUpdated_addListener = function()
 /*_ b_onRemoved_addListener {{{*/
 let b_onRemoved_addListener = function()
 {
-    /*....................SCRIPT_ID..NAMESPACE...................FUNCTIONALITY............PERMISSION.........*/
-    if( !log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to Extension tabs removed", "tabs", b_is_logging()))
+    /*....................SCRIPT_TAG..NAMESPACE...................FUNCTIONALITY............PERMISSION.........*/
+    if( !log_permission(B_SCRIPT_TAG, chrome.tabs              , "Listening to tabs removed", "tabs", b_is_logging()))
         return;
 
     chrome.tabs.onRemoved.addListener( SETTINGS8_tabs_onRemoved );
@@ -1471,8 +1534,8 @@ let b_onMessage_addListener = function()
 /*{{{*/
 let log_this = b_is_logging();
 /*}}}*/
-    /*....................SCRIPT_ID..NAMESPACE...................FUNCTIONALITY............PERMISSION.........*/
-    if( !log_permission(B_SCRIPT_ID, chrome.runtime, "Listening to Extension message", "runtime", log_this) )
+    /*....................SCRIPT_TAG..NAMESPACE...................FUNCTIONALITY............PERMISSION.........*/
+    if( !log_permission(B_SCRIPT_TAG, chrome.runtime           , "Listening to message", "runtime", log_this) )
         return;
 
     chrome.runtime.onMessage.addListener( b_onMessage_CB );
@@ -1509,6 +1572,7 @@ if( log_more ) log_members("TAB #"+tabId, b_tabs.get(tabId), lbH+lf8);
 //    <path>        := '/' <any chars>
 //}}}*/
 
+try {
     chrome.webRequest.onBeforeRequest.addListener(
         onBeforeRequest_CB
         , { urls: [ PATTERN_URLS ] }
@@ -1516,6 +1580,7 @@ if( log_more ) log_members("TAB #"+tabId, b_tabs.get(tabId), lbH+lf8);
 
     );
     onBeforeRequest_is_canceling = true;
+} catch(ex) { console.log("background_webRequest_onBeforeRequest_addListener:", ex); }
 };
 /*}}}*/
 /*_ background_webRequest_onBeforeRequest_removeListener {{{*/
@@ -1528,12 +1593,14 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 if( log_this ) log("%c"+SYN+"%c REMOVING"+" [onBeforeRequest] LISTENER", lbb+lbH+lf7, lbF+lbH+lf9);
 if( log_more ) log_members("TAB #"+tabId, b_tabs.get(tabId), lbH+lf8);
 
+try {
     chrome.webRequest.onBeforeRequest.removeListener(
         onBeforeRequest_CB
         , { urls: [ PATTERN_URLS ] }
         ,         [ "blocking"   ]   /* synchronous, so we can intercept... */
     );
     onBeforeRequest_is_canceling = false;
+} catch(ex) { console.log("background_webRequest_onBeforeRequest_removeListener:", ex); }
 };
 /*}}}*/
 /*_ onBeforeRequest_CB {{{*/
@@ -1608,7 +1675,9 @@ if( log_more) log_members("TAB #"+details.tabId, b_tabs.get(details.tabId) , lbH
 
 /*}}}*/
 
-/** SETTINGS */                                         // B_LOG7_TABS B_LOG9_STAGE
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ SETTINGS                                                               │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 /*{{{*/
 /*_ SETTINGS1_tabs_onUpdated {{{*/
 /*{{{*/
@@ -1788,8 +1857,13 @@ let log_this = LOG_MAP.B_LOG7_TABS || LOG_MAP.B_LOG9_STAGE;
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 if( log_this ) log_console_clear(caller);
+if( log_this ) log_members(caller+"(activeInfo)",activeInfo,lf4);
 if( l_paused ) { log("%c"+SYMBOL_CONSTRUCTION+"%c PAUSED in "+caller, lbb+lbH+lf1); return; }
 /*}}}*/
+
+try {
+//  await chrome.tabs.move(activeInfo.tabId, {index: 0});
+
     /* [tabs_activated_new_url] {{{*/
     if( !b_tabs_get_tabId_key(activeInfo.tabId, "url") ) b_tabs_set_tabId_key_val(activeInfo.tabId, "tabs_activated_new_url", true);
     else                                                 b_tabs_del_tabId_key    (activeInfo.tabId, "tabs_activated_new_url");
@@ -1828,8 +1902,35 @@ if( log_more) log_members("url=["+url+"]", b_tabs.get(activeInfo.tabId), lbH+lf1
         b_tabs_sync(activeInfo.tabId, activeInfo, "onActivated");
     }
     /*}}}*/
+
+} catch(error) {
+    if(error == "Error: Tabs cannot be edited right now (user may be dragging a tab).")
+    {
+
+
+
+
+
+
+
+
+        /* TIMEOUT {{{*/
+
+            setTimeout(() => {
+logXXX("SETTINGS1_tabs_onActivated TIMEOUT .. HANDLING");//FIXME
+                SETTINGS1_tabs_onActivated(activeInfo);
+            }, 50);
+
+        /*}}}*/
+    }
+    else {
+      console.error(error);
+    }
+}
 };
 /*}}}*/
+
+
 /*_ SETTINGS2_GET_ACTIVE_TAB_URL {{{*/
 /*{{{*/
 const B_GET_ACTIVE_TAB_URL  = "GET ACTIVE TAB URL";
@@ -1846,6 +1947,7 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 /*}}}*/
 if( log_this) log("%c"+SD2+"%c "+B_GET_ACTIVE_TAB_URL+"%c"+ label+" %c CALLED BY %c "+_caller, lbB+lf2, lbL+lf2, lbR+lf2, lbL+lf2, lbR+lf2);
 //( log_more) log("%c"+caller, lbb+lbH+lf2);
+try {
     /* assert access to chrome.tabs interface {{{*/
     if(!chrome.tabs) { confirm("javascript/popup.js: (!chrome.tabs)"); return; } /* eslint-disable-line no-alert */
 
@@ -1855,13 +1957,14 @@ if( log_this) log("%c"+SD2+"%c "+B_GET_ACTIVE_TAB_URL+"%c"+ label+" %c CALLED BY
 
     /*}}}*/
     /* SETTINGS3_GET_ACTIVE_TAB_URL_CB {{{*/
-    chrome.tabs.query(
-        { active:true, currentWindow:true }
+    chrome.tabs.query({ currentWindow: true, active: true }
         , function(tabs) {
             SETTINGS3_GET_ACTIVE_TAB_URL_CB(tabs);
-        }
-    );
+        });
     //}}}
+} catch(error) {
+      console.error(error);
+}
 };
 /*}}}*/
 /*_ SETTINGS3_GET_ACTIVE_TAB_URL_CB {{{*/
@@ -1903,13 +2006,14 @@ if( log_more) log_members("active_tab", active_tab, lbH+lf3);
     /* TRACK: currently active tab {{{*/
     if(active_tab.id && !b_tabs_get_last_activated_tabId())
     {
-//if( log_this) log(caller+": %c sending tabId value to b_tabs_set_last_activated_tabId("+active_tab.id+")", lbb+lbH+lf3);
+if( log_this) log(caller+": %c sending tabId value to b_tabs_set_last_activated_tabId("+active_tab.id+")", lbb+lbH+lf3);
 
         b_tabs_set_last_activated_tabId( active_tab.id );
     }
     /*}}}*/
     /* 1/3 TAB HAS NO URL {{{*/
     if(!url) {
+if( log_more) log("NO url");
 
         return;
     }
@@ -1928,8 +2032,8 @@ if( log_more) log_members("active_tab", active_tab, lbH+lf3);
     {
         let message =
             {     tab_url : url
-                ,   tabId
-                ,  caller : B_SCRIPT_ID+" "+caller
+                ,           tabId
+                ,  caller : B_SCRIPT_ID+"."+caller
             };
 if( log_this) log("%c Sending IPC reply message to caller process: %c"+log_json(message), lbR+lf3, lb0);
 if( log_more) log("...onMessage_caller=["+onMessage_caller+"]");
@@ -2233,7 +2337,9 @@ if( log_more) log("%c REMOVED TAB #"+tabId+": WAS NOT TRACKED", lbH+lf8);
 /*}}}*/
 /*}}}*/
 
-/** TOOLS IPC */                                        // B_LOG1_MESSAGE
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ TOOLS IPC                                                              │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 /*{{{*/
 /* ...addressing dom_tools_js MutationObserver */
 /*{{{*/
@@ -2623,25 +2729,34 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 if( log_this) log_sep_top(caller, "LOG1_TAG");
 if( log_this) log(SAR+" %c RELOADING TAB#"+tabId+" PAGE", lbR+lf0);
     /* HIDE ICON {{{*/
-if( log_more) log("%c chrome.pageAction.hide(tabId="+tabId+")", lbR+lf8);
-    chrome.pageAction.hide( tabId );
-
+if(chrome.action.hide) {
+if( log_more) log("%c chrome.action.hide(tabId="+tabId+")", lbR+lf8);
+    chrome.action.hide( tabId );
+}
     /*}}}*/
 
-    b_page4_TOOLS_GET_REPLY_DONE(tabId, caller);
 
-    b_tabs_del_tabId_key(tabId, "t_load");
 
-    chrome.tabs.executeScript(tabId
-        , { code : b_page1_RELOAD_Script() }
-        , function(array_of_any) {
-            if(chrome.runtime.lastError) b_page0_STORE_lastError   (tabId, caller, lf2);
-//          else                         b_page4_TOOLS_GET_REPLY_CB(tabId, array_of_any);
-        }
-    );
 
-    b_tabs_set_tabId_key_val(tabId, "onHeadersReceived", false);
-    b_tabs_set_tabId_key_val(tabId, "reloading"        , true );
+
+            /* RELOAD {{{*/
+            b_page4_TOOLS_GET_REPLY_DONE(            tabId, caller);
+            b_tabs_del_tabId_key(                    tabId, "t_load");
+
+            chrome.tabs
+                .executeScript(               tabId
+                              , { code  :  b_page1_GET_RELOAD_Script() }
+
+                              , function(array_of_any) {
+                                  if(chrome.runtime.lastError) b_page0_STORE_lastError   (tabId         , caller, lf2);
+                                //else                         b_page4_TOOLS_GET_REPLY_CB(tabId         , array_of_any);
+                              }
+                );
+
+            b_tabs_set_tabId_key_val(         tabId       , "onHeadersReceived", false);
+            b_tabs_set_tabId_key_val(         tabId       , "reloading"        , true );
+            /*}}}*/
+
 
 if( log_this) log("%c"+SYMBOL_GEAR+"%c TOOLS MESSAGE SENT ...WAITING FOR A REPLY", lbB+lf2, lbR+lf2);
 if( log_more) log("%c"+caller, lbb+lbH+lf2);
@@ -2649,7 +2764,7 @@ if( log_more) log("%c"+caller, lbb+lbH+lf2);
 if( log_this) log_sep_bot(caller, "LOG1_TAG");
 };
 /*}}}*/
-/*_ b_page1_RELOAD_Script {{{*/
+/*_ b_page1_GET_RELOAD_Script {{{*/
 /*_ RELOAD_SCRIPT {{{*/
 const RELOAD_SCRIPT
     = "document.location.reload();"
@@ -2657,10 +2772,10 @@ const RELOAD_SCRIPT
 ;
 
 /*}}}*/
-let b_page1_RELOAD_Script = function()
+let b_page1_GET_RELOAD_Script = function()
 {
 /*{{{*/
-let caller   = "b_page1_RELOAD_Script";
+let caller   = "b_page1_GET_RELOAD_Script";
 let log_this = LOG_MAP.B_LOG1_MESSAGE;
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
@@ -2713,28 +2828,43 @@ if( log_this) log("%c PENDING POLL CANCELED", lbb+lbH+lf4);
 //console.trace()
 //}}}
     /* EXEC START SCRIPT {{{*/
-    chrome.tabs.executeScript(tabId
-        , { code : b_page1_TOOLS_START_script(tabId) }
-        , function(array_of_any) {
-            if(chrome.runtime.lastError) b_page0_STORE_lastError(tabId, caller, lf1);
-        }
-    );
 
-    b_tabs_set_tabId_key_val(tabId, "b_TOOLS_QUERY_called_once", true);
-    /*}}}*/
-    /* GET TOOLS REPLY {{{*/
-    b_page2_TOOLS_GET_REPLY(tabId, caller);
+
+
+
+
+
+
+
+
+
+
+
+            /* START {{{*/
+            chrome.tabs
+                .executeScript(              tabId
+                                , { code : b_page1_TOOLS_GET_START_script(tabId) }
+
+                                , function(array_of_any) {
+                                    if(chrome.runtime.lastError) b_page0_STORE_lastError(tabId, caller, lf1);
+
+                                }
+                );
+
+            b_tabs_set_tabId_key_val(                tabId, "b_TOOLS_QUERY_called_once", true);
+            b_page2_TOOLS_GET_REPLY (                tabId, caller);
+            /*}}}*/
 
     /*}}}*/
 };
 /*----------------------------------------------------------------------------*/
 /*}}}*/
 /** SETTINGS */                                         // B_LOG1_MESSAGE
-/*_ b_page1_TOOLS_START_script {{{*/
-let b_page1_TOOLS_START_script = function(tabId)
+/*_ b_page1_TOOLS_GET_START_script {{{*/
+let b_page1_TOOLS_GET_START_script = function(tabId)
 {
 /*{{{*/
-let caller   = "b_page1_TOOLS_START_script";
+let caller   = "b_page1_TOOLS_GET_START_script";
 let log_this = LOG_MAP.B_LOG1_MESSAGE;
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
@@ -2744,7 +2874,7 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 //  let csp_filter_effect = b_tabs_get_tabId_key(tabId, "csp_filter_effect");
 
     b_page2_TOOLS_START_sequence_number = parseInt(new Date().getTime() / 1000) % 86400; // seconds per day
-    let                     message={ sequence_number   : b_page2_TOOLS_START_sequence_number };
+    let                     message={ sequence_number   : b_page2_TOOLS_START_sequence_number , caller : B_SCRIPT_ID+"."+caller };
     if( start             ) message  .start             = start;
     if( csp_filter        ) message  .csp_filter        = csp_filter;
 //  if( csp_filter_effect ) message  .csp_filter_effect = csp_filter_effect;
@@ -2759,13 +2889,14 @@ if( log_more) log("%c"+caller+": ...return %c"+script, lbL, lbR+lf1);
 /*----------------------------------------------------------------------------*/
 /*_ b_page2_TOOLS_GET_REPLY {{{*/
 /*{{{*/
-const B_TOOLS_GET_REPLY_DELAY      = 3000;
+const B_TOOLS_GET_REPLY_DELAY_MS = 3000;
 
 let b_page2_TOOLS_GET_REPLY_timeout;
+
 /*}}}*/
 let b_page2_TOOLS_GET_REPLY = function(tabId, _caller)
 {
-    /*{{{*/
+/*{{{*/
 let caller = "b_page2_TOOLS_GET_REPLY";
 let log_this = LOG_MAP.B_LOG1_MESSAGE;
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
@@ -2774,38 +2905,59 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 if( log_this) b_page2_TOOLS_GET_REPLY_calls_log();
 
     let check_more = B_TABS_TOOLS_CHECK_COUNT_MAX - b_page3_TOOLS_GET_REPLY_POLL_get_check_count(tabId);
-    /*}}}*/
+/*}}}*/
 if( log_this) log("%c"+SYMBOL_GEAR+"%c TAB #"+tabId+" LISTENING TO TOOLS MESSAGE REPLY %c...THEN POLLING "+check_more+" TIME"+((check_more > 1) ? "S" : "")
     ,              lbB+lf2         ,lbL+lf2                                           ,lbR+lf4);
 if( log_more) log("%c CALLED BY "+_caller+"%c"+(b_page3_TOOLS_GET_REPLY_POLL_in_progress() ? "POLLING " : "NOT YET POLLING"), lbL+lf8, lbR+lf4);
-    /* FIXME ? clear previous reply .. why? {{{*/
-    b_tabs_del_tabId_key(tabId, "t_load");
 
-    /*}}}*/
-    /* EXEC GET REPLY SCRIPT {{{*/
-    chrome.tabs.executeScript(tabId
-        , { code : b_page2_TOOLS_GET_REPLY_script() }
-        , function(array_of_any) {
-            if(chrome.runtime.lastError) b_page0_STORE_lastError   (tabId, caller, lf2);
-            else                         b_page4_TOOLS_GET_REPLY_CB(tabId, array_of_any);
-        }
-    );
 
-    b_tabs_set_tabId_key_val(tabId, "tools_GET_REPLY_called_once", true);
-    /*}}}*/
-    /* TOOLS GET REPLY POLL {{{*/
+
+
+
+            /* EXEC GET REPLY SCRIPT {{{*/
+
+
+            b_tabs_del_tabId_key(            tabId, "t_load"); /* FIXME ? clear previous reply .. why ?*/
+
+            chrome.tabs
+                .executeScript(              tabId
+                              ,   {  code : b_page2_TOOLS_GET_REPLY_script() }
+
+                              ,   function(array_of_any) {
+                                    if(chrome.runtime.lastError) b_page0_STORE_lastError   (tabId, caller, lf2);
+                                    else                         b_page4_TOOLS_GET_REPLY_CB(tabId, array_of_any);
+                              }
+                );
+
+            b_tabs_set_tabId_key_val(        tabId, "tools_GET_REPLY_called_once", true);
+
+            /*}}}*/
+            /* TOOLS GET REPLY POLL {{{*/
 if( log_more) log("%c POSTING %c b_page3_TOOLS_GET_REPLY_POLL", lbL, lbR+lf4);
 
-    if(b_page3_TOOLS_GET_REPLY_POLL_timeout) clearTimeout(b_page3_TOOLS_GET_REPLY_POLL_timeout);
-    b_page3_TOOLS_GET_REPLY_POLL_timeout
-        = setTimeout(
-            function() {
-                if(chrome.runtime.lastError) b_page0_STORE_lastError     (tabId, caller, lf3);
-                else                         b_page3_TOOLS_GET_REPLY_POLL(tabId);
-            } ,                              B_TOOLS_GET_REPLY_DELAY
-        );
 
-    /*}}}*/
+
+
+
+
+
+
+
+
+            /* TIMEOUT {{{*/
+
+                if( b_page3_TOOLS_GET_REPLY_POLL_timeout) clearTimeout(b_page3_TOOLS_GET_REPLY_POLL_timeout);
+                /**/b_page3_TOOLS_GET_REPLY_POLL_timeout
+                    = setTimeout(() => {
+logXXX("b_page3_TOOLS_GET_REPLY_POLL_timeout .. HANDLING");//FIXME
+                        if(chrome.runtime.lastError) b_page0_STORE_lastError     (tabId, caller, lf3);
+                        else                         b_page3_TOOLS_GET_REPLY_POLL(tabId);
+                        b_page3_TOOLS_GET_REPLY_POLL_timeout = null;
+                    } , B_TOOLS_GET_REPLY_DELAY_MS);
+
+            /*}}}*/
+            /*}}}*/
+
 };
 /*}}}*/
 /*_ b_page2_TOOLS_GET_REPLY_script {{{*/
@@ -2833,7 +2985,7 @@ let b_page2_TOOLS_GET_REPLY_callers = "";
 let b_page2_TOOLS_GET_REPLY_callers_add = function(_caller)
 {
     if(!_caller) {
-        logXXX("!_caller");
+logXXX("!_caller");
         console.trace();
     }
     if(!b_page2_TOOLS_GET_REPLY_callers.includes(_caller) )
@@ -3077,11 +3229,22 @@ if( log_more) b_page3_TOOLS_GET_REPLY_POLL_log(tabId);
     /* TRY AGAIN LATER .. A FEW TIMES {{{*/
     if(b_page3_TOOLS_GET_REPLY_POLL_add_check_count(tabId) < B_TABS_TOOLS_CHECK_COUNT_MAX)
     {
-        if(b_page2_TOOLS_GET_REPLY_timeout) clearTimeout(b_page2_TOOLS_GET_REPLY_timeout);
-        b_page2_TOOLS_GET_REPLY_timeout
-            = setTimeout(function() { b_page2_TOOLS_GET_REPLY(tabId, caller); }
-            ,                         B_TOOLS_GET_REPLY_DELAY);
 
+
+
+
+
+
+
+
+
+        /* TIMEOUT {{{*/
+
+            if(b_page2_TOOLS_GET_REPLY_timeout) clearTimeout(b_page2_TOOLS_GET_REPLY_timeout);
+            /**/b_page2_TOOLS_GET_REPLY_timeout
+                = setTimeout( () => { b_page2_TOOLS_GET_REPLY(tabId, caller); }
+                            , B_TOOLS_GET_REPLY_DELAY_MS);
+        /*}}}*/
         return;
     }
     /*}}}*/
@@ -3173,6 +3336,7 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
     b_page3_TOOLS_GET_REPLY_POLL_clr_check_count(tabId);
     /*}}}*/
+logXXX("...b_page4_TOOLS_GET_REPLY_DONE: CLEAR POLL TIMEOUT");//FIXME
     /* CLEAR POLL TIMEOUT {{{*/
     if( b_page3_TOOLS_GET_REPLY_POLL_timeout || b_page2_TOOLS_GET_REPLY_timeout)
     {
@@ -3192,9 +3356,11 @@ if( log_more ) log("%c"+check_mark+" %c BY "+_caller+" ", lbL+lf3, lbR+lf3);
             b_page2_TOOLS_GET_REPLY_timeout = null;
         }
 
+logXXX("...b_page4_TOOLS_GET_REPLY_DONE .. return true");//FIXME
         return true;
     }
     else {
+logXXX("...b_page4_TOOLS_GET_REPLY_DONE .. return false");//FIXME
         return false;
     }
     /*}}}*/
@@ -3241,6 +3407,76 @@ log("%c"+_caller+"(TAB#"+tabId+"): ABORTED ON ERROR:\n"+lastError_message, lbH+l
 /*----------------------------------------------------------------------------*/
 /*}}}*/
 
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ STORAGE                                                                │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
+/* STORAGE LOG_MAP */
+/*_ b_STORAGE_LOAD_LOG_MAP_CB {{{*/
+let b_STORAGE_LOAD_LOG_MAP_CB_done;
+let b_STORAGE_LOAD_LOG_MAP_CB = function(items={})
+{
+/*{{{*/
+    let caller = B_SCRIPT_ID+".b_STORAGE_LOAD_LOG_MAP_CB";
+
+    if(  b_is_logging() ) log("%c"+caller+" b_STORAGE_LOAD_LOG_MAP_CB_done=["+b_STORAGE_LOAD_LOG_MAP_CB_done+"]", (b_STORAGE_LOAD_LOG_MAP_CB_done ? "background-color:gray" : "background-color:magenta"));
+    if(  b_STORAGE_LOAD_LOG_MAP_CB_done) return;
+    else b_STORAGE_LOAD_LOG_MAP_CB_done = true;
+/*}}}*/
+    /* LOAD LOG_MAP [background] {{{*/
+    /*(____________.____________________!=____________)________.________________=______.________________;*/
+    if(typeof items.B_LOG1_MESSAGE      != "undefined") LOG_MAP.B_LOG1_MESSAGE  = items.B_LOG1_MESSAGE  ;
+    if(typeof items.B_LOG2_ERROR        != "undefined") LOG_MAP.B_LOG2_ERROR    = items.B_LOG2_ERROR    ;
+    if(typeof items.B_LOG3_PRESERVE     != "undefined") LOG_MAP.B_LOG3_PRESERVE = items.B_LOG3_PRESERVE ;
+    if(typeof items.B_LOG4_PARSE        != "undefined") LOG_MAP.B_LOG4_PARSE    = items.B_LOG4_PARSE    ;
+    if(typeof items.B_LOG5_ONREQUEST    != "undefined") LOG_MAP.B_LOG5_ONREQUEST= items.B_LOG5_ONREQUEST;
+    if(typeof items.B_LOG6_ONHEADER     != "undefined") LOG_MAP.B_LOG6_ONHEADER = items.B_LOG6_ONHEADER ;
+    if(typeof items.B_LOG7_TABS         != "undefined") LOG_MAP.B_LOG7_TABS     = items.B_LOG7_TABS     ;
+    if(typeof items.B_LOG8_STORE        != "undefined") LOG_MAP.B_LOG8_STORE    = items.B_LOG8_STORE    ;
+    if(typeof items.B_LOG9_STAGE        != "undefined") LOG_MAP.B_LOG9_STAGE    = items.B_LOG9_STAGE    ;
+    if(typeof items.B_LOG0_MORE         != "undefined") LOG_MAP.B_LOG0_MORE     = items.B_LOG0_MORE     ;
+    /*(____________.____________________!=____________)________.________________=______.________________;*/
+
+    let some_log = b_is_logging();
+    if( some_log ) {
+        log("%c"+B_SCRIPT_TAG, lbH+lbb+lf3);
+
+        LOG_MAP.B_LOG2_ERROR = true;
+
+if(LOG_MAP.B_LOG0_MORE && Object.keys(items).length) log_members(caller+"(items):", items , lf3, /*collapsed*/true);
+
+        log_LOG_MAP();
+
+        logn_USAGE();
+    }
+    /*}}}*/
+    b_add_listeners();
+};
+
+/* INITIAL LOAD-TIME CALL */
+//chrome.storage.sync.get(LOG_MAP, b_STORAGE_LOAD_LOG_MAP_CB);
+
+/*}}}*/
+/*_ b_storage_sync_set_LOG_MAP {{{*/
+let b_storage_sync_set_LOG_MAP = function()
+{
+    log("%c SAVING [LOG_MAP]", lb4);
+    let log_map_items
+        = {     B_LOG1_MESSAGE      : LOG_MAP.B_LOG1_MESSAGE
+            ,   B_LOG2_ERROR        : LOG_MAP.B_LOG2_ERROR
+            ,   B_LOG3_PRESERVE     : LOG_MAP.B_LOG3_PRESERVE
+            ,   B_LOG4_PARSE        : LOG_MAP.B_LOG4_PARSE
+            ,   B_LOG5_ONREQUEST    : LOG_MAP.B_LOG5_ONREQUEST
+            ,   B_LOG6_ONHEADER     : LOG_MAP.B_LOG6_ONHEADER
+            ,   B_LOG7_TABS         : LOG_MAP.B_LOG7_TABS
+            ,   B_LOG8_STORE        : LOG_MAP.B_LOG8_STORE
+            ,   B_LOG9_STAGE        : LOG_MAP.B_LOG9_STAGE
+            ,   B_LOG0_MORE         : LOG_MAP.B_LOG0_MORE
+        };
+    chrome.storage.sync.set( log_map_items );
+
+  //log_members(SBS+"LOG_MAP", log_map_items, lbR+lf0);
+};
+/*}}}*/
 /* STORAGE CSP */                                       // B_LOG4_PARSE B_LOG8_STORE
 /* CSP {{{*/
 /*{{{*/
@@ -3417,55 +3653,6 @@ if( log_this) log("%c"+caller+": %c ...calling response_handler:", lbF+lbL+lf8, 
     /*}}}*/
 };
 /*}}}*/
-/*_ b_STORAGE_LOAD_LOG_MAP_CB {{{*/
-let b_STORAGE_LOAD_LOG_MAP_CB = function(items={})
-{
-/*{{{*/
-    let caller = "b_STORAGE_LOAD_LOG_MAP_CB";
-
-/*}}}*/
-    /* LOAD LOG_MAP [background] {{{*/
-    /*(____________.____________________!=____________)________.________________=______.________________;*/
-    if(typeof items.B_LOG1_MESSAGE      != "undefined") LOG_MAP.B_LOG1_MESSAGE  = items.B_LOG1_MESSAGE  ;
-    if(typeof items.B_LOG2_ERROR        != "undefined") LOG_MAP.B_LOG2_ERROR    = items.B_LOG2_ERROR    ;
-    if(typeof items.B_LOG3_PRESERVE     != "undefined") LOG_MAP.B_LOG3_PRESERVE = items.B_LOG3_PRESERVE ;
-    if(typeof items.B_LOG4_PARSE        != "undefined") LOG_MAP.B_LOG4_PARSE    = items.B_LOG4_PARSE    ;
-    if(typeof items.B_LOG5_ONREQUEST    != "undefined") LOG_MAP.B_LOG5_ONREQUEST= items.B_LOG5_ONREQUEST;
-    if(typeof items.B_LOG6_ONHEADER     != "undefined") LOG_MAP.B_LOG6_ONHEADER = items.B_LOG6_ONHEADER ;
-    if(typeof items.B_LOG7_TABS         != "undefined") LOG_MAP.B_LOG7_TABS     = items.B_LOG7_TABS     ;
-    if(typeof items.B_LOG8_STORE        != "undefined") LOG_MAP.B_LOG8_STORE    = items.B_LOG8_STORE    ;
-    if(typeof items.B_LOG9_STAGE        != "undefined") LOG_MAP.B_LOG9_STAGE    = items.B_LOG9_STAGE    ;
-    if(typeof items.B_LOG0_MORE         != "undefined") LOG_MAP.B_LOG0_MORE     = items.B_LOG0_MORE     ;
-    /*(____________.____________________!=____________)________.________________=______.________________;*/
-
-    let some_log = b_is_logging();
-    if( some_log ) {
-        log("%c"+B_SCRIPT_TAG, lbH+lbb+lf3);
-
-        LOG_MAP.B_LOG2_ERROR = true;
-
-        if(LOG_MAP.B_LOG0_MORE) log_members(caller+"(items):", items , lf3, /*collapsed*/true);
-
-        log_LOG_MAP();
-
-        logn_USAGE();
-    }
-    /*}}}*/
-    /* ADD LISTENERS {{{*/
-    if(some_log) console.groupCollapsed("%c ADDING LISTENERS "+SAD, lbH+lf3);
-
-    b_onHeader2_received_addListener();
-    b_onActivated_addListener();
-    b_onUpdated_addListener();
-    b_onRemoved_addListener();
-    b_onMessage_addListener();
-
-    if(some_log) console.groupEnd();
-    /*}}}*/
-};
-/*}}}*/
-/* INITIAL LOAD-TIME CALL */
-chrome.storage.sync.get(LOG_MAP, b_STORAGE_LOAD_LOG_MAP_CB);
 /*}}}*/
 /* STORAGE URL */                                       // B_LOG8_STORE
 /* URL {{{*/
@@ -3619,32 +3806,10 @@ log_members(url, result, lf9, false);
 };
 /*}}}*/
 /*}}}*/
-/* STORAGE LOG_MAP */
-/* LOG_MAP {{{*/
-/*_ b_storage_sync_set_LOG_MAP {{{*/
-let b_storage_sync_set_LOG_MAP = function()
-{
-    log("%c SAVING [LOG_MAP]", lb4);
-    let log_map_items
-        = {     B_LOG1_MESSAGE      : LOG_MAP.B_LOG1_MESSAGE
-            ,   B_LOG2_ERROR        : LOG_MAP.B_LOG2_ERROR
-            ,   B_LOG3_PRESERVE     : LOG_MAP.B_LOG3_PRESERVE
-            ,   B_LOG4_PARSE        : LOG_MAP.B_LOG4_PARSE
-            ,   B_LOG5_ONREQUEST    : LOG_MAP.B_LOG5_ONREQUEST
-            ,   B_LOG6_ONHEADER     : LOG_MAP.B_LOG6_ONHEADER
-            ,   B_LOG7_TABS         : LOG_MAP.B_LOG7_TABS
-            ,   B_LOG8_STORE        : LOG_MAP.B_LOG8_STORE
-            ,   B_LOG9_STAGE        : LOG_MAP.B_LOG9_STAGE
-            ,   B_LOG0_MORE         : LOG_MAP.B_LOG0_MORE
-        };
-    chrome.storage.sync.set( log_map_items );
 
-  //log_members(SBS+"LOG_MAP", log_map_items, lbR+lf0);
-};
-/*}}}*/
-/*}}}*/
-
-/** CSP FILTERS */                                      // B_LOG4_PARSE
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ CSP FILTERS                                                            │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 /*{{{*/
 /*{{{*/
 const FILTER3_REMOVE       = "FILTER3_REMOVE";
@@ -3882,12 +4047,13 @@ if( log_this) log("%c "+caller+": ...return rules %c"+rules, lbL+lf4, lbR+lf4);
 /*}}}*/
 /*}}}*/
 
-/*_ CONSOLE LOG */
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ CONSOLE LOG                                                            │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 /*_ logn_USAGE {{{*/
 let logn_USAGE = function()
 {
     let args = [""];            let s  = "";
-    /*...........................*/ s += "%c logn()  .. logging states\n"   ; args.push(lbR+lf9);
     /*...........................*/ s += "%c logn(1) .. toggle MESSAGE\n"   ; args.push(lbR+lf1);
     /*...........................*/ s += "%c logn(2) .. toggle ERROR\n"     ; args.push(lbR+lf2);
     /*...........................*/ s += "%c logn(3) .. toggle PRESERVE\n"  ; args.push(lbR+lf3);
@@ -3898,6 +4064,11 @@ let logn_USAGE = function()
     /*...........................*/ s += "%c logn(8) .. toggle STORE\n"     ; args.push(lbR+lf8);
     /*...........................*/ s += "%c logn(9) .. toggle STAGE\n"     ; args.push(lbR+lf9);
     /*...........................*/ s += "%c logn(0) .. toggle MORE\n"      ; args.push(lbR+lf0);
+    /*...........................*/ s += "%c logn()  .. logging states\n"   ; args.push(lbR+lf9);
+    /*...........................*/ s += "%c l = logn\n"                    ; args.push(lbR+lf8);
+    /*...........................*/ s += "%c r = reload\n"                  ; args.push(lbR+lf8);
+    /*...........................*/ s += "%c c = clear\n"                   ; args.push(lbR+lf8);
+    /*...........................*/ s += "%c p = pause\n"                   ; args.push(lbR+lf8);
     args[0] = s;
 
     console.groupCollapsed("%c logn USAGE "+SAD, lbH);
@@ -3949,17 +4120,19 @@ let caller   = "logn("+n+")";
 };
 /*}}}*/
 
-/*_ POPUP */                                            // B_LOG9_STAGE
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ POPUP                                                                  │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 /*{{{*/
-const ICON_PATH_0_INITIAL       = "../images/rtabs16.png"    ;
-const ICON_PATH_1_BROWN         = "../images/rtabs16_1_b.png";
-const ICON_PATH_2_X             = "../images/rtabs16_2_r.png";
-const ICON_PATH_3_O             = "../images/rtabs16_3_o.png";
-const ICON_PATH_4_YELLOW        = "../images/rtabs16_4_y.png";
-const ICON_PATH_5_GREEN         = "../images/rtabs16_5_g.png";
-const ICON_PATH_6_BLUE          = "../images/rtabs16_6_b_square.png";
-const ICON_PATH_7_X             = "../images/rtabs16_7_m.png";
-const ICON_PATH_8_OFF           = "../images/rtabs16_8_g.png";
+const ICON_PATH_0_INITIAL       = "/images/rtabs16.png"    ;
+const ICON_PATH_1_BROWN         = "/images/rtabs16_1_b.png";
+const ICON_PATH_2_X             = "/images/rtabs16_2_r.png";
+const ICON_PATH_3_O             = "/images/rtabs16_3_o.png";
+const ICON_PATH_4_YELLOW        = "/images/rtabs16_4_y.png";
+const ICON_PATH_5_GREEN         = "/images/rtabs16_5_g.png";
+const ICON_PATH_6_BLUE          = "/images/rtabs16_6_b_square.png";
+const ICON_PATH_7_X             = "/images/rtabs16_7_m.png";
+const ICON_PATH_8_OFF           = "/images/rtabs16_8_g.png";
 
 const TOOLS0_CHECKING           = "TOOLS CHECKING";
 const TOOLS1_OFF                = "TOOLS OFF";
@@ -3970,6 +4143,9 @@ const TOOLS5_UNLOADED           = "TOOLS UNLOADED";
 
 /*}}}*/
 /*_ b_sync_pageAction {{{*/
+/*{{{*/
+const LF        = String.fromCharCode(10);
+/*}}}*/
 let b_sync_pageAction = function(tabId)
 {
     if(tabId < 0) return; /* (190106) */
@@ -4026,19 +4202,20 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
     /*}}}*/
 if( log_more) log_members("...icon_path", { t_load, csp_filter_effect, start, icon_color, icon_path }, lf4);
     /* POPUP UPDATE MESSAGE {{{*/
-    let title = b_get_pageAction_title(tabId, status, url, start, csp_filter, cancelreq, t_load);
+    let title = b_get_popup_title(tabId, status, url, start, csp_filter, cancelreq, t_load);
 
     b_tabs_set_tabId_key_val(tabId, "icon_path", icon_path);
     b_tabs_set_tabId_key_val(tabId,     "title", title    );
 
     try {
-        chrome.pageAction.setIcon ( { tabId ,  path:icon_path } );
-        chrome.pageAction.setTitle( { tabId , title           } );
-        chrome.pageAction.show    (   tabId );
+        chrome.action.setIcon ( { tabId ,  path:icon_path } );
+        chrome.action.setTitle( { tabId , title           } );
+    if( chrome.action.show )
+        chrome.action.show    (   tabId );
     }
     catch(ex) {
-        last_parse_error= caller+": "+ ex;
-        if( log_this || LOG_MAP.B_LOG2_ERROR) log("%c *** last_parse_error=[%c "+last_parse_error+" ]", lb2, lb0);
+        last_parse_error= caller+": "+ ex+LF +get_callers();
+if( log_this || LOG_MAP.B_LOG2_ERROR) log("%c *** last_parse_error=[%c "+last_parse_error+" ]", lb2, lb0);
     }
 
     let message =
@@ -4074,9 +4251,9 @@ log("%c  ", lbI+lbb);
 
 };
 /*}}}*/
-/*_ b_get_pageAction_title {{{*/
+/*_ b_get_popup_title {{{*/
 
-let b_get_pageAction_title = function(tabId, status, url, start, csp_filter, cancelreq, t_load)
+let b_get_popup_title = function(tabId, status, url, start, csp_filter, cancelreq, t_load)
 {
 let log_this = LOG_MAP.B_LOG9_STAGE;
 
@@ -4160,7 +4337,7 @@ let log_this = LOG_MAP.B_LOG9_STAGE;
 let l = logn;
 let r = reload;
 let c = log_js.clear;
-/* l_paused {{{*/
+/*  l_paused {{{*/
 let l_paused;
 let p = function()
 {
@@ -4175,5 +4352,55 @@ let p = function()
 /*}}}*/
 /*}}}*/
 
+    return { init : b_STORAGE_LOAD_LOG_MAP_CB
+           , l
+           , r
+           , c
+           , p
+    };
 })();
+if(!chrome.action) chrome.action = chrome.pageAction;
+  console.log('%c background_js.init():', "color:magenta;"); /* eslint-disable-line quotes */
+                  background_js.init();
 
+/* JS {{{
+"┌─────────────────────────────────────────────────────────────────────────────┐
+"│                                                                             │
+:e  $BROWSEEXT/RTabsExtension/manifest.json
+
+:e  $BROWSEEXT/RTabsExtension/javascript/background_v3.js
+:e  $BROWSEEXT/RTabsExtension/javascript/background_v2.js
+:e  $APROJECTS/GITHUB/RTabsExtension/javascript/background.js
+:e  $BROWSEEXT/RTabsExtension/javascript/content.js
+:e             $RPROFILES/script/dom_sentence.js
+:e             $RPROFILES/script/stub/dom_sentence_event.js
+:e             $RPROFILES/script/stub/dom_scroll.js
+:e             $RPROFILES/script/stub/dom_sentence_util.js
+:e             $RPROFILES/script/stub/dom_log.js
+:e             $RPROFILES/stylesheet/dom_host.css
+
+:e             $RPROFILES/script/dom_select.js
+:e             $RPROFILES/script/dom_util.js
+:e             $RPROFILES/script/dom_log.js
+
+:e             $RPROFILES/script/splitter.js
+:e             $RPROFILES/script/dom_load.js
+"│                                                                             │
+"└─────────────────────────────────────────────────────────────────────────────┘
+}}}*/
+/* Service Worker {{{
+" Migrate to a service worker:
+    :!start explorer "https://developer.chrome.com/docs/extensions/mv3/content_scripts/"
+    :!start explorer "https://developer.chrome.com/docs/extensions/migrating/to-service-workers/"
+    :!start explorer "https://learn.microsoft.com/en-us/microsoft-edge/extensions-chromium/developer-guide/migrate-your-extension-from-manifest-v2-to-v3"
+
+" Replace blocking web request listeners:
+    :!start explorer "https://developer.chrome.com/docs/extensions/migrating/blocking-web-requests/"
+
+" Using eval in Chrome extensions:
+    :!start explorer "https://developer.chrome.com/docs/extensions/mv3/sandboxingEval/"
+
+" chrome.scripting API
+    :!start explorer "https://github.com/GoogleChrome/chrome-extensions-samples/tree/main/api-samples/scripting"
+    :new C:/LOCAL/DATA/ANDROID/PROJECTS/GITHUB/chrome-extensions-samples/api-samples/scripting/sw.js
+}}}*/

@@ -1,14 +1,38 @@
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ popup.js......................................................P_SCRIPT │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
+/* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true {{{*/
+/* eslint-disable no-redeclare              */
+/* globals console, chrome                  */
+
+/* globals log_js                           */
+
+/* exported popup_js,    P_SCRIPT_TAG     */
+
+/* eslint-disable no-warning-comments       */
+/* eslint-disable prefer-spread             */
+/* eslint-disable prefer-rest-params        */
+/* eslint-disable valid-jsdoc               */
+/* globals importScripts                    */ /* eslint-disable-line no-unused-vars */
+/* eslint-enable  no-redeclare              */
+
+const    P_SCRIPT_ID         = "popup_js";
+const    P_SCRIPT_TAG        =     P_SCRIPT_ID +" V3(230404:15h:00)";
+/*}}}*/
+
+
+let popup_js = (function() {
 "use strict";
-let P_SCRIPT_ID = "popup_js";       let SCRIPT_TAG = P_SCRIPT_ID +" (200927:20h:19)";
 /* NOTES: {{{*/
-/* 
+/*
  * BACKGROUND in responsible for user [EDITED CSP FILTERS STORAGE]
  * OPTIONS calls chrome.storage.sync.set only when storing [LOGING OPTIONS STORAGE]
  * POPUP in responsible for USER [SETTINGS STORAGE]
 */
 /*}}}*/
 
-/* IMPORT log_js */
+/* IMPORT log_js {{{*/
+/* eslint-disable no-unused-vars */
 /*_ {{{*/
 //let log_js = {};
 
@@ -20,13 +44,36 @@ let   SAU, SAR, SAD, SAL, SHV, SYN, SBS, SD0, SD1, SD2, SD3, SD4, SD5, SD6, SD7,
 let   L_CHK, L_NEW, L_ARD, L_ARL, L_ARR, L_ARU, L_CLR, L_FNC, L_WRN;
 let   SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP;
 
-let   log
+let   clear
+    , ellipsis
+    , get_callers
+    , get_ex_stack_line_match
+    , log
+    , logBIG
+    , logXXX
+    , log_CSP
+    , log_SYN
+    , log_caller
+    , log_console_clear
     , log_json
+    , log_json_one_liner
+    , log_key_val
+    , log_key_val_group
     , log_members
     , log_object
+    , log_object_val_format
+    , log_pause
     , log_permission
     , log_sep_bot
     , log_sep_top
+    , mPadEnd
+    , mPadStart
+    , parse_ex_stack_FUNC_FILE_LINE_COL
+    , pause
+    , reload
+    , strip_CR_LF
+    , strip_QUOTE
+    , truncate
 ;
 
 /*}}}*/
@@ -42,17 +89,41 @@ let popup_require_dom_log = function()
     [ L_CHK, L_NEW, L_ARD, L_ARL, L_ARR, L_ARU, L_CLR, L_FNC, L_WRN                       ] = log_js.LOG_CHR;
     [ SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP] = log_js.LOG_SYM;
 
+    clear                               = log_js.clear;
+    ellipsis                            = log_js.ellipsis;
+    get_callers                         = log_js.get_callers;
+    get_ex_stack_line_match             = log_js.get_ex_stack_line_match;
     log                                 = log_js.log;
+    logBIG                              = log_js.logBIG;
+    logXXX                              = log_js.logXXX;
+    log_CSP                             = log_js.log_CSP;
+    log_SYN                             = log_js.log_SYN;
+    log_caller                          = log_js.log_caller;
+    log_console_clear                   = log_js.log_console_clear;
     log_json                            = log_js.log_json;
+    log_json_one_liner                  = log_js.log_json_one_liner;
+    log_key_val                         = log_js.log_key_val;
+    log_key_val_group                   = log_js.log_key_val_group;
     log_members                         = log_js.log_members;
     log_object                          = log_js.log_object;
+    log_object_val_format               = log_js.log_object_val_format;
+    log_pause                           = log_js.log_pause;
     log_permission                      = log_js.log_permission;
     log_sep_bot                         = log_js.log_sep_bot;
     log_sep_top                         = log_js.log_sep_top;
+    mPadEnd                             = log_js.mPadEnd;
+    mPadStart                           = log_js.mPadStart;
+    parse_ex_stack_FUNC_FILE_LINE_COL   = log_js.parse_ex_stack_FUNC_FILE_LINE_COL;
+    pause                               = log_js.pause;
+    reload                              = log_js.reload;
+    strip_CR_LF                         = log_js.strip_CR_LF;
+    strip_QUOTE                         = log_js.strip_QUOTE;
+    truncate                            = log_js.truncate;
 
 };
 /*}}}*/
 popup_require_dom_log();
+/* eslint-ensable no-unused-vars */
 
 /* LOG_MAP {{{*/
 /*_ P_LOG {{{*/
@@ -66,13 +137,13 @@ let LOG_MAP = {
     P_LOG7_TABS       : false,
     P_LOG8_EVENTS     : false,
 
-    P_LOG0_MORE       : false,
+    P_LOG0_MORE       : false
    };
 /*}}}*/
 /*_ log_LOG_MAP {{{*/
 let log_LOG_MAP = function(collapsed=true)
 {
-    let args = [""];            let s  = "%c LOG_MAP "+SCRIPT_TAG+": "; args.push(lb0);
+    let args = [""];            let s  = "%c LOG_MAP "+P_SCRIPT_TAG+": "; args.push(lb0);
 
     if( LOG_MAP.P_LOG2_ERROR    ) { s += "%c P_LOG2_ERROR "           ; args.push(lb2); }
     if( LOG_MAP.P_LOG4_STORE    ) { s += "%c P_LOG4_STORE "           ; args.push(lb4); }
@@ -91,8 +162,11 @@ let log_LOG_MAP = function(collapsed=true)
 };
 /*}}}*/
 /*}}}*/
+/*}}}*/
 
-/* SETTINGS */ // log_this= P_LOG4_STORE P_LOG6_UI
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ SETTINGS                             log_this= P_LOG4_STORE P_LOG6_UI  │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 /*{{{*/
 /*{{{*/
 const FILTER3_REMOVE       = "FILTER3_REMOVE";
@@ -164,7 +238,7 @@ let show_start = function(start)
     /* label */
  //    let label_after = label.nextElementSibling;
  //    if( label_after)
- //        label_after.innerHTML = 
+ //        label_after.innerHTML =
  //        = (start == "ON") ? "stop"
  //        :                   "start"
  //    ;
@@ -220,7 +294,7 @@ let set_enabled_el_parent_with_class = function(enabled, el, className)
     else        add_el_class(pl, "disabled");
 /*
     let tl = document.getElementById("title");
-    if( tl) tl.innerHTML = "RTabs Settings<br><i>"+SCRIPT_TAG+"</i>";
+    if( tl) tl.innerHTML = "RTabs Settings<br><i>"+P_SCRIPT_TAG+"</i>";
 */
 };
 /*}}}*/
@@ -306,7 +380,7 @@ let COLOR_MAP = {
       "cc6" : "#6495ED",
       "cc7" : "#EE82EE",
       "cc8" : "#A0A0A0",
-      "cc9" : "#FFFFFF",
+      "cc9" : "#FFFFFF"
    };
 
 /*}}}*/
@@ -341,7 +415,7 @@ let show_color = function(color)
 let log_this = LOG_MAP.P_LOG6_UI;
 let log_more = log_this && LOG_MAP.P_LOG0_MORE;
 if( log_more) log("%c show_color%c("+color+")",lb6,lb0);
-    let color_dropdown = document.getElementById('color_dropdown');
+    let color_dropdown = document.getElementById("color_dropdown");
     if(!color_dropdown)
     {
 if( log_this) log("...!color_dropdown",lb6);
@@ -420,7 +494,9 @@ if( log_more) log("%c show_typeface%c("+typeface+")",lb6,lb0);
 
 /*}}}*/
 
-/* UI */ // log_this= P_LOG6_UI P_LOG8_EVENTS
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ UI                                   log_this= P_LOG6_UI P_LOG8_EVENTS │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 /*{{{*/
 /*_ settings_div_CB {{{*/
 let settings_div_CB = function(e)
@@ -588,15 +664,15 @@ let log_items = {};
     {
         let input =    input_list[i];
         try {
-            /* HTML {{{                                    
+            /* HTML {{{
              *
-             * <span  class="box_container">          
-             *  <div  class="box cb_filled_pin cb_6"> 
-             *   <input  id="start" type="checkbox"/> 
-             *   <label for="start" >S</label>        
-             *   <div class="label_after"></div>      
-             *  </div>                                
-             * </span>                                
+             * <span  class="box_container">
+             *  <div  class="box cb_filled_pin cb_6">
+             *   <input  id="start" type="checkbox"/>
+             *   <label for="start" >S</label>
+             *   <div class="label_after"></div>
+             *  </div>
+             * </span>
              *
              *}}}*/
             /* TITLE FROM INPUT ID {{{*/
@@ -624,7 +700,7 @@ let log_items = {};
                 caption.innerHTML = p_get_badge_for_title(title);
 
 //if( log_more) log("...caption.innerHTML=["+caption.innerHTML+"]");
-  if( log_more) log_items[i+1] = { title : title, caption : caption.innerHTML };
+  if( log_more) log_items[i+1] = { title , caption : caption.innerHTML };
             }
             /*}}}*/
         }
@@ -637,7 +713,6 @@ if( log_more) log_members(caller+": items", log_items, lbH+lf8);
 /*_ p_get_badge_for_title {{{*/
 let p_get_badge_for_title = function(title)
 {
-    ;
     switch(title) {
 
         case "start"        : return "START-STOP the extension on this page";
@@ -649,7 +724,7 @@ let p_get_badge_for_title = function(title)
         case "cancelreq"    : return "Block all outgoing requests from this page";
         case "LOG_IPC"      : return "Toggle LOC_IPC .. (dom_load or dom_tools)";
 
-        default             : return '<h2>TODO</h2>Fetch and return a captionfor "'+ title +'"';
+        default             : return '<h2>TODO</h2>Fetch and return a captionfor "'+ title +'"'; /* eslint-disable-line quotes */
     }
 
 };
@@ -686,19 +761,21 @@ if( log_more) log("set_checked_parent_popup_div_active_border%c("+id+")", lb0);
 /*}}}*/
 /*}}}*/
 
-/* EVENTS */ // log_this= P_LOG8_EVENTS
-// FIXME - UNUSED .. each call to p_set_name_value shall sync with background_js ?
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ EVENTS                               log_this=           P_LOG8_EVENTS │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 /*_ send_state_message{{{*/
 let send_state_message = function()
 {
-    /*{{{*/
+// FIXME - UNUSED .. each call to p_set_name_value shall sync with background_js ?
+/*{{{*/
 let caller = "send_state_message";
 let log_this = LOG_MAP.P_LOG8_EVENTS;
 if( log_this) log("%c"+caller, lbR+lf9);
 
 if(log_this) log("...tab_settings.csp_filter...=["+tab_settings.csp_filter+"]");
 
-    /*}}}*/
+/*}}}*/
     /* SKIP BROWSER SPECIAL PAGES {{{*/
     if( tab_url.startsWith("chrome") )
     {
@@ -718,12 +795,12 @@ if(LOG_MAP.P_LOG2_ERROR) log(caller+": skipping URL %c "+tab_url+" ", lb8);
 
     let queryInfo = { active : true , /*currentWindow:true ,*/ status : "complete" };
 
-    let message = 
+    let message =
         {            url : tab_url
             ,      start : tab_settings.start
             , csp_filter : apply_csp_filter
             ,     caller : P_SCRIPT_ID+"."+caller
-            ,  queryInfo : queryInfo
+            ,  queryInfo
         };
     send_message(message, caller);
 
@@ -737,22 +814,22 @@ let p_UI_add_click_listeners = function()
 let log_this = LOG_MAP.P_LOG8_EVENTS;
 if( log_this) log("%c p_UI_add_click_listeners", lb8);
     /* settings_div 'click' {{{*/
-    let settings_div = document.getElementById('settings_div');
-    settings_div.addEventListener('click', (e) => {
+    let settings_div = document.getElementById("settings_div");
+    settings_div.addEventListener("click", (e) => {
         settings_div_CB(e);
     });
     /*}}}*/
     /* popup_settings_div 'click' {{{*/
-    let popup_settings_div    = document.getElementById('popup_settings_div');
-    popup_settings_div.addEventListener('click', (e) => {
+    let popup_settings_div    = document.getElementById("popup_settings_div");
+    popup_settings_div.addEventListener("click", (e) => {
         settings_div_CB(e);
     });
     /*}}}*/
     /* color_dropdown 'click' {{{*/
-    let color_dropdown        = document.getElementById('color_dropdown');
+    let color_dropdown        = document.getElementById("color_dropdown");
     if(color_dropdown)
     {
-        color_dropdown.addEventListener('click', () => {
+        color_dropdown.addEventListener("click", () => {
 if(log_this) log("color_dropdown.change: color_dropdown.value=["+color_dropdown.value+"]");
 
             let   idx = color_dropdown.value;
@@ -763,10 +840,10 @@ if(log_this) log("color_dropdown.change: color_dropdown.value=["+color_dropdown.
     }
     /*}}}*/
     /* color_badge_container 'click' {{{*/
-    let color_badge_container = document.getElementById('color_badge_container');
+    let color_badge_container = document.getElementById("color_badge_container");
     if(color_badge_container)
     {
-        color_badge_container.addEventListener('click', (e) => {
+        color_badge_container.addEventListener("click", (e) => {
 if(log_this) log("color_badge_container.click: e.target.id=["+e.target.id+"]");
 
             let   idx = e.target.id;
@@ -778,7 +855,9 @@ if(log_this) log("color_badge_container.click: e.target.id=["+e.target.id+"]");
 };
 /*}}}*/
 
-/* UTIL */ // log_this= P_LOG7_TABS
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ UTIL                                 log_this= P_LOG7_TABS             │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 /*{{{*/
 /*_ set add del has _el_class {{{*/
 let set_el_class     = function(el, className) {                                            el.className       = className  ; };
@@ -806,7 +885,7 @@ if( log_this) log("%c interrupt_cancelreq%c(caller "+caller+")", lb7, lb0);
     store_cancelreq( false );
     show_cancelreq (tab_settings.cancelreq);
 
-    let message = { cancelreq:cancelreq , url:tab_url };
+    let message = { cancelreq:tab_settings.cancelreq , url:tab_url };
     send_message(message, caller);
 };
 /*}}}*/
@@ -827,8 +906,8 @@ let get_url_domain = function(url)
     if(   !url ) return "";
 
     url = (url.indexOf("://" ) > 0)
-        ?  url.split  (  '/' )[2]
-        :  url.split  (  '/' )[0]
+        ?  url.split  (  "/" )[2]
+        :  url.split  (  "/" )[0]
     ;
 
     return  url.replace(regex_DOMAIN, "$1");
@@ -836,7 +915,9 @@ let get_url_domain = function(url)
 /*}}}*/
 /*}}}*/
 
-/* CONSOLE COMMANDS */
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ CONSOLE COMMANDS                                                       │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 /*_ logn {{{*/
 let logn = function(n)
 {
@@ -885,15 +966,15 @@ let p_storage_sync_set_LOG_MAP = function()
 {
     log("%c SAVING [LOG_MAP]", lb9);
     let items
-        = {     P_LOG2_ERROR  : LOG_MAP[ "P_LOG2_ERROR"  ]
+        = {     P_LOG2_ERROR  : LOG_MAP.P_LOG2_ERROR
 
-            ,   P_LOG4_STORE  : LOG_MAP[ "P_LOG4_STORE"  ]
+            ,   P_LOG4_STORE  : LOG_MAP.P_LOG4_STORE
 
-            ,   P_LOG6_UI     : LOG_MAP[ "P_LOG6_UI"     ]
-            ,   P_LOG7_TABS   : LOG_MAP[ "P_LOG7_TABS"   ]
-            ,   P_LOG8_EVENTS : LOG_MAP[ "P_LOG8_EVENTS" ]
+            ,   P_LOG6_UI     : LOG_MAP.P_LOG6_UI
+            ,   P_LOG7_TABS   : LOG_MAP.P_LOG7_TABS
+            ,   P_LOG8_EVENTS : LOG_MAP.P_LOG8_EVENTS
 
-            ,   P_LOG0_MORE   : LOG_MAP[ "P_LOG0_MORE"   ]
+            ,   P_LOG0_MORE   : LOG_MAP.P_LOG0_MORE
         };
     chrome.storage.sync.set( items );
 
@@ -901,7 +982,9 @@ let p_storage_sync_set_LOG_MAP = function()
 };
 /*}}}*/
 
-/* STORAGE */ // log_this= P_LOG8_EVENTS
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ STORAGE                              log_this= P_LOG8_EVENTS           │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 // ............ SETTINGS1_tabs_onActivated      ... background_js responsibility
 /*_ SETTINGS1_onDOMContentLoaded_addListener {{{*/
 const P_DOM_CONTENT_LOADED = "DOM CONTENT LOADED";
@@ -912,7 +995,7 @@ if( log_this) log("%c"+SD1+"%c "+P_DOM_CONTENT_LOADED, lbB+lf1, lbR+lf9);
 
     if( !log_permission(P_SCRIPT_ID, chrome.runtime, "Listening to DOMContentLoaded notifications", "runtime") )
         return;
-    document.addEventListener('DOMContentLoaded', SETTINGS2_GET_ACTIVE_TAB_URL);
+    document.addEventListener("DOMContentLoaded", SETTINGS2_GET_ACTIVE_TAB_URL);
 };
 /*}}}*/
 /*_ SETTINGS2_GET_ACTIVE_TAB_URL {{{*/
@@ -923,7 +1006,7 @@ let caller = "SETTINGS2_GET_ACTIVE_TAB_URL";
 let log_this = LOG_MAP.P_LOG8_EVENTS;
 
     let queryInfo = {active:true , /*currentWindow:true ,*/ status:"complete" };
-    let message = { query:"get_tab_url" , queryInfo:queryInfo };
+    let message = { query:"get_tab_url" , queryInfo };
 if( log_this) log("%c"+SD2+"%c "+P_GET_ACTIVE_TAB_URL    +": %c" +log_json(message), lbB+lf2, lbR+lf9, lb0);
 
     send_message(message, caller);
@@ -956,7 +1039,7 @@ if( log_this) log("%c"+SD5+"%c "+P_GET_URL_SETTINGS      +" %c["+url+"]", lbB+lf
                     : items[key]
             );
         });
-}
+};
 /*}}}*/
 /*_ SETTINGS5_GET_URL_SETTINGS_CB {{{*/
 const P_GET_URL_SETTINGS_CB       = "GET URL SETTINGS CB";
@@ -995,11 +1078,13 @@ if( log_this) log_members("tab_settings", items, lbH+lf9);
 
     /*}}}*/
 } finally { if( log_this)  log_sep_bot(caller, "LOG4_TAG"); }
-}
+};
 /*}}}*/
 // ............ SETTINGS7_APPLY_CSP_FILTER      ... background_js responsibility
 
-/* LISTENERS */
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ LISTENERS                            log_this= P_LOG8_EVENTS           │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 /*_ p_sync_get_LOG_MAP_CB {{{*/
 let p_sync_get_LOG_MAP_CB = function(items={})
 {
@@ -1170,15 +1255,17 @@ if( log_this) log("SET %c has_CSP %c "+message.has_CSP, lbL+lf9, lbR+lf6);
 p_runtime_onMessage_addListener();
 /*}}}*/
 
-/* IPC */ // log_this= P_LOG7_TABS
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ IPC                                  log_this= P_LOG7_TABS             │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
 /*_ send_message {{{*/
 let send_message = function(message, caller)
 {
 let log_this = LOG_MAP.P_LOG7_TABS;
 let log_more = log_this && LOG_MAP.P_LOG0_MORE;
 
-    message["caller"] = P_SCRIPT_ID+"."+caller;
-    message["tabId" ] = last_activated_tabId;
+    message.caller = P_SCRIPT_ID+"."+caller;
+    message.tabId  = last_activated_tabId;
 
 if( log_this) log_members("send_message", message, lbH+lf8);
 
@@ -1198,7 +1285,7 @@ if( log_this) log("...calling chrome.tabs.executeScript%c({ code : '"+script+"' 
 let p_IPC_message_CB = function(event)
 {
     let message = event.data;
-log(t_ipc_listener_id+".p_IPC_message_CB: ...message=["+message+"]");
+log(P_SCRIPT_ID+".p_IPC_message_CB: ...message=["+message+"]");
 
     let ipc = JSON.parse(message);
     if( ipc ) p_IPC_handle_message( ipc );
@@ -1224,10 +1311,9 @@ log("...%c "+script_id+": %c Listening to window.postMessage ", lbb+lbL+lf7, lbb
 p_IPC_addListener(P_SCRIPT_ID);
 /*}}}*/
 
-/* l c {{{*/
-let c = log_js.clear;
-let l = logn;
-
-
-/*}}}*/
+    return { init : p_runtime_onMessage_addListener
+            ,   c : log_js.clear
+            ,   l : logn
+    };
+})();
 

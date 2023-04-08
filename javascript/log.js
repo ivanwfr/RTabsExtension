@@ -281,12 +281,12 @@ let log_members = function(o_name, o, lxx=lb0, collapsed=true)
 {
     if(!o) log(o_name+": %c null object ", lxx);
 
+    if(typeof o != "object") { log("%c "+o_name+" %c IS NOT AN OBJECT ", lb4+lf2, lb2+lf4); return; }
+
     if(collapsed) console.groupCollapsed("%c"+o_name+" "+SAD, lbR+lxx);
     else          console.group         ("%c"+o_name+" "+SAD, lbR+lxx);
 
     //let tdata = "";
-
-    if(typeof o != "object") { log("%c "+o_name+" %c IS NOT AN OBJECT ", lb4+lf2, lb2+lf4); return; }
 
     Object.keys(o).forEach(
         function(key) {
