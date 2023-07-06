@@ -12,7 +12,7 @@
 /* eslint-enable  no-redeclare */
 
 const DOM_PROP_JS_ID        = "dom_prop_js";
-const DOM_PROP_JS_TAG       = DOM_PROP_JS_ID    +" (230522:01h:34)";
+const DOM_PROP_JS_TAG       = DOM_PROP_JS_ID    +" (230706:20h:45)";
 
 /*}}}*/
 let dom_prop    = (function() {
@@ -21,8 +21,8 @@ let   DOM_PROP_LOG          = false;
 let   DOM_PROP_TAG          = false;
 
 /* IMPORT */
-/* eslint-disable no-unused-vars */
 /*{{{*/
+/* eslint-disable no-unused-vars */
 /*➔ t_prop_IMPORT {{{*/
 /* t_data .. t_tools {{{*/
 /*....................................*/
@@ -132,9 +132,11 @@ let   prop_INTERN = function()
 };
 /*}}}*/
 /*_ localStorage {{{*/
-let localStorage_setItem = function(key,val) { if(val) localStorage.setItem   (key,val); else localStorage.removeItem(key); };
-let localStorage_getItem = function(key    ) { return  localStorage.getItem   (key    ); };
-let localStorage_delItem = function(key    ) { /*...*/ localStorage.removeItem(key    ); };
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 /*}}}*/
 /* eslint-enable  no-unused-vars */
 /*}}}*/
@@ -456,12 +458,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 /*}}}*/

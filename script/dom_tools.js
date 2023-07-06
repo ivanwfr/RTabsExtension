@@ -58,7 +58,7 @@
 /* eslint-disable no-warning-comments */
 
 const DOM_TOOLS_JS_ID       = "dom_tools_js" ;
-const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (230627:16h:05)";
+const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (230706:21h:58)";
 /*}}}*/
 let dom_tools   = (function() {
 "use strict";
@@ -335,7 +335,7 @@ let   tools_DEPEND = function()
 /*…   load_IMPORT .. globals {{{*/
 let   load_IMPORT = function()
 {
-let log_this = localStorage.getItem("DOM_TOOLS_TAG");
+let log_this; try { log_this = localStorage_getItem("DOM_TOOLS_TAG"); } catch(ex) {}
 
 let i =5; /*....................................... dom_data     EXPORT-ONLY */                 /* 05 */
 
@@ -401,6 +401,13 @@ let i =5; /*....................................... dom_data     EXPORT-ONLY */ 
     t_log.log_IMPORT();
 }}}*/
 };
+/*}}}*/
+/*_ localStorage {{{*/
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 /*}}}*/
 /*}}}*/
 /* CONST {{{*/
@@ -4197,7 +4204,8 @@ if( log_this) log("%c"+caller, lfX[state ? 5:8]);
     /* not while some TOOLS-TIER is active */
     if( prop.get( t_data.TOOLS_TIER2 ) )
     {
-        pulse_id( t_data.TOOLS_TIER2 );
+        pulse_id( t_data.TOOLS_TIER2       );
+        prop.set( t_data.TOOLS_TIER2, false);
 
         return;
     }
@@ -7993,7 +8001,7 @@ if( log_this) log(caller+": on_sticky=["+on_sticky+"]");
     /*}}}*/
     /* [quick_move] {{{*/
     let quick_move
-        = t_seek.t_seeker_is_seeker_PU_ONSEEKER()
+        =  t_seek.t_seeker_is_seeker_PU_ONSEEKER()
         || prop.get(t_data.TOOLS_TIER2)
     ;
 
@@ -11260,7 +11268,7 @@ logXXX("%c bag_id=["+bag_id+"]", lbH+lf8);
         case "dev_log_map"  :
         case "prop_bag"     : if(      prop_tools_CB(e_target)        )  consumed_by = bag_id; break;
 
-        case "fly_div"      : t_fly.t_fly_clr         (e_target         ); consumed_by = bag_id; break;
+        case "fly_div"      : t_fly.t_fly_clr       (e_target         ); consumed_by = bag_id; break;
 
         default:
 if(log_this) log("%c"+caller+"%c ["+bag_id+"] has no delegation from ["+get_n_lbl(e_target)+"]"
@@ -23503,8 +23511,8 @@ let PULSE_BLACKLIST_ID_CSV = "tools_node";
 const PULSE_IN_DURATION    = 500;
 const PULSE_OUT_DURATION   = 500;
 
-let pulsing_id     = "";
-let pulsing_id_csv = "";
+let pulsing_id             = "";
+let pulsing_id_csv         = "";
 
 /*}}}*/
 /*_ pulse_id {{{*/
@@ -24456,12 +24464,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 /*}}}*/
@@ -24737,6 +24745,7 @@ return { name : "dom_tools"
 , load5_STORAGE_hotspot
 , t_IS_ON_GRID_observerCB
 , t_MASK_OR_HIDE_changed
+, t_activate_tools_tier1
 , t_click_panel_pin_CB
 , t_drag_hotspot_xy_delay
 , t_flash_unpinned_panels

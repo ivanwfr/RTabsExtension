@@ -24,7 +24,7 @@
 /* exported dom_util */
 
 const DOM_UTIL_JS_ID        = "dom_util";
-const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (230509:16h:10)";  /* eslint-disable-line no-unused-vars */
+const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (230706:19h:57)";  /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_util    = (function() {
 "use strict";
@@ -143,9 +143,11 @@ let   util_INTERN = function()
 };
 /*}}}*/
 /*_ localStorage {{{*/
-let localStorage_setItem = function(key,val) { if(val) localStorage.setItem   (key,val); else localStorage.removeItem(key); };
-let localStorage_getItem = function(key    ) { return  localStorage.getItem   (key    ); };
-let localStorage_delItem = function(key    ) { /*...*/ localStorage.removeItem(key    ); };
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 /*}}}*/
 /* eslint-enable no-unused-vars */
 /*}}}*/
@@ -4488,12 +4490,12 @@ let t_store_set_state = function(label,state)
 {
     if(    state != undefined)
     {
-        if(state) localStorage.setItem   (label, "true");
-        else      localStorage.removeItem(label        );
+        if(state) localStorage_setItem(label, "true");
+        else      localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return    localStorage.getItem   (label        );
+        return    localStorage_getItem   (label        );
     }
 };
 /*}}}*/

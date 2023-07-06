@@ -22,7 +22,7 @@
 */
 
 const DOM_HIDE_JS_ID        = "dom_hide_js";
-const DOM_HIDE_JS_TAG       = DOM_HIDE_JS_ID  +" (211122:16h:43)"; /* eslint-disable-line no-unused-vars */
+const DOM_HIDE_JS_TAG       = DOM_HIDE_JS_ID  +" (230706:20h:44)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_hide    = (function() {
 "use strict";
@@ -134,6 +134,13 @@ let   hide_INTERN = function()
 
     /*}}}*/
 };
+/*}}}*/
+/*_ localStorage {{{*/
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 /*}}}*/
 /* eslint-enable  no-unused-vars */
 /*}}}*/
@@ -1638,12 +1645,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 /*}}}*/

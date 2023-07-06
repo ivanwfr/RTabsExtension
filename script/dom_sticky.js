@@ -21,7 +21,7 @@
 /* eslint-disable prefer-object-spread */
 
 const DOM_STICKY_JS_ID      = "dom_sticky_js";
-const DOM_STICKY_JS_TAG     = DOM_STICKY_JS_ID  +" (230124:15h:13)";
+const DOM_STICKY_JS_TAG     = DOM_STICKY_JS_ID  +" (230706:20h:41)";
 /*}}}*/
 let dom_sticky  = (function() {
 "use strict";
@@ -414,6 +414,13 @@ let   sticky_DEPEND = function()
     /*}}}*/
 
 };
+/*}}}*/
+/*_ localStorage {{{*/
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 /*}}}*/
 /*}}}*/
 /* CONST {{{*/
@@ -5691,12 +5698,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 /*}}}*/

@@ -15,7 +15,7 @@
 /* exported dom_details, DOM_DETAILS_JS_TAG */
 
 const DOM_DETAILS_JS_ID        = "dom_details_js";
-const DOM_DETAILS_JS_TAG       = DOM_DETAILS_JS_ID  +" (220308:16h:37)";  /* eslint-disable-line no-unused-vars */
+const DOM_DETAILS_JS_TAG       = DOM_DETAILS_JS_ID  +" (230706:19h:56)";  /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_details         = (function() {
 "use strict";
@@ -61,11 +61,11 @@ let get_tool;
 let is_el_or_child_of_parent_el;
 
 /*}}}*/
-/* dom_store {{{*/
+/*_ localStorage {{{*/
 
-let localStorage_delItem = (key    ) =>           localStorage.removeItem(key    );                                       /* eslint-disable-line no-unused-vars */
-let localStorage_getItem = (key    ) =>           localStorage.getItem   (key    );                                       /* eslint-disable-line no-unused-vars */
-let localStorage_setItem = (key,val) => { if(val) localStorage.setItem   (key,val); else localStorage.removeItem(key); }; /* eslint-disable-line no-unused-vars */
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
 
 /*}}}*/
 
@@ -691,12 +691,12 @@ let t_store_set_state = function(label,state)
 {
     if(    state != undefined)
     {
-        if(state) localStorage.setItem   (label, "true");
-        else      localStorage.removeItem(label        );
+        if(state) localStorage_setItem(label, "true");
+        else      localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return    localStorage.getItem   (label        );
+        return    localStorage_getItem   (label        );
     }
 };
 /*}}}*/

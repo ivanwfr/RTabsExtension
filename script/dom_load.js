@@ -14,7 +14,7 @@ javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 const DOM_LOAD_ID    = "dom_load";
-const DOM_LOAD_TAG   =  DOM_LOAD_ID +" (230627:16h:07)";
+const DOM_LOAD_TAG   =  DOM_LOAD_ID +" (230706:22h:00)";
 /*}}}*/
 
 
@@ -7017,7 +7017,7 @@ let dom_log_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_LOG_JS_ID         = "dom_log_js";
-const DOM_LOG_JS_TAG        = DOM_LOG_JS_ID  +" (230509:14h:58)";
+const DOM_LOG_JS_TAG        = DOM_LOG_JS_ID  +" (230706:19h:57)";
 
 let dom_log     = (function() {
 "use strict";
@@ -7165,9 +7165,11 @@ let   log_INTERN = function()
 };
 
 
-let localStorage_setItem = function(key,val) { if(val) localStorage.setItem   (key,val); else localStorage.removeItem(key); };
-let localStorage_getItem = function(key    ) { return  localStorage.getItem   (key    ); };
-let localStorage_delItem = function(key    ) { localStorage.removeItem(key    ); };
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -8376,12 +8378,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -8925,7 +8927,7 @@ let dom_util_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_UTIL_JS_ID        = "dom_util";
-const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (230509:16h:10)";
+const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (230706:19h:57)";
 
 let dom_util    = (function() {
 "use strict";
@@ -9044,9 +9046,11 @@ let   util_INTERN = function()
 };
 
 
-let localStorage_setItem = function(key,val) { if(val) localStorage.setItem   (key,val); else localStorage.removeItem(key); };
-let localStorage_getItem = function(key    ) { return  localStorage.getItem   (key    ); };
-let localStorage_delItem = function(key    ) { localStorage.removeItem(key    ); };
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -12999,12 +13003,12 @@ let t_store_set_state = function(label,state)
 {
     if(    state != undefined)
     {
-        if(state) localStorage.setItem   (label, "true");
-        else      localStorage.removeItem(label        );
+        if(state) localStorage_setItem(label, "true");
+        else      localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return    localStorage.getItem   (label        );
+        return    localStorage_getItem   (label        );
     }
 };
 
@@ -13326,7 +13330,7 @@ let dom_i18n_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_I18N_JS_ID        = "dom_i18n_js";
-const DOM_I18N_JS_TAG       = DOM_I18N_JS_ID  +" (221124:17h:20)";
+const DOM_I18N_JS_TAG       = DOM_I18N_JS_ID  +" (230706:19h:57)";
 
 let dom_i18n    = (function() {
 "use strict";
@@ -13440,9 +13444,11 @@ let   util_INTERN = function()
 };
 
 
-let localStorage_setItem = function(key,val) { if(val) localStorage.setItem   (key,val); else localStorage.removeItem(key); };
-let localStorage_getItem = function(key    ) { return  localStorage.getItem   (key    ); };
-let localStorage_delItem = function(key    ) { localStorage.removeItem(key    ); };
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -13843,12 +13849,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -14016,7 +14022,7 @@ let dom_prop_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_PROP_JS_ID        = "dom_prop_js";
-const DOM_PROP_JS_TAG       = DOM_PROP_JS_ID    +" (230522:01h:34)";
+const DOM_PROP_JS_TAG       = DOM_PROP_JS_ID    +" (230706:20h:45)";
 
 
 let dom_prop    = (function() {
@@ -14136,9 +14142,11 @@ let   prop_INTERN = function()
 };
 
 
-let localStorage_setItem = function(key,val) { if(val) localStorage.setItem   (key,val); else localStorage.removeItem(key); };
-let localStorage_getItem = function(key    ) { return  localStorage.getItem   (key    ); };
-let localStorage_delItem = function(key    ) { localStorage.removeItem(key    ); };
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -14455,12 +14463,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -14515,7 +14523,7 @@ let dom_store_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_STORE_JS_ID       = "dom_store_js";
-const DOM_STORE_JS_TAG      = DOM_STORE_JS_ID   +" (230510:16h:03)";
+const DOM_STORE_JS_TAG      = DOM_STORE_JS_ID   +" (230706:19h:47)";
 
 let dom_store   = (function() {
 "use strict";
@@ -14637,6 +14645,13 @@ let   store_INTERN = function()
 
 
 
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
+
+
+
 
 
 
@@ -14733,7 +14748,7 @@ let store_setItem = function(key,value)
 
 let store_removeItem = function(key)
 {
-    return  localStorage.removeItem( store_get_site_or_page_pfx_for_key(key)+"."+key       );
+    return  localStorage_delItem( store_get_site_or_page_pfx_for_key(key)+"."+key       );
 };
 
 
@@ -14741,16 +14756,16 @@ let store_removeItem = function(key)
 
 let t_store_getBool = function(key)
 {
-    return (localStorage.getItem(    store_get_site_or_page_pfx_for_key(key)+"."+key) == "true");
+    return (localStorage_getItem(    store_get_site_or_page_pfx_for_key(key)+"."+key) == "true");
 };
 
 
 let t_store_getItem = function(key, site_or_page)
 {
     let item
-        = (site_or_page == "page") ? localStorage.getItem( t_store_get_page_pfx()+"."+key)
-        : (site_or_page == "site") ? localStorage.getItem( t_store_get_site_pfx()+"."+key)
-        :                            localStorage.getItem( store_get_site_or_page_pfx_for_key( key )+"."+key)
+        = (site_or_page == "page") ? localStorage_getItem( t_store_get_page_pfx()+"."+key)
+        : (site_or_page == "site") ? localStorage_getItem( t_store_get_site_pfx()+"."+key)
+        :                            localStorage_getItem( store_get_site_or_page_pfx_for_key( key )+"."+key)
     ;
 
     return item;
@@ -14790,14 +14805,17 @@ let t_store_has_some_page_keys = function()
     let some_page_keys = [];
     let site_pfx = t_store_get_site_pfx();
 
-    for(let i=localStorage.length-1; i>=0; --i)
-    {
-        let key      = localStorage.key(i);
-        if(   !key.startsWith( site_pfx        )
-           && !key.endsWith  ( "window_scrollY")
-          )
-            some_page_keys.push(key);
-    }
+    try {
+        for(let i=localStorage.length-1; i>=0; --i)
+        {
+            let key      = localStorage.key(i);
+            if(   !key.startsWith( site_pfx        )
+                  && !key.endsWith  ( "window_scrollY")
+              )
+                some_page_keys.push(key);
+        }
+    } catch(ex) {}
+
     return some_page_keys.length
         ?  some_page_keys
         :  ""
@@ -14811,23 +14829,25 @@ let t_store_log_site_and_page = function()
     let site_pfx = t_store_get_site_pfx();
     let page_pfx = t_store_get_page_pfx();
 
-    for(let i=localStorage.length-1; i>=0; --i)
-    {
-        let    key = localStorage.key(i);
-        if(   !key.includes( site_pfx )
-           && !key.includes( page_pfx )
-          )
-            continue;
-
-        let       val = localStorage[key];
-
-        let { filter_in  ,  filter_out } = store_FILTER(key,val);
-        if(   filter_in || !filter_out)
+    try {
+        for(let i=localStorage.length-1; i>=0; --i)
         {
-            let value = localStorage.getItem( key );
-            results.push({key , value});
+            let    key = localStorage.key(i);
+            if(   !key.includes( site_pfx )
+                  && !key.includes( page_pfx )
+              )
+                continue;
+
+            let       val = localStorage[key];
+
+            let { filter_in  ,  filter_out } = store_FILTER(key,val);
+            if(   filter_in || !filter_out)
+            {
+                let value = localStorage_getItem( key );
+                results.push({key , value});
+            }
         }
-    }
+    } catch(ex) {}
 
     t_log.console_table(results, "["+site_pfx+"] .. ["+page_pfx+"]");
     return results;
@@ -14900,14 +14920,16 @@ let log_this = DOM_STORE_TAG || DOM_STORE_LOG || LOG_MAP.T0_STORE;
     let page_pfx = t_store_get_page_pfx();
 
     let page_items_keys_to_remove_array = [];
-    for(let i=localStorage.length-1; i>=0; --i)
-    {
-        let k = localStorage.key(i);
-        if( t_store_is_a_shared_item(site_pfx,page_pfx,i+1,k,log_this) )
+    try {
+        for(let i=localStorage.length-1; i>=0; --i)
         {
-            page_items_keys_to_remove_array.push(k);
+            let k = localStorage.key(i);
+            if( t_store_is_a_shared_item(site_pfx,page_pfx,i+1,k,log_this) )
+            {
+                page_items_keys_to_remove_array.push(k);
+            }
         }
-    }
+    } catch(ex) {}
 
 
     if(page_items_keys_to_remove_array.length)
@@ -14923,7 +14945,7 @@ if( log_this) log("%c localStorage: %c SITE %c"+site_pfx+"%c PAGE %c"+page_pfx +
 if(log_this) log((i+1)+"%c removing %c"+k
                  ,      lbL+lf2    ,lbR+lf3);
 
-            localStorage.removeItem(k);
+            localStorage_delItem(k);
             removed_keys += (i+1)+" - "+store_key_tail(k)+LF;
         }
         _notify_info(  (  msg
@@ -14952,7 +14974,7 @@ let t_store_is_a_shared_item = function(site_pfx,page_pfx,num,key,log_this)
 
 if(log_this) {
     let result = why_shared || why_not;
-    log(num+"%c "+t_util.mPadStart(result,16)+"%c"+t_util.mPadStart(key,48)+"%c"+ t_util.ellipsis(localStorage.getItem(key),32)
+    log(num+"%c "+t_util.mPadStart(result,16)+"%c"+t_util.mPadStart(key,48)+"%c"+ t_util.ellipsis(localStorage_getItem(key),32)
         ,    lbL+lfx                          ,lbC+lfx                      ,lbR+lfx                                           );
 }
 
@@ -14971,18 +14993,20 @@ let log_this = DOM_STORE_LOG || LOG_MAP.T0_STORE;
     let site_pfx = t_store_get_site_pfx();
 
     let site_items_keys_to_remove_array = [];
-    for(let i=localStorage.length-1; i>=0; --i)
-    {
-        let k      = localStorage.key(      i);
-        if( k.startsWith( site_pfx ) )
+    try {
+        for(let i=localStorage.length-1; i>=0; --i)
         {
+            let k      = localStorage.key(      i);
+            if( k.startsWith( site_pfx ) )
+            {
 
-            site_items_keys_to_remove_array.push(k);
-        }
-        else {
+                site_items_keys_to_remove_array.push(k);
+            }
+            else {
 
+            }
         }
-    }
+    } catch(ex) {}
 
 
     if(site_items_keys_to_remove_array.length)
@@ -14998,7 +15022,7 @@ if( log_this) log("%c localStorage: %c SITE %c"+site_pfx+"%c PAGE %c"+site_pfx +
 if(log_this) log((i+1)+"%c removing %c"+k
                  ,      lbL+lf2    ,lbR+lf3);
 
-            localStorage.removeItem(k);
+            localStorage_delItem(k);
 
             removed_keys += (i+1)+" - "+store_key_tail(k)+LF;
         }
@@ -15264,7 +15288,7 @@ let dom_fly_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_FLY_JS_ID         = "dom_fly_js";
-const DOM_FLY_JS_TAG        = DOM_FLY_JS_ID     +" (211122:16h:42)";
+const DOM_FLY_JS_TAG        = DOM_FLY_JS_ID     +" (230706:20h:42)";
 let dom_fly     = (function() {
 "use strict";
 
@@ -15413,6 +15437,13 @@ let   fly_DEPEND = function()
         };
 
 };
+
+
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -17159,12 +17190,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -17265,7 +17296,7 @@ let dom_wording_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_WORDING_JS_ID     = 'dom_wording_js';
-const DOM_WORDING_JS_TAG    = DOM_WORDING_JS_ID +' (220307:17h:39)';
+const DOM_WORDING_JS_TAG    = DOM_WORDING_JS_ID +' (230706:20h:47)';
 
 let dom_wording = (function() {
 "use strict";
@@ -17372,6 +17403,13 @@ let   wording_INTERN = function()
     log_key_val_group   = t_log.log_key_val_group;
 
 };
+
+
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -17659,12 +17697,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -17721,7 +17759,7 @@ let dom_select_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SELECT_JS_ID      = "dom_select_js";
-const DOM_SELECT_JS_TAG     = DOM_SELECT_JS_ID  +" (220917:03h:11)";
+const DOM_SELECT_JS_TAG     = DOM_SELECT_JS_ID  +" (230706:20h:43)";
 
 let dom_select  = (function() {
 "use strict";
@@ -17835,6 +17873,13 @@ let   select_INTERN = function()
 
 
 };
+
+
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -20856,12 +20901,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -20980,7 +21025,7 @@ let dom_slot_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SLOT_JS_ID        = "dom_slot_js";
-const DOM_SLOT_JS_TAG       = DOM_SLOT_JS_ID  +" (211122:16h:49)";
+const DOM_SLOT_JS_TAG       = DOM_SLOT_JS_ID  +" (230706:20h:43)";
 
 let dom_slot    = (function() {
 "use strict";
@@ -21095,6 +21140,13 @@ let   slot_INTERN = function()
 
 
 };
+
+
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -21304,12 +21356,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -21370,7 +21422,7 @@ let dom_hide_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_HIDE_JS_ID        = "dom_hide_js";
-const DOM_HIDE_JS_TAG       = DOM_HIDE_JS_ID  +" (211122:16h:43)";
+const DOM_HIDE_JS_TAG       = DOM_HIDE_JS_ID  +" (230706:20h:44)";
 
 let dom_hide    = (function() {
 "use strict";
@@ -21482,6 +21534,13 @@ let   hide_INTERN = function()
 
 
 };
+
+
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -22900,12 +22959,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -22994,7 +23053,7 @@ let dom_view_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_VIEW_JS_ID        = "dom_view_js";
-const DOM_VIEW_JS_TAG       = DOM_VIEW_JS_ID  +" (211122:16h:57)";
+const DOM_VIEW_JS_TAG       = DOM_VIEW_JS_ID  +" (230706:20h:43)";
 
 let dom_view    = (function() {
 "use strict";
@@ -23113,6 +23172,13 @@ let   view_INTERN = function()
     prop                = t_prop;
 
 };
+
+
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -23824,12 +23890,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -23890,7 +23956,7 @@ let dom_sticky_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_STICKY_JS_ID      = "dom_sticky_js";
-const DOM_STICKY_JS_TAG     = DOM_STICKY_JS_ID  +" (230124:15h:13)";
+const DOM_STICKY_JS_TAG     = DOM_STICKY_JS_ID  +" (230706:20h:41)";
 
 let dom_sticky  = (function() {
 "use strict";
@@ -24281,6 +24347,13 @@ let   sticky_DEPEND = function()
 
 
 };
+
+
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -29259,12 +29332,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -29432,7 +29505,7 @@ let dom_seek_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SEEK_JS_ID        = "dom_seek_js";
-const DOM_SEEK_JS_TAG       = DOM_SEEK_JS_ID    +" (220916:18h:58)";
+const DOM_SEEK_JS_TAG       = DOM_SEEK_JS_ID    +" (230706:20h:42)";
 
 let dom_seek    = (function() {
 "use strict";
@@ -29572,6 +29645,13 @@ let   seek_DEPEND = function()
         ];
 
 };
+
+
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -32047,12 +32127,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -32178,7 +32258,7 @@ let dom_share_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_SHARE_JS_ID       = "dom_share_js";
-const DOM_SHARE_JS_TAG      = DOM_SHARE_JS_ID   +" (211122:16h:48)";
+const DOM_SHARE_JS_TAG      = DOM_SHARE_JS_ID   +" (230706:20h:42)";
 
 let dom_share   = (function() {
 "use strict";
@@ -32306,6 +32386,13 @@ let   share_INTERN = function()
     log_key_val_group   = t_log.log_key_val_group;
 
 };
+
+
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -33010,7 +33097,7 @@ if( log_this) {
     }
 
     for(let i = 0; i < removed_items_key_array.length; ++i)
-        localStorage.removeItem( removed_items_key_array[i] );
+        localStorage_delItem( removed_items_key_array[i] );
 
 
 
@@ -33299,12 +33386,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -33357,7 +33444,7 @@ let dom_details_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_DETAILS_JS_ID        = "dom_details_js";
-const DOM_DETAILS_JS_TAG       = DOM_DETAILS_JS_ID  +" (220308:16h:37)";
+const DOM_DETAILS_JS_TAG       = DOM_DETAILS_JS_ID  +" (230706:19h:56)";
 
 let dom_details         = (function() {
 "use strict";
@@ -33405,9 +33492,9 @@ let is_el_or_child_of_parent_el;
 
 
 
-let localStorage_delItem = (key    ) =>           localStorage.removeItem(key    );
-let localStorage_getItem = (key    ) =>           localStorage.getItem   (key    );
-let localStorage_setItem = (key,val) => { if(val) localStorage.setItem   (key,val); else localStorage.removeItem(key); };
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
 
 
 
@@ -34017,12 +34104,12 @@ let t_store_set_state = function(label,state)
 {
     if(    state != undefined)
     {
-        if(state) localStorage.setItem   (label, "true");
-        else      localStorage.removeItem(label        );
+        if(state) localStorage_setItem(label, "true");
+        else      localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return    localStorage.getItem   (label        );
+        return    localStorage_getItem   (label        );
     }
 };
 
@@ -34077,7 +34164,7 @@ let dom_wot_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_WOT_JS_ID      = "dom_wot_js";
-const DOM_WOT_JS_TAG     = DOM_WOT_JS_ID  +" (220422:17h:54)";
+const DOM_WOT_JS_TAG     = DOM_WOT_JS_ID  +" (230706:19h:57)";
 
 let dom_wot             = (function() {
 "use strict";
@@ -34139,9 +34226,9 @@ let is_marked_to_hide;
 
 
 
-let localStorage_delItem = (key    ) =>           localStorage.removeItem(key    );
-let localStorage_getItem = (key    ) =>           localStorage.getItem   (key    );
-let localStorage_setItem = (key,val) => { if(val) localStorage.setItem   (key,val); else localStorage.removeItem(key); };
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
 
 
 
@@ -34738,12 +34825,12 @@ let t_wot_set_state = function(label,state)
 {
     if(    state != undefined)
     {
-        if(state) localStorage.setItem   (label, "true");
-        else      localStorage.removeItem(label        );
+        if(state) localStorage_setItem(label, "true");
+        else      localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return    localStorage.getItem   (label        );
+        return    localStorage_getItem   (label        );
     }
 };
 
@@ -34802,7 +34889,7 @@ let dom_sentence_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230206:17h:46)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230706:19h:57)";
 
 let dom_sentence            = (function() {
 "use strict";
@@ -34893,9 +34980,11 @@ let   sentence_INTERN   = function()
 };
 
 
-let localStorage_setItem = function(key,val) { if(val) localStorage.setItem   (key,val); else localStorage.removeItem(key); };
-let localStorage_getItem = function(key    ) { return  localStorage.getItem   (key    ); };
-let localStorage_delItem = function(key    ) { localStorage.removeItem(key); };
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -36121,12 +36210,12 @@ let t_store_set_state = function(label,state)
 {
     if(    state != undefined)
     {
-        if(state) localStorage.setItem   (label, "true");
-        else      localStorage.removeItem(label        );
+        if(state) localStorage_setItem(label, "true");
+        else      localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return    localStorage.getItem   (label        );
+        return    localStorage_getItem   (label        );
     }
 };
 
@@ -36194,7 +36283,7 @@ let dom_grid_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_GRID_JS_ID        = "dom_grid_js";
-const DOM_GRID_JS_TAG       = DOM_GRID_JS_ID    +" (230530:23h:11)";
+const DOM_GRID_JS_TAG       = DOM_GRID_JS_ID    +" (230706:20h:47)";
 
 let dom_grid    = (function() {
 "use strict";
@@ -36313,6 +36402,13 @@ let   grid_INTERN = function()
 
 
 };
+
+
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -37148,12 +37244,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -37217,7 +37313,7 @@ let dom_gutter_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_GUTTER_JS_ID      = "dom_gutter_js";
-const DOM_GUTTER_JS_TAG     = DOM_GUTTER_JS_ID  +" (220308:18h:13)";
+const DOM_GUTTER_JS_TAG     = DOM_GUTTER_JS_ID  +" (230706:20h:47)";
 
 let dom_gutter  = (function() {
 "use strict";
@@ -37323,6 +37419,13 @@ let   gutter_INTERN = function()
     log_key_val_group   = t_log.log_key_val_group;
 
 };
+
+
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -37608,12 +37711,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -37684,7 +37787,7 @@ let dom_ipc_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_IPC_JS_ID         = "dom_ipc_js";
-const DOM_IPC_JS_TAG        = DOM_IPC_JS_ID     +" (230516:15h:06)";
+const DOM_IPC_JS_TAG        = DOM_IPC_JS_ID     +" (230706:20h:48)";
 
 let dom_ipc     = (function() {
 "use strict";
@@ -37792,6 +37895,13 @@ let   ipc_INTERN = function()
     log_key_val_group   = t_log.log_key_val_group;
 
 };
+
+
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -38089,12 +38199,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -38193,7 +38303,7 @@ let dom_tools_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_TOOLS_JS_ID       = "dom_tools_js" ;
-const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (230627:16h:05)";
+const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (230706:21h:58)";
 
 let dom_tools   = (function() {
 "use strict";
@@ -38464,7 +38574,7 @@ let   tools_DEPEND = function()
 
 let   load_IMPORT = function()
 {
-let log_this = localStorage.getItem("DOM_TOOLS_TAG");
+let log_this; try { log_this = localStorage_getItem("DOM_TOOLS_TAG"); } catch(ex) {}
 
 let i =5;
 
@@ -38528,6 +38638,13 @@ let i =5;
 
 
 };
+
+
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 
 
 
@@ -42052,7 +42169,8 @@ if( log_this) log("%c"+caller, lfX[state ? 5:8]);
 
     if( prop.get( t_data.TOOLS_TIER2 ) )
     {
-        pulse_id( t_data.TOOLS_TIER2 );
+        pulse_id( t_data.TOOLS_TIER2       );
+        prop.set( t_data.TOOLS_TIER2, false);
 
         return;
     }
@@ -45512,7 +45630,7 @@ if( log_this) log(caller+": on_sticky=["+on_sticky+"]");
 
 
     let quick_move
-        = t_seek.t_seeker_is_seeker_PU_ONSEEKER()
+        =  t_seek.t_seeker_is_seeker_PU_ONSEEKER()
         || prop.get(t_data.TOOLS_TIER2)
     ;
 
@@ -48502,7 +48620,7 @@ if( log_this) pattern_log_bag_csv(caller);
         case "dev_log_map"  :
         case "prop_bag"     : if(      prop_tools_CB(e_target)        )  consumed_by = bag_id; break;
 
-        case "fly_div"      : t_fly.t_fly_clr         (e_target         ); consumed_by = bag_id; break;
+        case "fly_div"      : t_fly.t_fly_clr       (e_target         ); consumed_by = bag_id; break;
 
         default:
 if(log_this) log("%c"+caller+"%c ["+bag_id+"] has no delegation from ["+get_n_lbl(e_target)+"]"
@@ -59870,8 +59988,8 @@ let PULSE_BLACKLIST_ID_CSV = "tools_node";
 const PULSE_IN_DURATION    = 500;
 const PULSE_OUT_DURATION   = 500;
 
-let pulsing_id     = "";
-let pulsing_id_csv = "";
+let pulsing_id             = "";
+let pulsing_id_csv         = "";
 
 
 
@@ -60773,12 +60891,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 
@@ -61054,6 +61172,7 @@ return { name : "dom_tools"
 , load5_STORAGE_hotspot
 , t_IS_ON_GRID_observerCB
 , t_MASK_OR_HIDE_changed
+, t_activate_tools_tier1
 , t_click_panel_pin_CB
 , t_drag_hotspot_xy_delay
 , t_flash_unpinned_panels

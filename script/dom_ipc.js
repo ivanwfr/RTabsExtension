@@ -19,7 +19,7 @@
 */
 
 const DOM_IPC_JS_ID         = "dom_ipc_js";
-const DOM_IPC_JS_TAG        = DOM_IPC_JS_ID     +" (230516:15h:06)";
+const DOM_IPC_JS_TAG        = DOM_IPC_JS_ID     +" (230706:20h:48)";
 /*}}}*/
 let dom_ipc     = (function() {
 "use strict";
@@ -127,6 +127,13 @@ let   ipc_INTERN = function()
     log_key_val_group   = t_log.log_key_val_group;
 /*}}}*/
 };
+/*}}}*/
+/*_ localStorage {{{*/
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 /*}}}*/
 /*}}}*/
 
@@ -431,12 +438,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 /*}}}*/

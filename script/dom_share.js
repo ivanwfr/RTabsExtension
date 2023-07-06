@@ -18,7 +18,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_SHARE_JS_ID       = "dom_share_js";
-const DOM_SHARE_JS_TAG      = DOM_SHARE_JS_ID   +" (211122:16h:48)";
+const DOM_SHARE_JS_TAG      = DOM_SHARE_JS_ID   +" (230706:20h:42)";
 /*}}}*/
 let dom_share   = (function() {
 "use strict";
@@ -146,6 +146,13 @@ let   share_INTERN = function()
     log_key_val_group   = t_log.log_key_val_group;
     /*}}}*/
 };
+/*}}}*/
+/*_ localStorage {{{*/
+
+let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
 /*}}}*/
 /* eslint-enable  no-unused-vars */
 /*}}}*/
@@ -909,7 +916,7 @@ if( log_this) {
     }
 
     for(let i = 0; i < removed_items_key_array.length; ++i)
-        localStorage.removeItem( removed_items_key_array[i] );
+        localStorage_delItem( removed_items_key_array[i] );
 
     /*}}}*/
     /* SYNC  PATTERN AND STICKY {{{*/
@@ -1222,12 +1229,12 @@ let t_store_set_state = function(label,state)
 {
     if(          state != undefined)
     {
-        if(      state) localStorage.setItem   (label, "true");
-        else            localStorage.removeItem(label        );
+        if(      state) localStorage_setItem(label, "true");
+        else            localStorage_delItem(label        );
         return !!state;
     }
     else {
-        return          localStorage.getItem   (label        );
+        return          localStorage_getItem   (label        );
     }
 };
 /*}}}*/
