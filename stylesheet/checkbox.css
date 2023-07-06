@@ -1,5 +1,5 @@
 
-#checkbox_css_tag  { content: "checkbox_css (180519:18h)"; }
+#checkbox_css_tag  { content: "checkbox_css (230508:14h:34)"; }
 
 /* checkbox_css_tag {{{ */
 #checkbox_css_tag {
@@ -633,6 +633,7 @@ border: 1px dotted red;
 .cb_filled_pin      input[type=checkbox]:checked + label:hover:before  { transform     : rotate( 540deg) scale(1.2);  }
 .cb_filled_pin      input[type=checkbox]:checked + label:before        { z-index:-1; opacity : 1;     }
 .cb_filled_pin      input[type=checkbox]:checked + label               { z-index: 0; color   : white; }
+.cb_filled_pin      input[type=checkbox]:checked + label               { outline: 8px dotted rgba(0,0,0,0.2); outline-offset: 12px; }
 /*
 .cb_filled_pin      input[type=checkbox]:checked + label               { z-index: 0; color         : white; text-shadow: rgba(0,0,0, .5) 2px 2px 5px; }
 .cb_filled_pin      input[type=checkbox]:checked + label               { color         : #ddd; z-index: 0; }

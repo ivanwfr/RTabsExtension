@@ -1,5 +1,5 @@
 
-#options_css_tag  { content: "options_css (200922:19h:53)"; }
+#options_css_tag  { content: "options_css (230507:17h:00)"; }
 body /*{{{*/
 {
 /*
@@ -34,7 +34,7 @@ button /*{{{*/
     margin:1em;
 }
 /*}}}*/
-.buttons /*{{{*/
+#div_buttons /*{{{*/
 {
     user-select : none;
     font-weight : 900;
@@ -58,25 +58,30 @@ button /*{{{*/
 #statusline /*{{{*/
 {
     position         : absolute;
-    top              : .5em;
-    right            : .5em;
-    width            : 20em;
-    height           : 9em;
+    top              : 1.5em;
+    right            : 0.5em;
     margin           : 0;
-    padding          : 0;
 
-    font-size        : 11px;
+    border-radius    : 1em;
+    box-shadow       : 0 2px 3px rgba(0,0,0,0.3) inset;
+    width            : 20em;
+
+    padding-left     : 0.3em;
+    text-align       : center;
+    min-width        : 50ch;
+
+    font-size        : 15px;
     font-weight      : 900;
     font-family      : monospace;
 
+    z-index          : 1;
+    background-color : rgba(255,000,000,0.2);
     color            : red;
-    background-color : transparent;
-
-/* border           : 1px inset; */
 }
 /*}}}*/
 #FILTER_TEXTAREA /*{{{*/
 {
+    display          : none;
     margin-top       :  1em;
     width            : 75em;
     height           : 25em;
@@ -90,7 +95,9 @@ button /*{{{*/
 {
     user-select      : none;
     margin-top       :  1em;
+/*{{{
     display          : none;
+}}}*/
     width            : 85em;
     height           : 30em;
     font-size        : 12px;

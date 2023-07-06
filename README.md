@@ -30,7 +30,7 @@ This is the Chrome Extension version of the bookmarklet:
     ├── rtabs128.png
     ├── rtabs144.png
     ├── rtabs16.png
-    ├── rtabs16_1_brown.png
+    ├── rtabs16_1_b.png
     ├── rtabs16_2_r.png
     ├── rtabs16_3_o.png
     ├── rtabs16_4_y.png

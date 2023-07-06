@@ -1,11 +1,11 @@
 {
     "author"            : "Ivan Wellesz",
-    "manifest_version"  :  2,
-    "name"              : "RTabs APROJETS_GITHUB",
+    "manifest_version"  :  3,
+    "name"              : "RTabs (V3)",
     "short_name"        : "RTabs",
-    "description"       : "Find In Page .. made a bit smarter",
+    "description"       : "Find In Page (V3)",
     "homepage_url"      : "https://remotetabs.com",
-    "version"           : "1.22.06.16",
+    "version"           : "1.23.03.23",
     "icons"             : {
         "16"              : "images/rtabs16.png",
         "24"              : "images/rtabs24.png",
@@ -16,16 +16,73 @@
         "144"             : "images/rtabs144.png",
         "512"             : "images/rtabs512.png"
     },
-
     "options_ui"        : {
-        "chrome_style"    : true,
         "page"            : "options.html"
+
     },
+    "content_scripts"   : [ {
+        "matches"         : [ "<all_urls>"         ],
+        "js"              : [ "javascript/dom_load.js"
+
+            ,                 "script/dom_data.js"
+            ,                 "script/dom_log.js"
+            ,                 "script/dom_popup.js"
+            ,                 "script/dom_util.js"
+            ,                 "script/dom_i18n.js"
+            ,                 "script/dom_prop.js"
+
+            ,                 "script/dom_store.js"
+            ,                 "script/dom_fly.js"
+            ,                 "script/dom_wording.js"
+            ,                 "script/dom_select.js"
+            ,                 "script/dom_slot.js"
+
+            ,                 "script/dom_hide.js"
+            ,                 "script/dom_view.js"
+            ,                 "script/dom_sticky.js"
+            ,                 "script/dom_seek.js"
+            ,                 "script/dom_share.js"
+
+            ,                 "script/dom_details.js"
+            ,                 "script/dom_wot.js"
+            ,                 "script/dom_sentence.js"
+            ,                 "script/dom_grid.js"
+            ,                 "script/dom_gutter.js"
+
+            ,                 "script/dom_ipc.js"
+            ,                 "script/dom_tools.js"
+
+        ],
+        "run_at"          :   "document_idle"
+    } ],
     "background"        : {
-        "page"            : "background.html",
-        "persistent"      : true
+        "service_worker"  :   "javascript/service_worker.js"
+
     },
-    "page_action"       : {
+    "permissions"       : [
+        "storage",
+        "tabs",
+        "activeTab",
+        "alarms",
+        "scripting",
+        "webRequest",
+        "declarativeNetRequest", 
+        "declarativeNetRequestWithHostAccess", 
+        "declarativeNetRequestFeedback",
+        "webNavigation",
+        "notifications"
+    ],
+    "host_permissions"  : [
+        "<all_urls>"
+    ],
+    "declarative_net_request": {
+        "rule_resources": [ {
+            "id"      : "csp_rules",
+            "enabled" :  true,
+            "path"    : "rules.json"
+        } ]
+    },
+    "action"            : {
         "default_icon"    : {
             "16"            : "images/rtabs16.png",
             "24"            : "images/rtabs24.png",
@@ -39,19 +96,8 @@
         "default_title"   : "RTabs",
         "default_popup"   : "popup.html"
     },
-    "content_scripts" : [ {
-        "matches"         : [ "<all_urls>"         ],
-        "js"              : [ "script/dom_load.js" ]
-    } ],
-
-    "permissions"     : [
-        "<all_urls>",
-        "activeTab",
-        "tabs",
-        "notifications",
-        "storage",
-        "webRequest",
-        "webRequestBlocking"
-    ]
-
+    "content_security_policy": {
+      "extension_pages":                        "script-src 'self';",
+      "sandbox"        : "sandbox allow-scripts; script-src 'self';"
+    }
 }
