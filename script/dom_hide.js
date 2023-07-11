@@ -2,7 +2,7 @@
 /* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true {{{*/
 
 /* globals window, document */
-/* globals console, localStorage, setTimeout, clearTimeout */
+/* globals console, setTimeout, clearTimeout */
 
 /* globals dom_data, dom_log, dom_util, dom_prop, dom_store, dom_tools */
 /* globals playground_notify */
@@ -22,7 +22,7 @@
 */
 
 const DOM_HIDE_JS_ID        = "dom_hide_js";
-const DOM_HIDE_JS_TAG       = DOM_HIDE_JS_ID  +" (230706:20h:44)"; /* eslint-disable-line no-unused-vars */
+const DOM_HIDE_JS_TAG       = DOM_HIDE_JS_ID  +" (230707:14h:57)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_hide    = (function() {
 "use strict";
@@ -134,13 +134,6 @@ let   hide_INTERN = function()
 
     /*}}}*/
 };
-/*}}}*/
-/*_ localStorage {{{*/
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 /*}}}*/
 /* eslint-enable  no-unused-vars */
 /*}}}*/
@@ -1640,23 +1633,9 @@ t_log.console_dir("MASK",      node.node_mask);
 
 /* EXPORT */
 /*{{{*/
-/*➔ t_store_set_state {{{*/
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-/*}}}*/
 return { name    : "dom_hide"
-    ,    logging : (state) => DOM_HIDE_LOG = t_store_set_state("DOM_HIDE_LOG",state)
-    ,    tagging : (state) => DOM_HIDE_TAG = t_store_set_state("DOM_HIDE_TAG",state)
+    ,    logging : (state) => DOM_HIDE_LOG = t_store.setItem("DOM_HIDE_LOG",state)
+    ,    tagging : (state) => DOM_HIDE_TAG = t_store.setItem("DOM_HIDE_TAG",state)
     ,    t_hide_IMPORT
 
     /* DOM_HIDE1_SELECT */

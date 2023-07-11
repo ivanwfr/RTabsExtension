@@ -24,7 +24,7 @@
 
 /* eslint-enable  no-redeclare        */
 const BG_STORE_SCRIPT_ID  = "bg_store";
-const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (230705:15h:59)"; /* eslint-disable-line no-unused-vars */
+const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (230711:17h:36)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_store  = (function() {
 "use strict";
@@ -397,7 +397,7 @@ let bg_store_LOAD_items = function(items)
 let log_this = log_ACTIVATED();
 
 if( log_this) log_sep_top(B_SCRIPT_ID+" manifest ("+MANIFEST_VERSION+") STORAGE", "LOG3_TAG");
-if( log_this) log_object("items", items, lf3);
+if( log_this) log_object("Storage items", items, lf3);
 /*}}}*/
     /*}}}*/
     /* MANIFEST {{{*/

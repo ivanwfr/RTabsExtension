@@ -14,19 +14,15 @@
 
 /* globals  log_js                    */
 /* globals  background_js             */
-/* globals  bg_content                */
-/* globals  bg_csp                    */
-// globals  bg_header                 */
-/* globals  bg_message                */
 /* exported bg_page                   */
-// globals  bg_settings               */
+/* globals  bg_csp                    */
 /* globals  bg_store                  */
 /* globals  bg_tabs                   */
 
 /* eslint-enable  no-redeclare        */
 
 const BG_PAGE_SCRIPT_ID  = "bg_page";
-const BG_PAGE_SCRIPT_TAG =  BG_PAGE_SCRIPT_ID +" (230705:02h:17)"; /* eslint-disable-line no-unused-vars */
+const BG_PAGE_SCRIPT_TAG =  BG_PAGE_SCRIPT_ID +" (230710:17h:44)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_page  = (function() {
 "use strict";
@@ -46,8 +42,8 @@ let bg_page  = (function() {
 :e javascript/bg_tabs.js
 /* └─────────────────────────────┘*/
 /* IMPORT {{{*/
-/* eslint-disable no-unused-vars */
 /*_ log_js {{{*/
+/* eslint-disable no-unused-vars */
 let   LF;
 
 let   lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX;
@@ -58,6 +54,7 @@ let   SD0 ,SD1 ,SD2 ,SD3 ,SD4 ,SD5 ,SD6 ,SD7 ,SD8 ,SD9;
 let   SAU, SAR, SAD, SAL, SHV, SYN, SBS;
 let   L_CHK, L_NEW, L_ARD, L_ARL, L_ARR, L_ARU, L_CLR, L_FNC, L_WRN;
 let   SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP;
+/* eslint-enable no-unused-vars */
 
 let   clear
     , ellipsis
@@ -92,112 +89,31 @@ let   clear
 
 /*}}}*/
 /*_ background_js {{{*/
-let B_ON_HEADER_RECEIVED;
 let B_SCRIPT_ID;
 let CHROME_SCHEME;
-let CHROME_SCHEME_REGEX;
 let DOM_LOAD_ID;
 let DOM_TOOLS_JS_ID;
 let LOG_MAP;
 let MANIFEST_VERSION;
 
-let b_callback_args_delay_caller;
-let b_check_manifest;
-let b_is_paused;
-let b_onHeader1_reload;
-let b_storage_sync_set;
-let bg_tabs_get_last_activated_tabId;
-let bg_tabs_sendMessage;
 let bg_tabs_set_last_activated_tabId;
-let get_url_domain;
-let is_paused;
 let log_ACTIVATED;
-let log_IGNORING;
-let log_STORAGE;
-let log_TAB_HANDLERS_CALLS;
-let log_get_caller_tag_FOR_key_val_caller;
-let log_sep_bot_FOR_caller_callee;
-let log_sep_top_FOR_caller_callee;
-
 /*}}}*/
-/*_ bg_content {{{*/
-let b_content_scripts_get_inject_time;
-let b_content_scripts_get_tools_deployed;
-let b_content_scripts_get_tools_load_time;
-let b_content_scripts_loaded;
-let b_content_scripts_loaded_parse_message;
-let b_content_scripts_loaded_update;
-/*}}}*/
-/*_ bg_csp {{{*/
-
-let FILTER3_REMOVE;
-let FILTER4_CUSTOM;
-let FILTER5_RELAX;
-let FILTER6_NONE;
-
-let FILTER3_REMOVE_DEFAULT;
-let FILTER4_CUSTOM_DEFAULT;
-let FILTER5_RELAX_DEFAULT;
-let FILTER6_NONE_DEFAULT;
-
-let FILTER_APPLIED1_FINE;
-let FILTER_APPLIED3_REMOVED;
-let FILTER_APPLIED4_CUSTOM;
-let FILTER_APPLIED5_RELAXED;
-let FILTER_APPLIED2_NO_RULES;
-let FILTER_APPLIED8_NO_CSP;
-
-let FILTER_EFFECT2_RULES_MISSING;
-let FILTER_EFFECT3_RULES_REMOVED;
-let FILTER_EFFECT4_RULES_CUSTOMIZED;
-let FILTER_EFFECT5_RULES_RELAXED;
-
-let bg_csp_load_filter;
-let bg_csp_load_filter_from_store;
-let bg_csp_load_filter_rules;
-let bg_csp_pick_filter_rules;
-let bg_csp_save_filter_to_store;
-
-/*}}}*/
+//______________ bg_content
+//______________ bg_csp
 //______________ bg_header
-/*_ bg_message {{{*/
-let b_runtime_onMessage_addListener;
-let b_runtime_onMessage_CB;
-let b_runtime_onMessage_CB_tab;
-let b_runtime_onMessage_CB_TAB_start;
-let b_runtime_onMessage_CB_TAB_stop;
-let b_runtime_onMessage_CB_TAB_csp_filter;
-let b_runtime_onMessage_CB_options_js_csp_filter;
-let b_runtime_onMessage_CB_query;
-let b_runtime_onMessage_CB_reply;
-let b_runtime_onMessage_CB_set_log_map;
-/*}}}*/
+//______________ bg_message
 //______________ bg_page
 //______________ bg_settings
 /*_ bg_store {{{*/
-let bg_store_DEL_url_settings;
 let bg_store_GET_url_domain;
-let bg_store_GET_url_key;
-let bg_store_LOAD_items;
-let bg_store_SAVE_items;
-let bg_store_SET_url_settings;
 
 /*}}}*/
 /*_ bg_tabs {{{*/
-let bg_tabs_set_tabId_key_items;
-let bg_tabs_set_tabId_key_val;
-
-let bg_tabs_get_tabId_key;
-let bg_tabs_get_tabId;
-
-let bg_tabs_del_tabId;
 let bg_tabs_del_tabId_key;
-
-let bg_tabs_url_settings_from_cached;
-let bg_tabs_url_settings_from_others;
-
-let bg_tabs_log_LAST_ACTIVATED_TAB;
-let bg_tabs_log_TABS_MAP;
+let bg_tabs_get_tabId;
+let bg_tabs_get_tabId_key;
+let bg_tabs_set_tabId_key_val;
 
 /*}}}*/
 /*_ bg_page_import {{{*/
@@ -248,7 +164,6 @@ let bg_page_import = function()
 
     /*}}}*/
     /*_ background_js {{{*/
-    B_ON_HEADER_RECEIVED                  = background_js.B_ON_HEADER_RECEIVED;
     B_SCRIPT_ID                           = background_js.B_SCRIPT_ID;
     CHROME_SCHEME                         = background_js.CHROME_SCHEME;
     DOM_LOAD_ID                           = background_js.DOM_LOAD_ID;
@@ -256,105 +171,25 @@ let bg_page_import = function()
     LOG_MAP                               = background_js.LOG_MAP;
     MANIFEST_VERSION                      = background_js.MANIFEST_VERSION;
 
-    b_callback_args_delay_caller          = background_js.b_callback_args_delay_caller;
-    b_check_manifest                      = background_js.b_check_manifest;
-    b_content_scripts_get_tools_deployed  = background_js.b_content_scripts_get_tools_deployed;
-    b_content_scripts_loaded              = background_js.b_content_scripts_loaded;
-    b_is_paused                           = background_js.b_is_paused;
-    b_onHeader1_reload                    = background_js.b_onHeader1_reload;
-    b_storage_sync_set                    = background_js.b_storage_sync_set;
-    bg_tabs_get_last_activated_tabId      = background_js.bg_tabs_get_last_activated_tabId;
-    bg_tabs_sendMessage                   = background_js.bg_tabs_sendMessage;
     bg_tabs_set_last_activated_tabId      = background_js.bg_tabs_set_last_activated_tabId;
-    get_url_domain                        = background_js.get_url_domain;
-    is_paused                             = background_js.is_paused;
     log_ACTIVATED                         = background_js.log_ACTIVATED;
-    log_IGNORING                          = background_js.log_IGNORING;
-    log_STORAGE                           = background_js.log_STORAGE;
-    log_TAB_HANDLERS_CALLS                = background_js.log_TAB_HANDLERS_CALLS;
-    log_get_caller_tag_FOR_key_val_caller = background_js.log_get_caller_tag_FOR_key_val_caller;
-    log_sep_bot_FOR_caller_callee         = background_js.log_sep_bot_FOR_caller_callee;
-    log_sep_top_FOR_caller_callee         = background_js.log_sep_top_FOR_caller_callee;
 
     /*}}}*/
-    /*_ bg_content {{{*/
-    b_content_scripts_get_inject_time       = bg_content.b_content_scripts_get_inject_time;
-    b_content_scripts_get_tools_deployed    = bg_content.b_content_scripts_get_tools_deployed;
-    b_content_scripts_get_tools_load_time   = bg_content.b_content_scripts_get_tools_load_time;
-    b_content_scripts_loaded                = bg_content.b_content_scripts_loaded;
-    b_content_scripts_loaded_parse_message  = bg_content.b_content_scripts_loaded_parse_message;
-    b_content_scripts_loaded_update         = bg_content.b_content_scripts_loaded_update;
-    /*}}}*/
-    /*_ bg_csp {{{*/
-
-    FILTER3_REMOVE                   = bg_csp.FILTER3_REMOVE;
-    FILTER4_CUSTOM                   = bg_csp.FILTER4_CUSTOM;
-    FILTER5_RELAX                    = bg_csp.FILTER5_RELAX;
-    FILTER6_NONE                     = bg_csp.FILTER6_NONE;
-
-    FILTER3_REMOVE_DEFAULT           = bg_csp.FILTER3_REMOVE_DEFAULT;
-    FILTER4_CUSTOM_DEFAULT           = bg_csp.FILTER4_CUSTOM_DEFAULT;
-    FILTER5_RELAX_DEFAULT            = bg_csp.FILTER5_RELAX_DEFAULT;
-    FILTER6_NONE_DEFAULT             = bg_csp.FILTER6_NONE_DEFAULT;
-
-    FILTER_APPLIED1_FINE             = bg_csp.FILTER_APPLIED1_FINE;
-    FILTER_APPLIED3_REMOVED          = bg_csp.FILTER_APPLIED3_REMOVED;
-    FILTER_APPLIED4_CUSTOM           = bg_csp.FILTER_APPLIED4_CUSTOM;
-    FILTER_APPLIED5_RELAXED          = bg_csp.FILTER_APPLIED5_RELAXED;
-    FILTER_APPLIED2_NO_RULES         = bg_csp.FILTER_APPLIED2_NO_RULES;
-    FILTER_APPLIED8_NO_CSP           = bg_csp.FILTER_APPLIED8_NO_CSP;
-
-    FILTER_EFFECT2_RULES_MISSING     = bg_csp.FILTER_EFFECT2_RULES_MISSING;
-    FILTER_EFFECT3_RULES_REMOVED     = bg_csp.FILTER_EFFECT3_RULES_REMOVED;
-    FILTER_EFFECT4_RULES_CUSTOMIZED  = bg_csp.FILTER_EFFECT4_RULES_CUSTOMIZED;
-    FILTER_EFFECT5_RULES_RELAXED     = bg_csp.FILTER_EFFECT5_RULES_RELAXED;
-
-    bg_csp_load_filter               = bg_csp.bg_csp_load_filter;
-    bg_csp_load_filter_from_store    = bg_csp.bg_csp_load_filter_from_store;
-    bg_csp_load_filter_rules         = bg_csp.bg_csp_load_filter_rules;
-    bg_csp_pick_filter_rules         = bg_csp.bg_csp_pick_filter_rules;
-    bg_csp_save_filter_to_store      = bg_csp.bg_csp_save_filter_to_store;
-
-    /*}}}*/
+    //___________ bg_content
+    //___________ bg_csp
     //___________ bg_header
-    /*_ bg_message {{{*/
-    b_runtime_onMessage_addListener              = bg_message.b_runtime_onMessage_addListener;
-    b_runtime_onMessage_CB                       = bg_message.b_runtime_onMessage_CB;
-    b_runtime_onMessage_CB_tab                   = bg_message.b_runtime_onMessage_CB_tab;
-    b_runtime_onMessage_CB_TAB_start             = bg_message.b_runtime_onMessage_CB_TAB_start;
-    b_runtime_onMessage_CB_TAB_stop              = bg_message.b_runtime_onMessage_CB_TAB_stop;
-    b_runtime_onMessage_CB_TAB_csp_filter        = bg_message.b_runtime_onMessage_CB_TAB_csp_filter;
-    b_runtime_onMessage_CB_options_js_csp_filter = bg_message.b_runtime_onMessage_CB_options_js_csp_filter;
-    b_runtime_onMessage_CB_query                 = bg_message.b_runtime_onMessage_CB_query;
-    b_runtime_onMessage_CB_reply                 = bg_message.b_runtime_onMessage_CB_reply;
-    b_runtime_onMessage_CB_set_log_map           = bg_message.b_runtime_onMessage_CB_set_log_map;
-    /*}}}*/
+    //___________ bg_message
     //___________ bg_page
     //___________ bg_settings
     /*_ bg_store {{{*/
-    bg_store_DEL_url_settings = bg_store.bg_store_DEL_url_settings;
     bg_store_GET_url_domain   = bg_store.bg_store_GET_url_domain;
-    bg_store_GET_url_key      = bg_store.bg_store_GET_url_key;
-    bg_store_LOAD_items       = bg_store.bg_store_LOAD_items;
-    bg_store_SAVE_items       = bg_store.bg_store_SAVE_items;
-    bg_store_SET_url_settings = bg_store.bg_store_SET_url_settings;
 
     /*}}}*/
     /*_ bg_tabs {{{*/
-    bg_tabs_set_tabId_key_items      = bg_tabs.bg_tabs_set_tabId_key_items;
-    bg_tabs_set_tabId_key_val        = bg_tabs.bg_tabs_set_tabId_key_val;
-
+    bg_tabs_del_tabId_key            = bg_tabs.bg_tabs_del_tabId_key;
     bg_tabs_get_tabId                = bg_tabs.bg_tabs_get_tabId;
     bg_tabs_get_tabId_key            = bg_tabs.bg_tabs_get_tabId_key;
-
-    bg_tabs_del_tabId                = bg_tabs.bg_tabs_del_tabId;
-    bg_tabs_del_tabId_key            = bg_tabs.bg_tabs_del_tabId_key;
-
-    bg_tabs_url_settings_from_cached = bg_tabs.bg_tabs_url_settings_from_cached;
-    bg_tabs_url_settings_from_others = bg_tabs.bg_tabs_url_settings_from_others;
-
-    bg_tabs_log_LAST_ACTIVATED_TAB   = bg_tabs.bg_tabs_log_LAST_ACTIVATED_TAB;
-    bg_tabs_log_TABS_MAP             = bg_tabs.bg_tabs_log_TABS_MAP;
+    bg_tabs_set_tabId_key_val        = bg_tabs.bg_tabs_set_tabId_key_val;
 
     /*}}}*/
 //................._import    log_js    background_js    bg_content    bg_csp    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
@@ -362,7 +197,6 @@ log("%c     bg_page_import %c log_js %c background_js %c bg_content %c bg_csp %c
     ,lbH+lb6              ,lf0      ,lf1             ,lf2          ,lf3      ,lf4         ,lf5          ,lbH+lf6   ,lf7           ,lf8        ,lf9         );
 };
 /*}}}*/
-/* eslint-enable no-unused-vars */
     setTimeout(bg_page_import,0);
 /* VIM SIGNS {{{
 :so ~/VIM/signs.vim

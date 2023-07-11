@@ -26,7 +26,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_SETTINGS_SCRIPT_ID  = "bg_settings";
-const BG_SETTINGS_SCRIPT_TAG =  BG_SETTINGS_SCRIPT_ID +" (230705:15h:59)"; /* eslint-disable-line no-unused-vars */
+const BG_SETTINGS_SCRIPT_TAG =  BG_SETTINGS_SCRIPT_ID +" (230708:17h:06)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_settings  = (function() {
 "use strict";
@@ -611,7 +611,8 @@ if( log_ACTIVATED()) log("%c"+SD3+"%c"+B_NO_ACTIVE_TAB, lbB+lf3, lbb+lbH+lf0);
     let url        = active_tab && active_tab.url;
     let url_domain = url ? bg_store_GET_url_domain(url) : "TAB HAS NO URL";
     /*}}}*/
-if( log_this && active_tab) log("%c"+SD3+"%c "+B_GET_ACTIVE_TAB_URL_CB +" %c"+url_domain+"... %c" +log_json(active_tab), lbB+lf3, lbL+lf3, lbR+lf3, lbH+lf3);
+if( log_this && active_tab) log("%c"+SD3+"%c "+B_GET_ACTIVE_TAB_URL_CB+"%c" +log_json(active_tab)+"%c"+url_domain
+                                ,lbB+lf3 ,lbL+lf3                      ,lbR+lf0                   ,lbH+lb3       );
 if( log_more) log_caller();
 if( log_more && active_tab) log_object("active_tab", active_tab, lbH+lf3);
 //log_object(caller+": message", message, lbH+lf8);
@@ -623,12 +624,12 @@ if( log_this) log(caller+": %c sending tabId value to bg_tabs_set_last_activated
         bg_tabs_set_last_activated_tabId( active_tab.id );
     }
     /*}}}*/
-    /* 1/3 TAB HAS NO URL {{{*/
-    if(!url) {
-if( log_ACTIVATED() && active_tab) log("%c"+SD3+"%c NO URL", lbB+lf3, lbb+lbH+lf0);
-
-    }
-    /*}}}*/
+//    /* 1/3 TAB HAS NO URL {{{*/
+//    if(!url) {
+//if( log_ACTIVATED() && active_tab) log("%c"+SD3+"%c NO URL", lbB+lf3, lbb+lbH+lf0);
+//
+//    }
+//    /*}}}*/
     /* 2/3 APPLY [tabId] [url] SETTINGS {{{*/
     let tabId = active_tab && active_tab.id;
     if( tabId )
@@ -837,7 +838,7 @@ if( log_more) log_object(caller+": TABS #"+tabId, bg_tabs_get_tabId(tabId), lbH+
             bg_tabs_set_tabId_key_items(tabId, "csp_filter", items);
             bg_tabs_set_tabId_key_items(tabId, "cancelreq" , items);
 
-            result = await b_page1_RELOAD_if_required(tabId);
+           result = await b_page1_RELOAD_if_required(tabId);
         }
         /*}}}*/
         /* NO ACTIVATED TO SYNC WITH {{{*/

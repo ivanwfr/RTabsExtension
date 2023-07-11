@@ -5,7 +5,7 @@
 /* eslint-disable no-redeclare */
 
 /* globals window, document, navigator */
-/* globals console, localStorage, setTimeout, clearTimeout, setInterval, clearInterval */
+/* globals console, setTimeout, clearTimeout, setInterval, clearInterval */
 /* globals Node, requestAnimationFrame, cancelAnimationFrame */
 /* globals getComputedStyle */
 
@@ -58,7 +58,7 @@
 /* eslint-disable no-warning-comments */
 
 const DOM_TOOLS_JS_ID       = "dom_tools_js" ;
-const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (230706:21h:58)";
+const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (230707:21h:10)";
 /*}}}*/
 let dom_tools   = (function() {
 "use strict";
@@ -335,7 +335,7 @@ let   tools_DEPEND = function()
 /*…   load_IMPORT .. globals {{{*/
 let   load_IMPORT = function()
 {
-let log_this; try { log_this = localStorage_getItem("DOM_TOOLS_TAG"); } catch(ex) {}
+let log_this; try { log_this = t_store.localStorage_getItem("DOM_TOOLS_TAG"); } catch(ex) {}
 
 let i =5; /*....................................... dom_data     EXPORT-ONLY */                 /* 05 */
 
@@ -401,13 +401,6 @@ let i =5; /*....................................... dom_data     EXPORT-ONLY */ 
     t_log.log_IMPORT();
 }}}*/
 };
-/*}}}*/
-/*_ localStorage {{{*/
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 /*}}}*/
 /*}}}*/
 /* CONST {{{*/
@@ -24394,7 +24387,7 @@ console.log("%c show_drag_cursor", lfX[++drag_cursor_count % 10], "onMoveDXY:",o
     if( drag_cursor_div.style.display != "block")
     {
         /* STANDALONE SPLITTER ACTIVATION {{{*/
-        if(typeof dom_sentence_event != "undefined")
+        if(typeof dom_tools != "undefined")
         {
             drag_cursor_div.classList.add( CSS_DRAG_CURSOR_DIV_ONLOAD );
             drag_cursor_div.style.left    = (window.innerWidth  / 2)+"px";
@@ -24447,7 +24440,7 @@ return { name : "drag_cursor"
 "│                                                                             │
 
 :e             $RPROFILES/script/dom_tools.js
-:e             $RPROFILES/script/stub/dom_sentence_event.js
+:e             $RPROFILES/script/stub/dom_tools.js
 :e             $RPROFILES/stylesheet/dom_host.css
 "...           $RPROFILES/script/drag_cursor.js
 
@@ -24459,25 +24452,11 @@ return { name : "drag_cursor"
 
 /* EXPORT tools */
 /*{{{*/
-/*➔ t_store_set_state {{{*/
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-/*}}}*/
 /* eslint-disable object-shorthand */
 
 return { name : "dom_tools"
-    , logging : function(state) { return DOM_TOOLS_LOG = t_store_set_state("DOM_TOOLS_LOG",state); }
-    , tagging : function(state) { return DOM_TOOLS_TAG = t_store_set_state("DOM_TOOLS_TAG",state); }
+    , logging : function(state) { return DOM_TOOLS_LOG = t_store.setItem("DOM_TOOLS_LOG",state); }
+    , tagging : function(state) { return DOM_TOOLS_TAG = t_store.setItem("DOM_TOOLS_TAG",state); }
     , t_tools_IMPORT
 
     /* CSS {{{*/
@@ -24955,6 +24934,6 @@ else {
 
 /*
 :e splitter_embedded.html
-:e             $RPROFILES/script/stub/dom_sentence_event.js
+:e             $RPROFILES/script/stub/dom_tools.js
 */
 

@@ -1,11 +1,11 @@
 /* dom_fly */
 /* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true */
 const DOM_FLY_JS_ID         = "dom_fly_js";
-const DOM_FLY_JS_TAG        = DOM_FLY_JS_ID     +" (230706:20h:42)"; /* eslint-disable-line no-unused-vars */
+const DOM_FLY_JS_TAG        = DOM_FLY_JS_ID     +" (230707:14h:33)"; /* eslint-disable-line no-unused-vars */
 let dom_fly     = (function() {
 "use strict";
 /* JSHint {{{*/
-/* globals console, localStorage, setTimeout, clearTimeout */
+/* globals console, setTimeout, clearTimeout */
 /* globals window, document */
 /* globals dom_data   */
 /* globals dom_i18n   */
@@ -153,13 +153,6 @@ let   fly_DEPEND = function()
         };
     /*}}}*/
 };
-/*}}}*/
-/*_ localStorage {{{*/
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 /*}}}*/
 /* eslint-enable  no-unused-vars */
 /*}}}*/
@@ -1995,23 +1988,9 @@ if(DOM_FLY_LOG) t_log.log("fly_tooltip_category_className_array: adding %c["+cat
 
 /* EXPORT */
 /*{{{*/
-/*➔ t_store_set_state {{{*/
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-/*}}}*/
 return { name : "dom_fly"
-    , logging : (state) => DOM_FLY_LOG = t_store_set_state("DOM_FLY_LOG",state)
-    , tagging : (state) => DOM_FLY_TAG = t_store_set_state("DOM_FLY_TAG",state)
+    , logging : (state) => DOM_FLY_LOG = t_store.setItem("DOM_FLY_LOG",state)
+    , tagging : (state) => DOM_FLY_TAG = t_store.setItem("DOM_FLY_TAG",state)
     , t_fly_IMPORT
 
     /* CONSTANTS {{{*/

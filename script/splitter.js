@@ -2,7 +2,7 @@ javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 "use strict";
 /* jshint esversion: 9, boss:true {{{*/
 /* globals console, alert, window, document, setTimeout */
-/* globals dom_sentence, dom_sentence_event */
+/* globals dom_sentence, dom_tools */
 
 /* eslint-disable no-unused-labels */
 /* eslint-disable no-alert */
@@ -10,7 +10,7 @@ javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 let DOM_LOAD_ID         = "dom_splitter";
-let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (230706:22h:01)";
+let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (230708:01h:18)";
 let DOM_HOST_CSS_ID     = "dom_host_css";
 let DOM_TOOLS_HTML_ID   = "dom_tools_html";
 /*}}}*/
@@ -903,7 +903,7 @@ let dom_log_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_LOG_JS_ID        = "dom_log_js";
-const DOM_LOG_JS_TAG       = DOM_LOG_JS_ID  +" (230320:15h:09)";
+const DOM_LOG_JS_TAG       = DOM_LOG_JS_ID  +" (230707:21h:39)";
 
 let dom_log = (function() {
 "use strict";
@@ -946,6 +946,10 @@ let   L_ARU  =         "↑ ";
 let dir               = console.dir;
 let log               = console.log;
 let console_clear     = function(msg=null) { console.clear(); if(msg) console.log ("%c.. by "+msg,"color:#666; background:#111; border:0px solid #445; border-radius:1em;"); };
+
+let logBIG            = (msg)    => log("%c"+msg, "font-size:150%; font-weight:100;");
+let log_key_val       = (name,o) => { console.log(name+":"); console.dir(o); };
+let log_key_val_group = log_key_val;
 
 let logX = (msg,l_x) => console.log("%c"+msg, lbR+lfX[l_x]);
 
@@ -1032,29 +1036,34 @@ let mPadEnd   = function(s,l,c=" ") { s = String(s); while(s.length < l) s = s+c
 
 
 
-return {  LF
-        , console_clear
-        , dir
-        , log
-        , log0
-        , log1
-        , log2
-        , log3
-        , log4
-        , log5
-        , log6
-        , log7
-        , log8
-        , log9
-        , lbH
-        , lbL
-        , lbR
-        , lbC
-        , lfX
+        return { name : "dom_log"
+            , LF
+            , console_clear
+            , dir
+            , log
+            , log0
+            , log1
+            , log2
+            , log3
+            , log4
+            , log5
+            , log6
+            , log7
+            , log8
+            , log9
+            , lbH
+            , lbL
+            , lbR
+            , lbC
+            , lfX
 
-    , get_callers
-    , log_caller
-    };
+            , logBIG
+            , log_key_val
+            , log_key_val_group
+
+            , get_callers
+            , log_caller
+        };
 
 
 
@@ -1070,11 +1079,11 @@ return {  LF
 ;
 
 /*}}}*/
-  /**   3 UTIL     JS dom_sentence_util_js_data .. ESCAPE=[linear-gradient(to bottom, #555)] {{{*/
+  /**   3 STORE    JS dom_store_js_data .. ESCAPE=[linear-gradient(to bottom, #555)] {{{*/
 /*
-../script/stub/dom_sentence_util.js
+../script/stub/dom_store.js
 */
-let dom_sentence_util_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
+let dom_store_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 /*INLINE{{{*/
 
 
@@ -1085,62 +1094,259 @@ let dom_sentence_util_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 
-const DOM_SENTENCE_UTIL_JS_ID        = "dom_sentence_util";
-const DOM_SENTENCE_UTIL_JS_TAG       = DOM_SENTENCE_UTIL_JS_ID  +" (230124:17h:09)";
 
-let dom_sentence_util    = (function() {
+
+
+const DOM_STORE_JS_ID     = "dom_store_js";
+const DOM_STORE_JS_TAG    = DOM_STORE_JS_ID  +" (230707:21h:46)";
+
+let dom_store   = (function() {
+"use strict";
+
+    let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
+    let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
+    let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
+
+    return { name : "dom_store"
+        , setItem : localStorage_setItem
+        , getItem : localStorage_getItem
+        , delItem : localStorage_delItem
+
+    };
+}());
+/*INLINE}}}*/
+//@ sourceURL=dom_store.js
+`
+ .replace(/\\/g,"\\\\")
+)
+ .replace(/%u/g,"\\u")
+;
+
+/*}}}*/
+  /**   4 UTIL     JS dom_util_js_data .. ESCAPE=[linear-gradient(to bottom, #555)] {{{*/
+/*
+../script/stub/dom_util.js
+*/
+let dom_util_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
+/*INLINE{{{*/
+
+
+
+
+
+
+
+
+
+const DOM_UTIL_JS_ID    = "dom_util_js";
+const DOM_UTIL_JS_TAG   = DOM_UTIL_JS_ID  +" (230707:21h:44)";
+
+let dom_util    = (function() {
 "use strict";
 
 
 
+let get_el_methodNames = function(obj,_filter_str)
+{
+    let    propertyNames = new Set();
+    let    current_obj   = obj;
+    do {
+        Object.getOwnPropertyNames( current_obj ).map((p_name) => propertyNames.add( p_name ) );
+    }
+    while((current_obj   = Object.getPrototypeOf( current_obj )));
+
+    let    propKeys      = [ ...propertyNames.keys() ];
+
+    let    methodNames   =  propKeys.filter((key) => typeof obj[key] === "function");
+
+    if(_filter_str)
+    {
+        let filter_str   = _filter_str.toLowerCase();
+        methodNames      = methodNames.filter((name) => name.toLowerCase().includes(filter_str));
+    }
+
+    return methodNames.sort();
+};
 
 
-const lf1  = "color:#964B00;";
-const lf2  = "color:#FF0000;";
-const lf3  = "color:#FFA500;";
-const lf4  = "color:#FFFF00;";
-const lf5  = "color:#9ACD32;";
-const lf6  = "color:#6495ED;";
-const lf7  = "color:#EE82EE;";
-const lf8  = "color:#A0A0A0;";
-const lf9  = "color:#FFFFFF;";
-const lf0  = "color:#707070; text-shadow:#000 2px 2px 1px;";
-const lfX  = [ lf0 ,lf1 ,lf2 ,lf3 ,lf4 ,lf5 ,lf6 ,lf7 ,lf8 ,lf9 ];
+let log_el_methodNames = function(_obj,_filter_str)
+{
+    console.dir( _obj );
 
-const lbH  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0 1ex 1ex   0; padding:0 .5em 0 .5em; border-radius:1em 1em 1em 1em; background:linear-gradient(to bottom, #555 0%, #223 80%, #454 100%);";
-const lbL  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0   0   0 1ex; padding:0 .5em 0 .5em; border-radius:1em   0   0 1em; background:linear-gradient(to   left, #333 0%           ,#445 100%);";
-const lbR  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0 1ex   0   0; padding:0 .5em 0 .5em; border-radius:  0 1em 1em   0; background:linear-gradient(to  right, #333 0%           ,#544 100%);";
-const lbC  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0   0   0   0; padding:0 .5em 0 .5em; border-radius:  0   0   0   0;";
-
-let dir               = console.dir;
-let log               = console.log;
-let logX = (msg,l_x) => console.log("%c"+msg, lbR+lfX[l_x]);
-let log0 = (msg)     =>         logX(    msg, 0  );
-let log1 = (msg)     =>         logX(    msg, 1  );
-let log2 = (msg)     =>         logX(    msg, 2  );
-let log3 = (msg)     =>         logX(    msg, 3  );
-let log4 = (msg)     =>         logX(    msg, 4  );
-let log5 = (msg)     =>         logX(    msg, 5  );
-let log6 = (msg)     =>         logX(    msg, 6  );
-let log7 = (msg)     =>         logX(    msg, 7  );
-let log8 = (msg)     =>         logX(    msg, 8  );
-let log9 = (msg)     =>         logX(    msg, 9  );
-
-let logs = { dir
-        ,    log
-        ,    log0
-        ,    log1
-        ,    log2
-        ,    log3
-        ,    log4
-        ,    log5
-        ,    log6
-        ,    log7
-        ,    log8
-        ,    log9
-    };
+    console.dir(get_el_methodNames(_obj, _filter_str));
+};
 
 
+
+let get_el_child_with_tag = function(parent,tag)
+{
+    for(let     c  = 0; c < parent.children.length; ++c) {
+        let child  = parent.children[c];
+        if((child != null) && (child.tagName == tag))
+            return child;
+    }
+    return null;
+};
+
+
+let get_el_sibling_with_tag = function(el,tag)
+{
+    for(let     c  = 0; c < el.parentElement.children.length; ++c) {
+        let child  =        el.parentElement.children[c];
+        if((child != null) && (child.tagName == tag) && (child != el))
+            return child;
+    }
+    return null;
+};
+
+
+
+let get_id_or_tag = function(node)
+{
+    return !node           ? ("null_node"                        )
+        :   node.id        ? ("#"+ node.id                       )
+        :   node.className ? (node.tagName+"."+ node.classList[0])
+        :                    (node.tagName                       )
+    ;
+};
+
+
+let is_el_or_child_of_parent_el = function(el, parent_el)
+{
+    if(!parent_el) return false;
+
+    while(el && (el != parent_el))
+        el     = el.parentElement;
+
+    return (el == parent_el);
+};
+
+
+let is_el_or_child_of_class = function(el, className)
+{
+    while(el && !el.classList.contains(className))
+        el     = el.parentElement;
+    return el;
+};
+
+
+
+let get_id_or_tag_and_className = function(node)
+{
+    let result
+        = !node           ? ("null_node"                        )
+        :  node.id        ? ("#"+ node.id                       )
+        :  node.className ? (node.tagName+"."+ node.classList[0])
+        :                   (node.tagName                       )
+    ;
+    return result+((node && node.className) ? (" "+node.className) : "");
+
+};
+
+
+let get_nodeXPath = function(node)
+{
+    if(node instanceof Document) return "/";
+
+    let  node_type_pos_array;
+    for( node_type_pos_array = []
+    ;    node && !(node instanceof Document)
+    ;    node =   (node.nodeType == Node.ATTRIBUTE_NODE)
+              ?    node.ownerElement
+              :    node.parentNode
+    ) {
+        let node_type_pos = {};
+
+
+        switch( node.nodeType ) {
+            case Node.TEXT_NODE                   : node_type_pos.name =                   "text()" ; break;
+            case Node.ATTRIBUTE_NODE              : node_type_pos.name =       "@" + node.nodeName  ; break;
+            case Node.PROCESSING_INSTRUCTION_NODE : node_type_pos.name = "processing-instruction()" ; break;
+            case Node.COMMENT_NODE                : node_type_pos.name =                "comment()" ; break;
+            case Node.ELEMENT_NODE                : node_type_pos.name =             node.nodeName  ; break;
+        }
+
+
+        node_type_pos.position = get_nodeName_rank( node );
+
+        node_type_pos_array.push( node_type_pos );
+    }
+
+    let nodeXPath = "";
+    for(let i=node_type_pos_array.length-1; i >= 0; i -= 1)
+    {
+        let node_type_pos   = node_type_pos_array[i];
+        nodeXPath += node_type_pos.name ? ("/"+node_type_pos.name) : ".";
+        if((node_type_pos.position != null) && (node_type_pos.position != "1"))
+            nodeXPath += "["+ node_type_pos.position+"]";
+    }
+
+    return nodeXPath.toLowerCase();
+};
+
+
+let get_nodeName_rank = function(node)
+{
+    if(node.nodeType == Node.ATTRIBUTE_NODE) return null;
+
+    let rank = 1;
+    for(let prev_node =      node.previousElementSibling
+    ;       prev_node
+    ;       prev_node = prev_node.previousElementSibling
+    ) {
+        if(prev_node.nodeName == node.nodeName)
+            rank += 1;
+    }
+    return rank;
+ };
+
+
+let get_el_parent_clipped = function(el)
+{
+    while(  el ) {
+        let cs = window.getComputedStyle(el);
+        if( cs.clip
+        && (cs.clip     != "auto")
+        && (cs.clip     != "none")) return el;
+
+        if( cs.clipPath
+        && (cs.clip     != "auto")
+        && (cs.clipPath != "none")) return el;
+
+        el = el.parentElement;
+    }
+    return null;
+};
+
+
+let get_shadow_root = function()
+{
+    let    shadow_host = document.getElementById("shadow_host");
+    let    shadow_root = shadow_host ? shadow_host.shadowRoot : null;
+
+    return shadow_root;
+};
+
+
+let get_tool = function(id)
+{
+    if( id.includes(" ") ) return null;
+    let selector
+        = (id.charAt(0) != ".") && (id.charAt(0) != "#")
+        ?  "#"+id
+        :      id;
+
+    let el;
+    try {
+        let shadow_root      = get_shadow_root();
+        if( shadow_root ) el = shadow_root.querySelector( selector );
+        if(!el          ) el = document   .querySelector( selector );
+    }
+    catch(ex) { console.log("selector=["+selector+"]"); console.warn(ex); }
+
+
+    return el;
+};
 
 
 
@@ -1155,52 +1361,184 @@ let t_get_htmlEntities = function(str)
 
 
 
-let cb_textArea = null;
-
-
-let t_copy_to_CLIPBOARD = function(copy_content)
+let get_el_parent_fragment = function(el)
 {
-
-    if(!cb_textArea) {
-        cb_textArea     = document.createElement("TEXTAREA");
-        cb_textArea.id  = "cb_textArea";
-        cb_textArea.style.position        = "fixed";
-        cb_textArea.style.top             = "1em";
-        cb_textArea.style.left            = "1em";
-        cb_textArea.style.width           =  "95%";
-        cb_textArea.style.height          = "25em";
-        cb_textArea.style.backgroundColor = "salmon";
-
-        document.body.appendChild(cb_textArea);
-
+    while( el ) {
+        if(el.shadowRoot                             ) return el;
+        if(el.nodeType == Node.DOCUMENT_FRAGMENT_NODE) return el;
+        el              = el.parentNode;
     }
+    return null;
+};
 
 
-    cb_textArea.style.display = "block";
-    cb_textArea.value         = copy_content;
+let get_el_parent_with_tag = function(el,tag)
+{
+    if( el.nodeName == "#text")
+        el     = el.parentElement;
 
+    while(el && (el.tagName != tag))
+        el     = el.parentElement;
 
-
-    cb_textArea.select();
-
-    if( !document.execCommand("copy") )
-    {
-
-    }
-
-
-    cb_textArea.style.display = "none";
-    cb_textArea.value         = "";
-
-
+    if(    !el                        ) return null;
+    return (         tag == el.tagName) ? el : null;
 };
 
 
 
-let add_el_class     = function(el, className) { if(!el || !el.classList) return      ; if(   !el.classList.contains( className )) el.classList.add   ( className ); };
-let del_el_class     = function(el, className) { if(!el || !el.classList) return      ; if(    el.classList.contains( className )) el.classList.remove( className ); };
-let set_el_class     = function(el, className) { if(!el || !el.classList) return      ;                                            el.className       = className  ; };
-let has_el_class     = function(el, className) { if(!el || !el.classList) return false; return el.classList.contains( className );                                   };
+let get_el_parent_with_class = function(el, className)
+{
+    while(   el ) {
+        if(  el.classList.contains( className )) return el;
+        el = el.parentElement;
+    }
+    return null;
+};
+
+
+let get_el_child_with_class = function(parent,className,level=1)
+{
+    if(!parent) return null;
+
+    for(let c=0; c < parent.children.length; ++c) {
+
+        let child  = parent.children[c];
+        if((child != null) && has_el_class(child, className)) {
+
+
+            return child;
+        }
+
+
+        if(child.children.length)
+        {
+            if( child = get_el_child_with_class(child, className, level+1)) {
+
+
+                return child;
+            }
+        }
+
+    }
+
+    return null;
+};
+
+
+let get_el_xy = function(el)
+{
+    let cr    = el.getBoundingClientRect();
+    return { x: window.scrollX + cr.x , y: window.scrollY + cr.y };
+};
+
+
+
+
+let get_n_lbl = function(node)
+{
+    if(!node                 ) return "null_node";
+    if( node == window       ) return "window";
+    if( node == document.body) return "body";
+
+
+
+    if(node.id    ) try { return       "#"+ node.id                                                   ; } catch(ex) {}
+    if(node.title ) try { return "title=["+ node.title +"]"                                           ; } catch(ex) {}
+
+    let                          n_lbl  = null;
+    try                 {        n_lbl  = node.tagName +(node.className ? ("."+ node.className) : "") ; } catch(ex) {}
+    if(   n_lbl )   try {        n_lbl += " .. TEXT=["+ truncate(node.textContent,  24)+"]"           ; } catch(ex) {}
+    if(   n_lbl )         return n_lbl;
+
+    try                 { return              "TEXT=["+ truncate(node.textContent,  24)+"]"           ; } catch(ex) {}
+    try                 { return                                 node.tagName                         ; } catch(ex) {}
+    try                 { return                                 node.nodeType                        ; } catch(ex) {}
+
+    return "";
+};
+
+
+let strip_CR_LF = function(text)
+{
+    return text
+        .   replace(regexp_CR,  "")
+        .   replace(regexp_LF, " ")
+        .   trim()
+    ;
+};
+
+
+
+let get_node_sibling_at_offset = function(node,offset)
+{
+    if(offset > 0)
+    {
+        for(let next_node  = node.nextElementSibling
+            ;   next_node
+            ;   next_node  = next_node.nextElementSibling
+           ) {
+            if( next_node.nodeName == node.nodeName) {
+                if( offset ) offset -= 1;
+                if(!offset ) return next_node;
+            }
+        }
+    }
+    else {
+        for(let prev_node  = node.previousElementSibling
+            ;   prev_node
+            ;   prev_node  = prev_node.previousElementSibling
+           ) {
+            if( prev_node.nodeName == node.nodeName) {
+                if( offset ) offset += 1;
+                if(!offset ) return prev_node;
+            }
+        }
+    }
+    return null;
+ };
+
+
+const LF    = String.fromCharCode(10);
+const PREFIX = "                               \u21B3";
+let get_parent_tag_id_class_chain = function(el)
+{
+    let array = [];
+
+    while( el )
+    {
+        let e_class = (el.id || el.className) ? "left"   : ""     ;
+        let i_class = (         el.className) ? "center" : "right";
+        let c_class =                                      "right";
+
+        let el_className = ellipsis_short(el.className);
+
+        let rank         = get_nodeName_rank(el);
+        let el_tagName   = el.tagName+( (rank > 1) ? "["+rank+"]":"");
+
+        array.push(   (               "<em class='tag   "+e_class+"'>" + el_tagName   +"</em>"     )
+                   +  (el.id        ? "<em class='id    "+i_class+"'>#"+ el.id        +"</em>" : "")
+                   +  (el_className ? "<em class='class "+c_class+"'>."+ el_className +"</em>" : "")
+                  );
+        el = el.parentElement;
+    }
+
+    let parent_id_class_chain = "";
+
+    for(let l=0, i=array.length-1; i>=0; ++l, --i)
+        parent_id_class_chain
+            += ((l>0) ? (LF+" "+PREFIX.slice(-l))+" " : "")
+            +            array[i];
+
+    return parent_id_class_chain;
+};
+
+
+
+
+let set_el_class = function(el, className) { if(!el || !el.classList) return      ;                                            el.className       = className  ; };
+let add_el_class = function(el, className) { if(!el || !el.classList) return      ; if(   !el.classList.contains( className )) el.classList.add   ( className ); };
+let del_el_class = function(el, className) { if(!el || !el.classList) return      ; if(    el.classList.contains( className )) el.classList.remove( className ); };
+let has_el_class = function(el, className) { if(!el || !el.classList) return false; return el.classList.contains( className );                                   };
 
 let clear_el_classList = function(el_or_id, classList) { cycle_el_classList(el_or_id, classList, true); };
 let cycle_el_classList = function(el_or_id, classList, remove_only)
@@ -1295,298 +1633,6 @@ let is_marked_to_hide = function( node )
 
 
 
-const regexp_CR              = new RegExp("\\r", "g");
-const regexp_LF              = new RegExp("\\n", "g");
-const SYMBOL_DOWN_LEFT_ARROW = "\u21B5";
-let show_CR_LF = function(text)
-{
-    return text
-        .   replace(regexp_CR,  "")
-        .   replace(regexp_LF, SYMBOL_DOWN_LEFT_ARROW)
-        .   trim()
-    ;
-};
-
-
-const HORIZONTAL_ELLLIPSIS = "\u2026";
-const ELLIPSIS_DEFAULT_LEN = 96;
-const ELLIPSIS_SHORT_LEN   = 48;
-
-let ellipsis_16 = function(msg)
-{
-    return mPadEnd( ellipsis(msg, 16) , 16);
-};
-
-let ellipsis_short = function(msg)
-{
-    return ellipsis(msg, ELLIPSIS_SHORT_LEN);
-};
-
-let ellipsis = function(_msg, len=ELLIPSIS_DEFAULT_LEN)
-{
-    let msg = show_CR_LF( String(_msg) );
-    return (msg.length    <= len)
-        ?   msg
-        :   msg.substring(0, len-3)+HORIZONTAL_ELLLIPSIS
-    ;
-};
-
-
-let mPadStart = function(s,l,c=" ") { s = String(s); while(s.length < l) s = c+s; return s; };
-
-let mPadEnd   = function(s,l,c=" ") { s = String(s); while(s.length < l) s = s+c; return s; };
-
-
-
-let get_el_parent_fragment = function(el)
-{
-    while( el ) {
-        if(el.shadowRoot                             ) return el;
-        if(el.nodeType == Node.DOCUMENT_FRAGMENT_NODE) return el;
-        el              = el.parentNode;
-    }
-    return null;
-};
-
-
-let get_el_parent_with_tag = function(el,tag)
-{
-    if( el.nodeName == "#text")
-        el     = el.parentElement;
-
-    while(el && (el.tagName != tag))
-        el     = el.parentElement;
-
-    if(    !el                        ) return null;
-    return (         tag == el.tagName) ? el : null;
-};
-
-
-
-let get_el_parent_with_class = function(el, className)
-{
-    while(   el ) {
-        if(  el.classList.contains( className )) return el;
-        el = el.parentElement;
-    }
-    return null;
-};
-
-
-let get_el_child_with_class = function(parent,className,level=1)
-{
-    if(!parent) return null;
-
-    for(let c=0; c < parent.children.length; ++c) {
-
-        let child  = parent.children[c];
-        if((child != null) && has_el_class(child, className)) {
-
-
-            return child;
-        }
-
-
-        if(child.children.length)
-        {
-            if( child = get_el_child_with_class(child, className, level+1)) {
-
-
-                return child;
-            }
-        }
-
-    }
-
-    return null;
-};
-
-
-let get_el_xy = function(el)
-{
-    if(!el) return null;
-    let  x = 0;
-    let  y = 0;
-
-    let cs = window.getComputedStyle(el);
-
-    if(   (cs.position == "fixed"   )
-       || (cs.position == "absolute")
-      ) {
-
-        x   = el.offsetLeft;
-        y   = el.offsetTop ;
-    }
-    else {
-
-        while(el) {
-            x  += el.offsetLeft;
-            y  += el.offsetTop ;
-            el  = el.offsetParent;
-        }
-
-    }
-
-    return { x , y };
-};
-
-
-let get_id_or_tag = function(node)
-{
-    return !node           ? ("null_node"                        )
-        :   node.id        ? ("#"+ node.id                       )
-        :   node.className ? (node.tagName+"."+ node.classList[0])
-        :                    (node.tagName                       )
-    ;
-};
-
-
-let is_el_or_child_of_parent_el = function(el, parent_el)
-{
-    if(!parent_el) return false;
-
-    while(el && (el != parent_el))
-        el     = el.parentElement;
-
-    return (el == parent_el);
-};
-
-
-let is_el_or_child_of_class = function(el, className)
-{
-    while(el && !el.classList.contains(className))
-        el     = el.parentElement;
-    return el;
-};
-
-
-
-let get_n_lbl = function(node)
-{
-    if(!node                 ) return "null_node";
-    if( node == window       ) return "window";
-    if( node == document.body) return "body";
-
-
-
-    if(node.id    ) try { return       "#"+ node.id                                                   ; } catch(ex) {}
-    if(node.title ) try { return "title=["+ node.title +"]"                                           ; } catch(ex) {}
-
-    let                          n_lbl  = null;
-    try                 {        n_lbl  = node.tagName +(node.className ? ("."+ node.className) : "") ; } catch(ex) {}
-    if(   n_lbl )   try {        n_lbl += " .. TEXT=["+ truncate(node.textContent,  24)+"]"           ; } catch(ex) {}
-    if(   n_lbl )         return n_lbl;
-
-    try                 { return              "TEXT=["+ truncate(node.textContent,  24)+"]"           ; } catch(ex) {}
-    try                 { return                                 node.tagName                         ; } catch(ex) {}
-    try                 { return                                 node.nodeType                        ; } catch(ex) {}
-
-    return "";
-};
-
-
-let truncate = function(_msg, length=80)
-{
-    let msg = strip_CR_LF( String(_msg) );
-    return (msg.length <= length)
-        ?   msg
-        :   msg.substring(0, length-3)+"..."
-    ;
-};
-
-
-let strip_CR_LF = function(text)
-{
-    return text
-        .   replace(regexp_CR,  "")
-        .   replace(regexp_LF, " ")
-        .   trim()
-    ;
-};
-
-
-
-let get_node_sibling_at_offset = function(node,offset)
-{
-    if(offset > 0)
-    {
-        for(let next_node  = node.nextElementSibling
-            ;   next_node
-            ;   next_node  = next_node.nextElementSibling
-           ) {
-            if( next_node.nodeName == node.nodeName) {
-                if( offset ) offset -= 1;
-                if(!offset ) return next_node;
-            }
-        }
-    }
-    else {
-        for(let prev_node  = node.previousElementSibling
-            ;   prev_node
-            ;   prev_node  = prev_node.previousElementSibling
-           ) {
-            if( prev_node.nodeName == node.nodeName) {
-                if( offset ) offset += 1;
-                if(!offset ) return prev_node;
-            }
-        }
-    }
-    return null;
- };
-
-
-const LF    = String.fromCharCode(10);
-const PREFIX = "                               \u21B3";
-let get_parent_tag_id_class_chain = function(el)
-{
-    let array = [];
-
-    while( el )
-    {
-        let e_class = (el.id || el.className) ? "left"   : ""     ;
-        let i_class = (         el.className) ? "center" : "right";
-        let c_class =                                      "right";
-
-        let el_className = ellipsis_short(el.className);
-
-        let rank         = get_nodeName_rank(el);
-        let el_tagName   = el.tagName+( (rank > 1) ? "["+rank+"]":"");
-
-        array.push(   (               "<em class='tag   "+e_class+"'>" + el_tagName   +"</em>"     )
-                   +  (el.id        ? "<em class='id    "+i_class+"'>#"+ el.id        +"</em>" : "")
-                   +  (el_className ? "<em class='class "+c_class+"'>."+ el_className +"</em>" : "")
-                  );
-        el = el.parentElement;
-    }
-
-    let parent_id_class_chain = "";
-
-    for(let l=0, i=array.length-1; i>=0; ++l, --i)
-        parent_id_class_chain
-            += ((l>0) ? (LF+" "+PREFIX.slice(-l))+" " : "")
-            +            array[i];
-
-    return parent_id_class_chain;
-};
-
-
-let get_nodeName_rank = function(node)
-{
-    if(node.nodeType == Node.ATTRIBUTE_NODE) return null;
-
-    let rank = 1;
-    for(let prev_node =      node.previousElementSibling
-    ;       prev_node
-    ;       prev_node = prev_node.previousElementSibling
-    ) {
-        if(prev_node.nodeName == node.nodeName)
-            rank += 1;
-    }
-    return rank;
- };
-
-
-
 
 let get_event_target = function(e)
 {
@@ -1639,83 +1685,207 @@ let get_event_XY = function(e)
 
 
 
-let get_el_methodNames = function(obj,_filter_str)
+
+let cb_textArea = null;
+
+
+let t_copy_to_CLIPBOARD = function(copy_content)
 {
-    let    propertyNames = new Set();
-    let    current_obj   = obj;
-    do {
-        Object.getOwnPropertyNames( current_obj ).map((p_name) => propertyNames.add( p_name ) );
+
+    if(!cb_textArea) {
+        cb_textArea     = document.createElement("TEXTAREA");
+        cb_textArea.id  = "cb_textArea";
+        cb_textArea.style.position        = "fixed";
+        cb_textArea.style.top             = "1em";
+        cb_textArea.style.left            = "1em";
+        cb_textArea.style.width           =  "95%";
+        cb_textArea.style.height          = "25em";
+        cb_textArea.style.backgroundColor = "salmon";
+
+        document.body.appendChild(cb_textArea);
+
     }
-    while((current_obj   = Object.getPrototypeOf( current_obj )));
 
-    let    propKeys      = [ ...propertyNames.keys() ];
 
-    let    methodNames   =  propKeys.filter((key) => typeof obj[key] === "function");
+    cb_textArea.style.display = "block";
+    cb_textArea.value         = copy_content;
 
-    if(_filter_str)
+
+
+    cb_textArea.select();
+
+    if( !document.execCommand("copy") )
     {
-        let filter_str   = _filter_str.toLowerCase();
-        methodNames      = methodNames.filter((name) => name.toLowerCase().includes(filter_str));
+
     }
 
-    return methodNames.sort();
+
+    cb_textArea.style.display = "none";
+    cb_textArea.value         = "";
+
+
 };
 
 
-let log_el_methodNames = function(_obj,_filter_str)
+const regexp_CR              = new RegExp("\\r", "g");
+const regexp_LF              = new RegExp("\\n", "g");
+const SYMBOL_DOWN_LEFT_ARROW = "\u21B5";
+let show_CR_LF = function(text)
 {
-    console.dir( _obj );
-
-    console.dir(get_el_methodNames(_obj, _filter_str));
+    return text
+        .   replace(regexp_CR,  "")
+        .   replace(regexp_LF, SYMBOL_DOWN_LEFT_ARROW)
+        .   trim()
+    ;
 };
 
 
+const HORIZONTAL_ELLLIPSIS = "\u2026";
+const ELLIPSIS_DEFAULT_LEN = 96;
+const ELLIPSIS_SHORT_LEN   = 48;
 
-
-return { name : DOM_SENTENCE_UTIL_JS_ID
-
-
-    ,    t_get_event_target
-    ,    get_event_XY
-
-    , t_get_htmlEntities
-    , t_copy_to_CLIPBOARD
-
-    , set_el_class
-    , add_el_class
-    , del_el_class
-    , has_el_class
-    , clear_el_classList
-
-    , show_CR_LF
-    , ellipsis
-
-    , get_el_parent_fragment
-    , get_el_parent_with_tag
-    , get_el_parent_with_class
-    , get_el_child_with_class
-    , get_el_xy
-    , get_id_or_tag
-    , is_el_or_child_of_class
-    , is_el_or_child_of_parent_el
-
-    , get_n_lbl
-    , get_node_sibling_at_offset
-    , get_parent_tag_id_class_chain
-
-
-    , get_el_methodNames
-    , log_el_methodNames
-
-    , logs
+let ellipsis_16 = function(msg)
+{
+    return mPadEnd( ellipsis(msg, 16) , 16);
 };
+
+let ellipsis_short = function(msg)
+{
+    return ellipsis(msg, ELLIPSIS_SHORT_LEN);
+};
+
+let ellipsis = function(_msg, len=ELLIPSIS_DEFAULT_LEN)
+{
+    let msg = show_CR_LF( String(_msg) );
+    return (msg.length    <= len)
+        ?   msg
+        :   msg.substring(0, len-3)+HORIZONTAL_ELLLIPSIS
+    ;
+};
+
+
+let truncate = function(_msg, length=80)
+{
+    let msg = strip_CR_LF( String(_msg) );
+    return (msg.length <= length)
+        ?   msg
+        :   msg.substring(0, length-3)+"..."
+    ;
+};
+
+
+let mPadStart = function(s,l,c=" ") { s = String(s); while(s.length < l) s = c+s; return s; };
+
+let mPadEnd   = function(s,l,c=" ") { s = String(s); while(s.length < l) s = s+c; return s; };
+
+
+
+
+
+
+
+const lf1  = "color:#964B00;";
+const lf2  = "color:#FF0000;";
+const lf3  = "color:#FFA500;";
+const lf4  = "color:#FFFF00;";
+const lf5  = "color:#9ACD32;";
+const lf6  = "color:#6495ED;";
+const lf7  = "color:#EE82EE;";
+const lf8  = "color:#A0A0A0;";
+const lf9  = "color:#FFFFFF;";
+const lf0  = "color:#707070; text-shadow:#000 2px 2px 1px;";
+const lfX  = [ lf0 ,lf1 ,lf2 ,lf3 ,lf4 ,lf5 ,lf6 ,lf7 ,lf8 ,lf9 ];
+
+const lbH  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0 1ex 1ex   0; padding:0 .5em 0 .5em; border-radius:1em 1em 1em 1em; background:linear-gradient(to bottom, #555 0%, #223 80%, #454 100%);";
+const lbL  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0   0   0 1ex; padding:0 .5em 0 .5em; border-radius:1em   0   0 1em; background:linear-gradient(to   left, #333 0%           ,#445 100%);";
+const lbR  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0 1ex   0   0; padding:0 .5em 0 .5em; border-radius:  0 1em 1em   0; background:linear-gradient(to  right, #333 0%           ,#544 100%);";
+const lbC  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0   0   0   0; padding:0 .5em 0 .5em; border-radius:  0   0   0   0;";
+
+let dir               = console.dir;
+let log               = console.log;
+let logX = (msg,l_x) => console.log("%c"+msg, lbR+lfX[l_x]);
+let log0 = (msg)     =>         logX(    msg, 0  );
+let log1 = (msg)     =>         logX(    msg, 1  );
+let log2 = (msg)     =>         logX(    msg, 2  );
+let log3 = (msg)     =>         logX(    msg, 3  );
+let log4 = (msg)     =>         logX(    msg, 4  );
+let log5 = (msg)     =>         logX(    msg, 5  );
+let log6 = (msg)     =>         logX(    msg, 6  );
+let log7 = (msg)     =>         logX(    msg, 7  );
+let log8 = (msg)     =>         logX(    msg, 8  );
+let log9 = (msg)     =>         logX(    msg, 9  );
+
+let logs = { dir
+        ,    log
+        ,    log0
+        ,    log1
+        ,    log2
+        ,    log3
+        ,    log4
+        ,    log5
+        ,    log6
+        ,    log7
+        ,    log8
+        ,    log9
+    };
+
+
+
+
+
+
+        return { name : "dom. util"
+
+
+            ,    get_el_child_with_class
+            ,    get_el_child_with_tag
+            ,    get_el_methodNames
+            ,    get_el_parent_clipped
+            ,    get_el_parent_fragment
+            ,    get_el_parent_with_class
+            ,    get_el_parent_with_tag
+            ,    get_el_sibling_with_tag
+            ,    get_el_xy
+            ,    get_id_or_tag
+            ,    get_id_or_tag_and_className
+            ,    get_n_lbl
+            ,    get_nodeXPath
+            ,    get_node_sibling_at_offset
+            ,    get_parent_tag_id_class_chain
+            ,    get_tool
+            ,    is_el_or_child_of_class
+            ,    is_el_or_child_of_parent_el
+            ,    t_get_htmlEntities
+
+
+            ,    del_el_class
+            ,    add_el_class
+            ,    clear_el_classList
+            ,    has_el_class
+            ,    set_el_class
+
+
+            ,    get_event_XY
+            ,    t_get_event_target
+
+
+            ,    t_copy_to_CLIPBOARD
+            ,    show_CR_LF
+            ,    ellipsis
+
+
+            ,    logs
+            ,    log_el_methodNames
+        };
 
 
  }());
 
 
+
+
 /*INLINE}}}*/
-//@ sourceURL=dom_sentence_util.js
+//@ sourceURL=dom_util.js
 `
  .replace(/\\/g,"\\\\")
 )
@@ -1723,7 +1893,7 @@ return { name : DOM_SENTENCE_UTIL_JS_ID
 ;
 
 /*}}}*/
-  /**   4 SCROLL   JS dom_scroll_js_data .. ESCAPE case "#document"] {{{*/
+  /**   5 SCROLL   JS dom_scroll_js_data .. ESCAPE case "#document"] {{{*/
 /*
 ../script/stub/dom_scroll.js
 */
@@ -1743,9 +1913,8 @@ let dom_scroll_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 
-
 const DOM_SCROLL_JS_ID         = "dom_scroll_js";
-const DOM_SCROLL_JS_TAG        = DOM_SCROLL_JS_ID  +" (220317:18h:00)";
+const DOM_SCROLL_JS_TAG        = DOM_SCROLL_JS_ID  +" (230707:21h:45)";
 
 let dom_scroll              = (function() {
 "use strict";
@@ -1758,6 +1927,7 @@ let   DOM_SCROLL_TAG        = false;
 
 
 
+let t_store    ;
 let t_util     ;
 let t_tools    ;
 
@@ -1766,19 +1936,22 @@ let t_tools    ;
 let t_scroll_IMPORT  = function(_log_this,import_num)
 {
 
-    DOM_SCROLL_LOG = DOM_SCROLL_LOG || localStorage_getItem("DOM_SCROLL_LOG");
-    DOM_SCROLL_TAG = DOM_SCROLL_TAG || localStorage_getItem("DOM_SCROLL_TAG");
+    if     (typeof      dom_store != "undefined") t_store  =      dom_store;
+    else console.warn("MISSING STUB FOR: [dom_store]");
 
 
 
-    if     (typeof dom_util           != "undefined") t_util  = dom_util         ;
-    else if(typeof dom_sentence_util  != "undefined") t_util  = dom_sentence_util;
+    DOM_SCROLL_LOG = DOM_SCROLL_LOG || t_store.getItem("DOM_SCROLL_LOG");
+    DOM_SCROLL_TAG = DOM_SCROLL_TAG || t_store.getItem("DOM_SCROLL_TAG");
+
+
+
+    if     (typeof      dom_util != "undefined") t_util  =      dom_util;
     else console.warn("MISSING STUB FOR: [dom_util]");
 
 
 
-    if     (typeof dom_tools          != "undefined") t_tools = dom_tools         ;
-    else if(typeof dom_sentence_event != "undefined") t_tools = dom_sentence_event;
+    if     (typeof      dom_tools != "undefined") t_tools =      dom_tools ;
     else console.warn("MISSING STUB FOR: [dom_tools]");
 
 
@@ -1836,13 +2009,6 @@ let   scroll_INTERN     = function()
     }
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -2305,23 +2471,9 @@ let   scrollIntoViewIfNeeded_then_recenter_handler_scrollTo_clr_scrollBehavior =
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(    state != undefined)
-    {
-        if(state) localStorage_setItem(label, "true");
-        else      localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return    localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_scroll"
-    ,    logging : (state) => DOM_SCROLL_LOG = t_store_set_state("DOM_SCROLL_LOG",state)
-    ,    tagging : (state) => DOM_SCROLL_TAG = t_store_set_state("DOM_SCROLL_TAG",state)
+    ,    logging : (state) => DOM_SCROLL_LOG = t_store.setItem("DOM_SCROLL_LOG",state)
+    ,    tagging : (state) => DOM_SCROLL_TAG = t_store.setItem("DOM_SCROLL_TAG",state)
     ,    t_scroll_listener
     ,    t_scrollIntoViewIfNeeded_set_EL
     ,    t_scroll_is_scrolling
@@ -2338,11 +2490,11 @@ return { name : "dom_scroll"
 ;
 
 /*}}}*/
-  /**   5 EVENT    JS dom_sentence_event_js_data .. ESCAPE case "#document"] {{{*/
+  /**   6 TOOLS    JS dom_tools_js_data .. ESCAPE case "#document"] {{{*/
 /*
-../script/stub/dom_sentence_event.js
+../script/stub/dom_tools.js
 */
-let dom_sentence_event_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
+let dom_tools_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 /*INLINE{{{*/
 
 
@@ -2358,12 +2510,12 @@ let dom_sentence_event_js_data ="data:text/javascript;charset='utf-8',"+ escape(
 
 
 
-const DOM_SENTENCE_EVENT_JS_ID  = "dom_sentence_event";
-const DOM_SENTENCE_EVENT_JS_TAG = DOM_SENTENCE_EVENT_JS_ID +" (230614:16h:50)";
+const DOM_TOOLS_JS_ID  = "dom_tools";
+const DOM_TOOLS_JS_TAG = DOM_TOOLS_JS_ID +" (230707:21h:52)";
 
-let dom_sentence_event   = (function() {
+let dom_tools = (function() {
 "use strict";
-let   DOM_SENTENCE_LOG  = false;
+let   DOM_TOOLS_LOG  = false;
 
 
 
@@ -2389,8 +2541,7 @@ let { LF
 
 
     let t_util
-        = (typeof dom_util           != "undefined") ? dom_util
-        : (typeof dom_sentence_util  != "undefined") ? dom_sentence_util
+        = (typeof      dom_util != "undefined") ?      dom_util
         :                                              undefined
     ;
 
@@ -2424,7 +2575,7 @@ let t_pointerdown_handler = function(e)
 if( e.shiftKey ) console.log("t_pointerdown_handler: %c if( e.shiftKey ) return;", "background-color: #F008");
     if( e.shiftKey ) return;
 
-let log_this = DOM_SENTENCE_LOG;
+let log_this = DOM_TOOLS_LOG;
 
 if( log_this) log1("→→ t_pointerdown_handler");
 
@@ -2449,7 +2600,7 @@ if(log_this) log1("... NO sentence_el"+LF);
 let add_long_press_arm_listener = function()
 {
 
-let log_this = DOM_SENTENCE_LOG;
+let log_this = DOM_TOOLS_LOG;
 
 if( log_this) log6("→ add_long_press_arm_listener");
 
@@ -2464,7 +2615,7 @@ long_press_arm_timer =   setTimeout(long_press_arm_handler , LONG_PRESS_ARM_DELA
 let long_press_arm_handler = function()
 {
 
-let log_this = DOM_SENTENCE_LOG;
+let log_this = DOM_TOOLS_LOG;
 
 if(log_this) log6("→→ long_press_arm_handler");
 
@@ -2480,7 +2631,7 @@ let long_press_handler  = function()
 {
 
 let   caller = "long_press_handler";
-let log_this = DOM_SENTENCE_LOG;
+let log_this = DOM_TOOLS_LOG;
 
     let is_scrolling = dom_scroll.t_scroll_is_scrolling();
 if(     log_this && !is_scrolling) log6("→→→ long_press_handler: t_scroll_is_scrolling=["+is_scrolling+"] .. onDown_EL.className=["+onDown_EL.className+"]");
@@ -2514,7 +2665,7 @@ if(e.altKey ) return;
 if(e.ctrlKey) return;
 
 let   caller = "t_SENTENCE_drag_listener";
-let log_this = DOM_SENTENCE_LOG;
+let log_this = DOM_TOOLS_LOG;
 
     let sentence_container_dragged = t_util.is_el_or_child_of_class(onDown_EL, dom_sentence.CSS_SENTENCE_CONTAINER);
 if(     log_this && sentence_container_dragged) log7(caller+": sentence_container_dragged=["+t_util.get_id_or_tag(sentence_container_dragged)+"]");
@@ -2569,7 +2720,7 @@ let t_add_MOVE_ON_COOLDOWN   = function(time_left)
 {
     if( move_on_cooldown_timer ) return;
 
-let log_this = DOM_SENTENCE_LOG;
+let log_this = DOM_TOOLS_LOG;
 
 
 if(log_this) log9("t_add_MOVE_ON_COOLDOWN");
@@ -2585,7 +2736,7 @@ let t_del_MOVE_ON_COOLDOWN   = function()
 {
     if(!move_on_cooldown_timer ) return;
 
-let log_this = DOM_SENTENCE_LOG;
+let log_this = DOM_TOOLS_LOG;
 
 if( log_this) log0("t_del_MOVE_ON_COOLDOWN");
 
@@ -2605,7 +2756,7 @@ let t_pointerup_listener  = function(e)
 {
 if(e.button) return;
 
-let log_this = DOM_SENTENCE_LOG;
+let log_this = DOM_TOOLS_LOG;
 
 
 if( log_this) log5(LF+"→ t_pointerup_listener");
@@ -2618,7 +2769,7 @@ if( log_this) log5(LF+"→ t_pointerup_listener");
        &&         chrome.runtime
        &&         chrome.runtime.sendMessage
       ) {
-        log("%c RELOADING EXTENSION: ("+DOM_SENTENCE_EVENT_JS_TAG+")", "background-color:red; border:1px; border-radius:1em; padding:0.5em;");
+        log("%c RELOADING EXTENSION: ("+DOM_TOOLS_JS_TAG+")", "background-color:red; border:1px; border-radius:1em; padding:0.5em;");
 
         setTimeout(function() { chrome.runtime.sendMessage({ cmd : "reload" }); }, 1000);
 
@@ -2652,7 +2803,7 @@ let t_pointerup_handler = function(e)
 {
 
 let   caller = "t_pointerup_handler";
-let log_this = DOM_SENTENCE_LOG;
+let log_this = DOM_TOOLS_LOG;
 
     let consumed_by                  = "";
 
@@ -2700,9 +2851,9 @@ let log_this = DOM_SENTENCE_LOG;
     else
     {
         consumed_by
-            = "UP ➔ CLICKED=["+clicked+"]\n"
-            +  " .. some_sentence_container  =["+ (some_sentence_container   ? some_sentence_container  .tagName : "")+"]\n"
-            +  " .. onDown_EL                =["+ (onDown_EL                 ? onDown_EL                .tagName : "")+"]\n"
+            = "UP ➔ CLICKED=["+clicked+"]"+LF
+            +  " .. some_sentence_container  =["+ (some_sentence_container   ? some_sentence_container  .tagName : "")+"]"+LF
+            +  " .. onDown_EL                =["+ (onDown_EL                 ? onDown_EL                .tagName : "")+"]"+LF
             +  " .. onDown_sentence_container=["+ (onDown_sentence_container ? onDown_sentence_container.tagName : "")+"]"
         ;
 
@@ -2735,7 +2886,7 @@ let log_this = DOM_SENTENCE_LOG;
       ) {
         let theme_dark  = dom_sentence.t_SENTENCE_get_theme_dark();
         if( theme_dark != was_theme_dark ) {
-if( log_this) log("%c SETTING EXTENSION: ("+DOM_SENTENCE_EVENT_JS_TAG+") { theme_dark : "+theme_dark+" }", "background-color:red; border:1px; border-radius:1em; padding:0.5em;");
+if( log_this) log("%c SETTING EXTENSION: ("+DOM_TOOLS_JS_TAG+") { theme_dark : "+theme_dark+" }", "background-color:red; border:1px; border-radius:1em; padding:0.5em;");
 
             setTimeout(function() { chrome.runtime.sendMessage({ theme_dark }); }, 1000);
         }
@@ -2793,7 +2944,7 @@ let clr_onWork_EL = function(_caller)
 {
 
 let   caller = "clr_onWork_EL";
-let log_this = DOM_SENTENCE_LOG;
+let log_this = DOM_TOOLS_LOG;
 
 if( log_this) log8(caller+": CALLED BY "+ _caller);
 
@@ -2815,7 +2966,7 @@ let t_SENTENCE_add_LISTENER = function(_log_this,_tag_this)
 {
 
 let   caller = "t_SENTENCE_add_LISTENER";
-let log_this = DOM_SENTENCE_LOG;
+let log_this = DOM_TOOLS_LOG;
 
 
 if( log_this || _log_this || _tag_this) log5("➔ "+caller+LF);
@@ -2838,7 +2989,7 @@ let t_SENTENCE_del_LISTENER = function(_log_this,_tag_this)
 {
 
 let   caller = "t_SENTENCE_del_LISTENER";
-let log_this = DOM_SENTENCE_LOG;
+let log_this = DOM_TOOLS_LOG;
 
 if( log_this || _log_this || _tag_this) log0("➔ "+caller+LF);
 
@@ -2860,7 +3011,7 @@ let t_CURSOR_add_MOVE_LISTENER = function()
 {
 
 let   caller = "t_CURSOR_add_MOVE_LISTENER";
-let log_this = DOM_SENTENCE_LOG;
+let log_this = DOM_TOOLS_LOG;
 
 if( log_this) log7(caller);
 
@@ -2878,7 +3029,7 @@ let t_CURSOR_del_MOVE_LISTENER = function()
 {
 
 let   caller = "t_CURSOR_del_MOVE_LISTENER";
-let log_this = DOM_SENTENCE_LOG;
+let log_this = DOM_TOOLS_LOG;
 
 if(log_this) log0(caller);
 
@@ -2918,7 +3069,7 @@ let remove_listener_capture_active = function(el, ev, fn, uc)
 let preventDefault = function(e)
 {
 
-let log_this = DOM_SENTENCE_LOG;
+let log_this = DOM_TOOLS_LOG;
 
 if( log_this) log0("preventDefault");
 
@@ -3107,7 +3258,7 @@ let show_drag_cursor = function()
     if( drag_cursor_div.style.display != "block")
     {
 
-        if(typeof dom_sentence_event != "undefined")
+        if(typeof dom_tools != "undefined")
         {
             drag_cursor_div.classList.add( CSS_DRAG_CURSOR_DIV_ONLOAD );
             drag_cursor_div.style.left    = (window.innerWidth  / 2)+"px";
@@ -3161,7 +3312,7 @@ return { name : "drag_cursor"
 
 
 
-return { name : DOM_SENTENCE_EVENT_JS_ID
+return { name : "dom_tools"
     ,    t_SENTENCE_add_LISTENER
     ,    t_SENTENCE_del_LISTENER
     ,    t_scrollIntoViewIfNeeded
@@ -3184,7 +3335,7 @@ return { name : DOM_SENTENCE_EVENT_JS_ID
 
 
 /*INLINE}}}*/
-//@ sourceURL=dom_sentence_event.js
+//@ sourceURL=dom_tools.js
 `
  .replace(/\\/g,"\\\\")
 )
@@ -3222,8 +3373,9 @@ let dom_sentence_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 
+
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230706:19h:57)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230707:21h:45)";
 
 let dom_sentence            = (function() {
 "use strict";
@@ -3236,6 +3388,7 @@ let   DOM_SENTENCE_TAG      = false;
 
 
 
+let t_store    ;
 let t_util     ;
 let t_tools    ;
 
@@ -3244,19 +3397,22 @@ let t_tools    ;
 let t_sentence_IMPORT  = function(_log_this,import_num)
 {
 
-    DOM_SENTENCE_LOG = DOM_SENTENCE_LOG || localStorage_getItem("DOM_SENTENCE_LOG");
-    DOM_SENTENCE_TAG = DOM_SENTENCE_TAG || localStorage_getItem("DOM_SENTENCE_TAG");
+    if     (typeof      dom_store != "undefined" ) t_store = dom_store     ;
+    else console.warn("MISSING STUB FOR: [dom_store]");
 
 
 
-    if     (typeof dom_util           != "undefined") t_util  = dom_util         ;
-    else if(typeof dom_sentence_util  != "undefined") t_util  = dom_sentence_util;
-    else console.warn("MISSING STUB FOR: [dom_util]");
+    DOM_SENTENCE_LOG = DOM_SENTENCE_LOG || t_store.getItem("DOM_SENTENCE_LOG");
+    DOM_SENTENCE_TAG = DOM_SENTENCE_TAG || t_store.getItem("DOM_SENTENCE_TAG");
 
 
 
-    if     (typeof dom_tools          != "undefined") t_tools = dom_tools         ;
-    else if(typeof dom_sentence_event != "undefined") t_tools = dom_sentence_event;
+    if     (typeof      dom_util != "undefined" ) t_util  =      dom_util;
+    else console.warn("MISSING STUB FOR: [dom_util]" );
+
+
+
+    if     (typeof      dom_tools != "undefined" ) t_tools =      dom_tools;
     else console.warn("MISSING STUB FOR: [dom_tools]");
 
 
@@ -3312,13 +3468,6 @@ let   sentence_INTERN   = function()
     }
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -3588,7 +3737,7 @@ if( log_this && e) log("%c type=["+e.type+"] e.target.id=["+e.target.id+"]", lbH
 
 
     if((typeof dom_prop) != "undefined") theme_dark = dom_prop.get        ("theme_dark");
-    else                                 theme_dark = localStorage_getItem("theme_dark");
+    else                                 theme_dark = t_store.getItem("theme_dark");
 
 
 
@@ -4391,7 +4540,7 @@ check_tool_event_timer = setTimeout(check_tool_event, CHECK_TOOL_EVENT_DELAY, e)
 
 let t_SENTENCE_set_theme_dark = function(state)
 {
-    localStorage_setItem("theme_dark", state);
+    t_store.setItem("theme_dark", state);
 };
 
 
@@ -4441,7 +4590,7 @@ if(!e) return false;
         theme_dark = !theme_dark;
 
 
-        localStorage_setItem("theme_dark", theme_dark);
+        t_store.setItem("theme_dark", theme_dark);
 
 
         if((typeof dom_prop) != "undefined") dom_prop.set("theme_dark", theme_dark);
@@ -4539,23 +4688,9 @@ let get_parent_chain = function(el)
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(    state != undefined)
-    {
-        if(state) localStorage_setItem(label, "true");
-        else      localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return    localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_sentence"
-    ,    logging : (state) => DOM_SENTENCE_LOG = t_store_set_state("DOM_SENTENCE_LOG",state)
-    ,    tagging : (state) => DOM_SENTENCE_TAG = t_store_set_state("DOM_SENTENCE_TAG",state)
+    ,    logging : (state) => DOM_SENTENCE_LOG = t_store.setItem("DOM_SENTENCE_LOG",state)
+    ,    tagging : (state) => DOM_SENTENCE_TAG = t_store.setItem("DOM_SENTENCE_TAG",state)
     ,    t_sentence_IMPORT
     ,    CSS_SENTENCE_CONTAINER
 
@@ -4677,9 +4812,10 @@ if( log_this) window.addEventListener("error", load_onerror, false);
         /*}}}*/
         /* LOAD JS - log .. sentence {{{*/
         if(    dom_load_success && !load_js    ( "dom_log_js"           , dom_log_js_data           ) ) dom_load_success = false;
-        if(    dom_load_success && !load_js    ( "dom_sentence_util_js" , dom_sentence_util_js_data ) ) dom_load_success = false;
+        if(    dom_load_success && !load_js    ( "dom_store_js"         , dom_store_js_data         ) ) dom_load_success = false;
+        if(    dom_load_success && !load_js    ( "dom_util_js"          , dom_util_js_data          ) ) dom_load_success = false;
         if(    dom_load_success && !load_js    ( "dom_scroll_js_data"   , dom_scroll_js_data        ) ) dom_load_success = false;
-        if(    dom_load_success && !load_js    ( "dom_sentence_event_js", dom_sentence_event_js_data) ) dom_load_success = false;
+        if(    dom_load_success && !load_js    ( "dom_tools_js"         , dom_tools_js_data         ) ) dom_load_success = false;
         if(    dom_load_success && !load_js    ( "dom_sentence_js"      , dom_sentence_js_data      ) ) dom_load_success = false;
         /*}}}*/
     }
@@ -4863,10 +4999,10 @@ try {
     console.log("dom_sentence_js:"); console.dir(dom_sentence_js);
     console.log("dom_sentence   :"); console.dir(dom_sentence   );
 }}}*/
-    setTimeout(dom_sentence_event.set_mouseUP_display_state, 1000);
+    setTimeout(dom_tools.set_mouseUP_display_state, 1000);
 } catch(ex) {}
-        dom_sentence      .t_sentence_IMPORT      ( IPC_LOG );
-        dom_sentence_event.t_SENTENCE_add_LISTENER( IPC_LOG );
+        dom_sentence  .t_sentence_IMPORT      ( IPC_LOG );
+        dom_tools.t_SENTENCE_add_LISTENER( IPC_LOG );
     }, 0);
 };
 /*}}}*/
@@ -4905,9 +5041,9 @@ return null;
 :e  $BROWSEEXT/SplitterExtension/javascript/background.js
 :e  $BROWSEEXT/SplitterExtension/javascript/content.js
 :e             $RPROFILES/script/dom_sentence.js
-:e             $RPROFILES/script/stub/dom_sentence_event.js
+:e             $RPROFILES/script/stub/dom_tools.js
 :e             $RPROFILES/script/stub/dom_scroll.js
-:e             $RPROFILES/script/stub/dom_sentence_util.js
+:e             $RPROFILES/script/stub/dom_util.js
 :e             $RPROFILES/script/stub/dom_log.js
 :e             $RPROFILES/stylesheet/dom_host.css
 

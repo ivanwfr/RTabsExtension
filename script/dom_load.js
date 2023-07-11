@@ -14,7 +14,7 @@ javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 const DOM_LOAD_ID    = "dom_load";
-const DOM_LOAD_TAG   =  DOM_LOAD_ID +" (230706:22h:00)";
+const DOM_LOAD_TAG   =  DOM_LOAD_ID +" (230707:22h:20)";
 /*}}}*/
 
 
@@ -7017,7 +7017,7 @@ let dom_log_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_LOG_JS_ID         = "dom_log_js";
-const DOM_LOG_JS_TAG        = DOM_LOG_JS_ID  +" (230706:19h:57)";
+const DOM_LOG_JS_TAG        = DOM_LOG_JS_ID  +" (230707:19h:35)";
 
 let dom_log     = (function() {
 "use strict";
@@ -7034,7 +7034,7 @@ let t_data     = {}        ;
 let t_util     = {}        ;
 
 
-
+let t_store    = {}        ;
 
 
 
@@ -7063,7 +7063,7 @@ let t_log_IMPORT  = function(log_this)
     t_util    = dom_util   ;
 
 
-
+    t_store   = dom_store  ;
 
 
 
@@ -7086,8 +7086,8 @@ let t_log_IMPORT  = function(log_this)
 
     log_INTERN();
 
-    DOM_LOG_LOG = DOM_LOG_LOG || localStorage_getItem("DOM_LOG_LOG");
-    DOM_LOG_TAG = DOM_LOG_TAG || localStorage_getItem("DOM_LOG_TAG");
+    DOM_LOG_LOG = DOM_LOG_LOG || dom_store.getItem("DOM_LOG_LOG");
+    DOM_LOG_TAG = DOM_LOG_TAG || dom_store.getItem("DOM_LOG_TAG");
 
 
 if(log_this) log("%c 06 log", lbH+lf6);
@@ -7163,13 +7163,6 @@ let   log_INTERN = function()
 
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -8373,23 +8366,9 @@ const dom_log_transcript
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_log"
-    , logging : (state) => DOM_LOG_LOG = t_store_set_state("DOM_LOG_LOG",state)
-    , tagging : (state) => DOM_LOG_TAG = t_store_set_state("DOM_LOG_TAG",state)
+    , logging : (state) => DOM_LOG_LOG = t_store.setItem("DOM_LOG_LOG",state)
+    , tagging : (state) => DOM_LOG_TAG = t_store.setItem("DOM_LOG_TAG",state)
     , t_log_IMPORT
 
 
@@ -8926,8 +8905,9 @@ let dom_util_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 
+
 const DOM_UTIL_JS_ID        = "dom_util";
-const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (230706:19h:57)";
+const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (230707:19h:52)";
 
 let dom_util    = (function() {
 "use strict";
@@ -8945,7 +8925,7 @@ let t_log      = {}        ;
 
 
 
-
+let t_store    = {}        ;
 
 
 
@@ -8974,7 +8954,7 @@ let t_util_IMPORT  = function(log_this)
 
 
 
-
+    t_store   = dom_store  ;
 
 
 
@@ -8997,8 +8977,8 @@ let t_util_IMPORT  = function(log_this)
 
     util_INTERN();
 
-    DOM_UTIL_LOG = DOM_UTIL_LOG || localStorage_getItem("DOM_UTIL_LOG");
-    DOM_UTIL_TAG = DOM_UTIL_TAG || localStorage_getItem("DOM_UTIL_TAG");
+    DOM_UTIL_LOG = DOM_UTIL_LOG || dom_store.getItem("DOM_UTIL_LOG");
+    DOM_UTIL_TAG = DOM_UTIL_TAG || dom_store.getItem("DOM_UTIL_TAG");
 
 
 if(log_this) log("%c 07 util", lbH+lf7);
@@ -9044,13 +9024,6 @@ let   util_INTERN = function()
     }
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -12998,25 +12971,10 @@ let log_el_methodNames = function(_obj,_filter_str)
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(    state != undefined)
-    {
-        if(state) localStorage_setItem(label, "true");
-        else      localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return    localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_util"
-    , logging : (state) => DOM_UTIL_LOG = t_store_set_state("DOM_UTIL_LOG", state)
-    , tagging : (state) => DOM_UTIL_TAG = t_store_set_state("DOM_UTIL_TAG", state)
+    , logging : (state) => DOM_UTIL_LOG = t_store.setItem("DOM_UTIL_LOG", state)
+    , tagging : (state) => DOM_UTIL_TAG = t_store.setItem("DOM_UTIL_TAG", state)
     , t_util_IMPORT
-    , t_util_set_state : t_store_set_state
 
 
 
@@ -13329,8 +13287,9 @@ let dom_i18n_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 
+
 const DOM_I18N_JS_ID        = "dom_i18n_js";
-const DOM_I18N_JS_TAG       = DOM_I18N_JS_ID  +" (230706:19h:57)";
+const DOM_I18N_JS_TAG       = DOM_I18N_JS_ID  +" (230707:15h:02)";
 
 let dom_i18n    = (function() {
 "use strict";
@@ -13353,7 +13312,7 @@ let t_log      = {}        ;
 let t_util     = {}        ;
 
 
-
+let t_store    = {}        ;
 
 
 
@@ -13382,7 +13341,7 @@ let t_i18n_IMPORT  = function(log_this)
     t_util    = dom_util   ;
 
 
-
+    t_store   = dom_store  ;
 
 
 
@@ -13405,8 +13364,8 @@ let t_i18n_IMPORT  = function(log_this)
 
     util_INTERN();
 
-    DOM_I18N_LOG = DOM_I18N_LOG || localStorage_getItem("DOM_I18N_LOG");
-    DOM_I18N_TAG = DOM_I18N_TAG || localStorage_getItem("DOM_I18N_TAG");
+    DOM_I18N_LOG = DOM_I18N_LOG || dom_store.getItem("DOM_I18N_LOG");
+    DOM_I18N_TAG = DOM_I18N_TAG || dom_store.getItem("DOM_I18N_TAG");
 
 
 if(log_this) log("%c 07 util", lbH+lf7);
@@ -13442,13 +13401,6 @@ let   util_INTERN = function()
 
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -13844,23 +13796,9 @@ if(log_this) {
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_i18n"
-    , logging : (state) => DOM_I18N_LOG = t_store_set_state("DOM_I18N_LOG",state)
-    , tagging : (state) => DOM_I18N_TAG = t_store_set_state("DOM_I18N_TAG",state)
+    , logging : (state) => DOM_I18N_LOG = t_store.setItem("DOM_I18N_LOG",state)
+    , tagging : (state) => DOM_I18N_TAG = t_store.setItem("DOM_I18N_TAG",state)
     , t_i18n_IMPORT
 
 
@@ -14022,7 +13960,7 @@ let dom_prop_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_PROP_JS_ID        = "dom_prop_js";
-const DOM_PROP_JS_TAG       = DOM_PROP_JS_ID    +" (230706:20h:45)";
+const DOM_PROP_JS_TAG       = DOM_PROP_JS_ID    +" (230707:15h:06)";
 
 
 let dom_prop    = (function() {
@@ -14041,7 +13979,7 @@ let t_log      = {}        ;
 let t_util     = {}        ;
 
 
-
+let t_store    = {}        ;
 
 
 
@@ -14070,7 +14008,7 @@ let t_prop_IMPORT  = function(log_this)
     t_util    = dom_util   ;
 
 
-
+    t_store   = dom_store  ;
 
 
 
@@ -14093,8 +14031,8 @@ let t_prop_IMPORT  = function(log_this)
 
     prop_INTERN();
 
-    DOM_PROP_LOG = DOM_PROP_LOG || localStorage_getItem("DOM_PROP_LOG");
-    DOM_PROP_TAG = DOM_PROP_TAG || localStorage_getItem("DOM_PROP_TAG");
+    DOM_PROP_LOG = DOM_PROP_LOG || dom_store.getItem("DOM_PROP_LOG");
+    DOM_PROP_TAG = DOM_PROP_TAG || dom_store.getItem("DOM_PROP_TAG");
 
 
 if(log_this) log("%c 08 prop", lbH+lf8);
@@ -14140,13 +14078,6 @@ let   prop_INTERN = function()
 
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -14458,23 +14389,9 @@ if( log_this) prop.log(caller);
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_prop"
-    , logging : (state) => DOM_PROP_LOG = t_store_set_state("DOM_PROP_LOG",state)
-    , tagging : (state) => DOM_PROP_TAG = t_store_set_state("DOM_PROP_TAG",state)
+    , logging : (state) => DOM_PROP_LOG = t_store.setItem("DOM_PROP_LOG",state)
+    , tagging : (state) => DOM_PROP_TAG = t_store.setItem("DOM_PROP_TAG",state)
     , t_prop_IMPORT
 
     , init          : prop_init
@@ -14523,7 +14440,7 @@ let dom_store_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_STORE_JS_ID       = "dom_store_js";
-const DOM_STORE_JS_TAG      = DOM_STORE_JS_ID   +" (230706:19h:47)";
+const DOM_STORE_JS_TAG      = DOM_STORE_JS_ID   +" (230707:22h:16)";
 
 let dom_store   = (function() {
 "use strict";
@@ -14541,7 +14458,7 @@ let t_log      = {}        ;
 let t_util     = {}        ;
 
 let t_prop     = {}        ;
-
+let t_store    = {}        ;
 
 
 
@@ -14570,7 +14487,7 @@ let t_store_IMPORT  = function(log_this,import_num)
     t_util    = dom_util   ;
 
     t_prop    = dom_prop   ;
-
+    t_store   = dom_store  ;
 
 
 
@@ -14645,11 +14562,13 @@ let   store_INTERN = function()
 
 
 
+
+
+
+
 let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
 let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
 let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
-
 
 
 
@@ -14691,16 +14610,16 @@ let log_this = DOM_STORE_LOG || LOG_MAP.T0_STORE;
 
 
     else if( state ) {
-        if(log_this) t_store_key_log("STORING  STATE",      key, state);
+if(log_this) t_store_key_log("STORING  STATE",      key, state);
 
-        store_setItem   (                           key, state);
+        store_site_or_page_setItem   (              key, state);
     }
 
 
     else if( v ) {
 if(log_this) t_store_key_log("REMOVING STATE",      key);
 
-        store_removeItem(                           key);
+        store_site_or_page_removeItem(              key);
     }
 
     return !!state;
@@ -14725,28 +14644,27 @@ let log_this = DOM_STORE_LOG || LOG_MAP.T0_STORE;
     else if(value) {
 if(log_this) t_store_key_log("STORING   VALUE", key, value);
 
-        store_setItem(key , value);
+        store_site_or_page_setItem(key , value);
     }
 
 
     else if(v) {
 if(log_this) t_store_key_log("REMOVING  VALUE", key);
 
-        store_removeItem(key);
+        store_site_or_page_removeItem(key);
     }
 
     return value;
 };
 
 
-let store_setItem = function(key,value)
+let store_site_or_page_setItem = function(key,value)
 {
-
-    localStorage        .setItem(    store_get_site_or_page_pfx_for_key(key)+"."+key, value);
+    localStorage_setItem( store_get_site_or_page_pfx_for_key(key)+"."+key, value);
 };
 
 
-let store_removeItem = function(key)
+let store_site_or_page_removeItem = function(key)
 {
     return  localStorage_delItem( store_get_site_or_page_pfx_for_key(key)+"."+key       );
 };
@@ -14806,9 +14724,9 @@ let t_store_has_some_page_keys = function()
     let site_pfx = t_store_get_site_pfx();
 
     try {
-        for(let i=localStorage.length-1; i>=0; --i)
+        for(let   i = localStorage.length-1; i>=0; --i)
         {
-            let key      = localStorage.key(i);
+            let key = localStorage.key(i);
             if(   !key.startsWith( site_pfx        )
                   && !key.endsWith  ( "window_scrollY")
               )
@@ -14830,15 +14748,15 @@ let t_store_log_site_and_page = function()
     let page_pfx = t_store_get_page_pfx();
 
     try {
-        for(let i=localStorage.length-1; i>=0; --i)
+        for(let      i = localStorage.length-1; i>=0; --i)
         {
             let    key = localStorage.key(i);
             if(   !key.includes( site_pfx )
-                  && !key.includes( page_pfx )
+               && !key.includes( page_pfx )
               )
                 continue;
 
-            let       val = localStorage[key];
+            let    val = localStorage[key];
 
             let { filter_in  ,  filter_out } = store_FILTER(key,val);
             if(   filter_in || !filter_out)
@@ -14921,7 +14839,7 @@ let log_this = DOM_STORE_TAG || DOM_STORE_LOG || LOG_MAP.T0_STORE;
 
     let page_items_keys_to_remove_array = [];
     try {
-        for(let i=localStorage.length-1; i>=0; --i)
+        for(let i = localStorage.length-1; i>=0; --i)
         {
             let k = localStorage.key(i);
             if( t_store_is_a_shared_item(site_pfx,page_pfx,i+1,k,log_this) )
@@ -14994,9 +14912,9 @@ let log_this = DOM_STORE_LOG || LOG_MAP.T0_STORE;
 
     let site_items_keys_to_remove_array = [];
     try {
-        for(let i=localStorage.length-1; i>=0; --i)
+        for(let i = localStorage.length-1; i>=0; --i)
         {
-            let k      = localStorage.key(      i);
+            let k = localStorage.key(i);
             if( k.startsWith( site_pfx ) )
             {
 
@@ -15023,7 +14941,6 @@ if(log_this) log((i+1)+"%c removing %c"+k
                  ,      lbL+lf2    ,lbR+lf3);
 
             localStorage_delItem(k);
-
             removed_keys += (i+1)+" - "+store_key_tail(k)+LF;
         }
         _notify_info(  (  msg
@@ -15226,11 +15143,16 @@ let store_key_tail = function(k)
 
 
 return { name : "dom_store"
-    , logging : (state) => DOM_STORE_LOG = t_store_set_state("DOM_STORE_LOG",state)
-    , tagging : (state) => DOM_STORE_TAG = t_store_set_state("DOM_STORE_TAG",state)
+    , logging : (state) => DOM_STORE_LOG = t_store.setItem("DOM_STORE_LOG",state)
+    , tagging : (state) => DOM_STORE_TAG = t_store.setItem("DOM_STORE_TAG",state)
     , t_store_IMPORT
 
     , SITE_URL_TEMPLATE
+
+
+    , setItem : localStorage_setItem
+    , getItem : localStorage_getItem
+    , delItem : localStorage_delItem
 
 
     , t_store_set_state
@@ -15288,7 +15210,7 @@ let dom_fly_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_FLY_JS_ID         = "dom_fly_js";
-const DOM_FLY_JS_TAG        = DOM_FLY_JS_ID     +" (230706:20h:42)";
+const DOM_FLY_JS_TAG        = DOM_FLY_JS_ID     +" (230707:14h:33)";
 let dom_fly     = (function() {
 "use strict";
 
@@ -15437,13 +15359,6 @@ let   fly_DEPEND = function()
         };
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -17185,23 +17100,9 @@ if(DOM_FLY_LOG) t_log.log("fly_tooltip_category_className_array: adding %c["+cat
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_fly"
-    , logging : (state) => DOM_FLY_LOG = t_store_set_state("DOM_FLY_LOG",state)
-    , tagging : (state) => DOM_FLY_TAG = t_store_set_state("DOM_FLY_TAG",state)
+    , logging : (state) => DOM_FLY_LOG = t_store.setItem("DOM_FLY_LOG",state)
+    , tagging : (state) => DOM_FLY_TAG = t_store.setItem("DOM_FLY_TAG",state)
     , t_fly_IMPORT
 
 
@@ -17296,7 +17197,7 @@ let dom_wording_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_WORDING_JS_ID     = 'dom_wording_js';
-const DOM_WORDING_JS_TAG    = DOM_WORDING_JS_ID +' (230706:20h:47)';
+const DOM_WORDING_JS_TAG    = DOM_WORDING_JS_ID +' (230707:16h:46)';
 
 let dom_wording = (function() {
 "use strict";
@@ -17314,7 +17215,7 @@ let t_log      = {}        ;
 let t_util     = {}        ;
 let t_i18n     = {}        ;
 
-
+let t_store    = {}        ;
 
 
 
@@ -17343,7 +17244,7 @@ let t_wording_IMPORT  = function(log_this)
     t_util    = dom_util   ;
     t_i18n    = dom_i18n   ;
 
-
+    t_store   = dom_store  ;
 
 
 
@@ -17403,13 +17304,6 @@ let   wording_INTERN = function()
     log_key_val_group   = t_log.log_key_val_group;
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -17692,23 +17586,9 @@ if( log_this)
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_wording"
-    , logging : (state) => DOM_WORDING_LOG = t_store_set_state("DOM_WORDING_LOG",state)
-    , tagging : (state) => DOM_WORDING_TAG = t_store_set_state("DOM_WORDING_TAG",state)
+    , logging : (state) => DOM_WORDING_LOG = t_store.setItem("DOM_WORDING_LOG",state)
+    , tagging : (state) => DOM_WORDING_TAG = t_store.setItem("DOM_WORDING_TAG",state)
     , t_wording_IMPORT
 
     , t_wording_cycle
@@ -17759,7 +17639,7 @@ let dom_select_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SELECT_JS_ID      = "dom_select_js";
-const DOM_SELECT_JS_TAG     = DOM_SELECT_JS_ID  +" (230706:20h:43)";
+const DOM_SELECT_JS_TAG     = DOM_SELECT_JS_ID  +" (230707:19h:35)";
 
 let dom_select  = (function() {
 "use strict";
@@ -17873,13 +17753,6 @@ let   select_INTERN = function()
 
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -20896,23 +20769,9 @@ let log_tools_filter_slot = function(slot)
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_select"
-    , logging : (state) => DOM_SELECT_LOG = t_store_set_state("DOM_SELECT_LOG",state)
-    , tagging : (state) => DOM_SELECT_TAG = t_store_set_state("DOM_SELECT_TAG",state)
+    , logging : (state) => DOM_SELECT_LOG = t_store.setItem("DOM_SELECT_LOG",state)
+    , tagging : (state) => DOM_SELECT_TAG = t_store.setItem("DOM_SELECT_TAG",state)
     , t_select_IMPORT
 
 
@@ -21025,7 +20884,7 @@ let dom_slot_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SLOT_JS_ID        = "dom_slot_js";
-const DOM_SLOT_JS_TAG       = DOM_SLOT_JS_ID  +" (230706:20h:43)";
+const DOM_SLOT_JS_TAG       = DOM_SLOT_JS_ID  +" (230707:22h:13)";
 
 let dom_slot    = (function() {
 "use strict";
@@ -21043,7 +20902,7 @@ let t_log      = {}        ;
 
 
 let t_prop     = {}        ;
-
+let t_store    = {}        ;
 
 
 
@@ -21072,7 +20931,7 @@ let t_slot_IMPORT  = function(log_this)
 
 
     t_prop    = dom_prop   ;
-
+    t_store   = dom_store  ;
 
 
 
@@ -21140,13 +20999,6 @@ let   slot_INTERN = function()
 
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -21351,23 +21203,9 @@ let get_next_populated_slot = function(slot)
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_slot"
-    , logging : (state) => DOM_SLOT_LOG = t_store_set_state("DOM_SLOT_LOG",state)
-    , tagging : (state) => DOM_SLOT_TAG = t_store_set_state("DOM_SLOT_TAG",state)
+    , logging : (state) => DOM_SLOT_LOG = t_store.setItem("DOM_SLOT_LOG",state)
+    , tagging : (state) => DOM_SLOT_TAG = t_store.setItem("DOM_SLOT_TAG",state)
     , t_slot_IMPORT
 
 
@@ -21422,7 +21260,7 @@ let dom_hide_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_HIDE_JS_ID        = "dom_hide_js";
-const DOM_HIDE_JS_TAG       = DOM_HIDE_JS_ID  +" (230706:20h:44)";
+const DOM_HIDE_JS_TAG       = DOM_HIDE_JS_ID  +" (230707:14h:57)";
 
 let dom_hide    = (function() {
 "use strict";
@@ -21534,13 +21372,6 @@ let   hide_INTERN = function()
 
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -22954,23 +22785,9 @@ if( log_this) log(caller);
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
 return { name    : "dom_hide"
-    ,    logging : (state) => DOM_HIDE_LOG = t_store_set_state("DOM_HIDE_LOG",state)
-    ,    tagging : (state) => DOM_HIDE_TAG = t_store_set_state("DOM_HIDE_TAG",state)
+    ,    logging : (state) => DOM_HIDE_LOG = t_store.setItem("DOM_HIDE_LOG",state)
+    ,    tagging : (state) => DOM_HIDE_TAG = t_store.setItem("DOM_HIDE_TAG",state)
     ,    t_hide_IMPORT
 
 
@@ -23053,7 +22870,7 @@ let dom_view_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_VIEW_JS_ID        = "dom_view_js";
-const DOM_VIEW_JS_TAG       = DOM_VIEW_JS_ID  +" (230706:20h:43)";
+const DOM_VIEW_JS_TAG       = DOM_VIEW_JS_ID  +" (230707:16h:45)";
 
 let dom_view    = (function() {
 "use strict";
@@ -23071,7 +22888,7 @@ let t_log      = {}        ;
 let t_util     = {}        ;
 let t_i18n     = {}        ;
 let t_prop     = {}        ;
-
+let t_store    = {}        ;
 
 
 
@@ -23100,7 +22917,7 @@ let t_view_IMPORT  = function(log_this)
     t_util    = dom_util   ;
     t_i18n    = dom_i18n   ;
     t_prop    = dom_prop   ;
-
+    t_store   = dom_store  ;
 
 
 
@@ -23172,13 +22989,6 @@ let   view_INTERN = function()
     prop                = t_prop;
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -23885,23 +23695,9 @@ let t_view7_clr_panel_capped_from_xy = function(panel)
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_view"
-    , logging : (state) => DOM_VIEW_LOG = t_store_set_state("DOM_VIEW_LOG",state)
-    , tagging : (state) => DOM_VIEW_TAG = t_store_set_state("DOM_VIEW_TAG",state)
+    , logging : (state) => DOM_VIEW_LOG = t_store.setItem("DOM_VIEW_LOG",state)
+    , tagging : (state) => DOM_VIEW_TAG = t_store.setItem("DOM_VIEW_TAG",state)
     , t_view_IMPORT
 
     , t_view1_is_el_in_viewport
@@ -23956,7 +23752,7 @@ let dom_sticky_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_STICKY_JS_ID      = "dom_sticky_js";
-const DOM_STICKY_JS_TAG     = DOM_STICKY_JS_ID  +" (230706:20h:41)";
+const DOM_STICKY_JS_TAG     = DOM_STICKY_JS_ID  +" (230707:14h:35)";
 
 let dom_sticky  = (function() {
 "use strict";
@@ -24347,13 +24143,6 @@ let   sticky_DEPEND = function()
 
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -29327,23 +29116,9 @@ if( log_this) log("%c msg_pos_anchor_lines: %c"+t_data.LF+strip_HTML(msg_pos_anc
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_sticky"
-    , logging : function(state) { return DOM_STICKY_LOG = t_store_set_state("DOM_STICKY_LOG",state); }
-    , tagging : function(state) { return DOM_STICKY_TAG = t_store_set_state("DOM_STICKY_TAG",state); }
+    , logging : function(state) { return DOM_STICKY_LOG = t_store.setItem("DOM_STICKY_LOG",state); }
+    , tagging : function(state) { return DOM_STICKY_TAG = t_store.setItem("DOM_STICKY_TAG",state); }
     , t_sticky_IMPORT
 
 
@@ -29505,7 +29280,7 @@ let dom_seek_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SEEK_JS_ID        = "dom_seek_js";
-const DOM_SEEK_JS_TAG       = DOM_SEEK_JS_ID    +" (230706:20h:42)";
+const DOM_SEEK_JS_TAG       = DOM_SEEK_JS_ID    +" (230707:20h:06)";
 
 let dom_seek    = (function() {
 "use strict";
@@ -29524,7 +29299,7 @@ let t_util     = {}        ;
 
 let t_i18n     = {}        ;
 let t_prop     = {}        ;
-
+let t_store    = {}        ;
 
 
 
@@ -29554,7 +29329,7 @@ let t_seek_IMPORT   = function(log_this)
 
     t_i18n    = dom_i18n   ;
     t_prop    = dom_prop   ;
-
+    t_store   = dom_store  ;
 
 
 
@@ -29613,6 +29388,14 @@ let   seek_INTERN = function()
     log_key_val_group   = t_log.log_key_val_group;
 
 
+    if(typeof dom_store != "undefined")
+    {
+        t_store = dom_store;
+
+if(DOM_SEEK_LOG || DOM_SEEK_TAG) logBIG(DOM_SEEK_JS_ID+": ["+dom_store.name+"]"      , 4);
+    }
+
+
     seek_DEPEND();
 };
 
@@ -29645,13 +29428,6 @@ let   seek_DEPEND = function()
         ];
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -32122,23 +31898,9 @@ let t_seeker_from_to_slot_num = function(from_slot, from_num, to_slot, to_num)
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_seek"
-    , logging : (state) => DOM_SEEK_LOG = t_store_set_state("DOM_SEEK_LOG",state)
-    , tagging : (state) => DOM_SEEK_TAG = t_store_set_state("DOM_SEEK_TAG",state)
+    , logging : (state) => DOM_SEEK_LOG = t_store.setItem("DOM_SEEK_LOG",state)
+    , tagging : (state) => DOM_SEEK_TAG = t_store.setItem("DOM_SEEK_TAG",state)
     , t_seek_IMPORT
 
     ,    CSS_SEEK0_ONDOC
@@ -32258,7 +32020,7 @@ let dom_share_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_SHARE_JS_ID       = "dom_share_js";
-const DOM_SHARE_JS_TAG      = DOM_SHARE_JS_ID   +" (230706:20h:42)";
+const DOM_SHARE_JS_TAG      = DOM_SHARE_JS_ID   +" (230707:22h:12)";
 
 let dom_share   = (function() {
 "use strict";
@@ -32386,13 +32148,6 @@ let   share_INTERN = function()
     log_key_val_group   = t_log.log_key_val_group;
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -32546,7 +32301,7 @@ if(log_this || DOM_SHARE_TAG) {
 
     let export_key_val_array = [];
     let tooltip_keys         = [];
-    for(let i=localStorage.length-1; i>=0; --i)
+    for(let   i = localStorage.length-1; i>=0; --i)
     {
         let key = localStorage.key(i);
         let val = localStorage[key];
@@ -33049,7 +32804,7 @@ let log_this = DOM_SHARE_LOG || LOG_MAP.T7_SHARE;
 if( log_this || DOM_SHARE_TAG) log("%c REMOVING CURRENT STORAGE"+(free_form_user_keywords ? " (FREE FORM USER KEYWORDS)":""), lbb+lbH+lf8);
 
     removed_items_key_array = [];
-    for(let i = localStorage.length-1; i >= 0; --i)
+    for(let   i = localStorage.length-1; i >= 0; --i)
     {
         let key = localStorage.key(i);
         let val = localStorage[key];
@@ -33097,7 +32852,7 @@ if( log_this) {
     }
 
     for(let i = 0; i < removed_items_key_array.length; ++i)
-        localStorage_delItem( removed_items_key_array[i] );
+        t_store.delItem( removed_items_key_array[i] );
 
 
 
@@ -33381,23 +33136,9 @@ if( log_this) log_key_val_group(caller, { data_hostname , data_page_pfx });
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_share"
-    , logging : (state) => DOM_SHARE_LOG = t_store_set_state("DOM_SHARE_LOG",state)
-    , tagging : (state) => DOM_SHARE_TAG = t_store_set_state("DOM_SHARE_TAG",state)
+    , logging : (state) => DOM_SHARE_LOG = t_store.setItem("DOM_SHARE_LOG",state)
+    , tagging : (state) => DOM_SHARE_TAG = t_store.setItem("DOM_SHARE_TAG",state)
     , t_share_IMPORT
 
     , t_share1_EXPORT
@@ -33444,7 +33185,7 @@ let dom_details_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_DETAILS_JS_ID        = "dom_details_js";
-const DOM_DETAILS_JS_TAG       = DOM_DETAILS_JS_ID  +" (230706:19h:56)";
+const DOM_DETAILS_JS_TAG       = DOM_DETAILS_JS_ID  +" (230707:20h:54)";
 
 let dom_details         = (function() {
 "use strict";
@@ -33455,11 +33196,22 @@ let   DOM_DETAILS_TAG   = false;
 
 
 
+
+
+let t_store    ;
+
+
+
 let t_details_IMPORT    = function(_log_this,import_num)
 {
 
-    DOM_DETAILS_LOG     = DOM_DETAILS_LOG   || localStorage_getItem("DOM_DETAILS_LOG");
-    DOM_DETAILS_TAG     = DOM_DETAILS_TAG   || localStorage_getItem("DOM_DETAILS_TAG");
+    if     (typeof      dom_store != "undefined" ) t_store = dom_store     ;
+    else console.warn("MISSING STUB FOR: [dom_store]");
+
+
+
+    DOM_DETAILS_LOG     = DOM_DETAILS_LOG   || t_store.getItem("DOM_DETAILS_LOG");
+    DOM_DETAILS_TAG     = DOM_DETAILS_TAG   || t_store.getItem("DOM_DETAILS_TAG");
 
 
     details_INTERN();
@@ -33492,13 +33244,6 @@ let is_el_or_child_of_parent_el;
 
 
 
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
-
-
-
 let   details_INTERN    = function()
 {
 
@@ -33506,17 +33251,12 @@ let caller = "details_INTERN";
 
 
 
-    let dom_log_js
-        = (typeof dom_log != "undefined")
-        ?         dom_log
-        :         dom_details_log;
-
-    if( dom_log_js )
+    if( dom_log )
     {
-        if(dom_log_js.LOG_BG_CSS) {
-            ({ lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX } = dom_log_js.LOG_BG_CSS);
-            ({ lf0, lf1, lf2, lf3, lf4, lf5, lf6, lf7, lf8, lf9, lfX } = dom_log_js.LOG_FG_CSS);
-            ({ lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb           } = dom_log_js.LOG_XX_CSS);
+        if(dom_log.LOG_BG_CSS) {
+            ({ lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX } = dom_log.LOG_BG_CSS);
+            ({ lf0, lf1, lf2, lf3, lf4, lf5, lf6, lf7, lf8, lf9, lfX } = dom_log.LOG_FG_CSS);
+            ({ lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb           } = dom_log.LOG_XX_CSS);
 
             ({  log
              ,  logBIG
@@ -33526,10 +33266,10 @@ let caller = "details_INTERN";
              ,  log_key_val
              ,  log_key_val_group
 
-            } = dom_log_js);
+            } = dom_log);
 
         }
-if(DOM_DETAILS_LOG || DOM_DETAILS_TAG) logBIG(caller+": ["+dom_log_js.name+"]" , 4);
+if(DOM_DETAILS_LOG || DOM_DETAILS_TAG) logBIG(caller+": ["+dom_log.name+"]" , 4);
     }
     else {
 
@@ -33537,12 +33277,7 @@ logBIG(caller+": [dom_log UNDEFINED]"   , 2);
     }
 
 
-    let dom_util_js
-        = (typeof dom_util != "undefined")
-        ?         dom_util
-        :         dom_details_util;
-
-    if( dom_util_js )
+    if( dom_util )
     {
         ({  add_el_class
          ,  del_el_class
@@ -33553,23 +33288,13 @@ logBIG(caller+": [dom_log UNDEFINED]"   , 2);
          ,  get_nodeXPath
          ,  get_tool
          ,  is_el_or_child_of_parent_el
-        } = dom_util_js);
+        } = dom_util);
 
-if(DOM_DETAILS_LOG || DOM_DETAILS_TAG) logBIG(caller+": ["+dom_util_js.name+"]"    , 4);
+if(DOM_DETAILS_LOG || DOM_DETAILS_TAG) logBIG(caller+": ["+dom_util.name+"]"    , 4);
     }
     else {
 
 logBIG(caller+": [dom_util UNDEFINED]"      , 2);
-    }
-
-
-    if(typeof dom_store != "undefined")
-    {
-        localStorage_getItem =          dom_store.t_store_getItem;
-        localStorage_setItem =          dom_store.t_store_set_value;
-        localStorage_delItem = (key) => dom_store.t_store_set_value(key,null);
-
-if(DOM_DETAILS_LOG || DOM_DETAILS_TAG) logBIG(caller+": ["+dom_store.name+"]"      , 4);
     }
 
 
@@ -33599,7 +33324,7 @@ if(log_this) logBIG(caller, 8);
 
     let        details_array = document.querySelectorAll("DETAILS");
     Array.from(details_array).forEach( (el) => {
-        let    open = el.id && localStorage_getItem(el.id+"_open");
+        let    open = el.id && t_store.getItem(el.id+"_open");
         el    .open = open;
 if(log_this && open) log("➔ "+el.id+(el.open ? " OPENED":" NOT OPENED"));
     });
@@ -33658,9 +33383,8 @@ if( log_this) log(details_radio_el ? ("...details_radio_el.checked=["+details_ra
 
 
     if(details_el.id) {
-
-        if(details_el.open) localStorage_setItem(details_el.id+"_open", "true");
-        else                localStorage_delItem(details_el.id+"_open"        );
+        if(details_el.open) t_store.setItem(details_el.id+"_open", "true");
+        else                t_store.delItem(details_el.id+"_open"        );
 
 
 
@@ -33762,8 +33486,8 @@ if(log_this) log("%c...details_parent: ["+(details_parent.id || details_parent.t
 
             if(details_sibling.id)
             {
-                if(details_sibling.open) localStorage_setItem(details_sibling.id+"_open", "true");
-                else                     localStorage_delItem(details_sibling.id+"_open"        );
+                if(details_sibling.open) t_store.setItem(details_sibling.id+"_open", "true");
+                else                     t_store.delItem(details_sibling.id+"_open"        );
 
             }
         }
@@ -33792,7 +33516,7 @@ if( log_this) logBIG(caller+"("+get_id_or_tag_and_className(parent_details)+") .
         if(child_details.id)
         {
             let key = child_details.id+"_open";
-            localStorage_delItem( key );
+            t_store.delItem( key );
         }
     });
 };
@@ -33838,8 +33562,8 @@ if(DOM_DETAILS_LOG) log("details_radio_toggle("+e.target.tagName+")");
 
 
 
-    if(state) localStorage_setItem(DETAILS_RADIO_ID, "true");
-    else      localStorage_delItem(DETAILS_RADIO_ID        );
+    if(state) t_store.setItem(DETAILS_RADIO_ID, "true");
+    else      t_store.delItem(DETAILS_RADIO_ID        );
 
 
 
@@ -33869,7 +33593,7 @@ if(DOM_DETAILS_LOG) log("details_radio_set_from_localStorage");
     if(!input) return;
 
 
-    let state = localStorage_getItem( DETAILS_RADIO_ID );
+    let state = t_store.getItem( DETAILS_RADIO_ID );
 
 
 
@@ -34099,23 +33823,9 @@ if(DOM_DETAILS_LOG) logBIG("restore_details_ontoggle_listener",6);
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(    state != undefined)
-    {
-        if(state) localStorage_setItem(label, "true");
-        else      localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return    localStorage_getItem   (label        );
-    }
-};
-
 return { name    : "dom_details"
-    ,    logging : (state) => DOM_DETAILS_LOG = t_store_set_state("DOM_DETAILS_LOG", state)
-    ,    tagging : (state) => DOM_DETAILS_TAG = t_store_set_state("DOM_DETAILS_TAG", state)
+    ,    logging : (state) => DOM_DETAILS_LOG = t_store.setItem("DOM_DETAILS_LOG", state)
+    ,    tagging : (state) => DOM_DETAILS_TAG = t_store.setItem("DOM_DETAILS_TAG", state)
     ,    t_details_IMPORT
 
 
@@ -34162,9 +33872,8 @@ let dom_wot_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 
-
 const DOM_WOT_JS_ID      = "dom_wot_js";
-const DOM_WOT_JS_TAG     = DOM_WOT_JS_ID  +" (230706:19h:57)";
+const DOM_WOT_JS_TAG     = DOM_WOT_JS_ID  +" (230707:20h:03)";
 
 let dom_wot             = (function() {
 "use strict";
@@ -34178,8 +33887,8 @@ let   DOM_WOT_TAG       = false;
 let t_wot_IMPORT        = function(_log_this,import_num)
 {
 
-    DOM_WOT_LOG         = DOM_WOT_LOG       || localStorage_getItem("DOM_WOT_LOG");
-    DOM_WOT_TAG         = DOM_WOT_TAG       || localStorage_getItem("DOM_WOT_TAG");
+    DOM_WOT_LOG         = DOM_WOT_LOG       || dom_store.getItem("DOM_WOT_LOG");
+    DOM_WOT_TAG         = DOM_WOT_TAG       || dom_store.getItem("DOM_WOT_TAG");
 
 
     wot_INTERN();
@@ -34204,6 +33913,10 @@ let log=console.log, logBIG=log, logXXX, log_caller, log_json_one_liner, log_key
 let console_dir=console.dir;
 
 
+let t_store;
+
+
+
 
 
 let add_el_class;
@@ -34222,13 +33935,6 @@ let mPadStart;
 
 
 let is_marked_to_hide;
-
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
 
 
 
@@ -34303,9 +34009,7 @@ logBIG(caller+": [dom_util UNDEFINED]"      , 2);
 
     if(typeof dom_store != "undefined")
     {
-        localStorage_getItem =          dom_store.t_store_getItem;
-        localStorage_setItem =          dom_store.t_store_set_value;
-        localStorage_delItem = (key) => dom_store.t_store_set_value(key,null);
+        t_store = dom_store;
 
 if(DOM_WOT_LOG || DOM_WOT_TAG) logBIG(caller+": ["+dom_store.name+"]"      , 4);
     }
@@ -34545,7 +34249,7 @@ let t_WOT_FOLD_EL = function(el)
 
 let get_lines_innerHTML = function(lines, line_num)
 {
-    let with_line_num = localStorage_getItem( LINES_WOT );
+    let with_line_num = t_store.getItem( LINES_WOT );
 
     let innerHTML = "";
     let    l = 0;
@@ -34668,7 +34372,7 @@ let get_lines_innerHTML = function(lines, line_num)
 
 let get_FOLD_EL_innerHTML = function(lines,line_num)
 {
-    let with_line_num     = localStorage_getItem( LINES_WOT );
+    let with_line_num     = t_store.getItem( LINES_WOT );
     let innerHTML         = "";
     let    l              = 0;
     while((l < lines.length))
@@ -34820,26 +34524,10 @@ if(        log_this
 
 
 
-
-let t_wot_set_state = function(label,state)
-{
-    if(    state != undefined)
-    {
-        if(state) localStorage_setItem(label, "true");
-        else      localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return    localStorage_getItem   (label        );
-    }
-};
-
-
 return { name    : "dom_wot"
-    ,    logging : (state) => DOM_WOT_LOG = dom_wot.t_wot_set_state("DOM_WOT_LOG", state)
-    ,    tagging : (state) => DOM_WOT_TAG = dom_wot.t_wot_set_state("DOM_WOT_TAG", state)
+    ,    logging : (state) => DOM_WOT_LOG = t_store.setItem("DOM_WOT_LOG", state)
+    ,    tagging : (state) => DOM_WOT_TAG = t_store.setItem("DOM_WOT_TAG", state)
     ,    t_wot_IMPORT
-    ,    t_wot_set_state
 
     ,    t_WOT_FOLD_EL
     ,    t_WOT_SPLIT
@@ -34888,8 +34576,9 @@ let dom_sentence_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 
+
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230706:19h:57)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230707:21h:45)";
 
 let dom_sentence            = (function() {
 "use strict";
@@ -34902,6 +34591,7 @@ let   DOM_SENTENCE_TAG      = false;
 
 
 
+let t_store    ;
 let t_util     ;
 let t_tools    ;
 
@@ -34910,19 +34600,22 @@ let t_tools    ;
 let t_sentence_IMPORT  = function(_log_this,import_num)
 {
 
-    DOM_SENTENCE_LOG = DOM_SENTENCE_LOG || localStorage_getItem("DOM_SENTENCE_LOG");
-    DOM_SENTENCE_TAG = DOM_SENTENCE_TAG || localStorage_getItem("DOM_SENTENCE_TAG");
+    if     (typeof      dom_store != "undefined" ) t_store = dom_store     ;
+    else console.warn("MISSING STUB FOR: [dom_store]");
 
 
 
-    if     (typeof dom_util           != "undefined") t_util  = dom_util         ;
-    else if(typeof dom_sentence_util  != "undefined") t_util  = dom_sentence_util;
-    else console.warn("MISSING STUB FOR: [dom_util]");
+    DOM_SENTENCE_LOG = DOM_SENTENCE_LOG || t_store.getItem("DOM_SENTENCE_LOG");
+    DOM_SENTENCE_TAG = DOM_SENTENCE_TAG || t_store.getItem("DOM_SENTENCE_TAG");
 
 
 
-    if     (typeof dom_tools          != "undefined") t_tools = dom_tools         ;
-    else if(typeof dom_sentence_event != "undefined") t_tools = dom_sentence_event;
+    if     (typeof      dom_util != "undefined" ) t_util  =      dom_util;
+    else console.warn("MISSING STUB FOR: [dom_util]" );
+
+
+
+    if     (typeof      dom_tools != "undefined" ) t_tools =      dom_tools;
     else console.warn("MISSING STUB FOR: [dom_tools]");
 
 
@@ -34978,13 +34671,6 @@ let   sentence_INTERN   = function()
     }
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -35254,7 +34940,7 @@ if( log_this && e) log("%c type=["+e.type+"] e.target.id=["+e.target.id+"]", lbH
 
 
     if((typeof dom_prop) != "undefined") theme_dark = dom_prop.get        ("theme_dark");
-    else                                 theme_dark = localStorage_getItem("theme_dark");
+    else                                 theme_dark = t_store.getItem("theme_dark");
 
 
 
@@ -36057,7 +35743,7 @@ check_tool_event_timer = setTimeout(check_tool_event, CHECK_TOOL_EVENT_DELAY, e)
 
 let t_SENTENCE_set_theme_dark = function(state)
 {
-    localStorage_setItem("theme_dark", state);
+    t_store.setItem("theme_dark", state);
 };
 
 
@@ -36107,7 +35793,7 @@ if(!e) return false;
         theme_dark = !theme_dark;
 
 
-        localStorage_setItem("theme_dark", theme_dark);
+        t_store.setItem("theme_dark", theme_dark);
 
 
         if((typeof dom_prop) != "undefined") dom_prop.set("theme_dark", theme_dark);
@@ -36205,23 +35891,9 @@ let get_parent_chain = function(el)
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(    state != undefined)
-    {
-        if(state) localStorage_setItem(label, "true");
-        else      localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return    localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_sentence"
-    ,    logging : (state) => DOM_SENTENCE_LOG = t_store_set_state("DOM_SENTENCE_LOG",state)
-    ,    tagging : (state) => DOM_SENTENCE_TAG = t_store_set_state("DOM_SENTENCE_TAG",state)
+    ,    logging : (state) => DOM_SENTENCE_LOG = t_store.setItem("DOM_SENTENCE_LOG",state)
+    ,    tagging : (state) => DOM_SENTENCE_TAG = t_store.setItem("DOM_SENTENCE_TAG",state)
     ,    t_sentence_IMPORT
     ,    CSS_SENTENCE_CONTAINER
 
@@ -36283,7 +35955,7 @@ let dom_grid_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_GRID_JS_ID        = "dom_grid_js";
-const DOM_GRID_JS_TAG       = DOM_GRID_JS_ID    +" (230706:20h:47)";
+const DOM_GRID_JS_TAG       = DOM_GRID_JS_ID    +" (230707:14h:53)";
 
 let dom_grid    = (function() {
 "use strict";
@@ -36301,7 +35973,7 @@ let t_log      = {}        ;
 let t_util     = {}        ;
 
 
-
+let t_store    = {}        ;
 
 
 
@@ -36330,7 +36002,7 @@ let t_grid_IMPORT  = function(log_this)
     t_util    = dom_util   ;
 
 
-
+    t_store   = dom_store  ;
 
 
 
@@ -36402,13 +36074,6 @@ let   grid_INTERN = function()
 
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -37239,23 +36904,9 @@ let grid_getElement = function(id)
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_grid"
-    , logging : (state) => DOM_GRID_LOG = t_store_set_state("DOM_GRID_LOG",state)
-    , tagging : (state) => DOM_GRID_TAG = t_store_set_state("DOM_GRID_TAG",state)
+    , logging : (state) => DOM_GRID_LOG = t_store.setItem("DOM_GRID_LOG",state)
+    , tagging : (state) => DOM_GRID_TAG = t_store.setItem("DOM_GRID_TAG",state)
     ,    t_grid_IMPORT
 
     ,    t_grid_IS_ON_GRID
@@ -37313,7 +36964,7 @@ let dom_gutter_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_GUTTER_JS_ID      = "dom_gutter_js";
-const DOM_GUTTER_JS_TAG     = DOM_GUTTER_JS_ID  +" (230706:20h:47)";
+const DOM_GUTTER_JS_TAG     = DOM_GUTTER_JS_ID  +" (230707:14h:56)";
 
 let dom_gutter  = (function() {
 "use strict";
@@ -37331,7 +36982,7 @@ let t_log      = {}        ;
 let t_util     = {}        ;
 
 
-
+let t_store    = {}        ;
 
 
 
@@ -37360,7 +37011,7 @@ let t_gutter_IMPORT  = function(log_this)
     t_util    = dom_util   ;
 
 
-
+    t_store   = dom_store  ;
 
 
 
@@ -37419,13 +37070,6 @@ let   gutter_INTERN = function()
     log_key_val_group   = t_log.log_key_val_group;
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -37706,23 +37350,9 @@ let log_gutter = function(_caller, lfx=lf7)
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_gutter"
-    , logging : (state) => DOM_GUTTER_LOG = t_store_set_state("DOM_GUTTER_LOG",state)
-    , tagging : (state) => DOM_GUTTER_TAG = t_store_set_state("DOM_GUTTER_TAG",state)
+    , logging : (state) => DOM_GUTTER_LOG = t_store.setItem("DOM_GUTTER_LOG",state)
+    , tagging : (state) => DOM_GUTTER_TAG = t_store.setItem("DOM_GUTTER_TAG",state)
     , t_gutter_IMPORT
 
 
@@ -37787,7 +37417,7 @@ let dom_ipc_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_IPC_JS_ID         = "dom_ipc_js";
-const DOM_IPC_JS_TAG        = DOM_IPC_JS_ID     +" (230706:20h:48)";
+const DOM_IPC_JS_TAG        = DOM_IPC_JS_ID     +" (230707:15h:03)";
 
 let dom_ipc     = (function() {
 "use strict";
@@ -37804,7 +37434,7 @@ let t_log      = {}        ;
 
 
 
-
+let t_store    = {}        ;
 
 
 
@@ -37833,7 +37463,7 @@ let t_ipc_IMPORT  = function(log_this)
 
 
 
-
+    t_store   = dom_store  ;
 
 
 
@@ -37895,13 +37525,6 @@ let   ipc_INTERN = function()
     log_key_val_group   = t_log.log_key_val_group;
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -38194,23 +37817,9 @@ let t_wait_for_startup_message_from_extension = function(_caller)
 
 
 
-
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
 return { name : "dom_ipc"
-    , logging : function(state) { return DOM_IPC_LOG = t_store_set_state("DOM_IPC_LOG",state); }
-    , tagging : function(state) { return DOM_IPC_TAG = t_store_set_state("DOM_IPC_TAG",state); }
+    , logging : function(state) { return DOM_IPC_LOG = t_store.setItem("DOM_IPC_LOG",state); }
+    , tagging : function(state) { return DOM_IPC_TAG = t_store.setItem("DOM_IPC_TAG",state); }
     , t_ipc_IMPORT
     , t_ipc_PARSE
     , t_ipc_add_MutationObserver
@@ -38303,7 +37912,7 @@ let dom_tools_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_TOOLS_JS_ID       = "dom_tools_js" ;
-const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (230706:21h:58)";
+const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (230707:21h:10)";
 
 let dom_tools   = (function() {
 "use strict";
@@ -38574,7 +38183,7 @@ let   tools_DEPEND = function()
 
 let   load_IMPORT = function()
 {
-let log_this; try { log_this = localStorage_getItem("DOM_TOOLS_TAG"); } catch(ex) {}
+let log_this; try { log_this = t_store.localStorage_getItem("DOM_TOOLS_TAG"); } catch(ex) {}
 
 let i =5;
 
@@ -38638,13 +38247,6 @@ let i =5;
 
 
 };
-
-
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 
 
 
@@ -60832,7 +60434,7 @@ let show_drag_cursor = function()
     if( drag_cursor_div.style.display != "block")
     {
 
-        if(typeof dom_sentence_event != "undefined")
+        if(typeof dom_tools != "undefined")
         {
             drag_cursor_div.classList.add( CSS_DRAG_CURSOR_DIV_ONLOAD );
             drag_cursor_div.style.left    = (window.innerWidth  / 2)+"px";
@@ -60887,24 +60489,10 @@ return { name : "drag_cursor"
 
 
 
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-
-
 
 return { name : "dom_tools"
-    , logging : function(state) { return DOM_TOOLS_LOG = t_store_set_state("DOM_TOOLS_LOG",state); }
-    , tagging : function(state) { return DOM_TOOLS_TAG = t_store_set_state("DOM_TOOLS_TAG",state); }
+    , logging : function(state) { return DOM_TOOLS_LOG = t_store.setItem("DOM_TOOLS_LOG",state); }
+    , tagging : function(state) { return DOM_TOOLS_TAG = t_store.setItem("DOM_TOOLS_TAG",state); }
     , t_tools_IMPORT
 
 
@@ -61844,9 +61432,9 @@ if( calling_IPC_check_extension_signature )
 :e  $BROWSEEXT/SplitterExtension/javascript/background.js
 :e  $BROWSEEXT/SplitterExtension/javascript/content.js
 :e             $RPROFILES/script/dom_sentence.js
-:e             $RPROFILES/script/stub/dom_sentence_event.js
+:e             $RPROFILES/script/stub/dom_tools.js
 :e             $RPROFILES/script/stub/dom_scroll.js
-:e             $RPROFILES/script/stub/dom_sentence_util.js
+:e             $RPROFILES/script/stub/dom_util.js
 :e             $RPROFILES/script/stub/dom_log.js
 :e             $RPROFILES/stylesheet/dom_host.css
 

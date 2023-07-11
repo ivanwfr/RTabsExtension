@@ -29,7 +29,7 @@
 /* eslint-enable  no-unused-vars */
 
 const    S_SCRIPT_ID         = "service_worker_js";
-const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (230704:16h:33)";
+const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (230711:17h:33)";
 /*}}}*/
 
 /* ┌─────────────────────────────┐
@@ -283,7 +283,7 @@ let putInCache = async function(request, response)
 /* │ INIT                                                                   │ */
 /* └────────────────────────────────────────────────────────────────────────┘ */
 /*_ init {{{*/
-const regexp_day = new RegExp(".*(\\d\\d):.*", "");
+const regexp_day = new RegExp(".*(\\d):.*", "");
 let init = function()
 {
 /* eslint-disable no-unused-vars */

@@ -6,7 +6,6 @@
 
 /* globals console                      */
 /* globals document, Node, NodeFilter   */
-/* globals localStorage                 */
 
 /* globals dom_log                      */
 /* globals dom_util                     */
@@ -16,7 +15,7 @@
 /* exported dom_wot, DOM_WOT_JS_TAG */
 
 const DOM_WOT_JS_ID      = "dom_wot_js";
-const DOM_WOT_JS_TAG     = DOM_WOT_JS_ID  +" (230706:19h:57)";
+const DOM_WOT_JS_TAG     = DOM_WOT_JS_ID  +" (230707:20h:03)";
 /*}}}*/
 let dom_wot             = (function() {
 "use strict";
@@ -30,8 +29,8 @@ let   DOM_WOT_TAG       = false;
 let t_wot_IMPORT        = function(_log_this,import_num)
 {
     /* MODULE LOGGING TAGGING {{{*/
-    DOM_WOT_LOG         = DOM_WOT_LOG       || localStorage_getItem("DOM_WOT_LOG");
-    DOM_WOT_TAG         = DOM_WOT_TAG       || localStorage_getItem("DOM_WOT_TAG");
+    DOM_WOT_LOG         = DOM_WOT_LOG       || dom_store.getItem("DOM_WOT_LOG");
+    DOM_WOT_TAG         = DOM_WOT_TAG       || dom_store.getItem("DOM_WOT_TAG");
 
     /*}}}*/
     wot_INTERN();
@@ -55,6 +54,10 @@ let log=console.log, logBIG=log, logXXX, log_caller, log_json_one_liner, log_key
 
 let console_dir=console.dir;
 /*}}}*/
+/* dom_store {{{*/
+let t_store;
+
+/*}}}*/
 /* dom_util {{{*/
 
 /* DOM */
@@ -74,13 +77,6 @@ let mPadStart;
 
 /* RTabs */
 let is_marked_to_hide;
-
-/*}}}*/
-/*_ localStorage {{{*/
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
 
 /*}}}*/
 /* dom_tools {{{*/
@@ -155,9 +151,7 @@ logBIG(caller+": [dom_util UNDEFINED]"      , 2);
     /* dom_store {{{*/
     if(typeof dom_store != "undefined")
     {
-        localStorage_getItem =          dom_store.t_store_getItem;
-        localStorage_setItem =          dom_store.t_store_set_value;
-        localStorage_delItem = (key) => dom_store.t_store_set_value(key,null);
+        t_store = dom_store;
 
 if(DOM_WOT_LOG || DOM_WOT_TAG) logBIG(caller+": ["+dom_store.name+"]"      , 4);
     }
@@ -410,7 +404,7 @@ let t_WOT_FOLD_EL = function(el)
 /*_ get_lines_innerHTML {{{*/
 let get_lines_innerHTML = function(lines, line_num) /* eslint-disable-line complexity */
 {
-    let with_line_num = localStorage_getItem( LINES_WOT ); /* prop may not be ready yet */
+    let with_line_num = t_store.getItem( LINES_WOT ); /* prop may not be ready yet */
 
     let innerHTML = "";
     let    l = 0;
@@ -537,7 +531,7 @@ if(h_line.includes("#region")) log(h_line);
 /*_ get_FOLD_EL_innerHTML {{{*/
 let get_FOLD_EL_innerHTML = function(lines,line_num) /* eslint-disable-line complexity */
 {
-    let with_line_num     = localStorage_getItem( LINES_WOT ); /* prop may not be ready yet */
+    let with_line_num     = t_store.getItem( LINES_WOT ); /* prop may not be ready yet */
     let innerHTML         = "";
     let    l              = 0;
     while((l < lines.length))
@@ -694,26 +688,10 @@ if(        log_this
 
 /* ➔ EXPORT */
 /*{{{*/
-/*_ t_wot_set_state {{{*/
-let t_wot_set_state = function(label,state)
-{
-    if(    state != undefined)
-    {
-        if(state) localStorage_setItem(label, "true");
-        else      localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return    localStorage_getItem   (label        );
-    }
-};
-/*}}}*/
-
 return { name    : "dom_wot"
-    ,    logging : (state) => DOM_WOT_LOG = dom_wot.t_wot_set_state("DOM_WOT_LOG", state)
-    ,    tagging : (state) => DOM_WOT_TAG = dom_wot.t_wot_set_state("DOM_WOT_TAG", state)
+    ,    logging : (state) => DOM_WOT_LOG = t_store.setItem("DOM_WOT_LOG", state)
+    ,    tagging : (state) => DOM_WOT_TAG = t_store.setItem("DOM_WOT_TAG", state)
     ,    t_wot_IMPORT
-    ,    t_wot_set_state
 
     ,    t_WOT_FOLD_EL
     ,    t_WOT_SPLIT

@@ -69,7 +69,7 @@ console.log("%c show_drag_cursor", lfX[++drag_cursor_count % 10], "onMoveDXY:",o
     if( drag_cursor_div.style.display != "block")
     {
         /* STANDALONE SPLITTER ACTIVATION {{{*/
-        if(typeof dom_sentence_event != "undefined")
+        if(typeof dom_tools != "undefined")
         {
             drag_cursor_div.classList.add( CSS_DRAG_CURSOR_DIV_ONLOAD );
             drag_cursor_div.style.left    = (window.innerWidth  / 2)+"px";
@@ -122,7 +122,7 @@ return { name : "drag_cursor"
 "│                                                                             │
 
 :e             $RPROFILES/script/dom_tools.js
-:e             $RPROFILES/script/stub/dom_sentence_event.js
+:e             $RPROFILES/script/stub/dom_tools.js
 :e             $RPROFILES/stylesheet/dom_host.css
 "...           $RPROFILES/script/drag_cursor.js
 

@@ -14,7 +14,7 @@
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 const DOM_LOAD_ID    = "dom_load";
-const DOM_LOAD_TAG   =  DOM_LOAD_ID +" (230627:15h:58)";
+const DOM_LOAD_TAG   =  DOM_LOAD_ID +" (230710:18h:58)";
 /*}}}*/
 let dom_load_js = (function() {
 "use strict";

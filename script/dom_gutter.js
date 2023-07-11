@@ -1,7 +1,7 @@
 /* dom_gutter_js */
 /* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true {{{*/
 
-/* globals window, document, localStorage */
+/* globals window, document */
 /* globals dom_data, dom_log, dom_util, dom_store, dom_tools */
 
 /* exported dom_gutter, DOM_GUTTER_JS_TAG */
@@ -12,7 +12,7 @@
 /* eslint-disable no-warning-comments */
 
 const DOM_GUTTER_JS_ID      = "dom_gutter_js";
-const DOM_GUTTER_JS_TAG     = DOM_GUTTER_JS_ID  +" (230706:20h:47)";
+const DOM_GUTTER_JS_TAG     = DOM_GUTTER_JS_ID  +" (230707:14h:56)";
 /*}}}*/
 let dom_gutter  = (function() {
 "use strict";
@@ -30,7 +30,7 @@ let t_log      = {}        ;    /* 06 */
 let t_util     = {}        ;    /* 07 */
 /*  t_i18n     = {}        ; */ /* 08 */
 /*  t_prop     = {}        ; */ /* 09 */
-/*  t_store    = {}        ; */ /* 10 */
+let t_store    = {}        ;    /* 10 */
 /*  t_fly      = {}        ; */ /* 11 */
 /* ...................................*/
 /*  t_wording  = {}        ; */ /* 12 */
@@ -59,7 +59,7 @@ let t_gutter_IMPORT  = function(log_this)
     t_util    = dom_util   ;    /* 07 */
 /*  t_i18n    = dom_i18n   ; */ /* 08 */
 /*  t_prop    = dom_prop   ; */ /* 09 */
-/*  t_store   = dom_store  ; */ /* 10 */
+    t_store   = dom_store  ;    /* 10 */
 /*  t_fly     = dom_fly    ; */ /* 11 */
 /* ...................................*/
 /*  t_wording = dom_wording; */ /* 12 */
@@ -118,13 +118,6 @@ let   gutter_INTERN = function()
     log_key_val_group   = t_log.log_key_val_group;
     /*}}}*/
 };
-/*}}}*/
-/*_ localStorage {{{*/
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 /*}}}*/
 /* eslint-enable  no-unused-vars */
 /*}}}*/
@@ -417,23 +410,9 @@ let log_gutter = function(_caller, lfx=lf7)
 
 /* EXPORT */
 /*{{{*/
-/*➔ t_store_set_state {{{*/
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-/*}}}*/
 return { name : "dom_gutter"
-    , logging : (state) => DOM_GUTTER_LOG = t_store_set_state("DOM_GUTTER_LOG",state)
-    , tagging : (state) => DOM_GUTTER_TAG = t_store_set_state("DOM_GUTTER_TAG",state)
+    , logging : (state) => DOM_GUTTER_LOG = t_store.setItem("DOM_GUTTER_LOG",state)
+    , tagging : (state) => DOM_GUTTER_TAG = t_store.setItem("DOM_GUTTER_TAG",state)
     , t_gutter_IMPORT
 
     /* const */

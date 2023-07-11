@@ -5,7 +5,7 @@
 
 /* globals dom_data, dom_log, dom_util, dom_i18n, dom_prop, dom_store, dom_fly, dom_view, dom_seek, dom_tools */
 
-/* globals console, localStorage, window, document, Node */
+/* globals console, window, document, Node */
 /* globals setTimeout, clearTimeout */
 /* globals requestAnimationFrame, cancelAnimationFrame */
 
@@ -21,7 +21,7 @@
 /* eslint-disable prefer-object-spread */
 
 const DOM_STICKY_JS_ID      = "dom_sticky_js";
-const DOM_STICKY_JS_TAG     = DOM_STICKY_JS_ID  +" (230706:20h:41)";
+const DOM_STICKY_JS_TAG     = DOM_STICKY_JS_ID  +" (230707:14h:35)";
 /*}}}*/
 let dom_sticky  = (function() {
 "use strict";
@@ -414,13 +414,6 @@ let   sticky_DEPEND = function()
     /*}}}*/
 
 };
-/*}}}*/
-/*_ localStorage {{{*/
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 /*}}}*/
 /*}}}*/
 /* CONST {{{*/
@@ -5693,23 +5686,9 @@ if( log_this) log("%c msg_pos_anchor_lines: %c"+t_data.LF+strip_HTML(msg_pos_anc
 /*}}}*/
 /* EXPORT */
 /*{{{*/
-/*➔ t_store_set_state {{{*/
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-/*}}}*/
 return { name : "dom_sticky"
-    , logging : function(state) { return DOM_STICKY_LOG = t_store_set_state("DOM_STICKY_LOG",state); }
-    , tagging : function(state) { return DOM_STICKY_TAG = t_store_set_state("DOM_STICKY_TAG",state); }
+    , logging : function(state) { return DOM_STICKY_LOG = t_store.setItem("DOM_STICKY_LOG",state); }
+    , tagging : function(state) { return DOM_STICKY_TAG = t_store.setItem("DOM_STICKY_TAG",state); }
     , t_sticky_IMPORT
 
         /* CONST {{{*/

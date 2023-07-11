@@ -9,7 +9,7 @@
 /* eslint-disable prefer-rest-params */
 
 const LOG_JS_ID         = "log_js";
-const LOG_JS_TAG        =  LOG_JS_ID +" (230705:16h:13)";
+const LOG_JS_TAG        =  LOG_JS_ID +" (230711:17h:47)";
 /*}}}*/
 let log_js = (function() {
 "use strict";
@@ -413,13 +413,17 @@ let log_object = function(o_name,o,lxx=lb0,collapsed=true)
         .keys(o)
         .forEach((key) => {
             let val = o[key];
-            let l_v =   ((val == true ) || (val == "ON" )) ? lb5
-                :       ((val == false) || (val == "OFF")) ? lb6
-                : (String(key).indexOf("callers")    >= 0) ? lf9
-                : (String(val).indexOf("\n")         >= 0) ? lf5
-                : (String(val).indexOf("=>")         >= 0) ? lf6
-                :                                            lb0
+/* eslint-disable no-unused-expressions */
+            let l_v;    ((val ==  true      ) || (val == "ON" )) ? (lxx=lf5 , l_v = lb5)
+                :       ((val ==  false     ) || (val == "OFF")) ? (lxx=lf6 , l_v = lb6)
+                :       ((val ==  undefined )                  ) ? (lxx=lf0 , l_v = lf0)
+                :       ((val == "undefined")                  ) ? (lxx=lf0 , l_v = lf0)
+                : (String(key).indexOf("callers") >= 0         ) ? (lxx=lf9 , l_v = lf9)
+                : (String(val).indexOf("\n")      >= 0         ) ? (          l_v = lf5)
+                : (String(val).indexOf("=>")      >= 0         ) ? (          l_v = lf6)
+                :                                                  (lxx=lf9 , l_v = lb0)
             ;
+/* eslint-enable  no-unused-expressions */
             console.log("%c "+mPadStart(key,key_length_max)+": %c"+log_object_val_format(o[key]),lxx,l_v);
         });
 /* collapsed {{{*/
@@ -540,7 +544,7 @@ let log_object_val_format = function(val,lxx)
 
     if     (   typeof HTMLElement != "undefined"
             && val instanceof HTMLElement            )  text = get_id_or_tag_and_className(val);
-    else if( Array.isArray(val)                      )  text = "ARRAY["+val.length+"] "+  ellipsis(val.toString().replace(/,/g," _ "), TEXT_LENGTH_MAX);
+    else if( Array.isArray(val)                      )  text = "ARRAY["+val.length+"] ● "+ellipsis(val.toString().replace(/,/g," ● "), TEXT_LENGTH_MAX);
     else if(        typeof val   == "object"         )  text = log_json(val,lxx);
     else if(        typeof val   == "function"       ) {
         if(    String(val).includes("=>")
@@ -825,7 +829,7 @@ try {
         /**/console.clear();
     }
 } finally {
-    if(result) console.log(result, lbH+lbb+lfX[l_x], lf8, lb0);
+    if(result) console.log(result,     lbb+lfX[l_x], lf8, lb0);
 }
 };
 /*}}}*/

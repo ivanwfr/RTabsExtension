@@ -4,18 +4,18 @@
 /* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true {{{*/
 /* eslint-disable no-warning-comments   */
 
-/* globals console                      */
-/* globals document                     */
-/* globals localStorage, setTimeout     */
+/* globals console    */
+/* globals document   */
+/* globals setTimeout */
 
-/* globals dom_log                      */
-/* globals dom_util                     */
-/* globals dom_store                    */
+/* globals dom_log    */
+/* globals dom_util   */
+/* globals dom_store  */
 
 /* exported dom_details, DOM_DETAILS_JS_TAG */
 
 const DOM_DETAILS_JS_ID        = "dom_details_js";
-const DOM_DETAILS_JS_TAG       = DOM_DETAILS_JS_ID  +" (230706:19h:56)";  /* eslint-disable-line no-unused-vars */
+const DOM_DETAILS_JS_TAG       = DOM_DETAILS_JS_ID  +" (230707:20h:54)";  /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_details         = (function() {
 "use strict";
@@ -26,11 +26,22 @@ let   DOM_DETAILS_TAG   = false;
 /* eslint-disable no-unused-vars */
 /*➔ t_details_IMPORT {{{*/
 /* eslint-disable no-unused-vars */
+/*{{{*/
+
+let t_store    ;
+
+/*......................................*/
+/*}}}*/
 let t_details_IMPORT    = function(_log_this,import_num)
 {
+    /* t_store {{{*/
+    if     (typeof      dom_store != "undefined" ) t_store = dom_store     ; /*      script/dom_store.js */
+    else console.warn("MISSING STUB FOR: [dom_store]");
+
+    /*}}}*/
     /* MODULE LOGGING TAGGING {{{*/
-    DOM_DETAILS_LOG     = DOM_DETAILS_LOG   || localStorage_getItem("DOM_DETAILS_LOG");
-    DOM_DETAILS_TAG     = DOM_DETAILS_TAG   || localStorage_getItem("DOM_DETAILS_TAG");
+    DOM_DETAILS_LOG     = DOM_DETAILS_LOG   || t_store.getItem("DOM_DETAILS_LOG");
+    DOM_DETAILS_TAG     = DOM_DETAILS_TAG   || t_store.getItem("DOM_DETAILS_TAG");
 
     /*}}}*/
     details_INTERN();
@@ -61,13 +72,6 @@ let get_tool;
 let is_el_or_child_of_parent_el;
 
 /*}}}*/
-/*_ localStorage {{{*/
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
-/*}}}*/
 
 /*}}}*/
 let   details_INTERN    = function()
@@ -77,17 +81,12 @@ let caller = "details_INTERN";
 
 /*}}}*/
     /* dom_log {{{*/
-    let dom_log_js
-        = (typeof dom_log != "undefined")
-        ?         dom_log
-        :         dom_details_log;  /* script/stub/dom_details_log.js */ /* eslint-disable-line no-undef */
-
-    if( dom_log_js )
+    if( dom_log )
     {
-        if(dom_log_js.LOG_BG_CSS) {
-            ({ lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX } = dom_log_js.LOG_BG_CSS);
-            ({ lf0, lf1, lf2, lf3, lf4, lf5, lf6, lf7, lf8, lf9, lfX } = dom_log_js.LOG_FG_CSS);
-            ({ lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb           } = dom_log_js.LOG_XX_CSS);
+        if(dom_log.LOG_BG_CSS) {
+            ({ lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX } = dom_log.LOG_BG_CSS);
+            ({ lf0, lf1, lf2, lf3, lf4, lf5, lf6, lf7, lf8, lf9, lfX } = dom_log.LOG_FG_CSS);
+            ({ lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb           } = dom_log.LOG_XX_CSS);
 
             ({  log
              ,  logBIG
@@ -97,10 +96,10 @@ let caller = "details_INTERN";
              ,  log_key_val
              ,  log_key_val_group
 
-            } = dom_log_js);
+            } = dom_log);
 
         }
-if(DOM_DETAILS_LOG || DOM_DETAILS_TAG) logBIG(caller+": ["+dom_log_js.name+"]" , 4);
+if(DOM_DETAILS_LOG || DOM_DETAILS_TAG) logBIG(caller+": ["+dom_log.name+"]" , 4);
     }
     else {
 
@@ -108,12 +107,7 @@ logBIG(caller+": [dom_log UNDEFINED]"   , 2);
     }
     /*}}}*/
     /* dom_util {{{*/
-    let dom_util_js
-        = (typeof dom_util != "undefined")
-        ?         dom_util
-        :         dom_details_util; /* script/stub/dom_details_util.js */ /* eslint-disable-line no-undef */
-
-    if( dom_util_js )
+    if( dom_util )
     {
         ({  add_el_class
          ,  del_el_class
@@ -124,23 +118,13 @@ logBIG(caller+": [dom_log UNDEFINED]"   , 2);
          ,  get_nodeXPath
          ,  get_tool
          ,  is_el_or_child_of_parent_el
-        } = dom_util_js);
+        } = dom_util);
 
-if(DOM_DETAILS_LOG || DOM_DETAILS_TAG) logBIG(caller+": ["+dom_util_js.name+"]"    , 4);
+if(DOM_DETAILS_LOG || DOM_DETAILS_TAG) logBIG(caller+": ["+dom_util.name+"]"    , 4);
     }
     else {
 
 logBIG(caller+": [dom_util UNDEFINED]"      , 2);
-    }
-    /*}}}*/
-    /* dom_store {{{*/
-    if(typeof dom_store != "undefined")
-    {
-        localStorage_getItem =          dom_store.t_store_getItem;
-        localStorage_setItem =          dom_store.t_store_set_value;
-        localStorage_delItem = (key) => dom_store.t_store_set_value(key,null);
-
-if(DOM_DETAILS_LOG || DOM_DETAILS_TAG) logBIG(caller+": ["+dom_store.name+"]"      , 4);
     }
     /*}}}*/
 
@@ -155,7 +139,7 @@ const DETAILS_RADIO_ID = "details_radio";
 /*}}}*/
 
 /*┌──────────────────────────────────────────────────────────────────────────┐*/
-/*│ 1. LISTEN TOGGLE DETAILS OPEN STATE       [localStorage details_id_open] │*/
+/*│ 1. LISTEN TOGGLE DETAILS OPEN STATE                                      │*/
 /*└──────────────────────────────────────────────────────────────────────────┘*/
 let details_handler = (function() {
 /*➔ details_onload {{{*/
@@ -167,10 +151,10 @@ let log_this = DOM_DETAILS_LOG;
 
 if(log_this) logBIG(caller, 8);
 /*}}}*/
-    /* ➔ RESTORE ONLOAD [open] STATE .. f(localStorage) {{{*/
+    /* ➔ RESTORE ONLOAD [open] STATE {{{*/
     let        details_array = document.querySelectorAll("DETAILS");
     Array.from(details_array).forEach( (el) => {
-        let    open = el.id && localStorage_getItem(el.id+"_open");
+        let    open = el.id && t_store.getItem(el.id+"_open");
         el    .open = open;
 if(log_this && open) log("➔ "+el.id+(el.open ? " OPENED":" NOT OPENED"));
     });
@@ -232,9 +216,8 @@ if( log_this) log(details_radio_el ? ("...details_radio_el.checked=["+details_ra
 /*}}}*/
     /* STORAGE {{{*/
     if(details_el.id) {
-        /* [localStorage] */
-        if(details_el.open) localStorage_setItem(details_el.id+"_open", "true");
-        else                localStorage_delItem(details_el.id+"_open"        );
+        if(details_el.open) t_store.setItem(details_el.id+"_open", "true");
+        else                t_store.delItem(details_el.id+"_open"        );
 
         /* [COOKIE] */
 /*{{{
@@ -343,8 +326,8 @@ log("...["+ details_sibling.tagName + (details_sibling.id ? (" "+details_sibling
 
             if(details_sibling.id)
             {
-                if(details_sibling.open) localStorage_setItem(details_sibling.id+"_open", "true");
-                else                     localStorage_delItem(details_sibling.id+"_open"        );
+                if(details_sibling.open) t_store.setItem(details_sibling.id+"_open", "true");
+                else                     t_store.delItem(details_sibling.id+"_open"        );
 /*{{{
                 del_cookie(          details_sibling.id+"_open");
 }}}*/
@@ -375,7 +358,7 @@ if( log_this) logBIG(caller+"("+get_id_or_tag_and_className(parent_details)+") .
         if(child_details.id)
         {
             let key = child_details.id+"_open";
-            localStorage_delItem( key );
+            t_store.delItem( key );
         }
     });
 };
@@ -384,7 +367,7 @@ return { details_onload };
 })();
 
 /*┌──────────────────────────────────────────────────────────────────────────┐*/
-/*│ 2. DETAILS RADIO-BEHAVIOR                   [localStorage details_radio] │*/
+/*│ 2. DETAILS RADIO-BEHAVIOR                                                │*/
 /*└──────────────────────────────────────────────────────────────────────────┘*/
 /*➔ details_radio_toggle {{{*/
 let details_radio_toggle = function(e)
@@ -421,8 +404,8 @@ if(DOM_DETAILS_LOG) log("details_radio_toggle("+e.target.tagName+")");
 
     /*}}}*/
     /* STORE NEW STATE {{{*/
-    if(state) localStorage_setItem(DETAILS_RADIO_ID, "true");
-    else      localStorage_delItem(DETAILS_RADIO_ID        );
+    if(state) t_store.setItem(DETAILS_RADIO_ID, "true");
+    else      t_store.delItem(DETAILS_RADIO_ID        );
 
     /*}}}*/
 /*{{{*/
@@ -452,7 +435,7 @@ if(DOM_DETAILS_LOG) log("details_radio_set_from_localStorage");
     if(!input) return;
     /*}}}*/
     /* GET STORED STATE {{{*/
-    let state = localStorage_getItem( DETAILS_RADIO_ID );
+    let state = t_store.getItem( DETAILS_RADIO_ID );
 
     /*}}}*/
     /* SHOW STATE {{{*/
@@ -686,23 +669,9 @@ if(DOM_DETAILS_LOG) logBIG("restore_details_ontoggle_listener",6);
 
 /* EXPORT */
 /*{{{*/
-/*➔ t_store_set_state {{{*/
-let t_store_set_state = function(label,state)
-{
-    if(    state != undefined)
-    {
-        if(state) localStorage_setItem(label, "true");
-        else      localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return    localStorage_getItem   (label        );
-    }
-};
-/*}}}*/
 return { name    : "dom_details"
-    ,    logging : (state) => DOM_DETAILS_LOG = t_store_set_state("DOM_DETAILS_LOG", state)
-    ,    tagging : (state) => DOM_DETAILS_TAG = t_store_set_state("DOM_DETAILS_TAG", state)
+    ,    logging : (state) => DOM_DETAILS_LOG = t_store.setItem("DOM_DETAILS_LOG", state)
+    ,    tagging : (state) => DOM_DETAILS_TAG = t_store.setItem("DOM_DETAILS_TAG", state)
     ,    t_details_IMPORT
 
     /*   --------------------------------- CALLERS:       */

@@ -9,7 +9,7 @@
 /* exported DOM_STORE_JS_TAG */
 
 const DOM_STORE_JS_ID       = "dom_store_js";
-const DOM_STORE_JS_TAG      = DOM_STORE_JS_ID   +" (230706:19h:47)";
+const DOM_STORE_JS_TAG      = DOM_STORE_JS_ID   +" (230707:22h:16)";
 /*}}}*/
 let dom_store   = (function() {
 "use strict";
@@ -27,7 +27,7 @@ let t_log      = {}        ;    /* 06 */
 let t_util     = {}        ;    /* 07 */
 /*  t_i18n     = {}        ; */ /* 08 */
 let t_prop     = {}        ;    /* 09 */
-/*  t_store    = {}        ; */ /* 10 */
+let t_store    = {}        ;    /* 10 */
 /*  t_fly      = {}        ; */ /* 11 */
 /* ...................................*/
 /*  t_wording  = {}        ; */ /* 12 */
@@ -56,7 +56,7 @@ let t_store_IMPORT  = function(log_this,import_num)
     t_util    = dom_util   ;    /* 07 */
 /*  t_i18n    = dom_i18n   ; */ /* 08 */
     t_prop    = dom_prop   ;    /* 09 */
-/*  t_store   = dom_store  ; */ /* 10 */
+    t_store   = dom_store  ;    /* 10 */
 /*  t_fly     = dom_fly    ; */ /* 11 */
 /* ...................................*/
 /*  t_wording = dom_wording; */ /* 12 */
@@ -129,14 +129,16 @@ let   store_INTERN = function()
     /*}}}*/
 };
 /*}}}*/
+/* eslint-enable  no-unused-vars */
+/*}}}*/
+
+/* [localStorage] */
 /*_ localStorage {{{*/
 
 let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
 let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
 let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
 
-/*}}}*/
-/* eslint-enable  no-unused-vars */
 /*}}}*/
 
 /* OBSERVERS */
@@ -183,16 +185,16 @@ logXXX("t_store_set_state(key=["+key+"] state=["+state+"])");
     /*}}}*/
     /* STORE  NEW {{{*/
     else if( state ) {
-        if(log_this) t_store_key_log("STORING  STATE",      key, state);
+if(log_this) t_store_key_log("STORING  STATE",      key, state);
 
-        store_setItem   (                           key, state);
+        store_site_or_page_setItem   (              key, state);
     }
     /*}}}*/
     /* REMOVE OLD {{{*/
     else if( v ) {
 if(log_this) t_store_key_log("REMOVING STATE",      key);
 
-        store_removeItem(                           key);
+        store_site_or_page_removeItem(              key);
     }
     /*}}}*/
     return !!state; /* return a truthy */
@@ -221,30 +223,27 @@ if(log_this) t_store_key_log("UNCHANGED VALUE", key, value);
     else if(value) {
 if(log_this) t_store_key_log("STORING   VALUE", key, value);
 
-        store_setItem(key , value);
+        store_site_or_page_setItem(key , value);
     }
     /*}}}*/
     /* REMOVE OLD {{{*/
     else if(v) {
 if(log_this) t_store_key_log("REMOVING  VALUE", key);
 
-        store_removeItem(key);
+        store_site_or_page_removeItem(key);
     }
     /*}}}*/
     return value;
 };
 /*}}}*/
-/*… store_setItem {{{*/
-let store_setItem = function(key,value)
+/*… store_site_or_page_setItem {{{*/
+let store_site_or_page_setItem = function(key,value)
 {
-/*{{{
-log("store_setItem("+key+")..key=["+ store_get_site_or_page_pfx_for_key(key)+"."+key+"]");
-}}}*/
-    localStorage        .setItem(    store_get_site_or_page_pfx_for_key(key)+"."+key, value);
+    localStorage_setItem( store_get_site_or_page_pfx_for_key(key)+"."+key, value);
 };
 /*}}}*/
-/*… store_removeItem {{{*/
-let store_removeItem = function(key)
+/*… store_site_or_page_removeItem {{{*/
+let store_site_or_page_removeItem = function(key)
 {
     return  localStorage_delItem( store_get_site_or_page_pfx_for_key(key)+"."+key       );
 };
@@ -308,9 +307,9 @@ let t_store_has_some_page_keys = function()
     let site_pfx = t_store_get_site_pfx();
 
     try {
-        for(let i=localStorage.length-1; i>=0; --i)
+        for(let   i = localStorage.length-1; i>=0; --i)
         {
-            let key      = localStorage.key(i);
+            let key = localStorage.key(i);
             if(   !key.startsWith( site_pfx        ) /* .. (page if not site) */
                   && !key.endsWith  ( "window_scrollY") /* ignore volatile page info */
               )
@@ -332,15 +331,15 @@ let t_store_log_site_and_page = function()
     let page_pfx = t_store_get_page_pfx();
 
     try {
-        for(let i=localStorage.length-1; i>=0; --i)
+        for(let      i = localStorage.length-1; i>=0; --i)
         {
             let    key = localStorage.key(i);
             if(   !key.includes( site_pfx )
-                  && !key.includes( page_pfx )
+               && !key.includes( page_pfx )
               )
                 continue;
 
-            let       val = localStorage[key];
+            let    val = localStorage[key];
 
             let { filter_in  ,  filter_out } = store_FILTER(key,val);
             if(   filter_in || !filter_out)
@@ -431,7 +430,7 @@ log("%c page_pfx=["+page_pfx+"]", lbH+lf1);
 }}}*/
     let page_items_keys_to_remove_array = [];
     try {
-        for(let i=localStorage.length-1; i>=0; --i)
+        for(let i = localStorage.length-1; i>=0; --i)
         {
             let k = localStorage.key(i);
             if( t_store_is_a_shared_item(site_pfx,page_pfx,i+1,k,log_this) )
@@ -509,9 +508,9 @@ log("%c page_pfx=["+page_pfx+"]", lbH+lf1);
 }}}*/
     let site_items_keys_to_remove_array = [];
     try {
-        for(let i=localStorage.length-1; i>=0; --i)
+        for(let i = localStorage.length-1; i>=0; --i)
         {
-            let k      = localStorage.key(      i);
+            let k = localStorage.key(i);
             if( k.startsWith( site_pfx ) )
             {
                 /*{{{
@@ -542,7 +541,6 @@ if(log_this) log((i+1)+"%c removing %c"+k
                  ,      lbL+lf2    ,lbR+lf3);
 
             localStorage_delItem(k);
-
             removed_keys += (i+1)+" - "+store_key_tail(k)+LF;
         }
         _notify_info(  (  msg
@@ -758,11 +756,16 @@ let store_key_tail = function(k)
 /* EXPORT */
 /*{{{*/
 return { name : "dom_store"
-    , logging : (state) => DOM_STORE_LOG = t_store_set_state("DOM_STORE_LOG",state)
-    , tagging : (state) => DOM_STORE_TAG = t_store_set_state("DOM_STORE_TAG",state)
+    , logging : (state) => DOM_STORE_LOG = t_store.setItem("DOM_STORE_LOG",state)
+    , tagging : (state) => DOM_STORE_TAG = t_store.setItem("DOM_STORE_TAG",state)
     , t_store_IMPORT
 
     , SITE_URL_TEMPLATE
+
+    /* STORE */
+    , setItem : localStorage_setItem
+    , getItem : localStorage_getItem
+    , delItem : localStorage_delItem
 
     /* SET */
     , t_store_set_state

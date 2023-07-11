@@ -1,7 +1,7 @@
 /* dom_wording_js */
 /* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true {{{*/
 /* globals dom_log, dom_util, dom_data, dom_store, dom_i18n, dom_tools */
-/* globals document, console, localStorage */
+/* globals document, console */
 /* exported dom_wording */
 
 /* eslint-disable quotes */
@@ -9,7 +9,7 @@
 /* eslint-disable no-return-assign */
 
 const DOM_WORDING_JS_ID     = 'dom_wording_js';
-const DOM_WORDING_JS_TAG    = DOM_WORDING_JS_ID +' (230706:20h:47)';
+const DOM_WORDING_JS_TAG    = DOM_WORDING_JS_ID +' (230707:16h:46)';
 /*}}}*/
 let dom_wording = (function() {
 "use strict";
@@ -27,7 +27,7 @@ let t_log      = {}        ;    /* 06 */
 let t_util     = {}        ;    /* 07 */
 let t_i18n     = {}        ;    /* 08 */
 /*  t_prop     = {}        ; */ /* 09 */
-/*  t_store    = {}        ; */ /* 10 */
+let t_store    = {}        ;    /* 10 */
 /*  t_fly      = {}        ; */ /* 11 */
 /* ...................................*/
 /*  t_wording  = {}        ; */ /* 12 */
@@ -56,7 +56,7 @@ let t_wording_IMPORT  = function(log_this)
     t_util    = dom_util   ;    /* 07 */
     t_i18n    = dom_i18n   ;    /* 08 */
 /*  t_prop    = dom_prop   ; */ /* 09 */
-/*  t_store   = dom_store  ; */ /* 10 */
+    t_store   = dom_store  ;    /* 10 */
 /*  t_fly     = dom_fly    ; */ /* 11 */
 /* ...................................*/
 /*  t_wording = dom_wording; */ /* 12 */
@@ -116,13 +116,6 @@ let   wording_INTERN = function()
     log_key_val_group   = t_log.log_key_val_group;
     /*}}}*/
 };
-/*}}}*/
-/*_ localStorage {{{*/
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 /*}}}*/
 /* eslint-enable  no-undef */
 /*}}}*/
@@ -446,23 +439,9 @@ console.dir(e);
 
 /* EXPORT */
 /*{{{*/
-/*➔ t_store_set_state {{{*/
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-/*}}}*/
 return { name : "dom_wording"
-    , logging : (state) => DOM_WORDING_LOG = t_store_set_state("DOM_WORDING_LOG",state)
-    , tagging : (state) => DOM_WORDING_TAG = t_store_set_state("DOM_WORDING_TAG",state)
+    , logging : (state) => DOM_WORDING_LOG = t_store.setItem("DOM_WORDING_LOG",state)
+    , tagging : (state) => DOM_WORDING_TAG = t_store.setItem("DOM_WORDING_TAG",state)
     , t_wording_IMPORT
 
     , t_wording_cycle

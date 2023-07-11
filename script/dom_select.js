@@ -1,6 +1,6 @@
 /* dom_select_js */
 /* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true {{{*/
-/* globals console, localStorage, setTimeout, clearTimeout */
+/* globals console, setTimeout, clearTimeout */
 /* globals window, document, Node, NodeFilter */
 
 /* globals dom_data     */
@@ -21,7 +21,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_SELECT_JS_ID      = "dom_select_js";
-const DOM_SELECT_JS_TAG     = DOM_SELECT_JS_ID  +" (230706:20h:43)";
+const DOM_SELECT_JS_TAG     = DOM_SELECT_JS_ID  +" (230707:19h:35)";
 /*}}}*/
 let dom_select  = (function() {
 "use strict";
@@ -135,13 +135,6 @@ let   select_INTERN = function()
 
     /*}}}*/
 };
-/*}}}*/
-/*_ localStorage {{{*/
-
-let localStorage_setItem = function(key,val) {          try { if(val)  localStorage.setItem   (key,val); else localStorage.removeItem(key); } catch(ex) {} };
-let localStorage_getItem = function(key    ) { let val; try {    val = localStorage.getItem   (key    );                                    } catch(ex) {} return val; };
-let localStorage_delItem = function(key    ) {          try { /*...*/  localStorage.removeItem(key    );                                    } catch(ex) {} };
-
 /*}}}*/
 /* eslint-enable  no-unused-vars */
 /*}}}*/
@@ -3411,23 +3404,9 @@ let log_tools_filter_slot = function(slot)
 
 /* EXPORT */
 /*{{{*/
-/*➔ t_store_set_state {{{*/
-let t_store_set_state = function(label,state)
-{
-    if(          state != undefined)
-    {
-        if(      state) localStorage_setItem(label, "true");
-        else            localStorage_delItem(label        );
-        return !!state;
-    }
-    else {
-        return          localStorage_getItem   (label        );
-    }
-};
-/*}}}*/
 return { name : "dom_select"
-    , logging : (state) => DOM_SELECT_LOG = t_store_set_state("DOM_SELECT_LOG",state)
-    , tagging : (state) => DOM_SELECT_TAG = t_store_set_state("DOM_SELECT_TAG",state)
+    , logging : (state) => DOM_SELECT_LOG = t_store.setItem("DOM_SELECT_LOG",state)
+    , tagging : (state) => DOM_SELECT_TAG = t_store.setItem("DOM_SELECT_TAG",state)
     , t_select_IMPORT
 
     /* CONSTANTS {{{*/
@@ -3522,9 +3501,9 @@ return { name : "dom_select"
 :e  $BROWSEEXT/SplitterExtension/javascript/background.js
 :e  $BROWSEEXT/SplitterExtension/javascript/content.js
 :e             $RPROFILES/script/dom_sentence.js
-:e             $RPROFILES/script/stub/dom_sentence_event.js
+:e             $RPROFILES/script/stub/dom_tools.js
 :e             $RPROFILES/script/stub/dom_scroll.js
-:e             $RPROFILES/script/stub/dom_sentence_util.js
+:e             $RPROFILES/script/stub/dom_util.js
 :e             $RPROFILES/script/stub/dom_log.js
 :e             $RPROFILES/stylesheet/dom_host.css
 
