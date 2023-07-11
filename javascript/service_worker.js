@@ -29,7 +29,7 @@
 /* eslint-enable  no-unused-vars */
 
 const    S_SCRIPT_ID         = "service_worker_js";
-const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (230711:17h:33)";
+const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (230711:18h:47)";
 /*}}}*/
 
 /* ┌─────────────────────────────┐
@@ -54,7 +54,6 @@ console.clear();
 importScripts("log.js"        );
 
 importScripts("background.js" );
-
 importScripts("bg_content.js" );
 importScripts("bg_csp.js"     );
 importScripts("bg_header.js"  );
@@ -63,21 +62,6 @@ importScripts("bg_page.js"    );
 importScripts("bg_settings.js");
 importScripts("bg_store.js"   );
 importScripts("bg_tabs.js"    );
-
-/*
-┌───────────────────────────┐
-:e javascript/log.js
-:e javascript/background.js
-:e javascript/bg_content.js
-:e javascript/bg_csp.js
-:e javascript/bg_header.js
-:e javascript/bg_message.js
-:e javascript/bg_page.js
-:e javascript/bg_settings.js
-:e javascript/bg_store.js
-:e javascript/bg_tabs.js
-└───────────────────────────┘
-*/
 
 /*}}}*/
 

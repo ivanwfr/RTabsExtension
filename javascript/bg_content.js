@@ -26,7 +26,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_CONTENT_SCRIPT_ID  = "bg_content";
-const BG_CONTENT_SCRIPT_TAG =  BG_CONTENT_SCRIPT_ID +" (230710:15h:26)"; /* eslint-disable-line no-unused-vars */
+const BG_CONTENT_SCRIPT_TAG =  BG_CONTENT_SCRIPT_ID +" (230711:18h:24)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_content  = (function() {
 "use strict";
@@ -46,10 +46,11 @@ let bg_content  = (function() {
 :e javascript/bg_tabs.js
 /* └─────────────────────────────┘*/
 /* IMPORT {{{*/
-/*_eslint-disable no-unused-vars *///FIXME
 /*_ log_js {{{*/
 
 /* eslint-disable no-unused-vars */
+let   LF;
+
 let   lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX;
 let   lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb          ;
 let   lf0, lf1, lf2, lf3, lf4, lf5, lf6, lf7, lf8, lf9, lfX;
@@ -170,7 +171,6 @@ log("%c  background_import %c log_js %c background_js %c "+"●●●●●●�
     ,lbH+lb2              ,lf0      ,lf1             ,lbH+lf2      ,lf3      ,lf4         ,lf5          ,lf6       ,lf7           ,lf8        ,lf9        );
 };
 /*}}}*/
-/*_eslint-enable no-unused-vars *///FIXME
     setTimeout(bg_content_import,0);
 /*}}}*/
 

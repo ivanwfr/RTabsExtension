@@ -22,7 +22,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_PAGE_SCRIPT_ID  = "bg_page";
-const BG_PAGE_SCRIPT_TAG =  BG_PAGE_SCRIPT_ID +" (230710:17h:44)"; /* eslint-disable-line no-unused-vars */
+const BG_PAGE_SCRIPT_TAG =  BG_PAGE_SCRIPT_ID +" (230711:18h:26)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_page  = (function() {
 "use strict";
@@ -56,35 +56,15 @@ let   L_CHK, L_NEW, L_ARD, L_ARL, L_ARR, L_ARU, L_CLR, L_FNC, L_WRN;
 let   SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP;
 /* eslint-enable no-unused-vars */
 
-let   clear
-    , ellipsis
-    , get_callers
-    , get_ex_stack_line_match
+let   ellipsis
     , log
-    , logBIG
-    , logXXX
-    , log_CSP
-    , log_SYN
     , log_caller
-    , log_console_clear
-    , log_json
-    , log_key_val
-    , log_key_val_group
-    , log_members
     , log_object
-    , log_object_val_format
-    , log_pause
-    , log_permission
     , log_sep_bot
     , log_sep_top
     , mPadEnd
     , mPadStart
-    , parse_ex_stack_FUNC_FILE_LINE_COL
-    , pause
-    , reload
     , strip_CR_LF
-    , strip_QUOTE
-    , truncate
 ;
 
 /*}}}*/
@@ -132,35 +112,15 @@ let bg_page_import = function()
 
     [ SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP] = log_js.LOG_SYM;
 
-    clear                               = log_js.clear;
     ellipsis                            = log_js.ellipsis;
-    get_callers                         = log_js.get_callers;
-    get_ex_stack_line_match             = log_js.get_ex_stack_line_match;
     log                                 = log_js.log;
-    logBIG                              = log_js.logBIG;
-    logXXX                              = log_js.logXXX;
-    log_CSP                             = log_js.log_CSP;
-    log_SYN                             = log_js.log_SYN;
     log_caller                          = log_js.log_caller;
-    log_console_clear                   = log_js.log_console_clear;
-    log_json                            = log_js.log_json;
-    log_key_val                         = log_js.log_key_val;
-    log_key_val_group                   = log_js.log_key_val_group;
-    log_members                         = log_js.log_members;
     log_object                          = log_js.log_object;
-    log_object_val_format               = log_js.log_object_val_format;
-    log_pause                           = log_js.log_pause;
-    log_permission                      = log_js.log_permission;
     log_sep_bot                         = log_js.log_sep_bot;
     log_sep_top                         = log_js.log_sep_top;
     mPadEnd                             = log_js.mPadEnd;
     mPadStart                           = log_js.mPadStart;
-    parse_ex_stack_FUNC_FILE_LINE_COL   = log_js.parse_ex_stack_FUNC_FILE_LINE_COL;
-    pause                               = log_js.pause;
-    reload                              = log_js.reload;
     strip_CR_LF                         = log_js.strip_CR_LF;
-    strip_QUOTE                         = log_js.strip_QUOTE;
-    truncate                            = log_js.truncate;
 
     /*}}}*/
     /*_ background_js {{{*/

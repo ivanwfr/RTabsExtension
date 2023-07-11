@@ -29,7 +29,7 @@
 const MANIFEST_VERSION      = (typeof chrome.tabs.executeScript == "undefined") ?  "V3" : "V2";
 
 const B_SCRIPT_ID           = "background_js";
-const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (230710:19h:43)"; /* eslint-disable-line no-unused-vars */
+const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (230711:18h:41)"; /* eslint-disable-line no-unused-vars */
 const DOM_TOOLS_JS_ID       = "dom_tools_js";
 const DOM_LOAD_ID           = "dom_load";
 /*}}}*/
@@ -52,9 +52,9 @@ let background_js = (function() {
 /* └─────────────────────────────┘*/
 /* IMPORT {{{*/
 /*_ log_js {{{*/
+/* eslint-disable no-unused-vars */
 let   LF;
 
-/* eslint-disable no-unused-vars */
 let   lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX;
 let   lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb          ;
 let   lf0, lf1, lf2, lf3, lf4, lf5, lf6, lf7, lf8, lf9, lfX;
