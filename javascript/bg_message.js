@@ -22,7 +22,7 @@
 
 /* eslint-enable  no-redeclare        */
 const BG_MESSAGE_SCRIPT_ID  = "BG_MESSAGE";
-const BG_MESSAGE_SCRIPT_TAG =  BG_MESSAGE_SCRIPT_ID +" (230711:18h:23)"; /* eslint-disable-line no-unused-vars */
+const BG_MESSAGE_SCRIPT_TAG =  BG_MESSAGE_SCRIPT_ID +" (230712:01h:57)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_message  = (function() {
 "use strict";
@@ -222,7 +222,7 @@ log("%c  bg_message_import %c log_js %c background_js %c bg_content %c bg_csp %c
     setTimeout(bg_message_import,0);
 /*}}}*/
 
-/*_ b_runtime_onMessage_addListener {{{*/
+/*➔ b_runtime_onMessage_addListener {{{*/
 let b_runtime_onMessage_addListener = function()
 {
 /*{{{*/
@@ -353,7 +353,7 @@ if(log_this) log("%c"+SD5     +"%c "+caller+" ...return "+(response_handler != n
 finally { if(log_more) log_sep_bot(caller+" .. "+action_tags, "LOG8_TAG"); if( log_ACTIVATED() ) log_STORAGE(); }
 };
 /*}}}*/
-/*_ b_runtime_onMessage_CB_tab .. B_LOG1_MESSAGE {{{*/
+/*➔ b_runtime_onMessage_CB_tab .. B_LOG1_MESSAGE {{{*/
 /*{{{*/
 const B_TABS_ON_MESSAGE           = "TABS ON MESSAGE";
 
@@ -506,7 +506,7 @@ if( log_this) log_object("sending response_handler message", message, lf5);
 finally { if(log_more) log_sep_bot(caller); }
 };
 /*}}}*/
-/*_ b_runtime_onMessage_CB_TAB_start .. B_LOG1_MESSAGE {{{*/
+/*➔ b_runtime_onMessage_CB_TAB_start .. B_LOG1_MESSAGE {{{*/
 let b_runtime_onMessage_CB_TAB_start = async function(tabId)
 {
 /*LOG{{{*/
@@ -553,7 +553,7 @@ if( log_this) log_object("...return result", result);
     return result;
 };
 /*}}}*/
-/*_ b_runtime_onMessage_CB_TAB_stop  .. B_LOG1_MESSAGE {{{*/
+/*➔ b_runtime_onMessage_CB_TAB_stop  .. B_LOG1_MESSAGE {{{*/
 let b_runtime_onMessage_CB_TAB_stop  = async function(tabId)
 {
 /*LOG{{{*/
@@ -594,7 +594,7 @@ if( log_this) log_object("...return result", result);
     return result;
 };
 /*}}}*/
-/*_ b_runtime_onMessage_CB_TAB_csp_filter .. B_LOG1_MESSAGE {{{*/
+/*➔ b_runtime_onMessage_CB_TAB_csp_filter .. B_LOG1_MESSAGE {{{*/
 let b_runtime_onMessage_CB_TAB_csp_filter = function(message)
 {
 /*{{{*/
@@ -640,7 +640,7 @@ if( log_this) log("%c "+caller+": SELECTING ["+message.csp_filter+"] FOR %c"+bg_
     /*}}}*/
 };
 /*}}}*/
-/*_ b_runtime_onMessage_CB_options_js_csp_filter .. B_LOG1_MESSAGE {{{*/
+/*➔ b_runtime_onMessage_CB_options_js_csp_filter .. B_LOG1_MESSAGE {{{*/
 let b_runtime_onMessage_CB_options_js_csp_filter = function(message, response_handler=null)
 {
 /*{{{*/
@@ -702,7 +702,7 @@ if(log_this) log(caller+"%c [UNHANDLED message.csp_filter]=["+csp_filter+"]", lf
     }
 };
 /*}}}*/
-/*_ b_runtime_onMessage_CB_query .. B_LOG1_MESSAGE {{{*/
+/*➔ b_runtime_onMessage_CB_query .. B_LOG1_MESSAGE {{{*/
 /*{{{*/
 const B_TABS_ON_MESSAGE_QUERY     = "TABS ON MESSAGE QUERY: ";
 
@@ -780,7 +780,7 @@ if( log_this) log("%c "+caller+"%c"+SD4+   "%c"+message.status+": "+message.quer
     /*}}}*/
 };
 /*}}}*/
-/*_ b_runtime_onMessage_CB_reply {{{*/
+/*➔ b_runtime_onMessage_CB_reply {{{*/
 let b_runtime_onMessage_CB_reply = function(tabId,message,response_handler)
 {
 /*{{{*/
@@ -833,7 +833,7 @@ if( log_this) log_object("SENDING A REPLY TO "+message.caller, response, lf9, !l
 if( log_more) log_sep_bot(caller+" "+message.query);
 };
 /*}}}*/
-/*_ b_runtime_onMessage_CB_set_log_map {{{*/
+/*➔ b_runtime_onMessage_CB_set_log_map {{{*/
 let b_runtime_onMessage_CB_set_log_map = function(message, response_handler=null)
 {
     /* [message.set_log_tag] .. [LOG_MAP] {{{*/

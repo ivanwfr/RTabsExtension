@@ -22,7 +22,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_PAGE_SCRIPT_ID  = "bg_page";
-const BG_PAGE_SCRIPT_TAG =  BG_PAGE_SCRIPT_ID +" (230711:18h:26)"; /* eslint-disable-line no-unused-vars */
+const BG_PAGE_SCRIPT_TAG =  BG_PAGE_SCRIPT_ID +" (230712:01h:59)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_page  = (function() {
 "use strict";
@@ -283,6 +283,36 @@ log("%c  ", lbI+lbb);
 if( log_more) log_sep_bot(caller,"LOG7_TAG");
 };
 /*}}}*/
+/*➔ b_page0_STORE_lastError {{{*/
+let b_page0_STORE_lastError = function(tabId)
+{
+    /* CHECK */
+    if(!chrome.runtime.lastError) return "";
+
+    /* KEEP */
+    let lastError_message = chrome.runtime.lastError.message;
+    bg_tabs_set_tabId_key_val(tabId, "lastError_message", lastError_message);
+
+    /* LOG */
+    let       callers_bot  = log_js.get_callers_bot();
+    log("%c"+ callers_bot+"(TAB#"+tabId+"): ABORTING ON ERROR:\n"+lastError_message, lbH+lbF+lf2);
+
+    return lastError_message;
+};
+/*}}}*/
+/*➔ b_page0_REPORT_lastError {{{*/
+let b_page0_REPORT_lastError = function(tabId, _caller, lfx)
+{
+    let lastError_message
+        = bg_tabs_get_tabId_key(tabId, "lastError_message");
+
+    if(!lastError_message ) return;
+
+log("%c"+_caller+"(TAB#"+tabId+"): ABORTED ON ERROR:\n"+lastError_message, lbH+lbF+lfx);
+log_object("TAB #"+tabId, bg_tabs_get_tabId(tabId), lbH+lf8);
+console.trace();
+};
+/*}}}*/
 /*_ b_get_popup_title .. B_LOG9_STAGE {{{*/
 
 let b_get_popup_title = function(tabId, status, url, start, csp_filter, cancelreq, t_load, tools_deployed)
@@ -379,48 +409,7 @@ let log_this = LOG_MAP.B_LOG7_TABS;
 };
 /*}}}*/
 
-/*_ b_page1_RELOAD_if_required {{{*/
-/*{{{*/
-const RELOAD_REQUIRED     = "RELOAD REQUIRED";
-
-/*}}}*/
-let b_page1_RELOAD_if_required = async function(tabId)
-{
-/*{{{*/
-let   caller = "b_page1_RELOAD_if_required";
-let log_this =  log_ACTIVATED();
-let log_more =  log_this && LOG_MAP.B_LOG0_MORE;
-
-/*}}}*/
-
-    let start           =   bg_tabs_get_tabId_key(tabId, "start"         );
-    let tools_deployed  =   bg_tabs_get_tabId_key(tabId, "tools_deployed");
-    let t_load          =   bg_tabs_get_tabId_key(tabId, "t_load"        );
-    let reload_required =!!((start || tools_deployed) && !t_load);
-
-if( log_this) log_object(caller+" ● "+RELOAD_REQUIRED+": "+reload_required
-                        , { start, tools_deployed, t_load, reload_required, callers_bot:log_js.get_callers_bot() }
-                        , lb0+lf5, !log_more); // collapsed
-
-///* content_scripts_reply_message {{{*/
-//if( log_more) {
-//
-//    let content_scripts_loaded = await b_content_scripts_loaded(tabId);
-//log("content_scripts_loaded=["+content_scripts_loaded+"]");
-//
-//    let content_scripts_reply_message = bg_tabs_get_tabId_key(tabId, "content_scripts_reply_message");
-//    let                     cs_status = b_content_scripts_loaded_parse_message(tabId, content_scripts_reply_message);
-//
-//    log_object("content_scripts_reply_message", content_scripts_reply_message);
-//    log_object("cs_status", cs_status);
-//}
-///*}}}*/
-
-    if( !reload_required ) {                                return ""             ; }
-    else                   { await b_page1_RELOAD({tabId}); return RELOAD_REQUIRED; }
-};
-/*}}}*/
-/*_ b_page1_RELOAD .. B_LOG1_MESSAGE {{{*/
+/*➔ b_page1_RELOAD .. B_LOG1_MESSAGE {{{*/
 let b_page1_RELOAD = async function(_args)
 {
 /*{{{*/
@@ -510,7 +499,7 @@ if( log_this) log("%c"+SYMBOL_GEAR+"%c PAGE RELOAD SENT .. EXPECTING HEADER RECE
 if( log_more) log_sep_bot(caller, "LOG1_TAG");
 };
 /*}}}*/
-/*_ b_page1_RELOAD_GET_script .. B_LOG1_MESSAGE {{{*/
+/*➔ b_page1_RELOAD_GET_script .. B_LOG1_MESSAGE {{{*/
 let b_page1_RELOAD_GET_script = function()
 {
 /*{{{*/
@@ -533,7 +522,7 @@ if( log_more) log("%c "+caller+": ...return:\n%c"+script, lbH, lf3);
     return script;
 };
 /*}}}*/
-/*_ b_page1_RELOAD_RUN_script {{{*/
+/*➔ b_page1_RELOAD_RUN_script {{{*/
 let b_page1_RELOAD_RUN_script = function(_args)
 //t b_page1_RELOAD_RUN_script = function({ log_this })
 {
@@ -545,7 +534,49 @@ if( log_this) console.log("b_page1_RELOAD_RUN_script:\n...document.location.relo
     return { caller: "b_page1_RELOAD_RUN_script" , url: document.URL };
 };
 /*}}}*/
-/*_ b_page2_FETCH_GET_script .. B_LOG1_MESSAGE {{{*/
+/*➔ b_page1_RELOAD_if_required {{{*/
+/*{{{*/
+const RELOAD_REQUIRED     = "RELOAD REQUIRED";
+
+/*}}}*/
+let b_page1_RELOAD_if_required = async function(tabId)
+{
+/*{{{*/
+let   caller = "b_page1_RELOAD_if_required";
+let log_this =  log_ACTIVATED();
+let log_more =  log_this && LOG_MAP.B_LOG0_MORE;
+
+/*}}}*/
+
+    let start           =   bg_tabs_get_tabId_key(tabId, "start"         );
+    let tools_deployed  =   bg_tabs_get_tabId_key(tabId, "tools_deployed");
+    let t_load          =   bg_tabs_get_tabId_key(tabId, "t_load"        );
+    let reload_required =!!((start || tools_deployed) && !t_load);
+
+if( log_this) log_object(caller+" ● "+RELOAD_REQUIRED+": "+reload_required
+                        , { start, tools_deployed, t_load, reload_required, callers_bot:log_js.get_callers_bot() }
+                        , lb0+lf5, !log_more); // collapsed
+
+///* content_scripts_reply_message {{{*/
+//if( log_more) {
+//
+//    let content_scripts_loaded = await b_content_scripts_loaded(tabId);
+//log("content_scripts_loaded=["+content_scripts_loaded+"]");
+//
+//    let content_scripts_reply_message = bg_tabs_get_tabId_key(tabId, "content_scripts_reply_message");
+//    let                     cs_status = b_content_scripts_loaded_parse_message(tabId, content_scripts_reply_message);
+//
+//    log_object("content_scripts_reply_message", content_scripts_reply_message);
+//    log_object("cs_status", cs_status);
+//}
+///*}}}*/
+
+    if( !reload_required ) {                                return ""             ; }
+    else                   { await b_page1_RELOAD({tabId}); return RELOAD_REQUIRED; }
+};
+/*}}}*/
+
+/*➔ b_page2_FETCH_GET_script .. B_LOG1_MESSAGE {{{*/
 let b_page2_FETCH_GET_script = function()
 {
 /*{{{*/
@@ -569,7 +600,7 @@ if( log_more) log("%c "+caller+": ...return:\n%c"+script, lbH, lf5);
     return script;
 };
 /*}}}*/
-/*_ b_page2_FETCH_RUN_script {{{*/
+/*➔ b_page2_FETCH_RUN_script {{{*/
 let b_page2_FETCH_RUN_script = function(_args)
 //t b_page2_FETCH_RUN_script = function({ tabId, DOM_LOAD_ID, DOM_TOOLS_JS_ID, B_SCRIPT_ID })
 {
@@ -594,36 +625,6 @@ let { tabId, DOM_LOAD_ID, DOM_TOOLS_JS_ID, B_SCRIPT_ID } = _args; /* eslint-disa
 
     /*}}}*/
     return message;
-};
-/*}}}*/
-/*_ b_page0_STORE_lastError {{{*/
-let b_page0_STORE_lastError = function(tabId)
-{
-    /* CHECK */
-    if(!chrome.runtime.lastError) return "";
-
-    /* KEEP */
-    let lastError_message = chrome.runtime.lastError.message;
-    bg_tabs_set_tabId_key_val(tabId, "lastError_message", lastError_message);
-
-    /* LOG */
-    let       callers_bot  = log_js.get_callers_bot();
-    log("%c"+ callers_bot+"(TAB#"+tabId+"): ABORTING ON ERROR:\n"+lastError_message, lbH+lbF+lf2);
-
-    return lastError_message;
-};
-/*}}}*/
-/*_ b_page0_REPORT_lastError {{{*/
-let b_page0_REPORT_lastError = function(tabId, _caller, lfx)
-{
-    let lastError_message
-        = bg_tabs_get_tabId_key(tabId, "lastError_message");
-
-    if(!lastError_message ) return;
-
-log("%c"+_caller+"(TAB#"+tabId+"): ABORTED ON ERROR:\n"+lastError_message, lbH+lbF+lfx);
-log_object("TAB #"+tabId, bg_tabs_get_tabId(tabId), lbH+lf8);
-console.trace();
 };
 /*}}}*/
 

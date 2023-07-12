@@ -29,7 +29,7 @@
 const MANIFEST_VERSION      = (typeof chrome.tabs.executeScript == "undefined") ?  "V3" : "V2";
 
 const B_SCRIPT_ID           = "background_js";
-const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (230711:18h:41)"; /* eslint-disable-line no-unused-vars */
+const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (230712:02h:03)"; /* eslint-disable-line no-unused-vars */
 const DOM_TOOLS_JS_ID       = "dom_tools_js";
 const DOM_LOAD_ID           = "dom_load";
 /*}}}*/
@@ -485,7 +485,7 @@ const CHROME_SCHEME_REGEX = /.*chrome:/;
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ LISTENERS                                                                 │
 // └───────────────────────────────────────────────────────────────────────────┘
-/*_ b_addListeners {{{*/
+/*➔ b_addListeners {{{*/
 let b_addListeners = function()
 {
 /*{{{*/
@@ -509,7 +509,7 @@ console.groupEnd();
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ MANIFEST                                           MANIFEST_VERSION=="V3" │
 // └───────────────────────────────────────────────────────────────────────────┘
-/*_ b_check_manifest {{{*/
+/*➔ b_check_manifest {{{*/
 /* eslint-disable no-redeclare */
 /* eslint-disable no-undef     */
 let b_check_manifest = function()
@@ -571,14 +571,14 @@ let log_this = log_ACTIVATED();
     chrome.tabs.onActivated.addListener( bg_settings_tabs1_onActivated );
 };
 /*}}}*/
-/*_ bg_tabs_set_last_activated_tabId {{{*/
+/*➔ bg_tabs_set_last_activated_tabId {{{*/
 let            last_activated_tabId;
 let bg_tabs_set_last_activated_tabId = function(tabId )
 {
     last_activated_tabId = tabId;
 };
 /*}}}*/
-/*_ bg_tabs_get_last_activated_tabId {{{*/
+/*➔ bg_tabs_get_last_activated_tabId {{{*/
 let bg_tabs_get_last_activated_tabId = function()
 {
     return last_activated_tabId;
@@ -633,7 +633,7 @@ const B_ON_HEADER_RECEIVED = "HEADER RECEIVED";
 // to be duplicated in dom_tools.js IPC
 
 /*}}}*/
-/*_ b_onHeader1_reload ← SETTINGS7_RELOAD_PAGE {{{*/
+/*➔ b_onHeader1_reload ← SETTINGS7_RELOAD_PAGE {{{*/
 /*{{{*/
 const B_ONHEADER1_RELOAD_DELAY_MS = 100;
 
@@ -669,7 +669,7 @@ if( log_more) log_sep_bot(caller, "LOG2_TAG");
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ ALARMS                                                    B_LOG3_PRESERVE │
 // └───────────────────────────────────────────────────────────────────────────┘
-/*_ b_callback_args_delay_caller .. B_LOG3_PRESERVE {{{*/
+/*➔ b_callback_args_delay_caller .. B_LOG3_PRESERVE {{{*/
 let b_callback_args_delay_caller = function(_args)
 {
     let   caller = _args.caller;
@@ -697,7 +697,7 @@ let b_callback_args_delay_caller = function(_args)
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ MESSAGE                                                    B_LOG1_MESSAGE │
 // └───────────────────────────────────────────────────────────────────────────┘
-/*_ bg_tabs_sendMessage {{{*/
+/*➔ bg_tabs_sendMessage {{{*/
 let bg_tabs_sendMessage = async function(tabId,message,_caller)
 {
 /*{{{*/
@@ -790,7 +790,7 @@ if( log_this) log("b_sleep DONE");
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ EXPORT                                                                    │
 // └───────────────────────────────────────────────────────────────────────────┘
-/* init c l r {{{*/
+/*➔ init c l r {{{*/
 let init = () => { b_addListeners(); chrome.storage.sync.get(null, bg_store_LOAD_items); };
 let    c = log_js.clear;
 let    l = logn;
@@ -897,7 +897,7 @@ let p = function()
 
     };
 //}}}
-/*}}}*/
+
 })();
 /* LOAD {{{*/
 if(!chrome.action) chrome.action = chrome.pageAction;

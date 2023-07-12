@@ -26,7 +26,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_CONTENT_SCRIPT_ID  = "bg_content";
-const BG_CONTENT_SCRIPT_TAG =  BG_CONTENT_SCRIPT_ID +" (230711:18h:24)"; /* eslint-disable-line no-unused-vars */
+const BG_CONTENT_SCRIPT_TAG =  BG_CONTENT_SCRIPT_ID +" (230712:01h:50)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_content  = (function() {
 "use strict";
@@ -173,7 +173,6 @@ log("%c  background_import %c log_js %c background_js %c "+"●●●●●●�
 /*}}}*/
     setTimeout(bg_content_import,0);
 /*}}}*/
-
 /*{{{*/
 const BG_LAUNCH_TIME   = parseInt(new Date().getTime() / 1000) % 86400; // seconds per day
 
@@ -182,7 +181,50 @@ const ACTION_UPDATED   = "UPDATED";
 const ACTION_CACHED    = "CACHED" ;
 
 /*}}}*/
-/*_ b_content_scripts_loaded {{{*/
+
+/*➔ b_content_scripts_get_inject_time {{{*/
+let b_content_scripts_get_inject_time = function(message)
+{
+    let load_message
+        =               message
+        &&              message[DOM_LOAD_ID]
+        &&   JSON.parse(message[DOM_LOAD_ID]);
+//log_object("load_message", load_message);
+
+    return load_message
+        && load_message.sequence_number
+    ;
+};
+/*}}}*/
+/*➔ b_content_scripts_get_tools_deployed {{{*/
+let b_content_scripts_get_tools_deployed = function(message)
+{
+    let load_message
+        =               message
+        &&              message[DOM_TOOLS_JS_ID]
+        &&   JSON.parse(message[DOM_TOOLS_JS_ID]);
+//log_object("load_message", load_message);
+
+    return load_message
+        && load_message.t_load
+    ;
+};
+/*}}}*/
+/*➔ b_content_scripts_get_tools_load_time {{{*/
+let b_content_scripts_get_tools_load_time = function(message)
+{
+    let load_message
+        =               message
+        &&              message[DOM_TOOLS_JS_ID]
+        &&   JSON.parse(message[DOM_TOOLS_JS_ID]);
+//log_object("load_message", load_message);
+
+    return load_message
+        && load_message.sequence_number
+    ;
+};
+/*}}}*/
+/*➔ b_content_scripts_loaded {{{*/
 let b_content_scripts_loaded = async function(tabId,ignore_cache=false)
 {
 if(!tabId) return false;
@@ -300,7 +342,7 @@ if( log_more) log_sep_bot(caller+" "+cs_status.content_scripts_loaded, log_tag);
 }
 };
 /*}}}*/
-/*_ b_content_scripts_loaded_parse_message {{{*/
+/*➔ b_content_scripts_loaded_parse_message {{{*/
 let b_content_scripts_loaded_parse_message = function(tabId,message)
 {
     let c_s_inject_time                      = b_content_scripts_get_inject_time    (message);
@@ -318,7 +360,7 @@ let b_content_scripts_loaded_parse_message = function(tabId,message)
     };
 };
 /*}}}*/
-/*_ b_content_scripts_loaded_update {{{*/
+/*➔ b_content_scripts_loaded_update {{{*/
 let b_content_scripts_loaded_update = async function(tabId)
 {
 /*LOG{{{*/
@@ -415,60 +457,13 @@ if( log_more) log("%c "+caller+": (MANIFEST_VERSION=='V2'): ..... chrome.tabs.ex
 if(log_more) log_object("content_scripts_reply_message", content_scripts_reply_message, lf7);
 };
 /*}}}*/
-/*_ b_content_scripts_get_inject_time {{{*/
-let b_content_scripts_get_inject_time = function(message)
-{
-    let load_message
-        =               message
-        &&              message[DOM_LOAD_ID]
-        &&   JSON.parse(message[DOM_LOAD_ID]);
-//log_object("load_message", load_message);
 
-    return load_message
-        && load_message.sequence_number
-    ;
-};
-/*}}}*/
-/*_ b_content_scripts_get_tools_load_time {{{*/
-let b_content_scripts_get_tools_load_time = function(message)
-{
-    let load_message
-        =               message
-        &&              message[DOM_TOOLS_JS_ID]
-        &&   JSON.parse(message[DOM_TOOLS_JS_ID]);
-//log_object("load_message", load_message);
-
-    return load_message
-        && load_message.sequence_number
-    ;
-};
-/*}}}*/
-/*_ b_content_scripts_get_tools_deployed {{{*/
-let b_content_scripts_get_tools_deployed = function(message)
-{
-    let load_message
-        =               message
-        &&              message[DOM_TOOLS_JS_ID]
-        &&   JSON.parse(message[DOM_TOOLS_JS_ID]);
-//log_object("load_message", load_message);
-
-    return load_message
-        && load_message.t_load
-    ;
-};
-/*}}}*/
-
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │ UTIL                                                                      │
-// └───────────────────────────────────────────────────────────────────────────┘
 /*_ b_get_time_before_or_after {{{*/
 /*{{{*/
 const M_SEC = 60;         // seonds per minute
 const H_SEC = 60 * M_SEC; // seonds per hour
 const D_SEC = 24 * H_SEC; // seonds per day
 /*}}}*/
-
-/*_ b_get_time_before_or_after {{{*/
 let b_get_time_before_or_after = function(sec_from, sec_to=0)
 {
 //log("isNaN(sec_from): "+isNaN(sec_from));
@@ -515,7 +510,7 @@ let b_get_time_elapsed_dhms = function(d,h,m,s)
     return sb.trim();
 };
 /*}}}*/
-/*}}}*/
+
 /*➔ EXPORT {{{*/
     return {  name : "bg_content"
         , b_content_scripts_get_inject_time

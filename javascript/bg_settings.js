@@ -24,7 +24,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_SETTINGS_SCRIPT_ID  = "bg_settings";
-const BG_SETTINGS_SCRIPT_TAG =  BG_SETTINGS_SCRIPT_ID +" (230711:18h:30)"; /* eslint-disable-line no-unused-vars */
+const BG_SETTINGS_SCRIPT_TAG =  BG_SETTINGS_SCRIPT_ID +" (230712:01h:59)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_settings  = (function() {
 "use strict";
@@ -220,7 +220,7 @@ const B_TABS_UPDATED = "TAB UPDATED";
 }}}*/
 /*}}}*/
 
-/*_ tabs1_onActivated {{{*/
+/*➔ tabs1_onActivated {{{*/
 /*{{{*/
 const B_TABS_ACTIVATED             = "TAB ACTIVATED";
 const B_TABS_ACTIVATED_TRACKED_URL = "TRACKED URL";
@@ -310,7 +310,7 @@ if( log_more) log_object("url=["+url+"]");
 /*}}}*/
 };
 /*}}}*/
-/*_ tabs2_onUpdated {{{*/
+/*➔ tabs2_onUpdated {{{*/
 let tabs2_onUpdated = async function(tabId, changeInfo, tab)
 {
 /*{{{*/
@@ -383,7 +383,7 @@ if( log_more) log_sep_bot_FOR_caller_callee(caller, "bg_tabs_sendMessage: "+acti
 /*}}}*/
 };
 /*}}}*/
-/*_ tabs3_onRemoved {{{*/
+/*➔ tabs3_onRemoved {{{*/
 /*{{{*/
 const B_TABS_REMOVED = "TAB REMOVED";
 /* DOC {{{
@@ -422,7 +422,7 @@ if( log_ACTIVATED() ) log_STORAGE();
 };
 /*}}}*/
 
-/*_ tabs4_query_active_tab_url {{{*/
+/*➔ tabs4_query_active_tab_url {{{*/
 /*{{{*/
 const B_GET_ACTIVE_TAB_URL  = "GET ACTIVE TAB URL";
 
@@ -559,7 +559,8 @@ if( log_this) log("➔ %c"+SD3+"%c SKIPPING tabs6_get_url_settings %c"+why_not, 
 } finally { if( log_more) log_sep_bot(caller, "LOG3_TAG"); }
 };
 /*}}}*/
-/*_ tabs6_get_url_settings {{{*/
+
+/*➔ tabs6_get_url_settings {{{*/
 const       B_GET_URL_SETTINGS = "GET URL SETTINGS";
 let tabs6_get_url_settings = async function(tabId, url)
 {
@@ -736,9 +737,9 @@ if(log_more) log_object("NOTHING ACTIVATED TO SYNC WITH", bg_tabs_get_tabId(tabI
     return { name : "bg_settings"
         , tabs1_onActivated
         , tabs2_onUpdated
+        , tabs3_onRemoved
         , tabs4_query_active_tab_url
         , tabs6_get_url_settings
-        , tabs3_onRemoved
     };
 /*}}}*/
 }());

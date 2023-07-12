@@ -19,7 +19,7 @@
 
 /* eslint-enable  no-redeclare        */
 const BG_STORE_SCRIPT_ID  = "bg_store";
-const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (230711:18h:39)"; /* eslint-disable-line no-unused-vars */
+const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (230712:01h:37)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_store  = (function() {
 "use strict";
@@ -147,32 +147,85 @@ log("%c    bg_store_import %c log_js %c background_js %c bg_content %c bg_csp %c
     setTimeout(bg_store_import,0);
 /*}}}*/
 
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │ STORE                                                                     │
-// └───────────────────────────────────────────────────────────────────────────┘
-/*_ bg_store_SAVE_items {{{*/
-let bg_store_SAVE_items = function(items,_caller)
+
+/*➔ bg_store_DEL_url_settings .. B_LOG8_STORE {{{*/
+let bg_store_DEL_url_settings = function(tabId, _caller)
 {
 /*{{{*/
-let   caller = "bg_store_SAVE_items";
-let log_this =             LOG_MAP.B_LOG8_STORE;
+let   caller = "bg_store_DEL_url_settings";
+let log_this = LOG_MAP.B_LOG8_STORE;
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
-//  let items_tag = ellipsis(JSON.stringify(items), 70);
-    let items_tag = log_js.log_json_prettify(items);
-if(      log_more) log_object(caller+": chrome.storage.sync.set("+items_tag+")", { ...items , callers: LF+get_callers() }, lb0);
-else if( log_this) log       ("%c "+caller+"%c"+items_tag+"%c"+_caller
-                         ,lbL+lb3    ,lbR+lf8       ,lbH             );
+if( log_this) log("%c "+caller+"%c"+_caller, lbL+lf8, lbR+lf9);
+if( log_more) log_caller();
 /*}}}*/
-    try {
-        chrome.storage.sync.set( items );
+    /* STORAGE KEY .. f(url) {{{*/
+    let             url = bg_tabs_get_tabId_key(tabId, "url");
+    if(            !url) {
+        log("%c"+_caller+" → "+caller+"%c NO URL"+LF+"%c"+get_callers()
+            ,lbL+lf8                  ,lbR+lb2       ,lf8              );
+
+        return;
     }
-    catch(error) {
-        console.error(B_SCRIPT_ID+" ERROR:\n"+ error);
-    }
+    let storage_url_key = bg_store_GET_url_key (        url );
+    /*}}}*/
+    /* REMOVE ENTRY {{{*/
+
+if( log_this) log("%c STORAGE REMOVE SETTINGS %c" + storage_url_key  , lbL+lf8, lbR+lf8);
+
+if( log_this) log_object(caller+"chrome.storage.sync.remove( storage_url_key )", { storage_url_key , callers: LF+get_callers() }, lf2);
+        chrome.storage.sync.remove( storage_url_key );
+
+    /*}}}*/
 };
 /*}}}*/
-/*_ bg_store_LOAD_items {{{*/
+/*➔ bg_store_GET_url_domain {{{*/
+let regex_DOMAIN   = new RegExp("^(\\w*:\/\/[^\/]+)\/?.*");
+let bg_store_GET_url_domain = function(url)
+{
+    if(   !url ) return "";
+
+    let domain
+        = (url.indexOf("://" ) > 0)
+        ?  url.split  (  "/" )[2]
+        :  url.split  (  "/" )[0]
+    ;
+
+    return  domain.replace(regex_DOMAIN, "$1") || bg_store_PARSE_url(url).scheme+"://";
+};
+/*}}}*/
+/*➔ bg_store_GET_url_key {{{*/
+let bg_store_GET_url_key = function(url)
+{
+/* DOC {{{
+:!start explorer "https://developer.mozilla.org/en-US/docs/Web/API/URL"
+
+    returns
+    URL HREF WITH
+    - [search parameter] removed
+    - [hash    fragment] removed
+    - removed
+
+}}}*/
+
+    let idx1 = url.indexOf("#");
+    let idx2 = url.indexOf("?");
+
+    let idx = ((idx1 > 0) && (idx2 > 0)) ? Math.min(idx1, idx2)
+    :          (idx1 > 0)                ?          idx1
+    :          (idx2 > 0)                ?                idx2
+    :                                                          0;
+
+    let base_name
+        = (idx > 0)
+        ?  url.substring(0,idx)
+        :  url
+    ;
+
+    return base_name;
+};
+/*}}}*/
+/*➔ bg_store_LOAD_items {{{*/
 let bg_store_LOAD_items = function(items)
 {
     /* LOAD LOG_MAP {{{*/
@@ -216,70 +269,29 @@ if( log_this) log_sep_bot(B_SCRIPT_ID+" manifest ("+MANIFEST_VERSION+") STORAGE"
 /*}}}*/
 };
 /*}}}*/
-
-/*_ bg_store_GET_url_key {{{*/
-let bg_store_GET_url_key = function(url)
-{
-/* DOC {{{
-:!start explorer "https://developer.mozilla.org/en-US/docs/Web/API/URL"
-
-    returns
-    URL HREF WITH
-    - [search parameter] removed
-    - [hash    fragment] removed
-    - removed
-
-}}}*/
-
-    let idx1 = url.indexOf("#");
-    let idx2 = url.indexOf("?");
-
-    let idx = ((idx1 > 0) && (idx2 > 0)) ? Math.min(idx1, idx2)
-    :          (idx1 > 0)                ?          idx1
-    :          (idx2 > 0)                ?                idx2
-    :                                                          0;
-
-    let base_name
-        = (idx > 0)
-        ?  url.substring(0,idx)
-        :  url
-    ;
-
-    return base_name;
-};
-/*}}}*/
-/*_ bg_store_DEL_url_settings .. B_LOG8_STORE {{{*/
-let bg_store_DEL_url_settings = function(tabId, _caller)
+/*➔ bg_store_SAVE_items {{{*/
+let bg_store_SAVE_items = function(items,_caller)
 {
 /*{{{*/
-let   caller = "bg_store_DEL_url_settings";
-let log_this = LOG_MAP.B_LOG8_STORE;
+let   caller = "bg_store_SAVE_items";
+let log_this =             LOG_MAP.B_LOG8_STORE;
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
-if( log_this) log("%c "+caller+"%c"+_caller, lbL+lf8, lbR+lf9);
-if( log_more) log_caller();
+//  let items_tag = ellipsis(JSON.stringify(items), 70);
+    let items_tag = log_js.log_json_prettify(items);
+if(      log_more) log_object(caller+": chrome.storage.sync.set("+items_tag+")", { ...items , callers: LF+get_callers() }, lb0);
+else if( log_this) log       ("%c "+caller+"%c"+items_tag+"%c"+_caller
+                         ,lbL+lb3    ,lbR+lf8       ,lbH             );
 /*}}}*/
-    /* STORAGE KEY .. f(url) {{{*/
-    let             url = bg_tabs_get_tabId_key(tabId, "url");
-    if(            !url) {
-        log("%c"+_caller+" → "+caller+"%c NO URL"+LF+"%c"+get_callers()
-            ,lbL+lf8                  ,lbR+lb2       ,lf8              );
-
-        return;
+    try {
+        chrome.storage.sync.set( items );
     }
-    let storage_url_key = bg_store_GET_url_key (        url );
-    /*}}}*/
-    /* REMOVE ENTRY {{{*/
-
-if( log_this) log("%c STORAGE REMOVE SETTINGS %c" + storage_url_key  , lbL+lf8, lbR+lf8);
-
-if( log_this) log_object(caller+"chrome.storage.sync.remove( storage_url_key )", { storage_url_key , callers: LF+get_callers() }, lf2);
-        chrome.storage.sync.remove( storage_url_key );
-
-    /*}}}*/
+    catch(error) {
+        console.error(B_SCRIPT_ID+" ERROR:\n"+ error);
+    }
 };
 /*}}}*/
-/*_ bg_store_SET_url_settings .. B_LOG8_STORE {{{*/
+/*➔ bg_store_SET_url_settings .. B_LOG8_STORE {{{*/
 /*{{{*/
 const B_SET_URL_SETTINGS   = "SET URL SETTINGS";
 
@@ -369,21 +381,7 @@ if( log_more) log_object("url_items"                    , url_items      ,     l
     /*}}}*/
 };
 /*}}}*/
-/*_ bg_store_GET_url_domain {{{*/
-let regex_DOMAIN   = new RegExp("^(\\w*:\/\/[^\/]+)\/?.*");
-let bg_store_GET_url_domain = function(url)
-{
-    if(   !url ) return "";
 
-    let domain
-        = (url.indexOf("://" ) > 0)
-        ?  url.split  (  "/" )[2]
-        :  url.split  (  "/" )[0]
-    ;
-
-    return  domain.replace(regex_DOMAIN, "$1") || bg_store_PARSE_url(url).scheme+"://";
-};
-/*}}}*/
 /*_ bg_store_PARSE_url {{{*/
 const regexp_URL = new RegExp("^([^:]+):\\/\\/(?:([^@]+)@)?([^\\/:]*)?(?::([\\d]+))?(?:(\\/[^#]*)(?:#(.*))?)?$", "i");
 /*..............................scheme_.........userinfo...host______.....port_____....path______....frag...........*/
@@ -406,10 +404,6 @@ log_object(url, result, lf9, false);
     return result;
 };
 /*}}}*/
-
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │ UTIL                                                                      │
-// └───────────────────────────────────────────────────────────────────────────┘
 /*_ bg_store_Object_same_values {{{*/
 let bg_store_Object_same_values = function(o1,o2)
 {

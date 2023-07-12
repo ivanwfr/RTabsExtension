@@ -19,7 +19,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_TABS_SCRIPT_ID  = "bg_tabs";
-const BG_TABS_SCRIPT_TAG =  BG_TABS_SCRIPT_ID +" (230711:18h:20)"; /* eslint-disable-line no-unused-vars */
+const BG_TABS_SCRIPT_TAG =  BG_TABS_SCRIPT_ID +" (230712:01h:38)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_tabs  = (function() {
 "use strict";
@@ -136,7 +136,8 @@ let TABS_MAP       = new Map();
 let tabs_Map_cache = new Map();
 
 /*}}}*/
-/*_ bg_tabs_log_TABS_MAP {{{*/
+
+/*➔ bg_tabs_log_TABS_MAP {{{*/
 let bg_tabs_log_TABS_MAP = function()
 {
     /* SESSION WORKING TABS */
@@ -157,7 +158,7 @@ let bg_tabs_log_TABS_MAP = function()
     log_TAB_HANDLERS_CALLS();
 };
 /*}}}*/
-/*_ bg_tabs_log_LAST_ACTIVATED_TAB {{{*/
+/*➔ bg_tabs_log_LAST_ACTIVATED_TAB {{{*/
 let bg_tabs_log_LAST_ACTIVATED_TAB = function(label,callers=get_callers())
 {
 
@@ -179,7 +180,7 @@ let bg_tabs_log_LAST_ACTIVATED_TAB = function(label,callers=get_callers())
 };
 /*}}}*/
 
-/*_ bg_tabs_set_tabId_key_items .. B_LOG7_TABS {{{*/
+/*➔ bg_tabs_set_tabId_key_items .. B_LOG7_TABS {{{*/
 let bg_tabs_set_tabId_key_items = function(tabId, key, items)
 {
 /*{{{*/
@@ -243,7 +244,7 @@ if(log_more) log("%c"+SBS+" %c SET TAB"+tabId+"%c"+key+" %c"+itemKey_val
     /*}}}*/
 };
 /*}}}*/
-/*_ bg_tabs_set_tabId_key_val {{{*/
+/*➔ bg_tabs_set_tabId_key_val {{{*/
 let bg_tabs_set_tabId_key_val = function(tabId, key, val    )
 {
     if(val == undefined) {
@@ -260,7 +261,7 @@ let bg_tabs_set_tabId_key_val = function(tabId, key, val    )
 };
 /*}}}*/
 
-/*_ bg_tabs_get_tabId_key {{{*/
+/*➔ bg_tabs_get_tabId_key {{{*/
 let bg_tabs_get_tabId_key     = function(tabId, key, val="" )
 {
     let tab_items = TABS_MAP.get( tabId ) ;
@@ -269,14 +270,14 @@ let bg_tabs_get_tabId_key     = function(tabId, key, val="" )
     else            return                   val;
 };
 /*}}}*/
-/*_ bg_tabs_get_tabId {{{*/
+/*➔ bg_tabs_get_tabId {{{*/
 let bg_tabs_get_tabId     = function(tabId)
 {
     return          TABS_MAP.get( tabId );
 };
 /*}}}*/
 
-/*_ bg_tabs_del_tabId_key {{{*/
+/*➔ bg_tabs_del_tabId_key {{{*/
 let bg_tabs_del_tabId_key     = function(tabId, key         )
 {
 /*{{{*/
@@ -297,7 +298,7 @@ if( log_more) log("%c "+caller+"%c TAB #"+tabId+"%c"+key
     }
 };
 /*}}}*/
-/*_ bg_tabs_del_tabId .. B_LOG7_TABS {{{*/
+/*➔ bg_tabs_del_tabId .. B_LOG7_TABS {{{*/
 let bg_tabs_del_tabId = function(tabId = bg_tabs_get_last_activated_tabId())
 {
 /*{{{*/
@@ -324,7 +325,7 @@ if( log_more) log_object("→ INTO CACHE", item, lbH+lbF+lf2, lbH+lf2);
 };
 /*}}}*/
 
-/*_ bg_tabs_url_settings_from_cached .. B_LOG7_TABS {{{*/
+/*➔ bg_tabs_url_settings_from_cached .. B_LOG7_TABS {{{*/
 let bg_tabs_url_settings_from_cached = function(url)
 {
 /*{{{*/
@@ -348,7 +349,7 @@ if( log_more && item) log_object(SAL+" "+item.from, item, lbF+lbH+lf8);
     return item;
 };
 /*}}}*/
-/*_ bg_tabs_url_settings_from_others .. B_LOG7_TABS {{{*/
+/*➔ bg_tabs_url_settings_from_others .. B_LOG7_TABS {{{*/
 /* {{{
 :!start explorer "https://www.w3schools.com/jsref/jsref_some.asp"
 :!start explorer "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys"

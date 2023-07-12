@@ -20,7 +20,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_CSP_SCRIPT_ID  = "bg_csp";
-const BG_CSP_SCRIPT_TAG =  BG_CSP_SCRIPT_ID +" (230710:15h:59)"; /* eslint-disable-line no-unused-vars */
+const BG_CSP_SCRIPT_TAG =  BG_CSP_SCRIPT_ID +" (230711:23h:09)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_csp  = (function() {
 "use strict";
@@ -106,12 +106,10 @@ let bg_csp_import = function()
     LOG_MAP                               = background_js.LOG_MAP;
 
     /*}}}*/
-    /*_ bg_content {{{*/
-    /*}}}*/
+    //___________ bg_content
     //___________ bg_csp
     //___________ bg_header
-    /*_ bg_message {{{*/
-    /*}}}*/
+    //___________ bg_message
     //___________ bg_page
     //___________ bg_settings
     /*_ bg_store {{{*/
