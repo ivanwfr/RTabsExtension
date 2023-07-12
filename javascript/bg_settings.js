@@ -15,6 +15,7 @@
 /* globals  log_js                    */
 /* globals  background_js             */
 /* globals  bg_content                */
+/* globals  bg_event                  */
 /* globals  bg_message                */
 /* globals  bg_page                   */
 /* exported bg_settings               */
@@ -24,7 +25,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_SETTINGS_SCRIPT_ID  = "bg_settings";
-const BG_SETTINGS_SCRIPT_TAG =  BG_SETTINGS_SCRIPT_ID +" (230712:01h:59)"; /* eslint-disable-line no-unused-vars */
+const BG_SETTINGS_SCRIPT_TAG =  BG_SETTINGS_SCRIPT_ID +" (230712:21h:35)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_settings  = (function() {
 "use strict";
@@ -36,6 +37,7 @@ let bg_settings  = (function() {
 :e javascript/background.js
 :e javascript/bg_content.js
 :e javascript/bg_csp.js
+:e javascript/bg_event.js
 :e javascript/bg_header.js
 :e javascript/bg_message.js
 :e javascript/bg_page.js
@@ -73,11 +75,8 @@ let CHROME_SCHEME;
 let LOG_MAP;
 let MANIFEST_VERSION;
 
-let b_callback_args_delay_caller;
 let b_is_paused;
-let bg_tabs_get_last_activated_tabId;
 let bg_tabs_sendMessage;
-let bg_tabs_set_last_activated_tabId;
 let log_ACTIVATED;
 let log_IGNORING;
 let log_STORAGE;
@@ -90,6 +89,12 @@ let b_content_scripts_get_tools_deployed;
 
 /*}}}*/
 //______________ bg_csp
+/*_ bg_event {{{*/
+let bg_event_get_last_activated_tabId;
+let bg_event_set_last_activated_tabId;
+let bg_event_call_later;
+
+/*}}}*/
 //______________ bg_header
 /*_ bg_message {{{*/
 let b_runtime_onMessage_CB_reply;
@@ -103,6 +108,11 @@ let b_page1_RELOAD_if_required;
 
 /*}}}*/
 //______________ bg_settings
+/*_ bg_store {{{*/
+let bg_store_GET_url_domain;
+let bg_store_GET_url_key;
+
+/*}}}*/
 /*_ bg_tabs {{{*/
 let bg_tabs_set_tabId_key_items;
 let bg_tabs_set_tabId_key_val;
@@ -115,11 +125,6 @@ let bg_tabs_del_tabId_key;
 
 let bg_tabs_url_settings_from_cached;
 let bg_tabs_url_settings_from_others;
-
-/*}}}*/
-/*_ bg_store {{{*/
-let bg_store_GET_url_domain;
-let bg_store_GET_url_key;
 
 /*}}}*/
 /*_ bg_settings_import {{{*/
@@ -152,12 +157,9 @@ let bg_settings_import = function()
     LOG_MAP                               = background_js.LOG_MAP;
     MANIFEST_VERSION                      = background_js.MANIFEST_VERSION;
 
-    b_callback_args_delay_caller          = background_js.b_callback_args_delay_caller;
     b_content_scripts_get_tools_deployed  = background_js.b_content_scripts_get_tools_deployed;
     b_is_paused                           = background_js.b_is_paused;
-    bg_tabs_get_last_activated_tabId      = background_js.bg_tabs_get_last_activated_tabId;
     bg_tabs_sendMessage                   = background_js.bg_tabs_sendMessage;
-    bg_tabs_set_last_activated_tabId      = background_js.bg_tabs_set_last_activated_tabId;
     log_ACTIVATED                         = background_js.log_ACTIVATED;
     log_IGNORING                          = background_js.log_IGNORING;
     log_STORAGE                           = background_js.log_STORAGE;
@@ -170,6 +172,12 @@ let bg_settings_import = function()
 
     /*}}}*/
     //___________ bg_csp
+    //_ bg_event {{{*/
+    bg_event_get_last_activated_tabId = bg_event.bg_event_get_last_activated_tabId;
+    bg_event_set_last_activated_tabId = bg_event.bg_event_set_last_activated_tabId;
+    bg_event_call_later               = bg_event.bg_event_call_later;
+
+    /*}}}*/
     //___________ bg_header
     /*_ bg_message {{{*/
     b_runtime_onMessage_CB_reply                 = bg_message.b_runtime_onMessage_CB_reply;
@@ -202,9 +210,9 @@ let bg_settings_import = function()
     bg_tabs_url_settings_from_others = bg_tabs.bg_tabs_url_settings_from_others;
 
     /*}}}*/
-//................._import    log_js    background_js    bg_content    bg_csp    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
-log("%c bg_settings_import %c log_js %c background_js %c bg_content %c ______ %c _________ %c bg_message %c bg_page %c "+"●●●●●●●● %c bg_store %c bg_tabs "
-    ,lbH+lb7              ,lf0      ,lf1             ,lf2          ,lf3      ,lf4         ,lf5          ,lf6       ,lbH+lf7       ,lf8        ,lf9         );
+//................._import    log_js    background_js    bg_content    bg_csp    bg_event    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
+log("%c bg_settings_import %c log_js %c background_js %c bg_content %c ______ %c bg_event %c _________ %c __________ %c _______ %c "+"●●●●●●●● %c ________ %c _______ "
+    ,lbH+lb8              ,lf0      ,lf1             ,lf2          ,lf3      ,lf4        ,lf5         ,lf6          ,lf7       ,lf8+lbH       ,lf9        ,lf0         );
 };
 /*}}}*/
     setTimeout(bg_settings_import,0);
@@ -274,7 +282,7 @@ if( log_more) log_object("url=["+url+"]");
     /*}}}*/
     /* [tabId] (last activated) {{{*/
     if(activeInfo.tabId) {
-        bg_tabs_set_last_activated_tabId( activeInfo.tabId );
+        bg_event_set_last_activated_tabId( activeInfo.tabId );
 
     }
     /*}}}*/
@@ -294,8 +302,8 @@ if( log_more) log_object("url=["+url+"]");
 /*}}}*/
 } catch(error) { /*{{{*/
     if(error == "Error: Tabs cannot be edited right now (user may be dragging a tab).")
-        b_callback_args_delay_caller({            caller
-                                     , callback : tabs1_onActivated // signaure: (activeInfo) .. ({tabId , [status]})
+        bg_event_call_later({            caller
+                                     , callback : tabs1_onActivated // signature: (activeInfo) .. ({tabId , [status]})
                                      ,     args : activeInfo
                                      ,    delay : B_TABS_ACTIVATED_DELAY_MS
         });
@@ -315,7 +323,7 @@ let tabs2_onUpdated = async function(tabId, changeInfo, tab)
 {
 /*{{{*/
 if( b_is_paused() ) { log("%c"+SYMBOL_CONSTRUCTION+" PAUSED in "+caller, lbb+lbH+lf1); return; }
-let   caller = "tabs2_onUpdated(tabId "+tabId+")";
+let   caller = "tabs2_onUpdated";
 let log_this = LOG_MAP.B_LOG7_TABS || LOG_MAP.B_LOG9_STAGE;
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
@@ -328,7 +336,7 @@ let storage_url_key = bg_store_GET_url_key(tab.url);
 
 //  let action_tags = ellipsis(JSON.stringify(changeInfo), 60);
     let action_tags = log_js.log_json_prettify(changeInfo);
-if( log_more) log_sep_top(caller+" "+action_tags, "LOG1_TAG");
+if( log_more) log_sep_top(caller+" ● "+action_tags, "LOG1_TAG");
 if( log_this) log("%c"+SD1+"%c "+B_TABS_UPDATED+"%c"+storage_url_key           +" %c changeInfo %c"+action_tags
                   ,lbB+lf1 ,lbH+lfX[l_x]        ,lbH+lb0                         ,lbL+lfX[l_x] ,lbR+lfX[l_x]   );
 if( log_more) log_object("tab" , tab   , lbH+lf9);
@@ -336,10 +344,8 @@ if( log_more) log_object(caller+": TABS #"+tab.id, bg_tabs_get_tabId(tab.id), lb
 if( log_more) log_caller();
 /*}}}*/
 try {
-    /* [bg_tabs_set_last_activated_tabId] {{{*/
-    let onUpdated_label = "onUpdated";
-
-    bg_tabs_set_last_activated_tabId( tab.id );
+    /* [bg_event_set_last_activated_tabId] {{{*/
+    bg_event_set_last_activated_tabId( tab.id );
     /*}}}*/
     /* NEW [tab.url] .. DISCARD [bg_tabs entry] {{{*/
     let url_was  = bg_tabs_get_tabId_key(tab.id, "url", "");
@@ -352,9 +358,9 @@ try {
 
         if( url_discarded )
         {
-            onUpdated_label += " .. URL DISCARD";
-if( log_more) log("%c "+onUpdated_label+": %c"+ log_json({ WAS : url_was , NEW : tab.url})
-    ,              lbF+lbH+lf2            ,lbH+lf9);
+            action_tags += " .. URL DISCARD";
+if( log_more) log("%c "+action_tags+": %c"+ log_json({ WAS : url_was , NEW : tab.url})
+    ,              lbF+lbH+lf2        ,lbH+lf9                                        );
 
             bg_tabs_del_tabId(tab.id);
         }
@@ -369,15 +375,17 @@ if( log_more) log("%c "+onUpdated_label+": %c"+ log_json({ WAS : url_was , NEW :
         if( start || tools_deployed)
         {
 if( log_more) log_sep_top_FOR_caller_callee(caller, "bg_tabs_sendMessage: "+action_tags);
-            let  result = await                    bg_tabs_sendMessage(tabId, { cmd: "t_load" }, caller);
+            let  result = await                      bg_tabs_sendMessage(tabId, { cmd: "t_load" }, caller);
 if( log_more) log_sep_bot_FOR_caller_callee(caller, "bg_tabs_sendMessage: "+action_tags);
 
             if( log_more) log_object("result", result);
+
+            action_tags += " ● SENDING MESSAGE [t_load]";
         }
     }
     /*}}}*/
 } finally { /*{{{*/
-    if( log_more) log_sep_bot(caller+" "+action_tags, "LOG1_TAG");
+    if( log_more) log_sep_bot(caller+" ● "+action_tags, "LOG1_TAG");
     if( log_ACTIVATED() ) log_STORAGE();
 }
 /*}}}*/
@@ -497,11 +505,11 @@ if( log_more) log_caller();
 if( log_more && active_tab) log_object("active_tab", active_tab, lbH+lf3);
 //log_object(caller+": message", message, lbH+lf8);
     /* TRACK: currently active tab {{{*/
-    if(active_tab && active_tab.id && !bg_tabs_get_last_activated_tabId())
+    if(active_tab && active_tab.id && !bg_event_get_last_activated_tabId())
     {
-if( log_this) log(caller+": %c sending tabId value to bg_tabs_set_last_activated_tabId("+active_tab.id+")", lbb+lbH+lf3);
+if( log_this) log(caller+": %c sending tabId value to bg_event_set_last_activated_tabId("+active_tab.id+")", lbb+lbH+lf3);
 
-        bg_tabs_set_last_activated_tabId( active_tab.id );
+        bg_event_set_last_activated_tabId( active_tab.id );
     }
     /*}}}*/
 //    /* 1/3 TAB HAS NO URL {{{*/

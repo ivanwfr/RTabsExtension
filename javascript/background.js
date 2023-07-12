@@ -16,11 +16,9 @@
 /* globals  log_js                    */
 /* exported background_js             */
 /* globals  bg_content                */
-// globals  bg_csp                    */
-/* globals  bg_header                 */
+/* globals  bg_event                  */
 /* globals  bg_message                */
 /* globals  bg_page                   */
-/* globals  bg_settings               */
 /* globals  bg_store                  */
 /* globals  bg_tabs                   */
 
@@ -29,7 +27,7 @@
 const MANIFEST_VERSION      = (typeof chrome.tabs.executeScript == "undefined") ?  "V3" : "V2";
 
 const B_SCRIPT_ID           = "background_js";
-const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (230712:02h:03)"; /* eslint-disable-line no-unused-vars */
+const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (230712:21h:38)"; /* eslint-disable-line no-unused-vars */
 const DOM_TOOLS_JS_ID       = "dom_tools_js";
 const DOM_LOAD_ID           = "dom_load";
 /*}}}*/
@@ -43,6 +41,7 @@ let background_js = (function() {
 "● javascript/background.js
 :e javascript/bg_content.js
 :e javascript/bg_csp.js
+:e javascript/bg_event.js
 :e javascript/bg_header.js
 :e javascript/bg_message.js
 :e javascript/bg_page.js
@@ -69,7 +68,6 @@ let   ellipsis
     , log
     , log_caller
     , log_object
-    , log_permission
     , log_sep_bot
     , log_sep_top
     , mPadEnd
@@ -80,26 +78,28 @@ let   ellipsis
 
 /*}}}*/
 //______________background_js
-/*_ bg_header {{{*/
-let bg_header_addListener;
+/*_ bg_content {{{*/
+let b_content_scripts_loaded;
 
 /*}}}*/
+//______________ bg_csp
+/*_ bg_event {{{*/
+let bg_event_addListeners;
+let bg_event_get_last_activated_tabId;
+
+/*}}}*/
+    //__________ bg_header
 /*_ bg_message {{{*/
-let b_runtime_onMessage_addListener;
 let b_runtime_onMessage_CB_TAB_start;
 let b_runtime_onMessage_CB_TAB_stop;
 
 /*}}}*/
-/*_ bg_page {{{*/
-let b_POPUP_pageAction;
-let b_page1_RELOAD;
-let b_page1_RELOAD_if_required;
-
-/*}}}*/
-/*_ bg_settings {{{*/
-let bg_settings_tabs1_onActivated;
-let bg_settings_tabs2_onUpdated;
-let bg_settings_tabs3_onRemoved;
+    //__________ bg_page
+    //__________ bg_settings
+/*_ bg_store {{{*/
+let bg_store_GET_url_domain;
+let bg_store_LOAD_items;
+let bg_store_SAVE_items;
 
 /*}}}*/
 /*_ bg_tabs {{{*/
@@ -108,16 +108,6 @@ let bg_tabs_get_tabId_key;
 let bg_tabs_log_LAST_ACTIVATED_TAB;
 let bg_tabs_log_TABS_MAP;
 let bg_tabs_set_tabId_key_val;
-
-/*}}}*/
-/*_ bg_store_js {{{*/
-let bg_store_GET_url_domain;
-let bg_store_LOAD_items;
-let bg_store_SAVE_items;
-
-/*}}}*/
-/*_ bg_content {{{*/
-let b_content_scripts_loaded;
 
 /*}}}*/
 /*_ background_import {{{*/
@@ -140,7 +130,6 @@ let background_import = function()
     log                                 = log_js.log;
     log_caller                          = log_js.log_caller;
     log_object                          = log_js.log_object;
-    log_permission                      = log_js.log_permission;
     log_sep_bot                         = log_js.log_sep_bot;
     log_sep_top                         = log_js.log_sep_top;
     mPadEnd                             = log_js.mPadEnd;
@@ -154,29 +143,21 @@ let background_import = function()
     b_content_scripts_loaded                = bg_content.b_content_scripts_loaded;
 
     /*}}}*/
-    //_ bg_header {{{*/
-    bg_header_addListener       = bg_header.bg_header_addListener;
+    //___________ bg_csp
+    //_ bg_event {{{*/
+    bg_event_addListeners             = bg_event.bg_event_addListeners;
+    bg_event_get_last_activated_tabId = bg_event.bg_event_get_last_activated_tabId;
 
     /*}}}*/
+    //___________ bg_header
     /*_ bg_message {{{*/
     b_runtime_onMessage_CB_TAB_start             = bg_message.b_runtime_onMessage_CB_TAB_start;
     b_runtime_onMessage_CB_TAB_stop              = bg_message.b_runtime_onMessage_CB_TAB_stop;
-    b_runtime_onMessage_addListener              = bg_message.b_runtime_onMessage_addListener;
 
     /*}}}*/
-    /*_ bg_page {{{*/
-    b_POPUP_pageAction          = bg_page.b_POPUP_pageAction;
-    b_page1_RELOAD              = bg_page.b_page1_RELOAD;
-    b_page1_RELOAD_if_required  = bg_page.b_page1_RELOAD_if_required;
-
-    /*}}}*/
-    /*_ bg_settings {{{*/
-    bg_settings_tabs1_onActivated           = bg_settings.tabs1_onActivated;
-    bg_settings_tabs2_onUpdated             = bg_settings.tabs2_onUpdated;
-    bg_settings_tabs3_onRemoved             = bg_settings.tabs3_onRemoved;
-
-    /*}}}*/
-    /*_ bg_store_js {{{*/
+    //___________ bg_page
+    //___________ bg_settings
+    /*_ bg_store {{{*/
     bg_store_GET_url_domain   = bg_store.bg_store_GET_url_domain;
     bg_store_LOAD_items       = bg_store.bg_store_LOAD_items;
     bg_store_SAVE_items       = bg_store.bg_store_SAVE_items;
@@ -190,9 +171,9 @@ let background_import = function()
     bg_tabs_set_tabId_key_val        = bg_tabs.bg_tabs_set_tabId_key_val;
 
     /*}}}*/
-//................._import    log_js    background_js    bg_content    bg_csp    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
-log("%c  background_import %c log_js %c "+"●●●●●●●●●● %c bg_content %c bg_csp %c bg_header %c bg_message %c bg_page %c bg_settings %c bg_store %c bg_tabs "
-    ,lbH+lb1              ,lf0      ,lbH+lf1         ,lf2          ,lf3      ,lf4         ,lf5          ,lf6       ,lf7           ,lf8        ,lf9         );
+//................._import    log_js    background_js    bg_content    bg_csp    bg_event    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
+log("%c  background_import %c log_js %c "+"●●●●●●●●●● %c bg_content %c ______ %c bg_event %c _________ %c bg_message %c _______ %c ___________ %c bg_store %c _______ "
+    ,lbH+lb1              ,lf0      ,lf1+lbH         ,lf2          ,lf3      ,lf4        ,lf5         ,lf6          ,lf7       ,lf8           ,lf9        ,lf0         );
 };
 /*}}}*/
     setTimeout(background_import,0);
@@ -476,42 +457,20 @@ let   log_get_IDX_for_caller= function(key)
 };
 /*}}}*/
 /*}}}*/
-/*    CHROME_SCHEME {{{*/
+/*{{{*/
+const B_ON_HEADER_RECEIVED = "HEADER RECEIVED";
+
 const CHROME_SCHEME       = "chrome:";
 const CHROME_SCHEME_REGEX = /.*chrome:/;
 
 /*}}}*/
 
 // ┌───────────────────────────────────────────────────────────────────────────┐
-// │ LISTENERS                                                                 │
-// └───────────────────────────────────────────────────────────────────────────┘
-/*➔ b_addListeners {{{*/
-let b_addListeners = function()
-{
-/*{{{*/
-let log_this = log_ACTIVATED();
-
-/*}}}*/
-if( log_this) log_js.log_group("%cADDING LISTENERS "+SAD, lbH+lf3);
-
-    bg_header_addListener();
-    b_onActivated_addListener();
-    b_onUpdated_addListener();
-    b_onRemoved_addListener();
-    b_runtime_onMessage_addListener();
-
-//  if(USE_CHROME_ALARMS) b_onAlarm_addListener();
-
-console.groupEnd();
-};
-/*}}}*/
-
-// ┌───────────────────────────────────────────────────────────────────────────┐
 // │ MANIFEST                                           MANIFEST_VERSION=="V3" │
 // └───────────────────────────────────────────────────────────────────────────┘
 /*➔ b_check_manifest {{{*/
-/* eslint-disable no-redeclare */
-/* eslint-disable no-undef     */
+// eslint-disable no-redeclare */
+// eslint-disable no-undef     */
 let b_check_manifest = function()
 {
 /*{{{*/
@@ -551,147 +510,8 @@ if( log_this)
 }
 /*}}}*/
 };
-/* eslint-enable  no-undef     */
-/* eslint-enable  no-redeclare */
-/*}}}*/
-
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │ ACTIVATED                                                                 │
-// └───────────────────────────────────────────────────────────────────────────┘
-/*_ b_onActivated_addListener {{{*/
-let b_onActivated_addListener = function()
-{
-/*{{{*/
-let log_this = log_ACTIVATED();
-/*}}}*/
-    /*....................SCRIPT_ID..NAMESPACE....FUNCTIONALITY...................PERMISSION.*/
-    if( !log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to tabs activation", "tabs", log_this))
-        return;
-
-    chrome.tabs.onActivated.addListener( bg_settings_tabs1_onActivated );
-};
-/*}}}*/
-/*➔ bg_tabs_set_last_activated_tabId {{{*/
-let            last_activated_tabId;
-let bg_tabs_set_last_activated_tabId = function(tabId )
-{
-    last_activated_tabId = tabId;
-};
-/*}}}*/
-/*➔ bg_tabs_get_last_activated_tabId {{{*/
-let bg_tabs_get_last_activated_tabId = function()
-{
-    return last_activated_tabId;
-};
-
-/*}}}*/
-
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │ UPDATED                                                                   │
-// └───────────────────────────────────────────────────────────────────────────┘
-/*_ b_onUpdated_addListener {{{*/
-let b_onUpdated_addListener = function()
-{
-/*{{{*/
-let log_this = log_ACTIVATED();
-/*}}}*/
-    /*....................SCRIPT_ID..NAMESPACE....FUNCTIONALITY................PERMISSION.*/
-    if( !log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to tabs updated", "tabs", log_this))
-        return;
-
-    chrome.tabs.onUpdated.addListener( bg_settings_tabs2_onUpdated );
-};
-/*}}}*/
-
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │ REMOVED                                                                   │
-// └───────────────────────────────────────────────────────────────────────────┘
-/*_ b_onRemoved_addListener {{{*/
-let b_onRemoved_addListener = function()
-{
-/*{{{*/
-let log_this = log_ACTIVATED();
-/*}}}*/
-    /*....................SCRIPT_ID..NAMESPACE.....FUNCTIONALITY...............PERMISSION.*/
-    if( !log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to tabs removed", "tabs", log_this))
-        return;
-
-    chrome.tabs.onRemoved.addListener( bg_settings_tabs3_onRemoved );
-};
-/*}}}*/
-
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │ RELOAD                                                    B_LOG6_ONHEADER │
-// └───────────────────────────────────────────────────────────────────────────┘
-/*{{{*/
-const B_ON_HEADER_RECEIVED = "HEADER RECEIVED";
-
-/* EMBED INTO IPC FOLD OF dom_tools.js */
-
-// NOTE:
-// to be duplicated in popup_onMessage_CB
-// to be duplicated in dom_tools.js IPC
-
-/*}}}*/
-/*➔ b_onHeader1_reload ← SETTINGS7_RELOAD_PAGE {{{*/
-/*{{{*/
-const B_ONHEADER1_RELOAD_DELAY_MS = 100;
-
-/*}}}*/
-let b_onHeader1_reload = function(_args)
-{
-/* {tabId}=_args {{{*/
-let tabId = _args.tabId;
-/*}}}*/
-/*LOG{{{*/
-let   caller = "b_onHeader1_reload";
-let log_this = LOG_MAP.B_LOG6_ONHEADER;
-let log_more = log_this && LOG_MAP.B_LOG0_MORE;
-
-/*}}}*/
-    let csp_filter = bg_tabs_get_tabId_key(tabId, "csp_filter");
-if( log_more) log_sep_top(caller, "LOG2_TAG");
-if( log_this) log("%c READY TO FILTER NEXT TAB#"+tabId+" PAGE HEADER CSP WITH %c csp_filter ["+csp_filter+"]"
-                 , lbL+lf0                                                   ,lbR+lf2);
-    /* b_callback_args_delay_caller {{{*/
-
-    b_callback_args_delay_caller({            caller
-                                 , callback : b_page1_RELOAD            // signature: ({tabId})
-                                 ,     args : { tabId }
-                                 ,    delay : B_ONHEADER1_RELOAD_DELAY_MS
-    });
-
-    /*}}}*/
-if( log_more) log_sep_bot(caller, "LOG2_TAG");
-};
-/*}}}*/
-
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │ ALARMS                                                    B_LOG3_PRESERVE │
-// └───────────────────────────────────────────────────────────────────────────┘
-/*➔ b_callback_args_delay_caller .. B_LOG3_PRESERVE {{{*/
-let b_callback_args_delay_caller = function(_args)
-{
-    let   caller = _args.caller;
-    let callback = _args.callback;
-    let     args = _args.args;
-    let    delay = _args.delay;
-
-    if((MANIFEST_VERSION == "V3") && (args && (typeof args.tabId != "undefined")))
-    {
-        chrome.tabs.query(                  { currentWindow: true, active: true }           )
-            .then ((tabs ) =>               {
-                args.active_tab =  tabs[0];
-                args.tabId      = (tabs[0] && tabs[0].id);
-                setTimeout(callback, delay, args); })
-            .catch((error) =>               { console.error(B_SCRIPT_ID+"."+caller, error); })
-        ;
-
-    }
-    else {
-        setTimeout(callback, delay, args);
-    }
-};
+// eslint-enable  no-undef     */
+// eslint-enable  no-redeclare */
 /*}}}*/
 
 // ┌───────────────────────────────────────────────────────────────────────────┐
@@ -791,11 +611,11 @@ if( log_this) log("b_sleep DONE");
 // │ EXPORT                                                                    │
 // └───────────────────────────────────────────────────────────────────────────┘
 /*➔ init c l r {{{*/
-let init = () => { b_addListeners(); chrome.storage.sync.get(null, bg_store_LOAD_items); };
+let init = () => { chrome.storage.sync.get(null, bg_store_LOAD_items); setTimeout(bg_event_addListeners,500);};
 let    c = log_js.clear;
 let    l = logn;
 let    r = reload;
-let   tl = bg_tabs_get_last_activated_tabId;
+let   tl = bg_event_get_last_activated_tabId;
 let last = function() { bg_tabs_log_LAST_ACTIVATED_TAB(); };
 let tabs = function() { bg_tabs_log_TABS_MAP();           };
 let tdel = function() { bg_tabs_del_tabId();      };
@@ -837,8 +657,8 @@ let p = function()
 
         , "---------- RUN SCRIPTS ----------------" : "---------------------------------------"
 
-        , reload  : ()    => setTimeout(() => b_page1_RELOAD          ({tabId: tl()}                      ), 1000)
-        , relreq  : ()    => b_page1_RELOAD_if_required(                       tl())
+        , reload  : ()    => setTimeout(() => bg_page.b_page1_RELOAD  ({tabId: tl()}                      ), 1000)
+        , relreq  : ()    => bg_page.b_page1_RELOAD_if_required(               tl())
 
         , loaded  : ()    => setTimeout(() => b_content_scripts_loaded(        tl()                       ), 1000)
         , loadedic: ()    => setTimeout(() => b_content_scripts_loaded(        tl(), true/*ignore_cache*/ ), 1000)
@@ -849,13 +669,13 @@ let p = function()
         , sm      : (msg) =>   b_runtime_sendMessage({cmd : msg||"debug_cmd"}, null, "Devtools."+B_SCRIPT_ID)
 
         , "---------- MESSAGES TO popup ----------" : "---------------------------------------"
-        , pa      : ()    =>                  b_POPUP_pageAction               (tl()                   , "Devtools") //FIXME
+        , pa      : ()    =>                  bg_page.b_POPUP_pageAction       (tl()                   , "Devtools") //FIXME
 
         , "---------- MESSAGES FROM popup --------" : "---------------------------------------"
-        , p_start : ()    => setTimeout(() => b_runtime_onMessage_CB_TAB_start(tl()                       ), 1000)
-        , p_stop  : ()    => setTimeout(() => b_runtime_onMessage_CB_TAB_stop (tl()                       ), 1000)
+        , p_start : ()    => setTimeout(() => b_runtime_onMessage_CB_TAB_start (tl()                      ), 1000)
+        , p_stop  : ()    => setTimeout(() => b_runtime_onMessage_CB_TAB_stop  (tl()                      ), 1000)
 
-        , "---------- TABS -----------------------" : "- (tl=bg_tabs_get_last_activated_tabId)-"
+        , "---------- TABS -----------------------" : "---------------------------------------"
         , last
         , tabs
         , tdel
@@ -878,15 +698,8 @@ let p = function()
 
         , b_is_paused : () => l_paused
 
-        , bg_tabs_get_last_activated_tabId
-        , bg_tabs_sendMessage
-        , bg_tabs_set_last_activated_tabId
 
-        , b_callback_args_delay_caller
-        , b_onHeader1_reload
-        , b_page1_RELOAD
-        , b_page1_RELOAD_if_required
-        , last_activated_tabId
+        , bg_tabs_sendMessage
         , log_ACTIVATED
         , log_IGNORING
         , log_STORAGE

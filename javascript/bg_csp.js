@@ -20,7 +20,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_CSP_SCRIPT_ID  = "bg_csp";
-const BG_CSP_SCRIPT_TAG =  BG_CSP_SCRIPT_ID +" (230711:23h:09)"; /* eslint-disable-line no-unused-vars */
+const BG_CSP_SCRIPT_TAG =  BG_CSP_SCRIPT_ID +" (230712:21h:23)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_csp  = (function() {
 "use strict";
@@ -32,6 +32,7 @@ let bg_csp  = (function() {
 :e javascript/background.js
 :e javascript/bg_content.js
 "● javascript/bg_csp.js
+:e javascript/bg_event.js
 :e javascript/bg_header.js
 :e javascript/bg_message.js
 :e javascript/bg_page.js
@@ -69,6 +70,7 @@ let LOG_MAP;
 /*}}}*/
 //______________ bg_content
 //______________ bg_csp
+//______________ bg_event
 //______________ bg_header
 //______________ bg_message
 //______________ bg_page
@@ -78,7 +80,7 @@ let bg_store_SAVE_items;
 
 /*}}}*/
 //______________ bg_tabs
-/* bg_csp_import {{{*/
+/*_ bg_csp_import {{{*/
 let bg_csp_import = function()
 {
     /*_ log_js {{{*/
@@ -108,6 +110,7 @@ let bg_csp_import = function()
     /*}}}*/
     //___________ bg_content
     //___________ bg_csp
+    //___________ bg_event
     //___________ bg_header
     //___________ bg_message
     //___________ bg_page
@@ -117,9 +120,9 @@ let bg_csp_import = function()
 
     /*}}}*/
     //___________ bg_tabs
-//................._import    log_js    background_js    bg_content    bg_csp    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
-log("%c      bg_csp_import %c log_js %c background_js %c bg_content %c "+"●●● %c _________ %c bg_message %c _______ %c ___________ %c bg_store %c _______ "
-    ,lbH+lb3              ,lf0      ,lf1             ,lf2          ,lbH+lf3  ,lf4         ,lf5          ,lf6       ,lf7           ,lf8        ,lf9         );
+//................._import    log_js    background_js    bg_content    bg_csp    bg_event    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
+log("%c      bg_csp_import %c log_js %c background_js %c bg_content %c "+"●●● %c ________ %c _________ %c __________ %c _______ %c ___________ %c bg_store %c _______ "
+    ,lbH+lb3              ,lf0      ,lf1             ,lf2          ,lf3+lbH  ,lf4        ,lf5         ,lf6          ,lf7       ,lf8           ,lf9        ,lf0         );
 };
 /*}}}*/
     setTimeout(bg_csp_import,0);

@@ -19,7 +19,7 @@
 
 /* eslint-enable  no-redeclare        */
 const BG_STORE_SCRIPT_ID  = "bg_store";
-const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (230712:01h:37)"; /* eslint-disable-line no-unused-vars */
+const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (230712:21h:36)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_store  = (function() {
 "use strict";
@@ -31,6 +31,7 @@ let bg_store  = (function() {
 :e javascript/background.js
 :e javascript/bg_content.js
 :e javascript/bg_csp.js
+:e javascript/bg_event.js
 :e javascript/bg_header.js
 :e javascript/bg_message.js
 :e javascript/bg_page.js
@@ -80,16 +81,17 @@ let FILTER6_NONE;
 
 let bg_csp_load_filter_rules;
 /*}}}*/
+//______________ bg_event
 //______________ bg_header
 //______________ bg_message
 //______________ bg_page
 //______________ bg_settings
+//______________ bg_store
 /*_ bg_tabs {{{*/
 let bg_tabs_get_tabId_key;
 
 /*}}}*/
-//______________ bg_store
-/* bg_store_import {{{*/
+/*_ bg_store_import {{{*/
 let bg_store_import = function()
 {
     /*_ log_js {{{*/
@@ -130,6 +132,7 @@ let bg_store_import = function()
     bg_csp_load_filter_rules         = bg_csp.bg_csp_load_filter_rules;
 
     /*}}}*/
+    //___________ bg_event
     //___________ bg_header
     //___________ bg_message
     //___________ bg_page
@@ -139,9 +142,9 @@ let bg_store_import = function()
     bg_tabs_get_tabId_key            = bg_tabs.bg_tabs_get_tabId_key;
 
     /*}}}*/
-//................._import    log_js    background_js    bg_content    bg_csp    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
-log("%c    bg_store_import %c log_js %c background_js %c bg_content %c bg_csp %c _________ %c bg_message %c _______ %c ____________%c "+"●●●●● %c bg_tabs "
-    ,lbH+lb8              ,lf0      ,lf1             ,lf2          ,lf3      ,lf4         ,lf5          ,lf6       ,lf7           ,lbH+lf8    ,lf9         );
+//................._import    log_js    background_js    bg_content    bg_csp    bg_event    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
+log("%c    bg_store_import %c log_js %c background_js %c __________ %c bg_csp %c ________ %c _________ %c __________ %c _______ %c ____________%c "+"●●●●● %c bg_tabs "
+    ,lbH+lb9              ,lf0      ,lf1             ,lf2          ,lf3      ,lf4        ,lf5         ,lf6          ,lf7       ,lf8           ,lf9+lbH    ,lf0         );
 };
 /*}}}*/
     setTimeout(bg_store_import,0);

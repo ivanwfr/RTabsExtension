@@ -22,7 +22,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_HEADER_SCRIPT_ID  = "bg_header";
-const BG_HEADER_SCRIPT_TAG =  BG_HEADER_SCRIPT_ID +" (230711:17h:28)"; /* eslint-disable-line no-unused-vars */
+const BG_HEADER_SCRIPT_TAG =  BG_HEADER_SCRIPT_ID +" (230712:21h:35)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_header  = (function() {
 "use strict";
@@ -34,6 +34,7 @@ let bg_header  = (function() {
 :e javascript/background.js
 :e javascript/bg_content.js
 :e javascript/bg_csp.js
+:e javascript/bg_event.js
 "● javascript/bg_header.js
 :e javascript/bg_message.js
 :e javascript/bg_page.js
@@ -58,7 +59,7 @@ let   SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTIO
 
 let   log
     , log_CSP
-    , log_console_clear
+//  , log_console_clear
     , log_object
     , log_permission
     , log_sep_bot
@@ -102,6 +103,7 @@ let bg_csp_load_filter;
 let bg_csp_pick_filter_rules;
 
 /*}}}*/
+//______________ bg_event
 //______________ bg_header
 //______________ bg_message
 //______________ bg_page
@@ -139,7 +141,7 @@ let bg_header_import = function()
 
     log                                 = log_js.log;
     log_CSP                             = log_js.log_CSP;
-    log_console_clear                   = log_js.log_console_clear;
+//  log_console_clear                   = log_js.log_console_clear;
     log_object                          = log_js.log_object;
     log_permission                      = log_js.log_permission;
     log_sep_bot                         = log_js.log_sep_bot;
@@ -182,6 +184,7 @@ let bg_header_import = function()
     bg_csp_pick_filter_rules         = bg_csp.bg_csp_pick_filter_rules;
 
     /*}}}*/
+    //___________ bg_event
     //___________ bg_header
     //___________ bg_message
     //___________ bg_page
@@ -201,9 +204,9 @@ let bg_header_import = function()
     bg_tabs_set_tabId_key_val        = bg_tabs.bg_tabs_set_tabId_key_val;
 
     /*}}}*/
-//................._import    log_js    background_js    bg_content    bg_csp    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
-log("%c   bg_header_import %c log_js %c background_js %c bg_content %c bg_csp %c "+"●●●●●● %c bg_message %c _______ %c bg_settings %c bg_store %c bg_tabs "
-    ,lbH+lb4              ,lf0      ,lf1             ,lf2          ,lf3      ,lbH+lf4     ,lf5          ,lf6       ,lf7           ,lf8        ,lf9         );
+//................._import    log_js    background_js    bg_content    bg_csp    bg_event    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
+log("%c   bg_header_import %c log_js %c background_js %c __________ %c bg_csp %c ________ %c "+"●●●●●● %c __________ %c _______ %c bg_settings %c bg_store %c bg_tabs "
+    ,lbH+lb5              ,lf0      ,lf1             ,lf2          ,lf3      ,lf4        ,lf5+lbH     ,lf6          ,lf7       ,lf8           ,lf9        ,lf0         );
 };
 /*}}}*/
     setTimeout(bg_header_import,0);
@@ -229,8 +232,8 @@ let   caller = "bg_header_addListener";
 
 /*}}}*/
     /*....................SCRIPT_ID..NAMESPACE..................FUNCTIONALITY............PERMISSION.*/
-    if( !log_permission(B_SCRIPT_ID, chrome.webRequest        , "Filtering Headers CSP", "webRequest"        , log_this)) return;
-/*  if( !log_permission(B_SCRIPT_ID, chrome.webRequestBlocking, "Blocking Headers CSP" , "webRequestBlocking", log_this)) return; */
+    if(!log_permission(B_SCRIPT_ID, chrome.webRequest        , "Filtering Headers CSP", "webRequest"        , log_this)) return;
+/*  if(!log_permission(B_SCRIPT_ID, chrome.webRequestBlocking,  "Blocking Headers CSP", "webRequestBlocking", log_this)) return; */
 
 try {
     /* ┌────────────────────────────────────────────────────────────────────┐ */
@@ -281,7 +284,7 @@ let   caller = "bg_header_onHeadersReceived";
 let log_this = PROVIDING_DEFAULT_HEADER_CSP_TO_FILTER || LOG_MAP.B_LOG6_ONHEADER;
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
-if( log_ACTIVATED() ) log_console_clear(LOG_MAP.B_LOG3_PRESERVE);
+//( log_ACTIVATED() ) log_console_clear(LOG_MAP.B_LOG3_PRESERVE);
 
 /*}}}*/
     /* IGNORING CHROME_SCHEME {{{*/

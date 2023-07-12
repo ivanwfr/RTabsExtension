@@ -14,15 +14,16 @@
 
 /* globals  log_js                    */
 /* globals  background_js             */
-/* exported bg_page                   */
 /* globals  bg_csp                    */
+/* globals  bg_event                  */
+/* exported bg_page                   */
 /* globals  bg_store                  */
 /* globals  bg_tabs                   */
 
 /* eslint-enable  no-redeclare        */
 
 const BG_PAGE_SCRIPT_ID  = "bg_page";
-const BG_PAGE_SCRIPT_TAG =  BG_PAGE_SCRIPT_ID +" (230712:01h:59)"; /* eslint-disable-line no-unused-vars */
+const BG_PAGE_SCRIPT_TAG =  BG_PAGE_SCRIPT_ID +" (230712:21h:35)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_page  = (function() {
 "use strict";
@@ -34,6 +35,7 @@ let bg_page  = (function() {
 :e javascript/background.js
 :e javascript/bg_content.js
 :e javascript/bg_csp.js
+:e javascript/bg_event.js
 :e javascript/bg_header.js
 :e javascript/bg_message.js
 "● javascript/bg_page.js
@@ -76,11 +78,14 @@ let DOM_TOOLS_JS_ID;
 let LOG_MAP;
 let MANIFEST_VERSION;
 
-let bg_tabs_set_last_activated_tabId;
 let log_ACTIVATED;
 /*}}}*/
 //______________ bg_content
 //______________ bg_csp
+/*_ bg_event {{{*/
+let bg_event_set_last_activated_tabId;
+
+/*}}}*/
 //______________ bg_header
 //______________ bg_message
 //______________ bg_page
@@ -131,12 +136,15 @@ let bg_page_import = function()
     LOG_MAP                               = background_js.LOG_MAP;
     MANIFEST_VERSION                      = background_js.MANIFEST_VERSION;
 
-    bg_tabs_set_last_activated_tabId      = background_js.bg_tabs_set_last_activated_tabId;
     log_ACTIVATED                         = background_js.log_ACTIVATED;
 
     /*}}}*/
     //___________ bg_content
     //___________ bg_csp
+    //_ bg_event {{{*/
+    bg_event_set_last_activated_tabId = bg_event.bg_event_set_last_activated_tabId;
+
+    /*}}}*/
     //___________ bg_header
     //___________ bg_message
     //___________ bg_page
@@ -152,22 +160,12 @@ let bg_page_import = function()
     bg_tabs_set_tabId_key_val        = bg_tabs.bg_tabs_set_tabId_key_val;
 
     /*}}}*/
-//................._import    log_js    background_js    bg_content    bg_csp    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
-log("%c     bg_page_import %c log_js %c background_js %c bg_content %c bg_csp %c _________ %c bg_message %c "+"●●●● %c ____________%c bg_store %c bg_tabs "
-    ,lbH+lb6              ,lf0      ,lf1             ,lf2          ,lf3      ,lf4         ,lf5          ,lbH+lf6   ,lf7           ,lf8        ,lf9         );
+//................._import    log_js    background_js    bg_content    bg_csp    bg_event    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
+log("%c     bg_page_import %c log_js %c background_js %c __________ %c ______ %c bg_event %c _________ %c __________ %c "+"●●●● %c ____________%c bg_store %c bg_tabs "
+    ,lbH+lb7              ,lf0      ,lf1             ,lf2          ,lf3      ,lf4        ,lf5         ,lf6          ,lf7+lbH   ,lf8           ,lf9        ,lf0         );
 };
 /*}}}*/
     setTimeout(bg_page_import,0);
-/* VIM SIGNS {{{
-:so ~/VIM/signs.vim
-
- :sign place  1 line=42   name=SIGN1 file=C:/LOCAL/DATA/ANDROID/PROJECTS/Chrome_Web_Store/RTabsExtension/javascript/bg_page.js
- :sign place  2 line=348  name=SIGN2 file=C:/LOCAL/DATA/ANDROID/PROJECTS/Chrome_Web_Store/RTabsExtension/javascript/bg_page.js
-/"● javascript\/bg_page\.js
-/setTimeout(bg_page_import,0);
-
-:SaveSigns
-}}}*/
 /*}}}*/
 /* ICON ● TOOL_STATES ● STATUS_COLORS {{{*/
 const ICON_PATH_0_INITIAL       = "/images/rtabs16.png"    ;
@@ -444,9 +442,9 @@ if( log_this) log("%c→%c...RELOADING", lbb+lbH+lb0, lbH+lb1+lf4);
     /* MANIFEST_VERSION=="V3" {{{*/
     if(MANIFEST_VERSION=="V3") {
 if( log_more) log(" 1 (V3) ➔ RELOAD: chrome.tabs.query");
-                bg_tabs_set_last_activated_tabId( tabId );
-                bg_tabs_del_tabId_key(            tabId , "t_load");
-                bg_tabs_del_tabId_key(            tabId , "tools_deployed");
+                bg_event_set_last_activated_tabId( tabId );
+                bg_tabs_del_tabId_key(             tabId , "t_load");
+                bg_tabs_del_tabId_key(             tabId , "tools_deployed");
 
 if( log_more) log(" 2 (V3) ➔ RELOAD: chrome.scripting.executeScript func → b_page1_RELOAD_RUN_script");
                 await chrome.scripting

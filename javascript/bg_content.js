@@ -26,7 +26,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_CONTENT_SCRIPT_ID  = "bg_content";
-const BG_CONTENT_SCRIPT_TAG =  BG_CONTENT_SCRIPT_ID +" (230712:01h:50)"; /* eslint-disable-line no-unused-vars */
+const BG_CONTENT_SCRIPT_TAG =  BG_CONTENT_SCRIPT_ID +" (230712:21h:43)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_content  = (function() {
 "use strict";
@@ -38,6 +38,7 @@ let bg_content  = (function() {
 :e javascript/background.js
 "● javascript/bg_content.js
 :e javascript/bg_csp.js
+:e javascript/bg_event.js
 :e javascript/bg_header.js
 :e javascript/bg_message.js
 :e javascript/bg_page.js
@@ -87,6 +88,7 @@ let log_sep_top_FOR_caller_callee;
 /*}}}*/
 //______________ bg_content
 //______________ bg_csp
+//______________ bg_event
 //______________ bg_header
 //______________ bg_message
 /*_ bg_page {{{*/
@@ -166,9 +168,9 @@ let bg_content_import = function()
     bg_tabs_set_tabId_key_val        = bg_tabs.bg_tabs_set_tabId_key_val;
 
     /*}}}*/
-//................._import %c log_js %c background_js %c bg_content %c bg_csp %c bg_header %c bg_message %c bg_page %c bg_settings %c bg_store %c bg_tabs
+//................._import    log_js    background_js    bg_content    bg_csp    bg_event    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
 log("%c  background_import %c log_js %c background_js %c "+"●●●●●●● %c ______ %c _________ %c __________ %c bg_page %c ___________ %c bg_store %c bg_tabs"
-    ,lbH+lb2              ,lf0      ,lf1             ,lbH+lf2      ,lf3      ,lf4         ,lf5          ,lf6       ,lf7           ,lf8        ,lf9        );
+    ,lbH+lb2              ,lf0      ,lf1             ,lf2+lbH      ,lf3      ,lf4         ,lf5          ,lf6       ,lf7           ,lf8        ,lf9        );
 };
 /*}}}*/
     setTimeout(bg_content_import,0);

@@ -14,6 +14,7 @@
 /* globals  background_js             */
 /* globals  bg_content                */
 /* globals  bg_csp                    */
+/* globals  bg_event                  */
 /* exported bg_message                */
 /* globals  bg_page                   */
 /* globals  bg_settings               */
@@ -22,7 +23,7 @@
 
 /* eslint-enable  no-redeclare        */
 const BG_MESSAGE_SCRIPT_ID  = "BG_MESSAGE";
-const BG_MESSAGE_SCRIPT_TAG =  BG_MESSAGE_SCRIPT_ID +" (230712:01h:57)"; /* eslint-disable-line no-unused-vars */
+const BG_MESSAGE_SCRIPT_TAG =  BG_MESSAGE_SCRIPT_ID +" (230712:21h:35)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_message  = (function() {
 "use strict";
@@ -34,6 +35,7 @@ let bg_message  = (function() {
 :e javascript/background.js
 :e javascript/bg_content.js
 :e javascript/bg_csp.js
+:e javascript/bg_event.js
 :e javascript/bg_header.js
 "● javascript/bg_message.js
 :e javascript/bg_page.js
@@ -71,7 +73,6 @@ let   log
 let B_SCRIPT_ID;
 let LOG_MAP;
 let b_is_paused;
-let bg_tabs_get_last_activated_tabId;
 let bg_tabs_sendMessage;
 let log_ACTIVATED;
 let log_STORAGE;
@@ -100,6 +101,10 @@ let bg_csp_load_filter_from_store;
 let bg_csp_save_filter_to_store;
 
 /*}}}*/
+/*_ bg_event {{{*/
+let bg_event_get_last_activated_tabId;
+
+/*}}}*/
 //______________ bg_header
 //______________ bg_message
 /*_ bg_page {{{*/
@@ -126,7 +131,7 @@ let bg_tabs_set_tabId_key_items;
 let bg_tabs_set_tabId_key_val;
 
 /*}}}*/
-/* bg_message_import {{{*/
+/*_ bg_message_import {{{*/
 let bg_message_import = function()
 {
     /*_ log_js {{{*/
@@ -158,7 +163,6 @@ let bg_message_import = function()
     LOG_MAP                               = background_js.LOG_MAP;
     b_content_scripts_loaded              = background_js.b_content_scripts_loaded;
     b_is_paused                           = background_js.b_is_paused;
-    bg_tabs_get_last_activated_tabId      = background_js.bg_tabs_get_last_activated_tabId;
     bg_tabs_sendMessage                   = background_js.bg_tabs_sendMessage;
     log_ACTIVATED                         = background_js.log_ACTIVATED;
     log_STORAGE                           = background_js.log_STORAGE;
@@ -188,6 +192,10 @@ let bg_message_import = function()
     bg_csp_save_filter_to_store      = bg_csp.bg_csp_save_filter_to_store;
 
     /*}}}*/
+    //_ bg_event {{{*/
+    bg_event_get_last_activated_tabId = bg_event.bg_event_get_last_activated_tabId;
+
+    /*}}}*/
     //___________ bg_header
     //___________ bg_message
     /*_ bg_page {{{*/
@@ -214,9 +222,9 @@ let bg_message_import = function()
     bg_tabs_set_tabId_key_val        = bg_tabs.bg_tabs_set_tabId_key_val;
 
     /*}}}*/
-//................._import    log_js    background_js    bg_content    bg_csp    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
-log("%c  bg_message_import %c log_js %c background_js %c bg_content %c bg_csp %c _________ %c "+"●●●●●●● %c bg_page %c bg_settings %c bg_store %c bg_tabs "
-    ,lbH+lb5              ,lf0      ,lf1             ,lf2          ,lf3      ,lf4         ,lbH+lf5      ,lf6       ,lf7           ,lf8        ,lf9         );
+//................._import    log_js    background_js    bg_content    bg_csp    bg_event    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
+log("%c  bg_message_import %c log_js %c background_js %c bg_content %c bg_csp %c bg_event %c _________ %c "+"●●●●●●● %c bg_page %c bg_settings %c bg_store %c bg_tabs "
+    ,lbH+lb6              ,lf0      ,lf1             ,lf2          ,lf3      ,lf4        ,lf5         ,lf6+lbH      ,lf7       ,lf8           ,lf9        ,lf0         );
 };
 /*}}}*/
     setTimeout(bg_message_import,0);
@@ -231,7 +239,7 @@ let log_this = log_ACTIVATED();
 /*}}}*/
 
     /*....................SCRIPT_ID..NAMESPACE.......FUNCTIONALITY......................PERMISSION.*/
-    if( !log_permission(B_SCRIPT_ID, chrome.runtime, "Listening to Extension messages", "runtime", log_this) )
+    if(!log_permission(B_SCRIPT_ID, chrome.runtime, "Listening to Extension messages", "runtime", log_this) )
         return;
 
     chrome.runtime.onMessage.addListener( b_runtime_onMessage_CB );
@@ -716,8 +724,8 @@ let log_this = LOG_MAP.B_LOG1_MESSAGE;
 if( log_this) log("%c "+caller+"%c message.query %c"+message.query
                   ,lbL+lf1    ,lbC+lf1         ,lbR+lf1          );
 /*}}}*/
-    /* NO [tabId] - LOG2_TAG - [NO lAST ACTIVATED TAB] .. f(bg_tabs_get_last_activated_tabId) {{{*/
-    let tabId = bg_tabs_get_last_activated_tabId(caller);
+    /* NO [tabId] - LOG2_TAG - [NO lAST ACTIVATED TAB] .. f(bg_event_get_last_activated_tabId) {{{*/
+    let tabId = bg_event_get_last_activated_tabId(caller);
     if(!tabId )
     {
         if(!message.status)

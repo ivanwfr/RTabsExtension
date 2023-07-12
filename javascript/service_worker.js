@@ -29,7 +29,7 @@
 /* eslint-enable  no-unused-vars */
 
 const    S_SCRIPT_ID         = "service_worker_js";
-const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (230711:18h:47)";
+const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (230712:17h:09)";
 /*}}}*/
 
 /* ┌─────────────────────────────┐
@@ -37,6 +37,7 @@ const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (230711:18h:47)";
 :e javascript/background.js
 :e javascript/bg_content.js
 :e javascript/bg_csp.js
+:e javascript/bg_event.js
 :e javascript/bg_header.js
 :e javascript/bg_message.js
 :e javascript/bg_page.js
@@ -56,6 +57,7 @@ importScripts("log.js"        );
 importScripts("background.js" );
 importScripts("bg_content.js" );
 importScripts("bg_csp.js"     );
+importScripts("bg_event.js"   );
 importScripts("bg_header.js"  );
 importScripts("bg_message.js"  );
 importScripts("bg_page.js"    );

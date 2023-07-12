@@ -13,13 +13,14 @@
 
 /* globals  log_js                    */
 /* globals  background_js             */
+/* globals  bg_event                  */
 /* globals  bg_store                  */
 /* exported bg_tabs                   */
 
 /* eslint-enable  no-redeclare        */
 
 const BG_TABS_SCRIPT_ID  = "bg_tabs";
-const BG_TABS_SCRIPT_TAG =  BG_TABS_SCRIPT_ID +" (230712:01h:38)"; /* eslint-disable-line no-unused-vars */
+const BG_TABS_SCRIPT_TAG =  BG_TABS_SCRIPT_ID +" (230712:21h:43)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_tabs  = (function() {
 "use strict";
@@ -31,6 +32,7 @@ let bg_tabs  = (function() {
 :e javascript/background.js
 :e javascript/bg_content.js
 :e javascript/bg_csp.js
+:e javascript/bg_event.js
 :e javascript/bg_header.js
 :e javascript/bg_message.js
 :e javascript/bg_page.js
@@ -64,12 +66,16 @@ let   ellipsis
 /*_ background_js {{{*/
 let LOG_MAP;
 
-let bg_tabs_get_last_activated_tabId;
 let log_TAB_HANDLERS_CALLS;
 let log_get_caller_tag_FOR_key_val_caller;
 
 /*}}}*/
 //______________ bg_content
+//______________ bg_csp
+/*_ bg_event {{{*/
+let bg_event_get_last_activated_tabId;
+
+/*}}}*/
 //______________ bg_header
 //______________ bg_message
 //______________ bg_page
@@ -106,13 +112,16 @@ let bg_tabs_import = function()
     /*_ background_js {{{*/
     LOG_MAP                               = background_js.LOG_MAP;
 
-    bg_tabs_get_last_activated_tabId      = background_js.bg_tabs_get_last_activated_tabId;
     log_TAB_HANDLERS_CALLS                = background_js.log_TAB_HANDLERS_CALLS;
     log_get_caller_tag_FOR_key_val_caller = background_js.log_get_caller_tag_FOR_key_val_caller;
 
     /*}}}*/
     //___________ bg_content
     //___________ bg_csp
+    //_ bg_event {{{*/
+    bg_event_get_last_activated_tabId = bg_event.bg_event_get_last_activated_tabId;
+
+    /*}}}*/
     //___________ bg_header
     //___________ bg_message
     //___________ bg_page
@@ -123,9 +132,9 @@ let bg_tabs_import = function()
 
     /*}}}*/
     //___________ bg_tabs
-//................._import    log_js    background_js    bg_content    bg_csp    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
-log("%c     bg_tabs_import %c log_js %c background_js %c bg_content %c ______ %c _________ %c bg_message %c _______ %c ____________%c bg_store %c "+"●●●● "
-    ,lbH+lb9              ,lf0      ,lf1             ,lf2          ,lf3      ,lf4         ,lf5          ,lf6       ,lf7           ,lf8        ,lbH+lf9     );
+//................._import    log_js    background_js    bg_content    bg_csp    bg_event    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
+log("%c     bg_tabs_import %c log_js %c background_js %c bg_content %c ______ %c ________ %c _________ %c bg_message %c _______ %c ____________%c bg_store %c "+"●●●● "
+    ,lbH+lb0              ,lf0      ,lf1             ,lf2          ,lf3      ,lf4        ,lf5         ,lf6          ,lf7       ,lf8           ,lf9        ,lf0+lbH     );
 };
 /*}}}*/
     setTimeout(bg_tabs_import,0);
@@ -167,7 +176,7 @@ let bg_tabs_log_LAST_ACTIVATED_TAB = function(label,callers=get_callers())
         log_object("chrome.runtime.lastError", chrome.runtime.lastError, lbB+lb2, false);
 
     /* [last_activated_tabId] */
-    let last_activated_tabId = bg_tabs_get_last_activated_tabId();
+    let last_activated_tabId = bg_event_get_last_activated_tabId();
     if(!last_activated_tabId )
         return;
 
@@ -299,7 +308,7 @@ if( log_more) log("%c "+caller+"%c TAB #"+tabId+"%c"+key
 };
 /*}}}*/
 /*➔ bg_tabs_del_tabId .. B_LOG7_TABS {{{*/
-let bg_tabs_del_tabId = function(tabId = bg_tabs_get_last_activated_tabId())
+let bg_tabs_del_tabId = function(tabId = bg_event_get_last_activated_tabId())
 {
 /*{{{*/
 let   caller = "bg_tabs_del_tabId";

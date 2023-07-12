@@ -16,7 +16,7 @@
 /* eslint-enable  no-redeclare              */
 
 const    P_SCRIPT_ID         = "popup_js";
-const    P_SCRIPT_TAG        = P_SCRIPT_ID +"(230710:17h:57)";
+const    P_SCRIPT_TAG        = P_SCRIPT_ID +"(230712:20h:28)";
 /*}}}*/
 let popup_js = (function() {
 "use strict";
@@ -267,8 +267,9 @@ let p_add_DOMContentLoaded_listener = function()
 let log_this = LOG_MAP.P_LOG9_EVENTS;
 if( log_this) log("%c"+SD1+"%c "+P_DOM_CONTENT_LOADED, lbB+lf1, lbR+lf9);
 
-    if( !log_permission(P_SCRIPT_ID, chrome.runtime, "Listening to DOMContentLoaded notifications", "runtime") )
+    if(!log_permission(P_SCRIPT_ID, chrome.runtime, "Listening to DOMContentLoaded notifications", "runtime") )
         return;
+
     document.addEventListener("DOMContentLoaded", popup_query_tab);
 };
 /*}}}*/
@@ -1054,7 +1055,7 @@ if( log_this) log(caller);
 /*}}}*/
     p_addMessageListener_has_been_called = true;
     /*....................SCRIPT_ID..NAMESPACE.......FUNCTIONALITY......................PERMISSION.*/
-    if( !log_permission(P_SCRIPT_ID, chrome.runtime, "Listening to Extension messages", "runtime", log_this) )
+    if(!log_permission(P_SCRIPT_ID, chrome.runtime, "Listening to Extension messages", "runtime", log_this) )
         return;
 
     chrome.runtime.onMessage.addListener( p_onMessage_CB );

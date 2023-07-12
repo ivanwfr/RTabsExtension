@@ -9,7 +9,7 @@
 /* eslint-disable prefer-rest-params */
 
 const LOG_JS_ID         = "log_js";
-const LOG_JS_TAG        =  LOG_JS_ID +" (230711:17h:47)";
+const LOG_JS_TAG        =  LOG_JS_ID +" (230712:15h:25)";
 /*}}}*/
 let log_js = (function() {
 "use strict";
@@ -217,8 +217,8 @@ let log_caller = function(level_max)
 {
     let stack_trace = get_callers( level_max );
 
-    if( stack_trace.includes(LF) ) console.log("%c"+stack_trace.replace(LF,"%c"+LF), lbH+lf6, lf8);
-    else                         { console.log("%c NO CALLERS  "+stack_trace      , lf9+lbF     ); console.trace(); }
+    if( stack_trace.includes(LF) ) console.log("%c"             +stack_trace.replace(LF,"%c"+LF), lbH+lf6, lf8);
+    else                         { console.log("%c NO CALLERS  "+stack_trace                    ,          lf8); console.trace(); }
 };
 let get_callers_bot = () => get_callers(2).replace(/.*\n/g,"").replace(/  +/g," "); /* eslint-disable-line newline-per-chained-call */
 let get_callers = function(level_max)
