@@ -16,7 +16,7 @@
 /* eslint-enable  no-redeclare              */
 
 const    O_SCRIPT_ID         = "options_js";
-const    O_SCRIPT_TAG        = O_SCRIPT_ID +" (230710:17h:25)";
+const    O_SCRIPT_TAG        = O_SCRIPT_ID +" (230713:15h:13)";
 /*}}}*/
 let options_js = (function() {
 "use strict"; /* eslint-disable-line strict */
@@ -433,15 +433,15 @@ if(LOG_MAP.O_LOG6_UI) log("%c o_addClickListener", lb6);
     /* BUTTONS CLICK LISTENER */
     let id, el;
 
-    id = FILTER3_REMOVE ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener(id)); }
-    id = FILTER4_CUSTOM ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener(id)); }
-    id = FILTER5_RELAX  ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener(id)); }
-    id = FILTER6_NONE   ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener(id)); }
+    id = FILTER3_REMOVE ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener); }
+    id = FILTER4_CUSTOM ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener); }
+    id = FILTER5_RELAX  ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener); }
+    id = FILTER6_NONE   ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener); }
 
-    id = LOG_PANEL      ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener(id)); }
-    id = LOG_MAP_DIV    ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener(id)); }
-    id = STORAGE_CLEAR  ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener(id)); }
-    id = CONSOLE_CLEAR  ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener(id)); }
+    id = LOG_PANEL      ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener); }
+    id = LOG_MAP_DIV    ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener); }
+    id = STORAGE_CLEAR  ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener); }
+    id = CONSOLE_CLEAR  ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener); }
 
     /* TEXTAREA INPUT EVENTS LISTENER */
     id = FILTER_TEXTAREA; if(el = document.getElementById(id)) { el.addEventListener("input", o_UI_textarea_listener()); }
@@ -479,24 +479,34 @@ if(LOG_MAP.O_LOG6_UI) log("%c textarea.input.edit_handler", lb1);
 const DEBOUNCE_CLICK_DELAY_MS = 50;
 let   debounce_timeout;
 /*}}}*/
-let o_UI_checkbox_listener = function(el_id)
+let o_UI_checkbox_listener = function(e)
 {
-    let buttons_listener
-        = function(e) {
+    let e_target = o_UI_checkbox_get_target(e);
+    let    el_id = e_target.id;
+    switch(el_id)
+    {
+    case FILTER3_REMOVE :
+    case FILTER4_CUSTOM :
+    case FILTER5_RELAX  :
+    case FILTER6_NONE   : o_UI_show_panel(FILTER_TEXTAREA); SELECT_CSP_FILTER(el_id, "SET");
+    break;
 
-            switch(el_id) {
-                case FILTER3_REMOVE :
-                case FILTER4_CUSTOM :
-                case FILTER5_RELAX  :
-                case FILTER6_NONE   : o_UI_show_panel(FILTER_TEXTAREA); SELECT_CSP_FILTER(el_id, "SET");
-                                      break;
-
-                default             : if( debounce_timeout) clearTimeout(debounce_timeout);
-                                      /**/debounce_timeout =  setTimeout(() => o_UI_CB(e, el_id), DEBOUNCE_CLICK_DELAY_MS);
-            }
-        };
-
-    return buttons_listener;
+    default: if( debounce_timeout ) clearTimeout(debounce_timeout);
+    /*.........*/debounce_timeout =   setTimeout(() => o_UI_CB(e, el_id), DEBOUNCE_CLICK_DELAY_MS);
+    }
+};
+/*}}}*/
+/*_ o_UI_checkbox_get_target {{{*/
+let o_UI_checkbox_get_target = function(e)
+{
+    let el;
+    let e_target
+        = ((el = e.target.firstElementChild) && (el.tagName == "INPUT")) ? e.target.firstElementChild
+        : ((el = e.target                  ) && (el.htmlFor           )) ? (document.getElementById(el.htmlFor) || e.target)
+        : ((el = e.target.parentElement    ) && (el.htmlFor           )) ? (document.getElementById(el.htmlFor) || e.target)
+        : /*..........................................................*/   e.target
+    ;
+    return e_target;
 };
 /*}}}*/
 
