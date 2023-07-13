@@ -29,7 +29,7 @@
 /* eslint-enable  no-unused-vars */
 
 const    S_SCRIPT_ID         = "service_worker_js";
-const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (230712:17h:09)";
+const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (230713:16h:38)";
 /*}}}*/
 
 /* ┌─────────────────────────────┐
@@ -81,17 +81,18 @@ console.log(S_SCRIPT_ID+" ● ADDING EXTENSION EVENTS LISTENERS:");
 
 /* eslint-disable strict */
 chrome.webNavigation.onBeforeNavigate          .addListener((       ) => log_js.log_console_clear(background_js.LOG_MAP.B_LOG3_PRESERVE," ● onBeforeNavigate"));
-chrome.webNavigation.onBeforeNavigate          .addListener((details) => log_js.log_object(S_SCRIPT_ID+" ● onBeforeNavigate"          ,details));
-chrome.webNavigation.onCommitted               .addListener((details) => log_js.log_object(S_SCRIPT_ID+" ● onCommitted"               ,details));
-chrome.webNavigation.onDOMContentLoaded        .addListener((details) => log_js.log_object(S_SCRIPT_ID+" ● onDOMContentLoaded"        ,details));
-chrome.webNavigation.onCompleted               .addListener((details) => log_js.log_object(S_SCRIPT_ID+" ● onCompleted"               ,details));
 
-chrome.webNavigation.onErrorOccurred           .addListener((details) => log_js.log_object(S_SCRIPT_ID+" ● onErrorOccurred"           ,details));
+chrome.webNavigation.onBeforeNavigate          .addListener((details) => log_js.log_o_more(S_SCRIPT_ID+" ● onBeforeNavigate"          ,details));
+chrome.webNavigation.onCommitted               .addListener((details) => log_js.log_o_more(S_SCRIPT_ID+" ● onCommitted"               ,details));
+chrome.webNavigation.onDOMContentLoaded        .addListener((details) => log_js.log_o_more(S_SCRIPT_ID+" ● onDOMContentLoaded"        ,details));
+chrome.webNavigation.onCompleted               .addListener((details) => log_js.log_o_more(S_SCRIPT_ID+" ● onCompleted"               ,details));
 
-chrome.webNavigation.onCreatedNavigationTarget .addListener((details) => log_js.log_object(S_SCRIPT_ID+" ● onCreatedNavigationTarget" ,details));
-chrome.webNavigation.onHistoryStateUpdated     .addListener((details) => log_js.log_object(S_SCRIPT_ID+" ● onHistoryStateUpdated"     ,details));
-chrome.webNavigation.onReferenceFragmentUpdated.addListener((details) => log_js.log_object(S_SCRIPT_ID+" ● onReferenceFragmentUpdated",details));
-chrome.webNavigation.onTabReplaced             .addListener((details) => log_js.log_object(S_SCRIPT_ID+" ● onTabReplaced"             ,details));
+chrome.webNavigation.onErrorOccurred           .addListener((details) => log_js.log_o_more(S_SCRIPT_ID+" ● onErrorOccurred"           ,details));
+
+chrome.webNavigation.onCreatedNavigationTarget .addListener((details) => log_js.log_o_more(S_SCRIPT_ID+" ● onCreatedNavigationTarget" ,details));
+chrome.webNavigation.onHistoryStateUpdated     .addListener((details) => log_js.log_o_more(S_SCRIPT_ID+" ● onHistoryStateUpdated"     ,details));
+chrome.webNavigation.onReferenceFragmentUpdated.addListener((details) => log_js.log_o_more(S_SCRIPT_ID+" ● onReferenceFragmentUpdated",details));
+chrome.webNavigation.onTabReplaced             .addListener((details) => log_js.log_o_more(S_SCRIPT_ID+" ● onTabReplaced"             ,details));
 /* eslint-enable strict */
 
 /*}}}*/
@@ -131,7 +132,7 @@ let log_event = function(name,arg="") { console.info("%c➔ "+S_SCRIPT_ID+" EVEN
 //    try {
 ///*{{{
 //        let cache = await caches.open("v1");
-//log_event("cache",cache);// FIXME
+//log_event("cache",cache);
 //        await cache.addAll(resources);
 //}}}*/
 //console.log("➔ RETURNING A FAKE FULFILLED STATUS");
