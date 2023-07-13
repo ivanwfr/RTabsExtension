@@ -23,7 +23,7 @@
 
 /* eslint-enable  no-redeclare        */
 const BG_MESSAGE_SCRIPT_ID  = "BG_MESSAGE";
-const BG_MESSAGE_SCRIPT_TAG =  BG_MESSAGE_SCRIPT_ID +" (230712:21h:35)"; /* eslint-disable-line no-unused-vars */
+const BG_MESSAGE_SCRIPT_TAG =  BG_MESSAGE_SCRIPT_ID +" (230713:03h:26)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_message  = (function() {
 "use strict";
@@ -63,7 +63,7 @@ let   log
     , log_caller
     , log_console_clear
     , log_object
-    , log_permission
+//  , log_permission
     , log_sep_bot
     , log_sep_top
 ;
@@ -152,7 +152,7 @@ let bg_message_import = function()
     log_caller                          = log_js.log_caller;
     log_console_clear                   = log_js.log_console_clear;
     log_object                          = log_js.log_object;
-    log_permission                      = log_js.log_permission;
+//  log_permission                      = log_js.log_permission;
     log_sep_bot                         = log_js.log_sep_bot;
     log_sep_top                         = log_js.log_sep_top;
 
@@ -234,13 +234,13 @@ log("%c  bg_message_import %c log_js %c background_js %c bg_content %c bg_csp %c
 let b_runtime_onMessage_addListener = function()
 {
 /*{{{*/
-let log_this = log_ACTIVATED();
+//t log_this = log_ACTIVATED();
 
 /*}}}*/
 
     /*....................SCRIPT_ID..NAMESPACE.......FUNCTIONALITY......................PERMISSION.*/
-    if(!log_permission(B_SCRIPT_ID, chrome.runtime, "Listening to Extension messages", "runtime", log_this) )
-        return;
+//  if(!log_permission(B_SCRIPT_ID, chrome.runtime, "Listening to Extension messages", "runtime", log_this) )
+//      return;
 
     chrome.runtime.onMessage.addListener( b_runtime_onMessage_CB );
 };

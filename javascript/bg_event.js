@@ -22,7 +22,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_EVENT_SCRIPT_ID  = "bg_event";
-const BG_EVENT_SCRIPT_TAG =  BG_EVENT_SCRIPT_ID +" (230712:21h:35)"; /* eslint-disable-line no-unused-vars */
+const BG_EVENT_SCRIPT_TAG =  BG_EVENT_SCRIPT_ID +" (230713:03h:19)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_event  = (function() {
 "use strict";
@@ -180,7 +180,7 @@ let bg_event_onActivated_addListener = function()
 let log_this = log_ACTIVATED();
 /*}}}*/
     /*....................SCRIPT_ID..NAMESPACE....FUNCTIONALITY...................PERMISSION.*/
-    if(!log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to tabs activation", "tabs", log_this))
+    if(!log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to tabs activation", "activeTab", log_this))
         return;
 
     chrome.tabs.onActivated.addListener( bg_settings_tabs1_onActivated );

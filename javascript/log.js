@@ -9,7 +9,7 @@
 /* eslint-disable prefer-rest-params */
 
 const LOG_JS_ID         = "log_js";
-const LOG_JS_TAG        =  LOG_JS_ID +" (230712:15h:25)";
+const LOG_JS_TAG        =  LOG_JS_ID +" (230713:03h:29)";
 /*}}}*/
 let log_js = (function() {
 "use strict";
@@ -845,6 +845,8 @@ let log_permission = function(script_id, namespace, functionality, permission, l
 {
     let  fnc = mPadStart(functionality,32);
     let perm = mPadEnd  (permission   ,10);
+
+    script_id = mPadEnd(script_id,20);
 
     if(namespace != undefined)
     {
