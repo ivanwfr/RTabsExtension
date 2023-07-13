@@ -19,7 +19,7 @@
 
 /* eslint-enable  no-redeclare        */
 const BG_STORE_SCRIPT_ID  = "bg_store";
-const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (230712:21h:36)"; /* eslint-disable-line no-unused-vars */
+const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (230713:16h:43)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_store  = (function() {
 "use strict";
@@ -64,7 +64,6 @@ let   get_callers
 
 /*}}}*/
 /*_ background_js {{{*/
-let B_SCRIPT_ID;
 let LOG_MAP;
 let MANIFEST_VERSION;
 
@@ -115,7 +114,6 @@ let bg_store_import = function()
     log_sep_top                         = log_js.log_sep_top;
     /*}}}*/
     /*_ background_js {{{*/
-    B_SCRIPT_ID                           = background_js.B_SCRIPT_ID;
     LOG_MAP                               = background_js.LOG_MAP;
     MANIFEST_VERSION                      = background_js.MANIFEST_VERSION;
 
@@ -248,10 +246,13 @@ let bg_store_LOAD_items = function(items)
     if(typeof items.B_LOG0_MORE         != "undefined") LOG_MAP.B_LOG0_MORE     = items.B_LOG0_MORE     ;
     /*(____________.____________________!=____________)________.________________=______.________________;*/
 
+    /* propagate log_more to log modules */
+    log_js.set_log_more( LOG_MAP.B_LOG0_MORE ) ;
+
 /*{{{*/
 let log_this = log_ACTIVATED();
 
-if( log_this) log_sep_top(B_SCRIPT_ID+" manifest ("+MANIFEST_VERSION+") STORAGE", "LOG3_TAG");
+if( log_this) log_sep_top(BG_STORE_SCRIPT_ID+" manifest ("+MANIFEST_VERSION+") STORAGE", "LOG3_TAG");
 if( log_this) log_object("Storage items", items, lf3);
 /*}}}*/
     /*}}}*/
@@ -268,7 +269,7 @@ if( log_this) log_object("Storage items", items, lf3);
 
     /*}}}*/
 /*{{{*/
-if( log_this) log_sep_bot(B_SCRIPT_ID+" manifest ("+MANIFEST_VERSION+") STORAGE", "LOG3_TAG");
+if( log_this) log_sep_bot(BG_STORE_SCRIPT_ID+" manifest ("+MANIFEST_VERSION+") STORAGE", "LOG3_TAG");
 /*}}}*/
 };
 /*}}}*/
@@ -290,7 +291,7 @@ else if( log_this) log       ("%c "+caller+"%c"+items_tag+"%c"+_caller
         chrome.storage.sync.set( items );
     }
     catch(error) {
-        console.error(B_SCRIPT_ID+" ERROR:\n"+ error);
+        console.error(BG_STORE_SCRIPT_ID+" ERROR:\n"+ error);
     }
 };
 /*}}}*/
