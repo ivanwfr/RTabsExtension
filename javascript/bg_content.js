@@ -26,7 +26,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_CONTENT_SCRIPT_ID  = "bg_content";
-const BG_CONTENT_SCRIPT_TAG =  BG_CONTENT_SCRIPT_ID +" (230712:21h:43)"; /* eslint-disable-line no-unused-vars */
+const BG_CONTENT_SCRIPT_TAG =  BG_CONTENT_SCRIPT_ID +" (230713:16h:08)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_content  = (function() {
 "use strict";

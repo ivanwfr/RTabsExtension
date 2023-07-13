@@ -22,7 +22,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_EVENT_SCRIPT_ID  = "bg_event";
-const BG_EVENT_SCRIPT_TAG =  BG_EVENT_SCRIPT_ID +" (230713:03h:19)"; /* eslint-disable-line no-unused-vars */
+const BG_EVENT_SCRIPT_TAG =  BG_EVENT_SCRIPT_ID +" (230713:17h:33)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_event  = (function() {
 "use strict";
@@ -58,12 +58,13 @@ let   SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTIO
 /* eslint-enable  no-unused-vars */
 
 let   log
-    , log_permission /* eslint-disable-line no-unused-vars */
+    , log_object
+    , log_permission
 ;
 
 /*}}}*/
 /*_ background_js {{{*/
-let B_SCRIPT_ID;
+let LOG_MAP;
 let MANIFEST_VERSION;
 let log_ACTIVATED;
 
@@ -105,10 +106,12 @@ let bg_event_import = function()
     [ SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP] = log_js.LOG_SYM;
 
     log                                 = log_js.log;
+    log_object                          = log_js.log_object;
     log_permission                      = log_js.log_permission;
 
     /*}}}*/
     /*_ background_js {{{*/
+    LOG_MAP                               = background_js.LOG_MAP;
     MANIFEST_VERSION                      = background_js.MANIFEST_VERSION;
 
     log_ACTIVATED                         = background_js.log_ACTIVATED;
@@ -156,11 +159,12 @@ let bg_event_addListeners = function()
 {
 /*{{{*/
 let log_this = log_ACTIVATED();
-    log_this=true;//FIXME
 
-//  log_more=true;//FIXME
+let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 /*}}}*/
-if( log_this) log_js.log_group("%cADDING LISTENERS "+SAD, lbH+lf3);
+if( log_this) log_js.log_group("%c ADDING LISTENERS "+SAD, lbH+lf3);
+
+if( log_more) chrome.permissions.getAll().then((args) => log_object("BROWSER PERMISSIONS",args.permissions));
 
     bg_header_addListener();
     bg_event_onActivated_addListener();
@@ -179,8 +183,8 @@ let bg_event_onActivated_addListener = function()
 /*{{{*/
 let log_this = log_ACTIVATED();
 /*}}}*/
-    /*....................SCRIPT_ID..NAMESPACE....FUNCTIONALITY...................PERMISSION.*/
-    if(!log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to tabs activation", "activeTab", log_this))
+    /*..........................SCRIPT_ID..NAMESPACE....FUNCTIONALITY...................PERMISSION.*/
+    if(!log_permission(BG_EVENT_SCRIPT_ID, chrome.tabs, "Listening to tabs activation", "activeTab", log_this))
         return;
 
     chrome.tabs.onActivated.addListener( bg_settings_tabs1_onActivated );
@@ -192,8 +196,8 @@ let bg_event_onUpdated_addListener = function()
 /*{{{*/
 let log_this = log_ACTIVATED();
 /*}}}*/
-    /*....................SCRIPT_ID..NAMESPACE....FUNCTIONALITY................PERMISSION.*/
-    if(!log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to tabs updated", "tabs", log_this))
+    /*..........................SCRIPT_ID..NAMESPACE....FUNCTIONALITY................PERMISSION.*/
+    if(!log_permission(BG_EVENT_SCRIPT_ID, chrome.tabs, "Listening to tabs updated", "tabs", log_this))
         return;
 
     chrome.tabs.onUpdated.addListener( bg_settings_tabs2_onUpdated );
@@ -205,8 +209,8 @@ let bg_event_onRemoved_addListener = function()
 /*{{{*/
 let log_this = log_ACTIVATED();
 /*}}}*/
-    /*....................SCRIPT_ID..NAMESPACE.....FUNCTIONALITY...............PERMISSION.*/
-    if(!log_permission(B_SCRIPT_ID, chrome.tabs, "Listening to tabs removed", "tabs", log_this))
+    /*..........................SCRIPT_ID..NAMESPACE.....FUNCTIONALITY...............PERMISSION.*/
+    if(!log_permission(BG_EVENT_SCRIPT_ID, chrome.tabs, "Listening to tabs removed", "tabs", log_this))
         return;
 
     chrome.tabs.onRemoved.addListener( bg_settings_tabs3_onRemoved );
@@ -243,7 +247,7 @@ let bg_event_call_later = function(_args)
                 args.active_tab =  tabs[0];
                 args.tabId      = (tabs[0] && tabs[0].id);
                 setTimeout(callback, delay, args); })
-            .catch((error) =>               { console.error(B_SCRIPT_ID+"."+caller, error); })
+            .catch((error) =>               { console.error(BG_EVENT_SCRIPT_ID+"."+caller, error); })
         ;
 
     }

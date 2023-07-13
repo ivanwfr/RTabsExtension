@@ -22,7 +22,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_HEADER_SCRIPT_ID  = "bg_header";
-const BG_HEADER_SCRIPT_TAG =  BG_HEADER_SCRIPT_ID +" (230712:21h:35)"; /* eslint-disable-line no-unused-vars */
+const BG_HEADER_SCRIPT_TAG =  BG_HEADER_SCRIPT_ID +" (230713:15h:51)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_header  = (function() {
 "use strict";
@@ -70,7 +70,6 @@ let   log
 /*}}}*/
 /*_ background_js {{{*/
 let B_ON_HEADER_RECEIVED;
-let B_SCRIPT_ID;
 let CHROME_SCHEME;
 let LOG_MAP;
 
@@ -151,7 +150,6 @@ let bg_header_import = function()
     /*}}}*/
     /*_ background_js {{{*/
     B_ON_HEADER_RECEIVED                  = background_js.B_ON_HEADER_RECEIVED;
-    B_SCRIPT_ID                           = background_js.B_SCRIPT_ID;
     CHROME_SCHEME                         = background_js.CHROME_SCHEME;
     LOG_MAP                               = background_js.LOG_MAP;
 
@@ -212,7 +210,7 @@ log("%c   bg_header_import %c log_js %c background_js %c __________ %c bg_csp %c
     setTimeout(bg_header_import,0);
 /*}}}*/
 /*{{{*/
-const PROVIDING_DEFAULT_HEADER_CSP_TO_FILTER = false;//true; // FIXME
+const PROVIDING_DEFAULT_HEADER_CSP_TO_FILTER = false;//true;
 
 /*}}}*/
 
@@ -231,16 +229,16 @@ let   caller = "bg_header_addListener";
 }}}*/
 
 /*}}}*/
-    /*....................SCRIPT_ID..NAMESPACE..................FUNCTIONALITY............PERMISSION.*/
-    if(!log_permission(B_SCRIPT_ID, chrome.webRequest        , "Filtering Headers CSP", "webRequest"        , log_this)) return;
-/*  if(!log_permission(B_SCRIPT_ID, chrome.webRequestBlocking,  "Blocking Headers CSP", "webRequestBlocking", log_this)) return; */
+    /*...........................SCRIPT_ID..NAMESPACE..................FUNCTIONALITY............PERMISSION.*/
+    if(!log_permission(BG_HEADER_SCRIPT_ID, chrome.webRequest        , "Filtering Headers CSP", "webRequest"        , log_this)) return;
+/*  if(!log_permission(BG_HEADER_SCRIPT_ID, chrome.webRequestBlocking,  "Blocking Headers CSP", "webRequestBlocking", log_this)) return; */
 
 try {
     /* ┌────────────────────────────────────────────────────────────────────┐ */
     /* │ webRequestBlocking                                        [UNUSED] │ */
     /* └────────────────────────────────────────────────────────────────────┘ */
     /* blocking requires webRequestBlocking {{{*/
-//  let    permission = log_permission(B_SCRIPT_ID, chrome.webRequestBlocking,  "Blocking Headers CSP", "webRequestBlocking", log_ACTIVATED())
+//  let    permission = log_permission(BG_HEADER_SCRIPT_ID, chrome.webRequestBlocking,  "Blocking Headers CSP", "webRequestBlocking", log_ACTIVATED())
     let    permission = chrome.webRequestBlocking != undefined;
     let extraInfoSpec
         = permission
@@ -265,7 +263,7 @@ try {
                     );
     /*}}}*/
 }
-catch(error) { log(B_SCRIPT_ID+"."+caller, error); }
+catch(error) { log(BG_HEADER_SCRIPT_ID+"."+caller, error); }
 finally      { if( log_ACTIVATED() ) log_STORAGE(); }
 };
 /*}}}*/
@@ -678,7 +676,7 @@ try {
             continue;
         }
 }
-catch(error) { log(B_SCRIPT_ID+"."+caller, error); log_object("csp_filter_rules", csp_filter_rules); break; }
+catch(error) { log(BG_HEADER_SCRIPT_ID+"."+caller, error); log_object("csp_filter_rules", csp_filter_rules); break; }
         log_result = "URL MATCHED: "+csp_filter;
         l_x = 6;
 if(log_more) log_object("...csp_filter_rules",csp_filter_rules,lf6,false);
@@ -785,7 +783,7 @@ if(csp_index == undefined) {
 //if(index >= 0)
 //{
 //if(log_this) log("REMOVING HEADER CSP ENTRY headers["+index+"]", headers[index]);
-//    headers.splice(index,1); // FIXME
+//    headers.splice(index,1);
 //}
 }}}*/
 

@@ -23,7 +23,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_PAGE_SCRIPT_ID  = "bg_page";
-const BG_PAGE_SCRIPT_TAG =  BG_PAGE_SCRIPT_ID +" (230712:21h:35)"; /* eslint-disable-line no-unused-vars */
+const BG_PAGE_SCRIPT_TAG =  BG_PAGE_SCRIPT_ID +" (230713:15h:57)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_page  = (function() {
 "use strict";
@@ -419,7 +419,7 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
     /*  tabId NONE {{{*/
     let tabId = _args.tabId;
     if(!tabId ) {
-        log(B_SCRIPT_ID+"."+caller+": NO tabId");
+        log(BG_PAGE_SCRIPT_ID+"."+caller+": NO tabId");
 
         return;
     }
@@ -459,7 +459,7 @@ if( log_more) log_object("...REPLY message", message, 7, false);
                         bg_tabs_set_tabId_key_val(tabId, "onHeadersReceived", false);
                         bg_tabs_set_tabId_key_val(tabId, "reloading"        , true );
                     })
-                    .catch((error) => { log(B_SCRIPT_ID+"."+caller+".chrome.scripting.executeScript", error); });
+                    .catch((error) => { log(BG_PAGE_SCRIPT_ID+"."+caller+".chrome.scripting.executeScript", error); });
     }
     /*}}}*/
     /* TABS SCRIPTING {{{*/
@@ -489,7 +489,7 @@ if( log_more) log_object("...REPLY message", message, 7, false);
                               );
 
         }
-        catch (error) { log(B_SCRIPT_ID+"."+caller, error); }
+        catch (error) { log(BG_PAGE_SCRIPT_ID+"."+caller, error); }
     }
     /*}}}*/
 if( log_this) log("%c"+SYMBOL_GEAR+"%c PAGE RELOAD SENT .. EXPECTING HEADER RECEIVED"
@@ -551,7 +551,7 @@ let log_more =  log_this && LOG_MAP.B_LOG0_MORE;
     let t_load          =   bg_tabs_get_tabId_key(tabId, "t_load"        );
     let reload_required =!!((start || tools_deployed) && !t_load);
 
-if( log_this) log_object(caller+" ● "+RELOAD_REQUIRED+": "+reload_required
+if( log_this) log_object(" ● "+RELOAD_REQUIRED+": "+reload_required
                         , { start, tools_deployed, t_load, reload_required, callers_bot:log_js.get_callers_bot() }
                         , lb0+lf5, !log_more); // collapsed
 
@@ -600,20 +600,19 @@ if( log_more) log("%c "+caller+": ...return:\n%c"+script, lbH, lf5);
 /*}}}*/
 /*➔ b_page2_FETCH_RUN_script {{{*/
 let b_page2_FETCH_RUN_script = function(_args)
-//t b_page2_FETCH_RUN_script = function({ tabId, DOM_LOAD_ID, DOM_TOOLS_JS_ID, B_SCRIPT_ID })
 {
 /*{{{*/
 let   caller = "b_page2_FETCH_RUN_script";
-let { tabId, DOM_LOAD_ID, DOM_TOOLS_JS_ID, B_SCRIPT_ID } = _args; /* eslint-disable-line no-shadow */
+let { tabId, dom_load_id, dom_tools_js_id, b_script_id } = _args; /* eslint-disable-line no-shadow */
 
 //console.log(caller+"(_args):");
 //console.log("_args:",_args);
 /*}}}*/
     /* fetch document.body.attributes .. [LOAD TOOLS B_SCRIPT ID's] {{{*/
     let k;              let v;                           let message        = {};
-    k = DOM_LOAD_ID    ; if(v = document.body.attributes[k]) message[k]     = v.textContent;
-    k = DOM_TOOLS_JS_ID; if(v = document.body.attributes[k]) message[k]     = v.textContent;
-    k = B_SCRIPT_ID    ; if(v = document.body.attributes[k]) message[k]     = v.textContent;
+    k = dom_load_id    ; if(v = document.body.attributes[k]) message[k]     = v.textContent;
+    k = dom_tools_js_id; if(v = document.body.attributes[k]) message[k]     = v.textContent;
+    k = b_script_id    ; if(v = document.body.attributes[k]) message[k]     = v.textContent;
 
     /*}}}*/
     /* caller tabId url {{{*/

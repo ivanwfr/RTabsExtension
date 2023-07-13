@@ -2170,7 +2170,7 @@ li { white-space: nowrap; }
 /* ###################################################### div_slot_containers */
 /*{{{*/
 
-/* //FIXME {{{
+/*{{{
 #div_slot_containers                         { transition     : font-size 2500ms ease-out; }
 #div_slot_containers>*                       { transition     : all 250ms ease-in; }
 }}}*/
@@ -2183,12 +2183,12 @@ li { white-space: nowrap; }
     user-select           : none;
     cursor                : copy;
     background-color      : rgba(64,64,64,1.0);
-/* //FIXME {{{
+/*{{{
     position              : relative;
     position              : fixed;
 }}}*/
     grid-template-columns : repeat(3, 1fr); /* i.e. 1fr 1fr 1fr .. 3 fragments of available space*/
-/* //FIXME {{{
+/*{{{
     grid-template-rows    : 1fr auto;
     grid-template-rows    : repeat(3, 1fr);
     grid-auto-flow        : column;
@@ -2292,7 +2292,7 @@ li { white-space: nowrap; }
 #div_slot_containers>.container_selected { border-width     :  0.9em;  border-style :  solid;                        }
 #div_slot_containers>.fullscreen_last    { outline-width    :  0.5em; outline-style : dashed; outline-color : black; }
 
-/* //FIXME {{{
+/*{{{
 .content_is_too_big::before              {          content : "content_is_too_big"; }
 }}}*/
 .content_is_too_big                      {       font-style : italic;               }
@@ -2630,7 +2630,6 @@ background-size    : 100% 100% !important;
 .pat_span          { float : left; clear  : left; }
 
 /*{{{
-//FIXME  t_pat_bag1_toggle_pat  NOT HELPING!
 .pat_clicked       { box-shadow : 0 0 .1em .1em rgba(0,0,0,0.8) inset !important; }
 .pat_clicked       { opacity    : .3                                  !important; }
 }}}*/

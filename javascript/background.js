@@ -27,7 +27,7 @@
 const MANIFEST_VERSION      = (typeof chrome.tabs.executeScript == "undefined") ?  "V3" : "V2";
 
 const B_SCRIPT_ID           = "background_js";
-const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (230712:21h:38)"; /* eslint-disable-line no-unused-vars */
+const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (230713:15h:38)"; /* eslint-disable-line no-unused-vars */
 const DOM_TOOLS_JS_ID       = "dom_tools_js";
 const DOM_LOAD_ID           = "dom_load";
 /*}}}*/
@@ -669,7 +669,7 @@ let p = function()
         , sm      : (msg) =>   b_runtime_sendMessage({cmd : msg||"debug_cmd"}, null, "Devtools."+B_SCRIPT_ID)
 
         , "---------- MESSAGES TO popup ----------" : "---------------------------------------"
-        , pa      : ()    =>                  bg_page.b_POPUP_pageAction       (tl()                   , "Devtools") //FIXME
+        , pa      : ()    =>                  bg_page.b_POPUP_pageAction       (tl()                   , "Devtools")
 
         , "---------- MESSAGES FROM popup --------" : "---------------------------------------"
         , p_start : ()    => setTimeout(() => b_runtime_onMessage_CB_TAB_start (tl()                      ), 1000)

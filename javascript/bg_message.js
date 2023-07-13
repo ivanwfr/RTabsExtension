@@ -23,7 +23,7 @@
 
 /* eslint-enable  no-redeclare        */
 const BG_MESSAGE_SCRIPT_ID  = "BG_MESSAGE";
-const BG_MESSAGE_SCRIPT_TAG =  BG_MESSAGE_SCRIPT_ID +" (230713:03h:26)"; /* eslint-disable-line no-unused-vars */
+const BG_MESSAGE_SCRIPT_TAG =  BG_MESSAGE_SCRIPT_ID +" (230713:16h:13)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_message  = (function() {
 "use strict";
@@ -238,8 +238,8 @@ let b_runtime_onMessage_addListener = function()
 
 /*}}}*/
 
-    /*....................SCRIPT_ID..NAMESPACE.......FUNCTIONALITY......................PERMISSION.*/
-//  if(!log_permission(B_SCRIPT_ID, chrome.runtime, "Listening to Extension messages", "runtime", log_this) )
+    /*............................SCRIPT_ID..NAMESPACE.......FUNCTIONALITY......................PERMISSION.*/
+//  if(!log_permission(BG_MESSAGE_SCRIPT_ID, chrome.runtime, "Listening to Extension messages", "runtime", log_this) )
 //      return;
 
     chrome.runtime.onMessage.addListener( b_runtime_onMessage_CB );
@@ -824,7 +824,7 @@ try{
         = {   MESSAGE__________________________ : "▼" , ...message
             , ATTRIBUTES_______________________ : "▼" , ...tab_attributes
             , ITEMS____________________________ : "▼" , ...tab_items
-            , HANDLER__________________________ : "▼" ,    handler : B_SCRIPT_ID+" → "+caller+"(query "+message.query+")"
+            , HANDLER__________________________ : "▼" ,    handler : BG_MESSAGE_SCRIPT_ID+" → "+caller+"(query "+message.query+")"
         };
 
     if( response.caller )

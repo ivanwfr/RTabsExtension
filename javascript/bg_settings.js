@@ -25,7 +25,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_SETTINGS_SCRIPT_ID  = "bg_settings";
-const BG_SETTINGS_SCRIPT_TAG =  BG_SETTINGS_SCRIPT_ID +" (230712:21h:35)"; /* eslint-disable-line no-unused-vars */
+const BG_SETTINGS_SCRIPT_TAG =  BG_SETTINGS_SCRIPT_ID +" (230713:16h:21)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let bg_settings  = (function() {
 "use strict";
@@ -71,6 +71,7 @@ let   log
 
 /*}}}*/
 /*_ background_js {{{*/
+let B_SCRIPT_ID;
 let CHROME_SCHEME;
 let LOG_MAP;
 let MANIFEST_VERSION;
@@ -153,6 +154,7 @@ let bg_settings_import = function()
 
     /*}}}*/
     /*_ background_js {{{*/
+    B_SCRIPT_ID                           = background_js.B_SCRIPT_ID;
     CHROME_SCHEME                         = background_js.CHROME_SCHEME;
     LOG_MAP                               = background_js.LOG_MAP;
     MANIFEST_VERSION                      = background_js.MANIFEST_VERSION;
@@ -290,7 +292,7 @@ if( log_more) log_object("url=["+url+"]");
     if(activeInfo.tabId && !url)
     {
         await tabs4_query_active_tab_url( activeInfo.tabId
-                                                        , { query: tracked_or_unknown_url , caller: BG_SETTINGS_SCRIPT_ID+" "+log_js.get_callers_bot() }
+                                                        , { query: tracked_or_unknown_url , caller: B_SCRIPT_ID+" "+log_js.get_callers_bot() }
                                                       );
 
     }
@@ -533,11 +535,11 @@ if( log_this) log(caller+": %c sending tabId value to bg_event_set_last_activate
         b_runtime_onMessage_CB_reply(tabId, message, response_handler);
 
     /*}}}*/
-// FIXME TOO EARLY ? gets undefined items into tabs7_get_url_settings_callback .. WHY ?
+// TOO EARLY ? gets undefined items into tabs7_get_url_settings_callback .. WHY ?
     /* tabs6_get_url_settings {{{*/
     let have_tabId                      = tabId;
     let have_message_caller             = message.caller;
-    let have_message_caller_B_SCRIPT_ID = message.caller && message.caller.startsWith(BG_SETTINGS_SCRIPT_ID);
+    let have_message_caller_B_SCRIPT_ID = message.caller && message.caller.startsWith(B_SCRIPT_ID);
 //  let have_get_settings_called        = bg_tabs_get_tabId_key(tabId, "get_settings_called"  );
 //  let have_get_settings_answered      = bg_tabs_get_tabId_key(tabId, "get_settings_answered");
 
@@ -556,7 +558,7 @@ if( log_this) log(caller+": %c sending tabId value to bg_event_set_last_activate
         let why_not
             = !have_tabId                      ? "NO tabId"
             : !have_message_caller             ? "NO message.caller"
-            : !have_message_caller_B_SCRIPT_ID ?    "message.caller != BG_SETTINGS_SCRIPT_ID)=["+message.caller+"]"
+            : !have_message_caller_B_SCRIPT_ID ?    "message.caller != B_SCRIPT_ID)=["+message.caller+"]"
 //          : !have_get_settings_called        ? "!get_settings_called"
 //          : !have_get_settings_answered      ? "!get_settings_answered"
             : "why_not";
@@ -614,7 +616,7 @@ if( log_more) log_object(url_tab.from, url_tab, lbH+lf4);
     {
         log_IGNORING(url, caller);
 
-bg_tabs_set_tabId_key_val(tabId, "url", url);//FIXME
+        bg_tabs_set_tabId_key_val(tabId, "url", url);
         return false;
     }
     /*}}}*/
