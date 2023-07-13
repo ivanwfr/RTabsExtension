@@ -9,7 +9,7 @@
 /* eslint-disable prefer-rest-params */
 
 const LOG_JS_ID         = "log_js";
-const LOG_JS_TAG        =  LOG_JS_ID +" (230713:03h:29)";
+const LOG_JS_TAG        =  LOG_JS_ID +" (230713:16h:38)";
 /*}}}*/
 let log_js = (function() {
 "use strict";
@@ -375,7 +375,8 @@ let strip_CR_LF    = function(text)
     ;
 };
 /*}}}*/
-/*➔ log_object {{{*/
+/*➔ log_object ● log_o_more {{{*/
+let log_o_more = function(o_name,o,lxx    ,collapsed     ) { if(log_more) log_object(o_name,o,lxx,collapsed); };
 let log_object = function(o_name,o,lxx=lb0,collapsed=true)
 {
 /* object .. collapsed {{{*/
@@ -829,7 +830,7 @@ try {
         /**/console.clear();
     }
 } finally {
-    if(result) console.log(result,     lbb+lfX[l_x], lf8, lb0);
+    if(log_more && result) console.log(result,     lbb+lfX[l_x], lf8, lb0);
 }
 };
 /*}}}*/
@@ -989,6 +990,7 @@ return { name : LOG_JS_ID
     ,    log_key_val
     ,    log_key_val_group
     ,    log_members
+    ,    log_o_more
     ,    log_object
     ,    log_object_val_format
     ,    log_pause
