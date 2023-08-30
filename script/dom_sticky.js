@@ -21,7 +21,7 @@
 /* eslint-disable prefer-object-spread */
 
 const DOM_STICKY_JS_ID      = "dom_sticky_js";
-const DOM_STICKY_JS_TAG     = DOM_STICKY_JS_ID  +" (230707:14h:35)";
+const DOM_STICKY_JS_TAG     = DOM_STICKY_JS_ID  +" (230820:21h:10)";
 /*}}}*/
 let dom_sticky  = (function() {
 "use strict";
@@ -5687,8 +5687,8 @@ if( log_this) log("%c msg_pos_anchor_lines: %c"+t_data.LF+strip_HTML(msg_pos_anc
 /* EXPORT */
 /*{{{*/
 return { name : "dom_sticky"
-    , logging : function(state) { return DOM_STICKY_LOG = t_store.setItem("DOM_STICKY_LOG",state); }
-    , tagging : function(state) { return DOM_STICKY_TAG = t_store.setItem("DOM_STICKY_TAG",state); }
+    , logging : function(state) { return DOM_STICKY_LOG = t_store.t_store_set_state("DOM_STICKY_LOG",state); }
+    , tagging : function(state) { return DOM_STICKY_TAG = t_store.t_store_set_state("DOM_STICKY_TAG",state); }
     , t_sticky_IMPORT
 
         /* CONST {{{*/

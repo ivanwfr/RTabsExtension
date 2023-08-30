@@ -1,12 +1,46 @@
 {
-    "author"            : "Ivan Wellesz",
-    "manifest_version"  :  3,
-    "name"              : "RTabs (V3)",
-    "short_name"        : "RTabs",
-    "description"       : "Find In Page (V3)",
-    "homepage_url"      : "https://remotetabs.com",
-    "version"           : "1.23.07.12",
-    "icons"             : {
+    "manifest_version"   :          3  ,
+    "name"               : "RTabs (v3)",
+    "short_name"         : "RTabs",
+    "description"        : "Find In Page (v3)",
+    "author"             : "Ivan Wellesz",
+    "homepage_url"       : "https://remotetabs.com",
+    "version"            : "1.23.08.30",
+    "permissions"        : [
+        "activeTab",
+
+
+        "declarativeNetRequest",
+        "declarativeNetRequestFeedback",
+        "declarativeNetRequestWithHostAccess",
+
+
+        "scripting",
+        "storage",
+        "tabs",
+        "webNavigation",
+        "webRequest"
+
+
+    ],
+    "host_permissions"   : [
+        "<all_urls>"
+    ],
+    "declarative_net_request": {
+        "rule_resources"      : [
+            {
+                "id"               : "rules1_SET",
+                "path"             : "rules1_SET.json",
+                "enabled"          :  true
+            },
+            {
+                "id"               : "rules2_REMOVE",
+                "path"             : "rules2_REMOVE.json",
+                "enabled"          :  false
+            }
+        ]
+    },
+    "icons"              : {
         "16"              : "images/rtabs16.png",
         "24"              : "images/rtabs24.png",
         "32"              : "images/rtabs32.png",
@@ -16,11 +50,29 @@
         "144"             : "images/rtabs144.png",
         "512"             : "images/rtabs512.png"
     },
-    "options_ui"        : {
+    "background"         : {
+        "service_worker"  : "javascript/worker.js"
+
+    },
+    "action"             : {
+        "default_title"   : "RTabs",
+        "default_popup"   : "popup.html",
+        "default_icon"    : {
+            "16"            : "images/rtabs16.png",
+            "24"            : "images/rtabs24.png",
+            "32"            : "images/rtabs32.png",
+            "48"            : "images/rtabs48.png",
+            "72"            : "images/rtabs72.png",
+            "96"            : "images/rtabs96.png",
+            "144"           : "images/rtabs144.png",
+            "512"           : "images/rtabs512.png"
+        }
+    },
+    "options_ui"         : {
         "page"            : "options.html"
 
     },
-    "content_scripts"   : [ {
+    "content_scripts"    : [ {
         "matches"         : [ "<all_urls>"         ],
         "js"              : [ "javascript/dom_load.js"
 
@@ -55,49 +107,8 @@
         ],
         "run_at"          :   "document_idle"
     } ],
-    "background"        : {
-        "service_worker"  :   "javascript/service_worker.js"
-
-    },
-    "permissions"       : [
-        "storage",
-        "tabs",
-        "activeTab",
-
-        "scripting",
-        "webRequest",
-
-
-
-        "webNavigation"
-
-    ],
-    "host_permissions"  : [
-        "<all_urls>"
-    ],
-
-
-
-
-
-
-
-    "action"            : {
-        "default_icon"    : {
-            "16"            : "images/rtabs16.png",
-            "24"            : "images/rtabs24.png",
-            "32"            : "images/rtabs32.png",
-            "48"            : "images/rtabs48.png",
-            "72"            : "images/rtabs72.png",
-            "96"            : "images/rtabs96.png",
-            "144"           : "images/rtabs144.png",
-            "512"           : "images/rtabs512.png"
-        },
-        "default_title"   : "RTabs",
-        "default_popup"   : "popup.html"
-    },
     "content_security_policy": {
-      "extension_pages":                        "script-src 'self';",
-      "sandbox"        : "sandbox allow-scripts; script-src 'self';"
+        "extension_pages"     :                        "script-src 'self';",
+        "sandbox"             : "sandbox allow-scripts; script-src 'self';"
     }
 }

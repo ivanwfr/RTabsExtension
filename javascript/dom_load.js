@@ -14,9 +14,9 @@
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 const DOM_LOAD_ID    = "dom_load";
-const DOM_LOAD_TAG   =  DOM_LOAD_ID +" (230710:18h:58)";
+const DOM_LOAD_TAG   =  DOM_LOAD_ID +" (230821:20h:48)";
 /*}}}*/
-let dom_load_js = (function() {
+javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 "use strict";
 /* CSS HTML IDs {{{*/
 let DOM_HOST_CSS_ID     = "dom_host_css";
@@ -248,7 +248,7 @@ let dom_tools_html_data = `
 ;
 /*}}}*/
 
-  /**    2 HOST     CSS  dom_host_css_data .. ESCAPE=[OR HOST CSS WONT WORK]  {{{*/
+  /**    2 HOST    CSS  dom_host_css_data .. ESCAPE=[OR HOST CSS WONT WORK]  {{{*/
 /*
 ../stylesheet/dom_host.css
  */
@@ -1252,7 +1252,9 @@ let dom_grid_css_data ="data:text/css,"+ `
 let dom_tools_css_data ="data:text/css,"+ escape(`
 /*INLINE{{{*/
 
-#dom_tools_css_tag  { content: "dom_tools_css (230627:15h:57)"; }
+#dom_tools_css_tag  { content: "dom_tools_css (230816:16h:05) XXX"; }
+
+:host { all: initial; }
 
 
 .flag, .flag.checked {
@@ -5359,62 +5361,62 @@ background-size    : 100% 100% !important;
 
 
 
-.sticky          .sticky_fix         { transform        : translate( 1em, -0.2em); }
-.sticky.point_EE .sticky_fix         { transform        : translate(-1em, -0.2em); }
-.sticky.point_NE .sticky_fix         { transform        : translate(-1em, -0.2em); }
-.sticky.point_NW .sticky_fix         { transform        : translate( 1em, -0.2em); }
-.sticky.point_SE .sticky_fix         { transform        : translate(-1em, -0.2em); }
-.sticky.point_SW .sticky_fix         { transform        : translate( 1em, -0.2em); }
-.sticky.point_WW .sticky_fix         { transform        : translate( 1em, -0.2em); }
+.sticky          .sticky_fix        { transform        : translate( 1em, -0.2em); }
+.sticky.point_EE .sticky_fix        { transform        : translate(-1em, -0.2em); }
+.sticky.point_NE .sticky_fix        { transform        : translate(-1em, -0.2em); }
+.sticky.point_NW .sticky_fix        { transform        : translate( 1em, -0.2em); }
+.sticky.point_SE .sticky_fix        { transform        : translate(-1em, -0.2em); }
+.sticky.point_SW .sticky_fix        { transform        : translate( 1em, -0.2em); }
+.sticky.point_WW .sticky_fix        { transform        : translate( 1em, -0.2em); }
 
-.sticky          .sticky_pen         { transform        : translate( 2em, -0.2em); }
-.sticky.point_EE .sticky_pen         { transform        : translate(-2em, -0.2em); }
-.sticky.point_NE .sticky_pen         { transform        : translate(-2em, -0.2em); }
-.sticky.point_NW .sticky_pen         { transform        : translate( 2em, -0.2em); }
-.sticky.point_SE .sticky_pen         { transform        : translate(-2em, -0.2em); }
-.sticky.point_SW .sticky_pen         { transform        : translate( 2em, -0.2em); }
-.sticky.point_WW .sticky_pen         { transform        : translate( 2em, -0.2em); }
+.sticky          .sticky_pen        { transform        : translate( 2em, -0.2em); }
+.sticky.point_EE .sticky_pen        { transform        : translate(-2em, -0.2em); }
+.sticky.point_NE .sticky_pen        { transform        : translate(-2em, -0.2em); }
+.sticky.point_NW .sticky_pen        { transform        : translate( 2em, -0.2em); }
+.sticky.point_SE .sticky_pen        { transform        : translate(-2em, -0.2em); }
+.sticky.point_SW .sticky_pen        { transform        : translate( 2em, -0.2em); }
+.sticky.point_WW .sticky_pen        { transform        : translate( 2em, -0.2em); }
 
-.sticky          .sticky_refont      { transform        : translate( 0.2em, 0.0em); }
-.sticky.point_EE .sticky_refont      { transform        : translate(-0.2em,-0.0em); }
-.sticky.point_NE .sticky_refont      { transform        : translate(-0.2em, 0.0em); }
-.sticky.point_NW .sticky_refont      { transform        : translate( 0.2em, 0.0em); }
-.sticky.point_SE .sticky_refont      { transform        : translate(-0.2em, 0.0em); }
-.sticky.point_SW .sticky_refont      { transform        : translate( 0.2em,-0.0em); }
-.sticky.point_WW .sticky_refont      { transform        : translate( 0.2em,-0.0em); }
+.sticky          .sticky_refont     { transform        : translate( 0.2em, 0.0em); }
+.sticky.point_EE .sticky_refont     { transform        : translate(-0.2em,-0.0em); }
+.sticky.point_NE .sticky_refont     { transform        : translate(-0.2em, 0.0em); }
+.sticky.point_NW .sticky_refont     { transform        : translate( 0.2em, 0.0em); }
+.sticky.point_SE .sticky_refont     { transform        : translate(-0.2em, 0.0em); }
+.sticky.point_SW .sticky_refont     { transform        : translate( 0.2em,-0.0em); }
+.sticky.point_WW .sticky_refont     { transform        : translate( 0.2em,-0.0em); }
 
-.sticky                      { transform        : rotate(   0   ); }
-.sticky.point_EE             { transform        : rotate(   0   ); }
-.sticky.point_NE             { transform        : rotate( -45deg); }
-.sticky.point_NW             { transform        : rotate(-135deg); }
-.sticky.point_SE             { transform        : rotate(  45deg); }
-.sticky.point_SW             { transform        : rotate( 135deg); }
-.sticky.point_WW             { transform        : rotate(-180deg); }
-
-
-
-
-.flipped                     { transform        : rotate(180deg); display:inline-block; }
-
-
-
-.sticky                               { width : 128px; height : 72px; }
+.sticky                             { transform        : rotate(   0   ); }
+.sticky.point_EE                    { transform        : rotate(   0   ); }
+.sticky.point_NE                    { transform        : rotate( -45deg); }
+.sticky.point_NW                    { transform        : rotate(-135deg); }
+.sticky.point_SE                    { transform        : rotate(  45deg); }
+.sticky.point_SW                    { transform        : rotate( 135deg); }
+.sticky.point_WW                    { transform        : rotate(-180deg); }
 
 
 
 
-
-
-.sticky          .sticky_hand_mov     {  width :  32px; height : 32px; }
-.sticky          .sticky_fix          {  width :   1em; height :  1em; }
-.sticky          .sticky_pen          {  width :   2em; height :  1em; }
-.sticky          .sticky_refont       {  width :  100%; height :  1em; }
+.flipped                            { transform        : rotate(180deg); display:inline-block; }
 
 
 
-.sticky_ring     .sticky_fix          {  width : 66px !important; height : 66px !important; }
-.sticky_ring     .sticky_pen          {  width : 66px !important; height : 66px !important; }
-.sticky_ring     .sticky_refont       {  width : 66px !important; height : 66px !important; }
+.sticky                             { width : 128px; height : 72px; }
+
+
+
+
+
+
+.sticky          .sticky_hand_mov   {  width :  32px; height : 32px; }
+.sticky          .sticky_fix        {  width :   1em; height :  1em; }
+.sticky          .sticky_pen        {  width :   2em; height :  1em; }
+.sticky          .sticky_refont     {  width :  100%; height :  1em; }
+
+
+
+.sticky_ring     .sticky_fix        {  width : 66px !important; height : 66px !important; }
+.sticky_ring     .sticky_pen        {  width : 66px !important; height : 66px !important; }
+.sticky_ring     .sticky_refont     {  width : 66px !important; height : 66px !important; }
 
 
 
@@ -6355,21 +6357,21 @@ const lbb  = "font-size:150%; font-weight:900; margin:0 0 0 0;";
 const lbB  = "font-size:300%; font-weight:900; margin:0 0 0 0;";
 const lbS  = "font-size:800%; font-weight:900; margin:0 0 0 0;";
 
-const lbH  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0 1ex 1ex   0; padding:0 .5em 0 .5em; border-radius:1em 1em 1em 1em; background:linear-gradient(to bottom, #000 0%, #223 50%, #000 100%);";
+const lbH  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0 1ex 1ex   0; padding:0 .5em 0 .5em; border-radius:1em 1em 1em 1em; background:linear-gradient(to bottom, #555 0%, #223 80%, #454 100%);";
 const lbL  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0   0   0 1ex; padding:0 .5em 0 .5em; border-radius:1em   0   0 1em; background:linear-gradient(to   left, #333 0%           ,#445 100%);";
 const lbR  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0 1ex   0   0; padding:0 .5em 0 .5em; border-radius:  0 1em 1em   0; background:linear-gradient(to  right, #333 0%           ,#544 100%);";
 const lbC  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0   0   0   0; padding:0 .5em 0 .5em; border-radius:  0   0   0   0;";
 
-const lb1  = "background-color:#964B00; color:black;";
-const lb2  = "background-color:#FF0000; color:black;";
-const lb3  = "background-color:#FFA500; color:black;";
-const lb4  = "background-color:#FFFF00; color:black;";
-const lb5  = "background-color:#9ACD32; color:black;";
-const lb6  = "background-color:#6495ED; color:black;";
-const lb7  = "background-color:#EE82EE; color:black;";
-const lb8  = "background-color:#A0A0A0; color:black;";
-const lb9  = "background-color:#FFFFFF; color:black;";
-const lb0  = "background-color:#000000; color:gray;";
+const lb1  = "background:#964B00; color:black; padding:0 0.5em;";
+const lb2  = "background:#FF0000; color:black; padding:0 0.5em;";
+const lb3  = "background:#FFA500; color:black; padding:0 0.5em;";
+const lb4  = "background:#FFFF00; color:black; padding:0 0.5em;";
+const lb5  = "background:#9ACD32; color:black; padding:0 0.5em;";
+const lb6  = "background:#6495ED; color:black; padding:0 0.5em;";
+const lb7  = "background:#EE82EE; color:black; padding:0 0.5em;";
+const lb8  = "background:#A0A0A0; color:black; padding:0 0.5em;";
+const lb9  = "background:#FFFFFF; color:black; padding:0 0.5em;";
+const lb0  = "background:#000000; color:gray ; padding:0 0.5em;";
 const lbX = [ lb0 ,lb1 ,lb2 ,lb3 ,lb4 ,lb5 ,lb6 ,lb7 ,lb8 ,lb9 ];
 
 const lf1  = "color:#964B00;";
@@ -6387,19 +6389,24 @@ const lfX = [ lf0 ,lf1 ,lf2 ,lf3 ,lf4 ,lf5 ,lf6 ,lf7 ,lf8 ,lf9 ];
 /* eslint-enable  no-unused-vars */
 /*}}}*/
 /*➔ dom_load {{{*/
+
+let dom_load_success;
+
 let dom_load = function(_dom_load_id=DOM_LOAD_ID) /* eslint-disable-line complexity */
 {
 /*{{{*/
 let log_this = IPC_LOG;
-if( log_this) console.groupCollapsed(_dom_load_id+": LOADING DATA");
+if( log_this) console.groupCollapsed("%c"+_dom_load_id+" ● CONTENT PAGE INJECTION: LOADING DATA", lbb+lbH+lb6);
 if( log_this) console.log           (_dom_load_id+": document.contentType=["+document.contentType+"]");
 /*}}}*/
     /* CHECK ALREADY LOADED CONTENT-SCRIPT {{{*/
+/*{{{
     if(    typeof dom_log      != "undefined") {
-
-        if(typeof dom_tools    != "undefined") console.log(_dom_load_id+   ": dom_tools is already loaded");
+        if(typeof dom_sentence != "undefined") console.log(_dom_load_id   +": dom_sentence is already loaded");
+        if(typeof dom_tools    != "undefined") console.log(_dom_load_id+   ":    dom_tools is already loaded");
         return false;
     }
+}}}*/
     /*}}}*/
 /* Content-Security-Policy {{{
 let bg_csp = document.querySelectorAll("[http-equiv='Content-Security-Policy']")[0];
@@ -6409,58 +6416,60 @@ if( bg_csp ) {
     bg_csp.content   = "default-src 'self' 'unsafe-inline' http://* https://* file://* data://*";
 }
 }}}*/
-    let dom_load_success = true; /* the optimist at work */
+    dom_load_success = true; /* the optimist at work */
     try {
 /* log {{{*/
 if( log_this) console.log(_dom_load_id+": LOADING DATA .. try");
               window.addEventListener("error", load_onerror, false);
 /*}}}*/
+        let page_head   = document.getElementsByTagName("head")[0];
+        let shadow_root = get_shadow_root();
         /* LOAD HTML {{{*/
-        if(    dom_load_success && !load_html  ( "dom_tools_html" , dom_tools_html_data ) ) dom_load_success = false;
+        if(    dom_load_success && !load_html  ( "dom_tools_html" , dom_tools_html_data , shadow_root) ) dom_load_success = false;
         /*}}}*/
         /* LOAD CSS {{{*/
         if(    dom_load_success && document.contentType.includes("xml") ) {
-            if(dom_load_success && !load_css_pi( DOM_HOST_CSS_ID  , dom_host_css_data   ) ) dom_load_success = false;
-            if(dom_load_success && !load_css_pi( DOM_GRID_CSS_ID  , dom_grid_css_data   ) ) dom_load_success = false;
-            if(dom_load_success && !load_css_pi( DOM_TOOLS_CSS_ID , dom_tools_css_data  ) ) dom_load_success = false;
+            if(dom_load_success && !load_css_pi( DOM_HOST_CSS_ID  , dom_host_css_data                ) ) dom_load_success = false;
+            if(dom_load_success && !load_css_pi( DOM_HOST_CSS_ID  , dom_host_css_data                ) ) dom_load_success = false;
+            if(dom_load_success && !load_css_pi( DOM_GRID_CSS_ID  , dom_grid_css_data                ) ) dom_load_success = false;
         }
         else {
-            if(dom_load_success && !load_css   ( DOM_HOST_CSS_ID  , dom_host_css_data   ) ) dom_load_success = false;
-            if(dom_load_success && !load_css   ( DOM_GRID_CSS_ID  , dom_grid_css_data   ) ) dom_load_success = false;
-            if(dom_load_success && !load_css   ( DOM_TOOLS_CSS_ID , dom_tools_css_data  ) ) dom_load_success = false;
+            if(dom_load_success && !load_css   ( DOM_HOST_CSS_ID  , dom_host_css_data   , page_head  ) ) dom_load_success = false;
+            if(dom_load_success && !load_css   ( DOM_GRID_CSS_ID  , dom_grid_css_data   , shadow_root) ) dom_load_success = false;
+            if(dom_load_success && !load_css   ( DOM_TOOLS_CSS_ID , dom_tools_css_data  , shadow_root) ) dom_load_success = false;
         }
         /*}}}*/
         /* LOAD JS - data .. tools {{{*/
         let fail_or_use_planB   = (chrome && typeof chrome.runtime != "undefined"); /* eslint-disable-line no-undef */
 
-        if(    dom_load_success && !load_js    ( "dom_data_js"    , dom_data_js_data    ) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_data_js"    , dom_data_js_data    , shadow_root) ) dom_load_success = fail_or_use_planB;
 
-        if(    dom_load_success && !load_js    ( "dom_log_js"     , dom_log_js_data     ) ) dom_load_success = fail_or_use_planB;
-        if(    dom_load_success && !load_js    ( "dom_popup_js"   , dom_popup_js_data   ) ) dom_load_success = fail_or_use_planB;
-        if(    dom_load_success && !load_js    ( "dom_util_js"    , dom_util_js_data    ) ) dom_load_success = fail_or_use_planB;
-        if(    dom_load_success && !load_js    ( "dom_i18n_js"    , dom_i18n_js_data    ) ) dom_load_success = fail_or_use_planB;
-        if(    dom_load_success && !load_js    ( "dom_prop_js"    , dom_prop_js_data    ) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_log_js"     , dom_log_js_data     , shadow_root) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_popup_js"   , dom_popup_js_data   , shadow_root) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_util_js"    , dom_util_js_data    , shadow_root) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_i18n_js"    , dom_i18n_js_data    , shadow_root) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_prop_js"    , dom_prop_js_data    , shadow_root) ) dom_load_success = fail_or_use_planB;
 
-        if(    dom_load_success && !load_js    ( "dom_store_js"   , dom_store_js_data   ) ) dom_load_success = fail_or_use_planB;
-        if(    dom_load_success && !load_js    ( "dom_fly_js"     , dom_fly_js_data     ) ) dom_load_success = fail_or_use_planB;
-        if(    dom_load_success && !load_js    ( "dom_wording_js" , dom_wording_js_data ) ) dom_load_success = fail_or_use_planB;
-        if(    dom_load_success && !load_js    ( "dom_select_js"  , dom_select_js_data  ) ) dom_load_success = fail_or_use_planB;
-        if(    dom_load_success && !load_js    ( "dom_slot_js"    , dom_slot_js_data    ) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_store_js"   , dom_store_js_data   , shadow_root) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_fly_js"     , dom_fly_js_data     , shadow_root) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_wording_js" , dom_wording_js_data , shadow_root) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_select_js"  , dom_select_js_data  , shadow_root) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_slot_js"    , dom_slot_js_data    , shadow_root) ) dom_load_success = fail_or_use_planB;
 
-        if(    dom_load_success && !load_js    ( "dom_hide_js"    , dom_hide_js_data    ) ) dom_load_success = fail_or_use_planB;
-        if(    dom_load_success && !load_js    ( "dom_view_js"    , dom_view_js_data    ) ) dom_load_success = fail_or_use_planB;
-        if(    dom_load_success && !load_js    ( "dom_sticky_js"  , dom_sticky_js_data  ) ) dom_load_success = fail_or_use_planB;
-        if(    dom_load_success && !load_js    ( "dom_seek_js"    , dom_seek_js_data    ) ) dom_load_success = fail_or_use_planB;
-        if(    dom_load_success && !load_js    ( "dom_share_js"   , dom_share_js_data   ) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_hide_js"    , dom_hide_js_data    , shadow_root) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_view_js"    , dom_view_js_data    , shadow_root) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_sticky_js"  , dom_sticky_js_data  , shadow_root) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_seek_js"    , dom_seek_js_data    , shadow_root) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_share_js"   , dom_share_js_data   , shadow_root) ) dom_load_success = fail_or_use_planB;
 
-        /*......................*/  load_js    ( "dom_details_js" , dom_details_js_data ) ;  /* POSSIBLY PRELOADED */
-        /*......................*/  load_js    ( "dom_wot_js"     , dom_wot_js_data     ) ;  /* POSSIBLY PRELOADED */
-        if(    dom_load_success && !load_js    ( "dom_sentence_js", dom_sentence_js_data) ) dom_load_success = fail_or_use_planB;
-        if(    dom_load_success && !load_js    ( "dom_grid_js"    , dom_grid_js_data    ) ) dom_load_success = fail_or_use_planB;
-        if(    dom_load_success && !load_js    ( "dom_gutter_js"  , dom_gutter_js_data  ) ) dom_load_success = fail_or_use_planB;
+        /*......................*/  load_js    ( "dom_details_js" , dom_details_js_data , shadow_root) ;  /* POSSIBLY PRELOADED */
+        /*......................*/  load_js    ( "dom_wot_js"     , dom_wot_js_data     , shadow_root) ;  /* POSSIBLY PRELOADED */
+        if(    dom_load_success && !load_js    ( "dom_sentence_js", dom_sentence_js_data, shadow_root) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_grid_js"    , dom_grid_js_data    , shadow_root) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_gutter_js"  , dom_gutter_js_data  , shadow_root) ) dom_load_success = fail_or_use_planB;
 
-        if(    dom_load_success && !load_js    ( "dom_ipc_js"     , dom_ipc_js_data     ) ) dom_load_success = fail_or_use_planB;
-        if(    dom_load_success && !load_js    ( "dom_tools_js"   , dom_tools_js_data   ) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_ipc_js"     , dom_ipc_js_data     , shadow_root) ) dom_load_success = fail_or_use_planB;
+        if(    dom_load_success && !load_js    ( "dom_tools_js"   , dom_tools_js_data   , shadow_root) ) dom_load_success = fail_or_use_planB;
         /*}}}*/
 /*{{{
         throw new Error("ERROR_TEST");
@@ -6486,6 +6495,40 @@ if( log_this && dom_load_success) console.groupEnd();
     return dom_load_success;
 };
 /*}}}*/
+/*  get_shadow_root {{{*/
+/*{{{*/
+let shadow_root;
+
+/*}}}*/
+let get_shadow_root = function()
+{
+    /* CREATE shadow_root {{{*/
+    if(!shadow_root)
+    {
+        let shadow_host
+            = document.createElement("DIV");
+
+        shadow_host.id
+            = "shadow_host";
+        shadow_host.style.fontSize
+            = "initial";
+
+        document.documentElement.appendChild( shadow_host );
+
+        shadow_root
+            = shadow_host.attachShadow
+            ? shadow_host.attachShadow({mode: "open"})
+            : shadow_host;
+
+        shadow_root.id
+            = "shadow_root";
+
+    }
+    /*}}}*/
+    return shadow_root;
+};
+/*}}}*/
+
 /*… load_onerror {{{*/
 let load_onerror_count = 0;
 let load_onerror = function(e)
@@ -6543,7 +6586,8 @@ if( log_this) console.log("__"+caller+": %c "+scheme_id+" = "+scheme_arg.length+
 };
 /*}}}*/
 /*… load_js {{{*/
-let load_js = function(id, scheme_arg) {
+let load_js = function(id, scheme_arg, parent_el)
+{
     if( !dom_check_scheme_arg("load_js"     , id, scheme_arg) ) { if(chrome && typeof chrome.runtime != "undefined")          return  true; /* eslint-disable-line no-undef */
     /*..................................................*/ else { console.warn("%c"+id+" %c BAD SCHEME ARG",lbL+lf2, lbR+lf2); return false; }}
     if( document.getElementById(              id            ) ) { console.log ("%c"+id+" %c already loaded",lbL+lf3, lbR+lf3); return  true; }
@@ -6557,12 +6601,13 @@ let load_js = function(id, scheme_arg) {
     el.defer         = true;
     el.addEventListener("error", load_onerror);
 
-try { document.getElementsByTagName("head")[0].appendChild(el); } catch(error) { console.log("load_js",error); }
+try { parent_el.appendChild(el); } catch(error) { console.log("load_js",error); }
     return true;
 };
 /*}}}*/
 /*… load_css {{{*/
-let load_css = function(id, scheme_arg) {
+let load_css = function(id, scheme_arg, parent_el)
+{
     if( !dom_check_scheme_arg("load_css"    , id, scheme_arg) ) { console.warn("%c"+id+" %c BAD SCHEME ARG",lbL+lf2, lbR+lf2); return false; }
     if( document.getElementById(              id            ) ) { console.log ("%c"+id+" %c already loaded",lbL+lf3, lbR+lf3); return  true; }
     let el           = document.createElement("link");
@@ -6574,8 +6619,7 @@ let load_css = function(id, scheme_arg) {
     el.rel           = "stylesheet";
     el.addEventListener("error", load_onerror);
 
-try { document.getElementsByTagName("head")[0].appendChild(el); } catch(error) { console.log("load_js",error); }
-
+try { parent_el.appendChild(el); } catch(error) { console.log("load_css",error); }
     return true;
 };
 /*}}}*/
@@ -6595,8 +6639,8 @@ let load_css_pi = function(id, scheme_arg) {
 };
 /*}}}*/
 /*… load_html {{{*/
-let dom_load_success;
-let load_html = function(id, html_arg) {
+let load_html = function(id, html_arg, parent_el)
+{
     if( !dom_check_scheme_arg("load_html"   , id,   html_arg) ) { console.warn("%c"+id+" %c BAD   HTML ARG",lbL+lf2, lbR+lf2); return false; }
     if( document.getElementById(              id            ) ) { console.log ("%c"+id+" %c already loaded",lbL+lf3, lbR+lf3); return  true; }
     let el           = document.createElement("DIV");
@@ -6607,8 +6651,7 @@ let load_html = function(id, html_arg) {
     el.style.display = "none";
     el.addEventListener("error", load_onerror);
 
-try { document.body.appendChild(el); } catch(error) { console.log("load_js",error); }
-
+try { parent_el.appendChild(el); } catch(error) { console.log("load_html",error); }
     return true;
 };
 /*}}}*/
@@ -6657,9 +6700,9 @@ if( log_this) console.log("%c "+IPC_SCRIPT_ID+" %c SCRIPT ALREADY LOADED"       
     }
     /*}}}*/
     /* 2/3 - NOT STARTED BY IPC MESSAGE {{{*/
-    if(           !ipc
-        || (       ipc.start == "undefined")
-        || (       ipc.start != true       )
+    if(     !ipc
+        ||  (ipc.start  == "undefined")
+        || ((ipc.start != true) && (ipc.start != "ON"))
     ) {
 if( log_this) console.log("%c "+IPC_SCRIPT_ID+" %c NOT STARTED BY IPC MESSAGE "                        , lbH+IPC_LOG_COLOR, lb3);
 
@@ -6671,7 +6714,7 @@ if( log_this) console.log("%c "+IPC_SCRIPT_ID+" %c NOT STARTED BY IPC MESSAGE " 
 if( log_this) console.log("%c "+IPC_SCRIPT_ID+" %c STARTED BY IPC MESSAGE "                            , lbH+IPC_LOG_COLOR, lb4);
 
     /* STOP LISTENING IPC MESSAGES */
-    if(dom_ipc.t_ipc_listener_id)
+    if( dom_ipc.t_ipc_listener_id)
     {
         dom_ipc.t_ipc_del_message_listener();
         dom_ipc.t_ipc_del_MutationObserver();
@@ -6695,7 +6738,6 @@ if( log_this) console.log("%c "+DOM_LOAD_ID+" calling "+DOM_LOAD_TAG, lbH+lf5);
 /*}}}*/
 
 /* STAND-ALONE OR EXTENSION */
-/*{{{*/
 /*… IPC_check_extension_signature {{{*/
 let IPC_check_extension_signature = function()
 {
@@ -6704,8 +6746,9 @@ let log_this = IPC_LOG;
 if( log_this) console.log("%c "+IPC_SCRIPT_ID+" %c CHECKING EXTENSION SIGNATURE", lbH+IPC_LOG_COLOR, lbH+lf3);
 
 /*}}}*/
+    if(!document.body) return; // @see https://remotetabs.com/dev/svg/Cognitive_bias_codex_en.svg
     let chrome_runtime_is_defined = (chrome && typeof chrome.runtime != "undefined"); /* eslint-disable-line no-undef */
-    let extension_ipc_start_cmd   = "";
+    let extension_ipc_start_cmd_body_attribute   = "";
     /* BODY-ATTR [IPC_EXTENSION_ID] .. (a body attribute set by a browser extension) {{{*/
     if(typeof document.body.attributes[IPC_EXTENSION_ID] != "undefined")
     {
@@ -6713,42 +6756,51 @@ if( log_this) console.log("%c "+IPC_SCRIPT_ID+" %c CHECKING EXTENSION SIGNATURE"
         let SYMBOL_GEAR = "\u2699";
 if( log_this) console.log("%c"+SYMBOL_GEAR+" %c"+IPC_SCRIPT_ID+" %c EXTENSION SIGNATURE DETECTED", lxx, IPC_LOG_COLOR, lbF);
 
-        extension_ipc_start_cmd = document.body.attributes[IPC_EXTENSION_ID].textContent;
+        extension_ipc_start_cmd_body_attribute = document.body.attributes[IPC_EXTENSION_ID].textContent;
 
-if( log_this) console.log("%c["+IPC_EXTENSION_ID+"]%c = %c"+extension_ipc_start_cmd, IPC_MSG_COLOR, lbA, lbF+lb0);
+if( log_this) console.log("%c["+IPC_EXTENSION_ID+"]%c = %c"+extension_ipc_start_cmd_body_attribute, IPC_MSG_COLOR, lbA, lbF+lb0);
     }
     /*}}}*/
-    /* NO EXTENSION SIGNATURE .. (stand-alone instant load) {{{*/
-    if(!chrome_runtime_is_defined && !extension_ipc_start_cmd) {
+    /* FOUND EXTENSION SIGNATURE ● CONTENT PAGE INJECTION .. f(extension_ipc_start_cmd_body_attribute) {{{*/
+    if( chrome_runtime_is_defined && !extension_ipc_start_cmd_body_attribute ) {
+        /* ● CONTENT PAGE INJECTION - TO BE TRIGGERED BY START COMMAND */
+/*{{{
+        if(!extension_ipc_start_cmd_body_attribute)
+        {
+            console.log("%c "+DOM_LOAD_TAG  +" %c NO extension_ipc_start_cmd_body_attribute ● DEFERING dom_load("+DOM_LOAD_ID+") UNTIL START COMMAND", lbH+IPC_LOG_COLOR, lbb+lbH+lb2);
+            return;
+        }
+}}}*/
+        /* CONTENT PAGE INJECTION ● [CSS] HTML SCRIPT BODY ATTRIBUTE */
+        if(dom_load_success == undefined)
+        {
+if( log_this) console.log("%c "+DOM_LOAD_ID  +" %c CALLING dom_load("+DOM_LOAD_ID+")", lbH+IPC_LOG_COLOR, lbb+lbH+lb2);
+            dom_load_success = dom_load( DOM_LOAD_ID );
+
+            let sequence_number   = parseInt(new Date().getTime() / 1000) % 86400; // seconds per day
+
+            document.body.setAttribute(  DOM_LOAD_ID, JSON.stringify( { DOM_LOAD_ID , sequence_number } ));
+        }
+        /* HANDLE background executeScript results */
+        if( extension_ipc_start_cmd_body_attribute && (typeof dom_ipc != "undefined"))
+        {
+            let ipc = dom_ipc.t_ipc_PARSE( extension_ipc_start_cmd_body_attribute );
+            t_handle_ipc_message(ipc);
+        }
+    }
+    /*}}}*/
+    /* ...NO EXTENSION SIGNATURE .. (stand-alone instant load) {{{*/
+    else {
                                                   if( log_this) console.log("%c "+IPC_SCRIPT_ID+" %c NO EXTENSION DETECTED: STAND-ALONE INSTANT LOAD ", lbH+IPC_LOG_COLOR, lbH+lf1);
         if     (typeof   t_load != "undefined") { if( log_this) console.log("%c "+DOM_LOAD_ID  +" %c calling t_load"                                  , lbH+IPC_LOG_COLOR, lbH+lf6);   t_load(DOM_LOAD_ID); }
         else if(typeof dom_load != "undefined") { if( log_this) console.log("%c "+DOM_LOAD_ID  +" %c calling "+DOM_LOAD_TAG                           , lbH+IPC_LOG_COLOR, lbH+lf7); dom_load(DOM_LOAD_ID); }
         else                                                    console.log("%c "+DOM_LOAD_ID  +" %c t_load and dom_load are both undefined"          , lbH+IPC_LOG_COLOR, lbH+lb2);
     }
     /*}}}*/
-    /* FOUND EXTENSION SIGNATURE .. (wait for a startup-message) {{{*/
-    else {
-        /* INJECT EXTENSION CSS, HTML AND SCRIPT .. ADD CONTENT-SCRIPT BODY ATTRIBUTE */
-        if(dom_load_success == undefined)
-        {
-            dom_load_success = dom_load(DOM_LOAD_ID);
-
-            let sequence_number   = parseInt(new Date().getTime() / 1000) % 86400; // seconds per day
-
-            document.body.setAttribute(DOM_LOAD_ID, JSON.stringify( { DOM_LOAD_TAG , sequence_number } ));
-        }
-        /* HANDLE background executeScript results */
-        if( extension_ipc_start_cmd && (typeof dom_ipc != "undefined"))
-        {
-            let ipc = dom_ipc.t_ipc_PARSE( extension_ipc_start_cmd );
-            t_handle_ipc_message(ipc);
-        }
-    }
-    /*}}}*/
 };
 /*}}}*/
 
-if(IPC_LOG) console.log("%c "+DOM_LOAD_ID+" LOADING DONE "                                         , lbB+lbH+IPC_LOG_COLOR);
+if(IPC_LOG) console.log("%c "+DOM_LOAD_TAG+" LOADED ", lbB+lbH+IPC_LOG_COLOR);
 /*{{{
 let calling_IPC_check_extension_signature
     =  (typeof   t_load == "undefined")
@@ -6761,16 +6813,10 @@ if( calling_IPC_check_extension_signature )
     console.log("calling IPC_check_extension_signature:");
 
 }}}*/
-/*{{{
-//(IPC_LOG) console.log("%c "+DOM_LOAD_ID+" %c ...setTimeout(IPC_check_extension_signature, 10) ",     lbH+IPC_LOG_COLOR, lbH+lb0);
-//setTimeout(IPC_check_extension_signature, 10);
-//           IPC_check_extension_signature();
-}}}*/
+IPC_check_extension_signature();
 
-/*}}}*/
-    return { init : IPC_check_extension_signature };
+    return null;
 })();
-dom_load_js.init();
 /*{{{
 "┌─────────────────────────────────────────────────────────────────────────────┐
 "│                                                                             │
@@ -6778,19 +6824,23 @@ dom_load_js.init();
 
 :e  $BROWSEEXT/SplitterExtension/javascript/background.js
 :e  $BROWSEEXT/SplitterExtension/javascript/content.js
-:e             $RPROFILES/script/dom_sentence.js
-:e             $RPROFILES/script/stub/dom_sentence_event.js
-:e             $RPROFILES/script/stub/dom_scroll.js
-:e             $RPROFILES/script/stub/dom_sentence_util.js
-:e             $RPROFILES/script/stub/dom_log.js
-:e             $RPROFILES/stylesheet/dom_host.css
+:e                     $RPROFILES/script/dom_sentence.js
+:e                     $RPROFILES/script/stub/dom_log.js
+:e                     $RPROFILES/script/stub/dom_scroll.js
+:e                     $RPROFILES/script/stub/dom_sentence_event.js
+:e                     $RPROFILES/script/stub/dom_sentence_util.js
+:e                     $RPROFILES/script/stub/dom_tools.js
+:e                     $RPROFILES/script/stub/dom_util.js
+:e                     $RPROFILES/stylesheet/dom_host.css
 
-:e             $RPROFILES/script/dom_select.js
-:e             $RPROFILES/script/dom_util.js
-:e             $RPROFILES/script/dom_log.js
+:e                     $RPROFILES/script/dom_select.js
+:e                     $RPROFILES/script/dom_util.js
+:e                     $RPROFILES/script/dom_log.js
 
-:e             $RPROFILES/script/splitter.js
-"...           $RPROFILES/script/dom_load.js
+:e                     $RPROFILES/script/dom_tools.js
+:e                     $RPROFILES/script/splitter.js
+:e                     $RPROFILES/script/dom_load.js
+"...$BROWSEEXT/RTabsExtension/javascript/dom_load.js
 "│                                                                             │
 "└─────────────────────────────────────────────────────────────────────────────┘
 }}}*/

@@ -10,7 +10,7 @@ javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 let DOM_LOAD_ID         = "dom_splitter";
-let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (230708:01h:18)";
+let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (230821:21h:19)";
 let DOM_HOST_CSS_ID     = "dom_host_css";
 let DOM_TOOLS_HTML_ID   = "dom_tools_html";
 /*}}}*/
@@ -1098,7 +1098,7 @@ let dom_store_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_STORE_JS_ID     = "dom_store_js";
-const DOM_STORE_JS_TAG    = DOM_STORE_JS_ID  +" (230707:21h:46)";
+const DOM_STORE_JS_TAG    = DOM_STORE_JS_ID  +" (230821:21h:18)";
 
 let dom_store   = (function() {
 "use strict";
@@ -1108,9 +1108,11 @@ let dom_store   = (function() {
     let localStorage_delItem = function(key    ) {          try {  localStorage.removeItem(key    );                                    } catch(ex) {} };
 
     return { name : "dom_store"
-        , setItem : localStorage_setItem
-        , getItem : localStorage_getItem
-        , delItem : localStorage_delItem
+        , t_store_delItem   : localStorage_delItem
+        , t_store_getItem   : localStorage_getItem
+        , t_store_setItem   : localStorage_setItem
+        , t_store_set_state : localStorage_setItem
+        , t_store_set_value : localStorage_setItem
 
     };
 }());
@@ -1914,7 +1916,7 @@ let dom_scroll_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SCROLL_JS_ID         = "dom_scroll_js";
-const DOM_SCROLL_JS_TAG        = DOM_SCROLL_JS_ID  +" (230707:21h:45)";
+const DOM_SCROLL_JS_TAG        = DOM_SCROLL_JS_ID  +" (230820:21h:11)";
 
 let dom_scroll              = (function() {
 "use strict";
@@ -1941,8 +1943,8 @@ let t_scroll_IMPORT  = function(_log_this,import_num)
 
 
 
-    DOM_SCROLL_LOG = DOM_SCROLL_LOG || t_store.getItem("DOM_SCROLL_LOG");
-    DOM_SCROLL_TAG = DOM_SCROLL_TAG || t_store.getItem("DOM_SCROLL_TAG");
+    DOM_SCROLL_LOG = DOM_SCROLL_LOG || t_store.t_store_getItem("DOM_SCROLL_LOG");
+    DOM_SCROLL_TAG = DOM_SCROLL_TAG || t_store.t_store_getItem("DOM_SCROLL_TAG");
 
 
 
@@ -2472,8 +2474,8 @@ let   scrollIntoViewIfNeeded_then_recenter_handler_scrollTo_clr_scrollBehavior =
 
 
 return { name : "dom_scroll"
-    ,    logging : (state) => DOM_SCROLL_LOG = t_store.setItem("DOM_SCROLL_LOG",state)
-    ,    tagging : (state) => DOM_SCROLL_TAG = t_store.setItem("DOM_SCROLL_TAG",state)
+    ,    logging : (state) => DOM_SCROLL_LOG = t_store.t_store_set_state("DOM_SCROLL_LOG",state)
+    ,    tagging : (state) => DOM_SCROLL_TAG = t_store.t_store_set_state("DOM_SCROLL_TAG",state)
     ,    t_scroll_listener
     ,    t_scrollIntoViewIfNeeded_set_EL
     ,    t_scroll_is_scrolling
@@ -3343,8 +3345,7 @@ return { name : "dom_tools"
 ;
 
 /*}}}*/
-
-  /**  6 SENTENCE JS dom_sentence_js_data .. ESCAPE=[t_data.LF +"Slot #"] {{{*/
+  /**  7 SENTENCE JS dom_sentence_js_data .. ESCAPE=[t_data.LF +"Slot #"] {{{*/
 /*
 ../script/dom_sentence.js
 */
@@ -3375,7 +3376,7 @@ let dom_sentence_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230707:21h:45)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230820:21h:14)";
 
 let dom_sentence            = (function() {
 "use strict";
@@ -3402,8 +3403,8 @@ let t_sentence_IMPORT  = function(_log_this,import_num)
 
 
 
-    DOM_SENTENCE_LOG = DOM_SENTENCE_LOG || t_store.getItem("DOM_SENTENCE_LOG");
-    DOM_SENTENCE_TAG = DOM_SENTENCE_TAG || t_store.getItem("DOM_SENTENCE_TAG");
+    DOM_SENTENCE_LOG = DOM_SENTENCE_LOG || t_store.t_store_getItem("DOM_SENTENCE_LOG");
+    DOM_SENTENCE_TAG = DOM_SENTENCE_TAG || t_store.t_store_getItem("DOM_SENTENCE_TAG");
 
 
 
@@ -3459,10 +3460,10 @@ let   sentence_INTERN   = function()
 
     else if((typeof dom_log != "undefined") && dom_log.lfX)
     {
+        lbC = dom_log.lbC;
         lbH = dom_log.lbH;
         lbL = dom_log.lbL;
         lbR = dom_log.lbR;
-        lbC = dom_log.lbC;
         lfX = dom_log.lfX;
         [ lf0 ,lf1 ,lf2 ,lf3 ,lf4 ,lf5 ,lf6 ,lf7 ,lf8 ,lf9 ] = lfX;
     }
@@ -3549,9 +3550,9 @@ let log_this = _log_this || LOG_MAP.S2_SELECT;
 
 
 
-            || t_util.get_el_parent_with_tag  (el, "BLOCKQUOTE"      )
-            || t_util.get_el_parent_with_tag  (el, "DIR"             )
-            || t_util.get_el_parent_with_tag  (el, "DIV"             )
+            || t_util.get_el_parent_with_tag  (el, "BLOCKQUOTE"     )
+            || t_util.get_el_parent_with_tag  (el, "DIR"            )
+            || t_util.get_el_parent_with_tag  (el, "DIV"            )
 
 
 
@@ -3737,7 +3738,7 @@ if( log_this && e) log("%c type=["+e.type+"] e.target.id=["+e.target.id+"]", lbH
 
 
     if((typeof dom_prop) != "undefined") theme_dark = dom_prop.get        ("theme_dark");
-    else                                 theme_dark = t_store.getItem("theme_dark");
+    else                                 theme_dark = t_store.t_store_getItem("theme_dark");
 
 
 
@@ -4540,7 +4541,7 @@ check_tool_event_timer = setTimeout(check_tool_event, CHECK_TOOL_EVENT_DELAY, e)
 
 let t_SENTENCE_set_theme_dark = function(state)
 {
-    t_store.setItem("theme_dark", state);
+    t_store.t_store_set_state("theme_dark", state);
 };
 
 
@@ -4590,7 +4591,7 @@ if(!e) return false;
         theme_dark = !theme_dark;
 
 
-        t_store.setItem("theme_dark", theme_dark);
+        t_store.t_store_set_value("theme_dark", theme_dark);
 
 
         if((typeof dom_prop) != "undefined") dom_prop.set("theme_dark", theme_dark);
@@ -4689,8 +4690,8 @@ let get_parent_chain = function(el)
 
 
 return { name : "dom_sentence"
-    ,    logging : (state) => DOM_SENTENCE_LOG = t_store.setItem("DOM_SENTENCE_LOG",state)
-    ,    tagging : (state) => DOM_SENTENCE_TAG = t_store.setItem("DOM_SENTENCE_TAG",state)
+    ,    logging : (state) => DOM_SENTENCE_LOG = t_store.t_store_set_state("DOM_SENTENCE_LOG",state)
+    ,    tagging : (state) => DOM_SENTENCE_TAG = t_store.t_store_set_state("DOM_SENTENCE_TAG",state)
     ,    t_sentence_IMPORT
     ,    CSS_SENTENCE_CONTAINER
 

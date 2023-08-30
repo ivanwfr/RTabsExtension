@@ -45,7 +45,7 @@ This is the Chrome Extension version of the bookmarklet:
      |-- log.js
      |-- options.js
      |-- popup.js
-     └-- service_worker.js
+     └-- worker.js
 
 ```
 <!--}}}-->

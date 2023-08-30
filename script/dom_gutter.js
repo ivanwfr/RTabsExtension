@@ -12,7 +12,7 @@
 /* eslint-disable no-warning-comments */
 
 const DOM_GUTTER_JS_ID      = "dom_gutter_js";
-const DOM_GUTTER_JS_TAG     = DOM_GUTTER_JS_ID  +" (230707:14h:56)";
+const DOM_GUTTER_JS_TAG     = DOM_GUTTER_JS_ID  +" (230820:21h:09)";
 /*}}}*/
 let dom_gutter  = (function() {
 "use strict";
@@ -411,8 +411,8 @@ let log_gutter = function(_caller, lfx=lf7)
 /* EXPORT */
 /*{{{*/
 return { name : "dom_gutter"
-    , logging : (state) => DOM_GUTTER_LOG = t_store.setItem("DOM_GUTTER_LOG",state)
-    , tagging : (state) => DOM_GUTTER_TAG = t_store.setItem("DOM_GUTTER_TAG",state)
+    , logging : (state) => DOM_GUTTER_LOG = t_store.t_store_set_state("DOM_GUTTER_LOG",state)
+    , tagging : (state) => DOM_GUTTER_TAG = t_store.t_store_set_state("DOM_GUTTER_TAG",state)
     , t_gutter_IMPORT
 
     /* const */

@@ -20,11 +20,8 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_CSP_SCRIPT_ID  = "bg_csp";
-const BG_CSP_SCRIPT_TAG =  BG_CSP_SCRIPT_ID +" (230712:21h:23)"; /* eslint-disable-line no-unused-vars */
+const BG_CSP_SCRIPT_TAG =  BG_CSP_SCRIPT_ID +" (230823:17h:06)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
-let bg_csp  = (function() {
-"use strict";
-
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ CSP FILTERS                                       B_LOG4_CSP B_LOG8_STORE │
 // └───────────────────────────────────────────────────────────────────────────┘
@@ -39,8 +36,15 @@ let bg_csp  = (function() {
 :e javascript/bg_settings.js
 :e javascript/bg_store.js
 :e javascript/bg_tabs.js
+:e javascript/options.js
+:e javascript/popup.js
+:e javascript/worker.js
 /* └─────────────────────────────┘*/
+let bg_csp  = (function() {
+"use strict";
+
 /* IMPORT {{{*/
+/* modules {{{*/
 /*_ log_js {{{*/
 /* eslint-disable no-unused-vars */
 let   LF;
@@ -61,6 +65,7 @@ let   get_callers
     , log_object
     , log_sep_bot
     , log_sep_top
+    , li
 ;
 
 /*}}}*/
@@ -68,22 +73,23 @@ let   get_callers
 let LOG_MAP;
 
 /*}}}*/
-//______________ bg_content
-//______________ bg_csp
-//______________ bg_event
-//______________ bg_header
-//______________ bg_message
-//______________ bg_page
-//______________ bg_settings
+//_______________ bg_content
+//_______________ bg_csp
+//_______________ bg_event
+//_______________ bg_header
+//_______________ bg_message
+//_______________ bg_page
+//_______________ bg_settings
 /*_ bg_store {{{*/
 let bg_store_SAVE_items;
 
 /*}}}*/
-//______________ bg_tabs
-/*_ bg_csp_import {{{*/
-let bg_csp_import = function()
+//_______________ bg_tabs
+/*}}}*/
+/*  _import {{{*/
+let _import = function()
 {
-    /*_ log_js {{{*/
+    let modules=[ log_js        ]; /*{{{*/
     LF                                                               = log_js.LF;
 
     [ lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX        ] = log_js.LOG_BG_ARR;
@@ -96,36 +102,72 @@ let bg_csp_import = function()
 
     [ SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP] = log_js.LOG_SYM;
 
-
-    get_callers                         = log_js.get_callers;
-    log                                 = log_js.log;
-    log_json                            = log_js.log_json;
-    log_object                          = log_js.log_object;
-    log_sep_bot                         = log_js.log_sep_bot;
-    log_sep_top                         = log_js.log_sep_top;
+    li                      = log_js.log_modulename_key_val;
+    get_callers             = log_js.get_callers;           li("log_js","get_callers",get_callers);
+    log                     = log_js.log;                   li("log_js","log",log);
+    log_json                = log_js.log_json;              li("log_js","log_json",log_json);
+    log_object              = log_js.log_object;            li("log_js","log_object",log_object);
+    log_sep_bot             = log_js.log_sep_bot;           li("log_js","log_sep_bot",log_sep_bot);
+    log_sep_top             = log_js.log_sep_top;           li("log_js","log_sep_top",log_sep_top);
     /*}}}*/
-    /*_ background_js {{{*/
-    LOG_MAP                               = background_js.LOG_MAP;
-
-    /*}}}*/
-    //___________ bg_content
-    //___________ bg_csp
-    //___________ bg_event
-    //___________ bg_header
-    //___________ bg_message
-    //___________ bg_page
-    //___________ bg_settings
-    /*_ bg_store {{{*/
-    bg_store_SAVE_items       = bg_store.bg_store_SAVE_items;
+    modules.push( background_js ); /*{{{*/
+    LOG_MAP                 = background_js.LOG_MAP;        li("background_js","LOG_MAP",LOG_MAP);
 
     /*}}}*/
-    //___________ bg_tabs
-//................._import    log_js    background_js    bg_content    bg_csp    bg_event    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
-log("%c      bg_csp_import %c log_js %c background_js %c bg_content %c "+"●●● %c ________ %c _________ %c __________ %c _______ %c ___________ %c bg_store %c _______ "
-    ,lbH+lb3              ,lf0      ,lf1             ,lf2          ,lf3+lbH  ,lf4        ,lf5         ,lf6          ,lf7       ,lf8           ,lf9        ,lf0         );
+    //_______________________ bg_content
+    //_______________________ bg_csp
+    //_______________________ bg_event
+    //_______________________ bg_header
+    //_______________________ bg_message
+    //_______________________ bg_page
+    //_______________________ bg_settings
+    modules.push( bg_store      ); /*{{{*/
+    bg_store_SAVE_items     = bg_store.bg_store_SAVE_items; li("bg_store","bg_store_SAVE_items",bg_store_SAVE_items);
+
+    /*}}}*/
+    //_______________________ bg_tabs
+    log_js.log_import(bg_csp       , modules);
 };
 /*}}}*/
-    setTimeout(bg_csp_import,0);
+    setTimeout(_import,0);
+/*}}}*/
+/* LOGGING {{{*/
+let BG_CSP_JS_LOG  = false;
+/*_ logging {{{*/
+let logging = function(state)
+{
+    if(state != undefined) {            BG_CSP_JS_LOG = state;
+        if(state) bg_store_SAVE_items({ BG_CSP_JS_LOG           });
+        else      bg_store_SAVE_items({ BG_CSP_JS_LOG: undefined});
+    } return                            BG_CSP_JS_LOG;
+};
+/*}}}*/
+/*_ log_this_get {{{*/
+let log_this_get = function(_caller)
+{
+    switch(_caller) {
+    case "bg_csp_load_filter"            : return BG_CSP_JS_LOG || LOG_MAP.B_LOG4_CSP;
+    case "bg_csp_load_filter_from_store" : return BG_CSP_JS_LOG || LOG_MAP.B_LOG4_CSP || LOG_MAP.B_LOG8_STORE;
+    case "bg_csp_load_filter_rules"      : return BG_CSP_JS_LOG || LOG_MAP.B_LOG4_CSP;
+    case "bg_csp_get_filter_rules"       : return BG_CSP_JS_LOG || LOG_MAP.B_LOG4_CSP;
+    case "bg_csp_save_filter_to_store"   : return BG_CSP_JS_LOG || LOG_MAP.B_LOG4_CSP || LOG_MAP.B_LOG8_STORE;
+    case "csp_clear_FILTER_RULES_CACHE"  : return BG_CSP_JS_LOG || LOG_MAP.B_LOG4_CSP;
+    case "csp_parse_BLANKS"              : return BG_CSP_JS_LOG || LOG_MAP.B_LOG4_CSP;
+    case "csp_parse_JSON"                : return BG_CSP_JS_LOG || LOG_MAP.B_LOG4_CSP;
+    case "csp_parse_REGEX"               : return BG_CSP_JS_LOG || LOG_MAP.B_LOG4_CSP;
+    case "csp_parse_RULES"               : return BG_CSP_JS_LOG || LOG_MAP.B_LOG4_CSP;
+    case "csp_parse_VALIDATE"            : return BG_CSP_JS_LOG || LOG_MAP.B_LOG4_CSP;
+
+    }
+
+/*{{{*/
+    log("%c"+BG_CSP_SCRIPT_ID     +"%c log_this_get: missing switch %c"+_caller
+        ,lbH+lb2                   ,lbL+lf2                        ,lbR+lf4    );
+
+    return false;
+/*}}}*/
+};
+/*}}}*/
 /*}}}*/
 /* FILTER ● NAME ● APPLIED ● EFFECT ● STRINGS ● CACHE {{{*/
 /* FILTER NAME {{{*/
@@ -153,80 +195,104 @@ const FILTER_EFFECT5_RULES_RELAXED    = "CSP RELAXED";
 /*}}}*/
 /* FILTER STRINGS {{{*/
 const FILTER_HELP/*{{{*/
-= "\n"
-+ "# ---------------------------------------------------------\n"
-+ "# On some tightly protected sites, the extension may have\n"
-+ "# to relax some \"Content Security Policy\" directives\n"
-+ "# (JSON RegexP x3)\n"
-+ "# [\n"
-+ "#  [ \"Source\", [[\"Resource\", \"Replacement\"] , [\"Resource\",\"Replacement\"]] ]\n"
-+ "# ,[ \"Source\", [[\"Resource\", \"Replacement\"] , [\"Resource\",\"Replacement\"]] ]\n"
-+ "# ]\n"
-+ "# ---------------------------------------------------------\n"
+=`
+# ---------------------------------------------------------
+# On some tightly protected sites, the extension may have
+# to relax some \"Content Security Policy\" directives
+# (JSON RegexP x3)
+# [
+#  [ \"Source\", [[\"Resource\", \"Replacement\"] , [\"Resource\",\"Replacement\"]] ]
+# ,[ \"Source\", [[\"Resource\", \"Replacement\"] , [\"Resource\",\"Replacement\"]] ]
+# ]
+# ---------------------------------------------------------`
 ;
 /*}}}*/
-const FILTER3_REMOVE_DEFAULT/*{{{*/
-= "# REMOVE FILTER - Discarding all sites CSP directives\n"
-+ "# * The extension will work on all sites\n"
-+ "# * But! their security policy will be disabled.\n"
-+ "\n"
-+ "[\n"
-+ " [ \".*://.*/.*\" , [ [\".*\", \"\"] ] ]\n"
-+ "]\n"
+const FILTER3_REMOVE_DEFAULT /*{{{*/
+=`
+# REMOVE FILTER - Discarding all sites CSP directives
+# * The extension will work on all sites
+# * But! their security policy will be disabled.
+
+[
+ [ \".*://.*/.*\" , [ [\".*\", \"\"] ] ]
+]`
 + FILTER_HELP
 ;
 /*}}}*/
-const FILTER4_CUSTOM_DEFAULT/*{{{*/
-= "# PER-SITE CONFIG - Relaxing PER-SITE-CSP to accept extension required \"data:\" scheme\n"
-+ "# * The extension can work on this protected site\n"
-+ "\n"
-+ "# AN EXAMPLE OF RELAXED STYLE INJECTION ON github.com :\n"
-+ "[\n"
-+ " [ \"https://github.com\"\n"
-+ " ,[\n"
-+ "   [ \"style-src [^;]*\"\n"
-+ "   , \"style-src data: 'unsafe-inline' https://assets-cdn.github.com\"\n"
-+ "   ]\n"
-+ "  ]\n"
-+ " ]\n"
-+ "]\n"
+//const FILTER4_CUSTOM_DEFAULT /*{{{*/
+//=`
+//# PER-SITE CONFIG - Relaxing PER-SITE-CSP to accept extension required \"data:\" scheme
+//# * The extension can work on this protected site
+//
+//# AN EXAMPLE OF RELAXED STYLE INJECTION ON github.com :
+//[
+// [ \"https://github.com\"
+// ,[
+//   [ \"style-src [^;]*\"
+//   , \"style-src data: 'unsafe-inline' https://assets-cdn.github.com\"
+//   ]
+//  ]
+// ]
+//]`
+//+ FILTER_HELP
+//;
+///*}}}*/
+const FILTER4_CUSTOM_DEFAULT /*{{{*/
+=`
+# PER-SITE CONFIG - Relaxing PER-SITE-CSP to accept extension required \"data:\" scheme
+# * The extension can work on this protected site
+
+# AN EXAMPLE OF RELAXED STYLE INJECTION ON github.com and stackoverflow.com:
+[
+ ["https://github.com"         ,[[ "style-src [^;]*", "style-src data: 'unsafe-inline' https://assets-cdn.github.com"]]]
+,["https://github.com/ivanwfr" ,[[".*", ""]]]
+,["https://stackoverflow.com"  ,[
+     [           "style-src [^;]*" , "style-src data: 'unsafe-inline'" ]
+    ,[ "upgrade-insecure-requests" , "UPGRADE-INSECURE-REQUESTS"       ]
+    ,[     "frame-ancestors [^;]*" , ""                                ]
+     ]
+ ]
+]`
 + FILTER_HELP
 ;
 /*}}}*/
-const FILTER5_RELAX_DEFAULT/*{{{*/
-= "# DEFAULT FILTER - Relaxing CSP to accept extension required \"data:\" scheme\n"
-+ "# The extension will work on all sites\n"
-+ "# with some relaxed security policy directives\n"
-+ "# allowing this extension to access visited pages content.\n"
-+ "\n"
-+ "[\n"
-+ " [ \".*://.*/.*\"\n"
-+ "  , [ [ \"'none'\" , \"\" ]\n"
-+ "   ,  [ \"(default-src) +(?:'unsafe-inline' *)?([^;]*);?\", \"$1 data: 'unsafe-inline' $2;\" ]\n"
-+ "   ,  [  \"(script-src) +(?:'unsafe-inline' *)?([^;]*);?\", \"$1 data: 'unsafe-inline' $2;\" ]\n"
-+ "   ,  [   \"(style-src) +(?:'unsafe-inline' *)?([^;]*);?\", \"$1 data: 'unsafe-inline' $2;\" ]\n"
-+ "  ]\n"
-+ " ]\n"
-+ "]\n"
+const FILTER5_RELAX_DEFAULT /*{{{*/
+=`
+# DEFAULT FILTER - Relaxing CSP to accept extension required \"data:\" scheme
+# The extension will work on all sites
+# with some relaxed security policy directives
+# allowing this extension to access visited pages content.
+
+[
+ [ \".*://.*/.*\"
+  , [ [ \"'none'\" , \"\" ]
+   ,  [ \"(default-src) +(?:'unsafe-inline' *)?([^;]*);?\", \"$1 data: 'unsafe-inline' $2;\" ]
+   ,  [  \"(script-src) +(?:'unsafe-inline' *)?([^;]*);?\", \"$1 data: 'unsafe-inline' $2;\" ]
+   ,  [   \"(style-src) +(?:'unsafe-inline' *)?([^;]*);?\", \"$1 data: 'unsafe-inline' $2;\" ]
+  ]
+ ]
+]`
 + FILTER_HELP
 ;
 /*}}}*/
-const FILTER6_NONE_DEFAULT/*{{{*/
-= "# NULL FILTER - Respecting all sites CSP directives\n"
-+ "# * The extension may not work on some protected sites\n"
-+ "\n"
+const FILTER6_NONE_DEFAULT /*{{{*/
+=`
+# NULL FILTER - Respecting all sites CSP directives
+# * The extension may not work on some protected sites
+`
 + FILTER_HELP
 ;
 /*}}}*/
 /*}}}*/
-/* FILTER CACHE {{{*/
-let FILTER_RULES_CACHE = {
-      FILTER3_REMOVE : FILTER3_REMOVE_DEFAULT
-    , FILTER4_CUSTOM : FILTER4_CUSTOM_DEFAULT
-    , FILTER5_RELAX  : FILTER5_RELAX_DEFAULT
-    , FILTER6_NONE   : FILTER6_NONE_DEFAULT
+/*    FILTER_JSON_CACHE ● FILTER_RULES_CACHE {{{*/
+const FILTER_JSON_CACHE = {
+      [FILTER3_REMOVE] : FILTER3_REMOVE_DEFAULT
+    , [FILTER4_CUSTOM] : FILTER4_CUSTOM_DEFAULT
+    , [FILTER5_RELAX ] : FILTER5_RELAX_DEFAULT
+    , [FILTER6_NONE  ] : FILTER6_NONE_DEFAULT
 };
 
+let FILTER_RULES_CACHE = {};
 /*}}}*/
 /*}}}*/
 
@@ -234,21 +300,22 @@ let FILTER_RULES_CACHE = {
 let bg_csp_load_filter = function(csp_filter)
 {
 /*{{{*/
-let   caller = "bg_csp_load_filter("+csp_filter+")";
-let log_this = LOG_MAP.B_LOG4_CSP;
+let   caller = "bg_csp_load_filter";
+let log_this = log_this_get(caller);
+if( log_this) caller += "("+csp_filter+")";
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 if( log_more) log_sep_top(caller, "LOG8_TAG");
 /*}}}*/
-    let cache_length = Object.keys(FILTER_RULES_CACHE).length;
-if( log_more) log_object(caller+": FILTER_RULES_CACHE(x"+cache_length+")", FILTER_RULES_CACHE, lb4);
+    let rules_cache_length = Object.keys(FILTER_RULES_CACHE).length;
+if( log_more) log_object(caller+": FILTER_RULES_CACHE(x"+rules_cache_length+")", FILTER_RULES_CACHE, lb4);
 
-    let csp_filter_rules = FILTER_RULES_CACHE[csp_filter];
-    if( csp_filter_rules )
+    let filter_rules = FILTER_RULES_CACHE[csp_filter];
+    if( filter_rules )
     {
+if( log_this) log("%c"+SD8+"%c "+caller+": %c "+(typeof filter_rules)+" filter_rules.length=["+filter_rules.length+"] %c FROM CACHE"
+                  ,lbB+lf8 ,lbL+lf4       ,lbC+lf8                                                                   ,lbR+lf8       );
 
-if( log_this) log("%c"+SD8+"%c "+caller+": %c csp_filter_rules.length=["+csp_filter_rules.length+"] %c FROM CACHE"
-                  ,lbB+lf8 ,lbL+lf4       ,lbC+lf8                                                 ,lbR+lf8       );
     }
     else {
 if( log_this) log("%c"+SD8+"%c "+caller+": %c NOT CACHED YET: %c SAVING csp_filter=["+csp_filter+"]"
@@ -267,29 +334,26 @@ let bg_csp_load_filter_from_store = function(csp_filter, response_handler=null)
 {
 /*{{{*/
 let   caller = "bg_csp_load_filter_from_store";
-let log_this = LOG_MAP.B_LOG4_CSP || LOG_MAP.B_LOG8_STORE;
+let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 if( log_more) log_sep_top(caller, "LOG8_TAG");
 /*}}}*/
 
-    let csp_filter_rules
-        = (csp_filter == FILTER3_REMOVE) ? { FILTER3_REMOVE : FILTER3_REMOVE_DEFAULT }
-        : (csp_filter == FILTER4_CUSTOM) ? { FILTER4_CUSTOM : FILTER4_CUSTOM_DEFAULT }
-        : (csp_filter == FILTER5_RELAX ) ? { FILTER5_RELAX  : FILTER5_RELAX_DEFAULT  }
-        : (csp_filter == FILTER6_NONE  ) ? { FILTER6_NONE   : FILTER6_NONE_DEFAULT   }
-        :                                  null
-    ;
-    if( csp_filter_rules )
-    {
-if( log_this) log_object(caller+"( "+csp_filter+" )", { csp_filter_rules , callers: LF+get_callers() }, lf4);
+    if(   (csp_filter == FILTER3_REMOVE)
+       || (csp_filter == FILTER4_CUSTOM)
+       || (csp_filter == FILTER5_RELAX )
+       || (csp_filter == FILTER6_NONE  )
+      ) {
+if( log_this) log_object(caller+"( "+csp_filter+" )", { callers: LF+get_callers() }, lf4);
 if( log_more) log("%c ...response_handler=["+typeof response_handler+"])", lf8);
 
         chrome.storage.sync.get(
-            csp_filter_rules
-            , function(items) { bg_csp_load_filter_rules(csp_filter, items[csp_filter], response_handler); }
-        );
+                                csp_filter
+                                , function(items) { bg_csp_load_filter_rules(csp_filter, items[csp_filter], response_handler); }
+                               );
     }
+
 /*{{{*/
 if( log_more) log_sep_bot(caller, "LOG8_TAG");
 /*}}}*/
@@ -299,8 +363,9 @@ if( log_more) log_sep_bot(caller, "LOG8_TAG");
 let bg_csp_save_filter_to_store = function(csp_filter, csp_json, csp_json_default, response_handler)
 {
 /*{{{*/
-let   caller = "bg_csp_save_filter_to_store( "+csp_filter+" )";
-let log_this = LOG_MAP.B_LOG4_CSP || LOG_MAP.B_LOG8_STORE;
+let   caller = "bg_csp_save_filter_to_store";
+let log_this = log_this_get(caller);
+if( log_this) caller += "( "+csp_filter+" )";
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 if( log_this) log("%c "+caller, lbH+lf4);
@@ -315,36 +380,37 @@ if( log_this) log_object("chrome.storage.sync.remove("+csp_filter+")", { csp_fil
         chrome.storage.sync.remove( csp_filter );
 
 if( log_this) log("%c ...calling response_handler:", lf8);
-        response_handler( csp_json_default );
+        response_handler( trim_space_lf(csp_json_default) );
 
         return "LOG8_TAG";
     }
     /*}}}*/
     /* PARSE EDITED CSP FILTER RULES {{{*/
-    let parsed_text
+    let rules_JSON
         =               csp_json
-        ? trim_space_lf(csp_json)
-        :               csp_json_default
+        ? trim_space_lf(csp_json        )
+        : trim_space_lf(csp_json_default)
     ;
 
-    let csp_filter_rules = csp_parse_RULES( parsed_text );
+    FILTER_RULES_CACHE[csp_filter]
+        = csp_parse_RULES( rules_JSON );
 
     /*}}}*/
     /* PARSE ERROR {{{*/
-    if(csp_filter_rules == null) {
+    if(FILTER_RULES_CACHE[csp_filter] == null) {
         response_handler("FAILURE:\n"+last_parse_error);
 
         return "LOG2_TAG";
     }
     /*}}}*/
     /* SAVE PARSED FILTERS .. (NONE RELAX CUSTOM REMOVE) {{{*/
-if( log_this) log("%c...csp_filter_rules.length=["+csp_filter_rules.length+"]", lf8);
+if( log_this) log("%c...FILTER_RULES_CACHE["+csp_filter+"].length=["+FILTER_RULES_CACHE[csp_filter].length+"]", lf8);
 
     let csp_rules_item
-        = (csp_filter == FILTER3_REMOVE) ? { FILTER3_REMOVE : parsed_text }
-        : (csp_filter == FILTER4_CUSTOM) ? { FILTER4_CUSTOM : parsed_text }
-        : (csp_filter == FILTER5_RELAX ) ? { FILTER5_RELAX  : parsed_text }
-        : (csp_filter == FILTER6_NONE  ) ? { FILTER6_NONE   : parsed_text }
+        = (csp_filter == FILTER3_REMOVE) ? { FILTER3_REMOVE : rules_JSON }
+        : (csp_filter == FILTER4_CUSTOM) ? { FILTER4_CUSTOM : rules_JSON }
+        : (csp_filter == FILTER5_RELAX ) ? { FILTER5_RELAX  : rules_JSON }
+        : (csp_filter == FILTER6_NONE  ) ? { FILTER6_NONE   : rules_JSON }
         :                                    null
     ;
     if(csp_rules_item) {
@@ -362,17 +428,17 @@ if( log_more) log("%c...STORAGE SET CSP FILTER: "+log_json(csp_rules_item), lf8)
 if( log_this) log("%c ...calling response_handler:", lf8);
 
     if(csp_rules_item) response_handler("SUCCESS: "+caller);
-    else               response_handler(       parsed_text);
+    else               response_handler(        rules_JSON);
     /*}}}*/
     return "LOG7_TAG";
 };
 /*}}}*/
 /*➔ bg_csp_load_filter_rules                   .. B_LOG4_CSP .. B_LOG8_STORE {{{*/
-let bg_csp_load_filter_rules = function(csp_filter,csp_rules,response_handler)
+let bg_csp_load_filter_rules = function(csp_filter,rules_JSON,response_handler)
 {
 /*{{{*/
 let   caller = "bg_csp_load_filter_rules";
-let log_this = LOG_MAP.B_LOG4_CSP || LOG_MAP.B_LOG8_STORE;
+let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
     let log_tag
@@ -387,27 +453,30 @@ if(      log_more) log_sep_top(caller+" " +csp_filter    , log_tag);
 else if( log_this) log("%c "+caller+": %c"+csp_filter+" ", lbL+lf4, lbR+lf4);
 
 /*}}}*/
-    /* [csp_filter_rules] .. [FILTER_RULES_CACHE] {{{*/
-    let csp_filter_rules = csp_parse_RULES( csp_rules );
+    /* FILTER_RULES_CACHE[csp_filter] {{{*/
+    if(!rules_JSON)
+        rules_JSON
+            = trim_space_lf(FILTER_JSON_CACHE[csp_filter]);
 
-    FILTER_RULES_CACHE[csp_filter] = csp_filter_rules;
+    FILTER_RULES_CACHE[csp_filter]
+        = csp_parse_RULES( rules_JSON );
 
-    let cache_length = Object.keys(FILTER_RULES_CACHE).length;
-if( log_more) log_object(caller+": FILTER_RULES_CACHE(x"+cache_length+")", FILTER_RULES_CACHE, lf4, !log_more);
+    let rules_cache_length = Object.keys(FILTER_RULES_CACHE).length;
+if( log_more) log_object(caller+": FILTER_RULES_CACHE(x"+rules_cache_length+")", FILTER_RULES_CACHE, lf4, !log_more);
 
-if( log_this && (csp_filter_rules != null)) log("%c ...csp_filter_rules.length=["+csp_filter_rules.length+"]", lf4);
+if( log_this && (FILTER_RULES_CACHE[csp_filter] != null)) log("%c ..."+(typeof FILTER_RULES_CACHE[csp_filter])+" FILTER_RULES_CACHE[csp_filter].length=["+FILTER_RULES_CACHE[csp_filter].length+"]", lf4);
     /*}}}*/
     /* call [response_handler] {{{*/
     if(response_handler)
     {
-if( log_this) log("%c ..."+caller+": ...calling response_handler({ csp_filter: "+csp_filter+" , value: "+csp_rules+" }):", lf4);
+if( log_this) log("%c ..."+caller+": ...calling response_handler({ csp_filter: "+csp_filter+" , value: "+FILTER_RULES_CACHE[csp_filter]+" }):", lf4);
 
         let success
-            = csp_rules
-            ||     (csp_filter == FILTER6_NONE)
+            =  FILTER_RULES_CACHE[csp_filter]
+            ||                   (csp_filter == FILTER6_NONE)
         ;
 
-        if( success ) response_handler({ csp_filter , value: csp_rules });
+        if( success ) response_handler({ csp_filter , value: rules_JSON });
         else          response_handler("FAILURE:\n"+last_parse_error);
     }
     else {
@@ -420,11 +489,14 @@ if( log_more) log_sep_bot(caller, log_tag);
 /*}}}*/
 };
 /*}}}*/
-/*➔ bg_csp_pick_filter_rules {{{*/
-let bg_csp_pick_filter_rules = function(csp_filter)
+/*➔ bg_csp_get_filter_rules {{{*/
+let bg_csp_get_filter_rules = function(csp_filter)
 {
-//  return                  FILTER_RULES_CACHE[ csp_filter ]  ;
-    return csp_parse_RULES( FILTER_RULES_CACHE[ csp_filter ] );
+    if(!FILTER_RULES_CACHE[csp_filter])
+        FILTER_RULES_CACHE[csp_filter]
+            = csp_parse_RULES(FILTER_JSON_CACHE[ csp_filter ]);
+
+    return FILTER_RULES_CACHE[csp_filter];
 };
 /*}}}*/
 
@@ -433,15 +505,15 @@ let csp_clear_FILTER_RULES_CACHE = function()
 {
 /*{{{*/
 let   caller = "csp_clear_FILTER_RULES_CACHE";
-let log_this = LOG_MAP.B_LOG4_CSP;
+let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 /*}}}*/
-    let cache_length = Object.keys(FILTER_RULES_CACHE).length;
-if( log_more) log_object(caller+": FILTER_RULES_CACHE(x"+cache_length+")", FILTER_RULES_CACHE, lf8);
+    let rules_cache_length = Object.keys(FILTER_RULES_CACHE).length;
+if( log_more) log_object(caller+": FILTER_RULES_CACHE(x"+rules_cache_length+")", FILTER_RULES_CACHE, lf8);
 
-    if( cache_length )
+    if( rules_cache_length )
     {
-if( log_this) log("%c "+caller+" %c DROPPING "+ cache_length +" CACHED FILTERS", lbL+lf8, lbR+lf8);
+if( log_this) log("%c "+caller+" %c DROPPING "+ rules_cache_length +" CACHED FILTERS", lbL+lf8, lbR+lf8);
 
         FILTER_RULES_CACHE = {};
     }
@@ -452,24 +524,24 @@ if( log_this) log("%c "+caller+" %c CACHE IS ALREADY EMPTY", lbL+lf8, lbR+lf8);
 };
 /*}}}*/
 /*_ csp_parse_RULES                         .. B_LOG4_CSP {{{*/
-let csp_parse_RULES = function(rules)
+let csp_parse_RULES = function(rules_JSON)
 {
 /*{{{*/
 let   caller = "csp_parse_RULES";
-let log_this = LOG_MAP.B_LOG4_CSP;
+let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 /*}}}*/
 if( log_more) log("%c "+caller, lf3);
-if( log_more) log_object("",rules, lf3, false);
+if( log_more) log_object(caller+"("+(typeof rules_JSON)+" rules_JSON)",rules_JSON, lf3, false);
 
-    if(typeof rules !== "string") rules = "";
+//  if(typeof rules_JSON !== "string") rules_JSON = "";
 
     last_parse_error = caller;
     let result
         = csp_parse_REGEX(
             csp_parse_VALIDATE(
-                csp_parse_JSON( rules )
+                csp_parse_JSON( rules_JSON )
             )
         );
 
@@ -478,22 +550,22 @@ if( log_this) log_object(caller+" ...return", {result}, lf3, !log_more);
 };
 /*}}}*/
 /*_ csp_parse_JSON                          .. B_LOG4_CSP {{{*/
-let csp_parse_JSON = function(rules_json)
+let csp_parse_JSON = function(rules_JSON)
 {
 /*{{{*/
 let   caller = "csp_parse_JSON";
-let log_this = LOG_MAP.B_LOG4_CSP;
+let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 /*}}}*/
-if( log_more) log("%c "+caller+"(rules_json.length = "+rules_json.length+")", lf5);
+if( log_more) log("%c "+caller+"("+(typeof rules_JSON)+" rules_JSON.length = "+rules_JSON.length+")", lf5);
 
     /* JSON.parse {{{*/
-    rules_json = csp_parse_BLANKS( rules_json );
-    if(rules_json === "") return [];
+    rules_JSON = csp_parse_BLANKS( rules_JSON );
+    if(rules_JSON === "") return [];
 
     let   result = null;
-    try { result = JSON.parse(rules_json); } catch (_) {}
+    try { result = JSON.parse(rules_JSON); } catch (_) {}
 
     /*}}}*/
 if( log_this) log_object(caller+" ...return", {result}, lf5, !log_more);
@@ -505,10 +577,10 @@ let csp_parse_BLANKS = function(s)
 {
 /*{{{*/
 let   caller = "csp_parse_BLANKS";
-let log_this = LOG_MAP.B_LOG4_CSP;
+let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
-if( log_more) log("%c "+caller+"(s.length = "+s.length+")", lf9);
+if( log_more) log("%c "+caller+"("+(typeof s)+" s.length = "+s.length+")", lf9);
 /*}}}*/
     /* lines {{{*/
     let lines = s.match(/[^\r\n]+/g) || [];
@@ -531,16 +603,19 @@ if( log_this) log_object(caller+" ...return", {result}, lf9, !log_more);
 };
 /*}}}*/
 /*_ csp_parse_REGEX                         .. B_LOG4_CSP {{{*/
+/*{{{*/
 let last_parse_error;
+
+/*}}}*/
 let csp_parse_REGEX = function(newRules)
 {
 /*{{{*/
 let   caller = "csp_parse_REGEX";
-let log_this = LOG_MAP.B_LOG4_CSP;
+let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 /*}}}*/
-if( log_more) log("%c "+caller+"(newRules.length = "+(newRules ? newRules.length:0)+")", lf9);
+if( log_more) log("%c "+caller+"("+(typeof newRules)+" newRules.length = "+(newRules ? newRules.length:0)+")", lf9);
 
     if(newRules === null) {
 if( log_this) log("%c ...(newRules === null)", lb2);
@@ -573,11 +648,11 @@ let csp_parse_VALIDATE = function(rules)
 {
 /*{{{*/
 let   caller = "csp_parse_VALIDATE";
-let log_this = LOG_MAP.B_LOG4_CSP;
+let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 /*}}}*/
-if( log_more) log("%c "+caller+"(rules.length = "+(rules ? rules.length:0)+")", lf7);
+if( log_more) log("%c "+caller+"("+(typeof rules)+" rules.length = "+(rules ? rules.length:0)+")", lf7);
 
     /* RULES SHOULD BE AN ARRAY {{{*/
     if(!Array.isArray(rules)) {
@@ -632,6 +707,12 @@ let trim_space_lf = function(text)
 
 /*➔ EXPORT {{{*/
     return {  name : "bg_csp"
+        ,             bg_csp_load_filter
+        ,             bg_csp_load_filter_from_store
+        ,             bg_csp_load_filter_rules
+        ,             bg_csp_get_filter_rules
+        ,             bg_csp_save_filter_to_store
+        , logging
 
         , FILTER3_REMOVE
         , FILTER4_CUSTOM
@@ -654,12 +735,6 @@ let trim_space_lf = function(text)
         , FILTER_EFFECT3_RULES_REMOVED
         , FILTER_EFFECT4_RULES_CUSTOMIZED
         , FILTER_EFFECT5_RULES_RELAXED
-
-        , bg_csp_load_filter
-        , bg_csp_load_filter_from_store
-        , bg_csp_load_filter_rules
-        , bg_csp_pick_filter_rules
-        , bg_csp_save_filter_to_store
     };
 /*}}}*/
 }());

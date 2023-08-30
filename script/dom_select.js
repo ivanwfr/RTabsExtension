@@ -21,7 +21,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_SELECT_JS_ID      = "dom_select_js";
-const DOM_SELECT_JS_TAG     = DOM_SELECT_JS_ID  +" (230707:19h:35)";
+const DOM_SELECT_JS_TAG     = DOM_SELECT_JS_ID  +" (230820:21h:10)";
 /*}}}*/
 let dom_select  = (function() {
 "use strict";
@@ -3405,8 +3405,8 @@ let log_tools_filter_slot = function(slot)
 /* EXPORT */
 /*{{{*/
 return { name : "dom_select"
-    , logging : (state) => DOM_SELECT_LOG = t_store.setItem("DOM_SELECT_LOG",state)
-    , tagging : (state) => DOM_SELECT_TAG = t_store.setItem("DOM_SELECT_TAG",state)
+    , logging : (state) => DOM_SELECT_LOG = t_store.t_store_set_state("DOM_SELECT_LOG",state)
+    , tagging : (state) => DOM_SELECT_TAG = t_store.t_store_set_state("DOM_SELECT_TAG",state)
     , t_select_IMPORT
 
     /* CONSTANTS {{{*/

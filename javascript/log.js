@@ -9,7 +9,7 @@
 /* eslint-disable prefer-rest-params */
 
 const LOG_JS_ID         = "log_js";
-const LOG_JS_TAG        =  LOG_JS_ID +" (230713:16h:38)";
+const LOG_JS_TAG        =  LOG_JS_ID +" (230830:19h:11)";
 /*}}}*/
 let log_js = (function() {
 "use strict";
@@ -25,7 +25,7 @@ const lbb  = "font-size:150%; font-weight:100; margin:0 0 0 0;";
 const lbB  = "font-size:300%; font-weight:100; margin:0 0 0 0;";
 const lbS  = "font-size:500%; font-weight:100; margin:0 0 0 0;";
 
-const lbH  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0 1ex 1ex   0; padding:0 .5em 0 .5em; border-radius:1em 1em 1em 1em; background:linear-gradient(to bottom, #555 0%, #223 80%, #454 100%);";
+const lbH  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0 1ex 1ex 1ex; padding:0 .5em 0 .5em; border-radius:1em 1em 1em 1em; background:linear-gradient(to bottom, #555 0%, #223 80%, #454 100%);";
 const lbL  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0   0   0 1ex; padding:0 .5em 0 .5em; border-radius:1em   0   0 1em; background:linear-gradient(to   left, #333 0%           ,#445 100%);";
 const lbR  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0 1ex   0   0; padding:0 .5em 0 .5em; border-radius:  0 1em 1em   0; background:linear-gradient(to  right, #333 0%           ,#544 100%);";
 const lbC  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0   0   0   0; padding:0 .5em 0 .5em; border-radius:  0   0   0   0;";
@@ -139,12 +139,12 @@ let caller = "log_set_type";
 
     switch(type_sym)
     {
-    case "B": log_type_sym = type_sym+" ●"; log_type_css = LOG_TYPE_B_CSS  ; break;
-    case "C": log_type_sym = type_sym+" ●"; log_type_css = LOG_TYPE_C_CSS  ; break;
-    case "O": log_type_sym = type_sym+" ●"; log_type_css = LOG_TYPE_O_CSS  ; break;
-    case "P": log_type_sym = type_sym+" ●"; log_type_css = LOG_TYPE_P_CSS  ; break;
-    case "S": log_type_sym = type_sym+" ●"; log_type_css = LOG_TYPE_S_CSS  ; break;
-    default : log_type_sym = type_sym+" ●"; log_type_css = LOG_TYPE_DEFAULT;
+    case "B": log_type_sym = type_sym+" ● "; log_type_css = LOG_TYPE_B_CSS  ; break;
+    case "C": log_type_sym = type_sym+" ● "; log_type_css = LOG_TYPE_C_CSS  ; break;
+    case "O": log_type_sym = type_sym+" ● "; log_type_css = LOG_TYPE_O_CSS  ; break;
+    case "P": log_type_sym = type_sym+" ● "; log_type_css = LOG_TYPE_P_CSS  ; break;
+    case "S": log_type_sym = type_sym+" ● "; log_type_css = LOG_TYPE_S_CSS  ; break;
+    default : log_type_sym = type_sym+" ● "; log_type_css = LOG_TYPE_DEFAULT;
     console.warn(caller+": UNEXPECTED LOG TYPE ["+type_sym+"]");
     console.trace();
     }
@@ -211,6 +211,30 @@ let log_request = function(request)
                );
 };
 /*}}}*/
+/*➔ log_csp_rules {{{*/
+let log_csp_rules = function(title,headers_csp_value)
+{
+    log_sep_top(title, "LOG6_TAG");
+
+    let i; let csp_rules = headers_csp_value.split(";");
+    for(i=0; i<csp_rules.length; ++i)
+    {
+        let idx = (i+1)+"/"+csp_rules.length;
+
+        let           v = csp_rules[i].trim();
+        if(           v.indexOf(" ") < 0)  log("%c"+idx+" %c"+v
+                                               ,lbH      ,lbH+lb8);
+        else {
+            let lhs = v.split(" ")[0];     let rhs = v.substring(lhs.length+1);
+            if( rhs.indexOf  (" ")<0)      log("%c"+idx+" %c"+lhs   +"%c"+rhs
+                                               ,lbH      ,lbL+lf8    ,lbR+lf0);
+            else                           log("%c"+idx+" %c"+lhs+LF+"%c"+v.substring(lhs.length).replace(/ /g,"\n → ")
+                                               ,lbH      ,lbH+lf8    ,lb0                                              );
+        }
+    }
+    log_sep_bot("CSP RULES", "LOG6_TAG");
+};
+/*}}}*/
 
 /*➔ log_caller {{{*/
 let log_caller = function(level_max)
@@ -220,6 +244,7 @@ let log_caller = function(level_max)
     if( stack_trace.includes(LF) ) console.log("%c"             +stack_trace.replace(LF,"%c"+LF), lbH+lf6, lf8);
     else                         { console.log("%c NO CALLERS  "+stack_trace                    ,          lf8); console.trace(); }
 };
+/*_________________________________________________NO LINEFEED________SINGLE SPACE */
 let get_callers_bot = () => get_callers(2).replace(/.*\n/g,"").replace(/  +/g," "); /* eslint-disable-line newline-per-chained-call */
 let get_callers = function(level_max)
 {
@@ -308,17 +333,31 @@ let log = function()
 - this can be achieved in the following way:
 - var argumentsArray = Array.prototype.slice.apply( arguments );
 }}}*/
-//  console.log.apply(console, Array.prototype.slice.call(arguments));
-
     let args = Array.prototype.slice.call(arguments);
 
     if( log_type_sym ) log_type_insert_type_sym_args(args);
 
     console.log.apply(console, args);
 
-    if( log_more ) {
-        let stack_trace = get_callers();
-        if( stack_trace ) console.log("%c"+stack_trace, lf0);
+    if( log_more ) log_callers();
+};
+/*}}}*/
+/*_ log_callers {{{*/
+/*{{{*/
+let last_callers;
+
+/*}}}*/
+let log_callers = function()
+{
+    // ┌───────────────────────────────────────────────────────────────────────┐
+    // │ stack-trace once per source-code-line ────────── REJECT LOOPS CLUTTER │
+    // └───────────────────────────────────────────────────────────────────────┘
+    let    callers  = get_callers();
+    if(    callers
+       && (callers != last_callers)
+      ) {
+        console.log("%c"+callers, lf0);
+        last_callers  =  callers;
     }
 };
 /*}}}*/
@@ -375,11 +414,14 @@ let strip_CR_LF    = function(text)
     ;
 };
 /*}}}*/
-/*➔ log_object ● log_o_more {{{*/
-let log_o_more = function(o_name,o,lxx    ,collapsed     ) { if(log_more) log_object(o_name,o,lxx,collapsed); };
-let log_object = function(o_name,o,lxx=lb0,collapsed=true)
+/*➔ ●log_object {{{*/
+let  log_o_sort = function( o_name, o, lxx, collapsed         ) {              _log_object({o_name, o, lxx, collapsed, sorted: true}); };
+let  log_object = function( o_name, o, lxx, collapsed         ) {              _log_object({o_name, o, lxx, collapsed              }); };
+let _log_object = function({o_name, o, lxx, collapsed, sorted})
 {
-/* object .. collapsed {{{*/
+/* args {{{*/
+    if(      lxx == undefined)       lxx = lb0;
+    if(collapsed == undefined) collapsed = true;
     if( o && typeof o     == "string") {
         if(o_name)
             log("%c"+SAR+   "%c"+o_name+" "+SAR+"%c"+o
@@ -390,10 +432,14 @@ let log_object = function(o_name,o,lxx=lb0,collapsed=true)
         return;
 
     }
-    if(!o && typeof o_name== "object") { o = o_name; o_name = "Object"; }
-    if(!o                            ) { log(o_name+": %c null object ", lxx); return; }
-    if( o && typeof o     != "object") { log("%c "+o_name+" %c IS NOT AN OBJECT ", lb4+lf2, lb2+lf4); log_caller(); }
-    if( o &&        o instanceof Map ) { o = Object.fromEntries( o ); }
+    /* check args */
+    if(!o && typeof o_name== "object") { o = o_name; o_name = "Object";                 } /* patch missing [o_name] */
+    if(!o                            ) { log(o_name+": %c null object ", lxx); return;  }
+    /* objectify */
+    if( o &&        o instanceof Map ) { o =   Object.fromEntries(o);                   }
+    if( o && typeof o == "function"  ) { o = { [o.name]: ellipsis(o.toString(), 512) }; }
+    if( o && typeof o != "object"    ) { log("%c "+o_name+" %c IS NOT AN OBJECT ", lb4+lf2, lb2+lf4); log_caller(); }
+    if( o && typeof o == "object"    ) { o_name += ellipsis(log_o_keys_toString(o));    }
 
     if( log_type_sym ) {
         if(collapsed) console.groupCollapsed("%c"+log_type_sym+"%c"+SAR+"%c"+o_name+" "+SAD, log_type_css, lbb+lbH+lb0, lbH+lxx);
@@ -405,14 +451,22 @@ let log_object = function(o_name,o,lxx=lb0,collapsed=true)
 /*}}}*/
     /*  key_length_max {{{*/
     let key_length_max = 0;
-    Object
-        .keys(o)
-        .forEach((key) => { if( key_length_max < key.length) key_length_max = key.length; });
-    key_length_max =          Math.max(32,key_length_max);
+    if(!sorted)
+        Object
+            .keys(o)
+            .forEach((key) => { if( key_length_max < key.length) key_length_max = key.length; });
+    key_length_max = Math.max(36,   key_length_max);
     /*}}}*/
-    Object
-        .keys(o)
-        .forEach((key) => {
+    let keys
+        = sorted
+        ? Object.keys(o).toSorted()
+        : Object.keys(o) ;
+
+    let mPad_fnc = sorted ? mPadEnd : mPadStart;
+
+//  Object
+//      .keys(o)
+    keys.forEach((key) => {
             let val = o[key];
 /* eslint-disable no-unused-expressions */
             let l_v;    ((val ==  true      ) || (val == "ON" )) ? (lxx=lf5 , l_v = lb5)
@@ -421,19 +475,87 @@ let log_object = function(o_name,o,lxx=lb0,collapsed=true)
                 :       ((val == "undefined")                  ) ? (lxx=lf0 , l_v = lf0)
                 : (String(key).indexOf("callers") >= 0         ) ? (lxx=lf9 , l_v = lf9)
                 : (String(val).indexOf("\n")      >= 0         ) ? (          l_v = lf5)
-                : (String(val).indexOf("=>")      >= 0         ) ? (          l_v = lf6)
+                : (String(val).indexOf("=>")      >= 0         ) ? (          l_v = lxx) /* (the one from args) */
                 :                                                  (lxx=lf9 , l_v = lb0)
             ;
 /* eslint-enable  no-unused-expressions */
-            console.log("%c "+mPadStart(key,key_length_max)+": %c"+log_object_val_format(o[key]),lxx,l_v);
+        if(val != false)//FIXME
+            console.log("%c "+mPad_fnc(key,key_length_max)+": %c"+log_object_val_format(o[key]),lxx,l_v);
         });
 /* collapsed {{{*/
     console.groupEnd("%c"+o_name+" "+SAU, lbH+lxx);
 /*}}}*/
 };
 /*}}}*/
-/*➔ log_members {{{*/
-let log_members = log_object;
+/*➔ ●log_members {{{*/
+let  log_members = log_object;
+/*}}}*/
+/*➔ log_modulename_key_val {{{*/
+let log_modulename_key_val = function(module_name,key,val)
+{
+    if(val == undefined)
+        log("%c IMPORT FAILED %c"+module_name+" ● "+key+"%c"+get_callers_bot()
+            ,lbL+lb2         ,lbC+lf2                   ,lbR+lf8              );
+};
+/*}}}*/
+/*➔ log_import {{{*/
+/*{{{*/
+let IMPORTED_MAP
+        = new Map([[ "log_js"        , undefined ]
+            ,      [ "background_js" , undefined ]
+            ,      [ "bg_content"    , undefined ]
+            ,      [ "bg_csp"        , undefined ]
+            ,      [ "bg_event"      , undefined ]
+            ,      [ "bg_header"     , undefined ]
+            ,      [ "bg_message"    , undefined ]
+            ,      [ "bg_page"       , undefined ]
+            ,      [ "bg_settings"   , undefined ]
+            ,      [ "bg_store"      , undefined ]
+            ,      [ "bg_tabs"       , undefined ]
+            ,      [ "popup_js"      , undefined ]
+        ]);
+
+let IMPORTER_LENGTH = 0;
+    IMPORTED_MAP.forEach((value,key) => IMPORTER_LENGTH = Math.max(IMPORTER_LENGTH, key.length) );
+
+/*}}}*/
+let log_import = function(importer,imported_modules)
+{
+    /* CLEAR MAP    */ IMPORTED_MAP    .forEach((value,key) => IMPORTED_MAP.set(          key, undefined  ));
+    /* SET  MODULES */ imported_modules.forEach((module)    => IMPORTED_MAP.set(  module.name, 0          ));
+    /* SET IMPORTER ........................................*/ IMPORTED_MAP.set(importer.name, 1          ) ;
+
+
+    let       s  = "";
+    let    args  = [];
+    let    num   =  0;
+
+    IMPORTED_MAP.forEach((value,key) => {
+        if(key && (key == importer.name))
+        {
+            /**/                   s  = " %c"+mPadEnd(key, IMPORTER_LENGTH)+s; /* INSERT IMPORTER */
+            /**/                   args.unshift(lbH + lbX[num % 10]         ); /* INSERT COLOR    */
+            /**/
+            /**/                   s += " %c"+mPadEnd("●", key.length,"●"   ); /* APPEND MARKER   */
+            /**/                   args.push   (      lfX[num % 10]         ); /* APPEND COLOR    */
+        }
+        else {
+            if(value != undefined) s += " %c"+             key               ; /* APPEND MODULE   */
+            else                   s += " %c"+mPadEnd("_", key.length,"_"   ); /* APPEND MARKER   */
+            /**/                   args.push   (      lfX[num % 10]         ); /* APPEND COLOR    */
+        }
+
+        num += 1;
+    });
+
+    /* INSERT LABELS */
+    args.unshift( s );
+    log.apply(console, args);
+
+/*{{{
+log_object(mPadStart(importer.name, IMPORTER_LENGTH), IMPORTED_MAP, lf7, false);
+}}}*/
+};
 /*}}}*/
 
 /*➔ log_key_val {{{*/
@@ -543,8 +665,8 @@ let log_object_val_format = function(val,lxx)
     if(      !text.includes(        LF              )
          &&   text.length > TEXT_LENGTH_MAX          )  text = ellipsis(text, TEXT_LENGTH_MAX);
 
-    if     (   typeof HTMLElement != "undefined"
-            && val instanceof HTMLElement            )  text = get_id_or_tag_and_className(val);
+    if(             typeof HTMLElement != "undefined"
+         && val instanceof HTMLElement            )  text = get_id_or_tag_and_className(val);
     else if( Array.isArray(val)                      )  text = "ARRAY["+val.length+"] ● "+ellipsis(val.toString().replace(/,/g," ● "), TEXT_LENGTH_MAX);
     else if(        typeof val   == "object"         )  text = log_json(val,lxx);
     else if(        typeof val   == "function"       ) {
@@ -575,7 +697,7 @@ let get_id_or_tag_and_className = function(node)
 /*}}}*/
 /*➔ log_json {{{*/
 /*{{{*/
-const regexp_LBRACE = new RegExp("^{|}$"                    , "g");
+const regexp_XBRACE = new RegExp("^{|}$"                    , "g");
 const regexp_BSLASH = new RegExp("\\\\"                     , "g");
 const CALLERS_HEAD  = LF+"                                          ";
 /*{{{*/
@@ -596,24 +718,32 @@ let log_json = function(o,lxx)
     /* ONLY KEEP ATTRIBUTES WITH VALUES {{{*/
     let         o_with_values = {};
     Object.keys(o).filter((key) => {
-        let val = o[key];
+        let    val  = o[key];
         if(   (val != null)
            && (val !=    0)
            && (val !=   "")
           )
-            o_with_values[key] = val;
+            o_with_values[key]
+                = typeof val != "object"
+                ?        val
+                : "●● "+ JSON.stringify(val)
+                .        replace   (regexp_XBRACE,     "")
+                .        replace   (regexp_COMMA , " ●● ")
+                .        replaceAll(          ":",   ": ")
+        ;
     });
     /*}}}*/
     let result = "";
     try {
+        let o_with_values_json = JSON.stringify(o_with_values);
         result
-            = JSON.stringify(o_with_values)
+            = o_with_values_json
             .   replace(regexp_URL_64, '"url":"$1..."') /* eslint-disable-line quotes */
-            .   replace(regexp_LBRACE, "")
+            .   replace(regexp_XBRACE, "")
             .   replace(regexp_QUOTE , "")
             .   replace(regexp_BSLASH, "")
             .   trim()
-        //      .   replace(regexp_COMMA ,"\n")
+        //  .   replace(regexp_COMMA ,"\n")
             .   replace(regexp_COMMA ," , ")
         ;
 
@@ -625,7 +755,7 @@ let log_json = function(o,lxx)
 
         result
             = result
-            . replace(regexp_LBRACE , "")
+            . replace(regexp_XBRACE , "")
             . replace(regexp_QUOTE  , "")
             . replace(regexp_BSLASH , "")
             . trim()
@@ -686,6 +816,42 @@ let log_json_prettify = function(items)
     return ellipsis(items_tag, 70);
 };
     /*}}}*/
+/*_ log_o_keys {{{*/
+let log_o_keys = function(title,o,lfx=9)
+{
+    let lxx = (typeof lfx == "number")
+        ?         lfX[lfx]              /* just the index */
+        :             lfx;              /* or an fg color */
+
+    log("%c"+title+"%c keys %c ● "
+        +Object.keys(o).toString()
+        .replace(/,/g," ● ")
+        ,lbL+lxx   ,lbC+lxx,lbR+lxx
+       );
+};
+/*}}}*/
+/*_ log_o_keys_toString {{{*/
+/* eslint-disable newline-per-chained-call */
+let log_o_keys_toString = function(o)
+{
+    if(!o)
+        return typeof o;
+
+    if(typeof o == "object")
+    {
+        let keys = "";
+        Object.keys(o).forEach((key) => (o[key] != false) && (o[key] != "OFF") && (keys += ","+key));
+        return keys.replace(/,/g," ● ");
+    }
+
+    if(typeof o.name == "string")
+        return o.name;
+
+    else
+        return typeof o;
+};
+/* eslint-enable  newline-per-chained-call */
+/*}}}*/
 
 /*➔ log_sep_top log_sep_bot  {{{*/
 /*_  LOG_TAGS {{{*/
@@ -763,10 +929,10 @@ let log_sep_top = function(arg_line="", log_tag="")
     console.groupCollapsed(format, style);
 
     /* CALLERS */
-//  console.log("%c"+get_callers(), lf0);
+    if( log_more ) log_callers();
 
 };
-        /*}}}*/
+/*}}}*/
 /*_ log_sep_bot {{{*/
 let log_sep_bot = function(arg_line="", log_tag="")
 {
@@ -794,9 +960,9 @@ let log_sep_bot = function(arg_line="", log_tag="")
 
 /*➔ log_console_clear {{{*/
 /*{{{*/
-const CLEAR_CONSOLE_INTERVAL = 1000; /* ms */
-let last_call_time           = 0;
-let log_console_clear_count  = 0;
+const CLEAR_CONSOLE_INTERVAL_MS = 1000;
+let   last_call_time            =    0;
+let   log_console_clear_count   =    0;
 
 /*}}}*/
 let log_console_clear        = function(preserve_log,_caller="")
@@ -805,9 +971,9 @@ let log_console_clear        = function(preserve_log,_caller="")
 
     let result, l_x;
 try {
-    /* DEBOUNCING */
+    /* DEBOUNCING {{{*/
     let this_time = new Date().getTime() % 86400000;
-    if((this_time - last_call_time) < CLEAR_CONSOLE_INTERVAL)
+    if((this_time - last_call_time) < CLEAR_CONSOLE_INTERVAL_MS)
     {
         /**/l_x =      log_console_clear_count % 10;
         /**/result =    "%c "+  log_console_clear_count +"%c CLEAR COOL DOWN %c"+mPadEnd(_caller+" ",80,"-");
@@ -817,18 +983,23 @@ try {
     }
     last_call_time = this_time;
 
+    /*}}}*/
+    /* PRVENTED {{{*/
     if(preserve_log) {
         setTimeout(() => {
             l_x    = ++log_console_clear_count % 10;
             result =    "%c "+  log_console_clear_count +"%c CLEAR PREVENTED %c"+mPadEnd(_caller+" ",80,"-");
         });
     }
+    /*}}}*/
+    /* CLEAR {{{*/
     else {
         /**/l_x    = ++log_console_clear_count % 10;
         /**/result =    "%c "+  log_console_clear_count +"%c CLEARED         %c"+mPadEnd(_caller+" ",80,"-");
 
         /**/console.clear();
     }
+    /*}}}*/
 } finally {
     if(log_more && result) console.log(result,     lbb+lfX[l_x], lf8, lb0);
 }
@@ -867,14 +1038,22 @@ console    .log("%c"+script_id+"%c"+fnc+'%c *** manifest permission required  %c
 };
 /*}}}*/
 /*➔ ellipsis {{{*/
-let HORIZONTAL_ELLLIPSIS = "\u2026";
+let HORIZONTAL_ELLLIPSIS = "\u2026";    /* … */
 let ellipsis = function(msg, length=64)
 {
     msg = String(msg);
+
+    let trailer
+        = (msg.indexOf("\n") >= 0) ? LF + HORIZONTAL_ELLLIPSIS
+        :                                 HORIZONTAL_ELLLIPSIS
+    ;
+
     return (msg.length <= length)
         ?   msg
-        :   msg.substring(0, length-3)+HORIZONTAL_ELLLIPSIS
+        :   msg.substring(0, length - trailer.length)
+        +   trailer
     ;
+
 };
 /*}}}*/
 /*➔ truncate {{{*/
@@ -895,20 +1074,48 @@ let mPadEnd   = function(s,l,c=" ") { s = String(s); while(s.length < l) s = s+c
 /*}}}*/
 /*➔ log_CSP {{{*/
 /*{{{*/
-const DIRECTIVE_REGISTRY = "\\w+-src|\\w+-uri|disown-opener|form-action|frame-ancestors|plugin-types|report-to|sandbox|block-all-mixed-content";
+const DIRECTIVE_REGISTRY
+    = "\\w+-src"
+    + "|\\w+-uri"
+    + "|block-all-mixed-content"
+    + "|disown-opener"
+    + "|form-action"
+    + "|frame-ancestors"
+    + "|plugin-types"
+    + "|report-to"
+    + "|sandbox"
+    + "|upgrade-insecure-requests"
+    ;
+
 const regexp_DIRR = new RegExp("("+DIRECTIVE_REGISTRY+")(.*)","g");
 const regexp_SEMI = new RegExp("\\s*;\\s*"                   ,"g");
+const SEPARATOR   = "_@@_";
 
 /*}}}*/
-let log_CSP = function(title,bg_csp,log_tag="8")
+let log_CSP = function(title,header_csp,log_tag="8")
 {
-log_sep_top(title, log_tag);
+    let lines
+        =   header_csp
+        &&  header_csp.value
+        && (header_csp.value.replace(regexp_SEMI, "\n").match(/[^\r\n]+/g) || [])
+    ;
+    if(!lines) {
+        lines = [ "● BLANCK FILTER" ];
+        log_tag = "0";
+    }
 
-    let lines = bg_csp.replace(regexp_SEMI, "\n").match(/[^\r\n]+/g) || [];
+log_sep_top(title, log_tag);
 
     let num = 0;
     lines.forEach(function(line) {
-        console.log(mPadStart(++num,3)+" "+ellipsis(line.replace(regexp_DIRR, "%c $1 %c $2"),150), lfX[LOG_TAGS[log_tag]], lb0);
+        let [resource , replacement]
+            = line.replace(regexp_DIRR,"$1"+SEPARATOR+"$2")
+            .                        split( SEPARATOR )
+        ;
+
+        console.log(mPadStart(++num,3)
+                    +" %c"+mPadStart(resource,32)+"%c"+ellipsis(replacement||" ●", 100)
+                   ,   lfX[LOG_TAGS[log_tag]]     ,lb0                                 );
     });
 
 log_sep_bot(title, log_tag);
@@ -963,14 +1170,33 @@ let reload = function()
 /*}}}*/
 /* EXPORT {{{*/
 return { name : LOG_JS_ID
-    ,    LF
-    ,    LOG_BG_ARR
-    ,    LOG_FG_ARR
-    ,    LOG_XX_ARR
-    ,    LOG_SDX
-    ,    LOG_SXX
-    ,    LOG_CHR
-    ,    LOG_SYM
+    ,           logBIG
+    ,           logXXX
+    ,           log_CSP
+    ,           log_SYN
+    ,           log_caller
+    ,           log_console_clear
+    ,           log_csp_rules
+    ,           log_group
+    ,           log_json
+    ,           log_json_prettify
+    ,           log_key_val
+    ,           log_key_val_group
+    ,           log_members
+    ,           log_o_keys
+    ,           log_o_keys_toString
+    ,           log_o_sort
+    ,           log_object
+    ,           log_object_val_format
+    ,           log_pause
+    ,           log_permission
+    ,           log_sep_bot
+    ,           log_sep_top
+    ,           log_set_type
+    ,           log_socket
+
+    ,           log_modulename_key_val
+    ,           log_import             //RENAME //FIXME
 
     ,    clear
     ,    ellipsis
@@ -978,27 +1204,7 @@ return { name : LOG_JS_ID
     ,    get_callers_bot
     ,    get_ex_stack_line_match
     ,    log
-    ,    logBIG
-    ,    logXXX
-    ,    log_CSP
-    ,    log_SYN
-    ,    log_caller
-    ,    log_console_clear
-    ,    log_group
-    ,    log_json
-    ,    log_json_prettify
-    ,    log_key_val
-    ,    log_key_val_group
-    ,    log_members
-    ,    log_o_more
-    ,    log_object
-    ,    log_object_val_format
-    ,    log_pause
-    ,    log_permission
-    ,    log_sep_bot
-    ,    log_sep_top
-    ,    log_set_type
-    ,    log_socket
+
     ,    mPadEnd
     ,    mPadStart
     ,    parse_ex_stack_FUNC_FILE_LINE_COL
@@ -1008,6 +1214,15 @@ return { name : LOG_JS_ID
     ,    strip_CR_LF
     ,    strip_QUOTE
     ,    truncate
+
+    ,    LF
+    ,    LOG_BG_ARR
+    ,    LOG_FG_ARR
+    ,    LOG_XX_ARR
+    ,    LOG_SDX
+    ,    LOG_SXX
+    ,    LOG_CHR
+    ,    LOG_SYM
 
 };
 /*}}}*/

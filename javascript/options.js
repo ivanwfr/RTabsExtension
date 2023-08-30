@@ -16,15 +16,31 @@
 /* eslint-enable  no-redeclare              */
 
 const    O_SCRIPT_ID         = "options_js";
-const    O_SCRIPT_TAG        = O_SCRIPT_ID +" (230713:15h:13)";
+const    O_SCRIPT_TAG        = O_SCRIPT_ID +" (230817:18h:19)";
 /*}}}*/
-let options_js = (function() {
-"use strict"; /* eslint-disable-line strict */
-
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ OPTIONS                                                         EXTENSION │
 // └───────────────────────────────────────────────────────────────────────────┘
+/* ┌─────────────────────────────┐
+:e javascript/background.js
+:e javascript/bg_content.js
+:e javascript/bg_csp.js
+:e javascript/bg_event.js
+:e javascript/bg_header.js
+:e javascript/bg_message.js
+:e javascript/bg_page.js
+:e javascript/bg_settings.js
+:e javascript/bg_store.js
+:e javascript/bg_tabs.js
+"● javascript/options.js
+:e javascript/popup.js
+:e javascript/worker.js
+/* └─────────────────────────────┘*/
+let options_js = (function() {
+"use strict"; /* eslint-disable-line strict */
+
 /* IMPORT log_js {{{*/
+/* modules {{{*/
 /*_ log_js {{{*/
 /* eslint-disable no-unused-vars */
 let   LF;
@@ -44,13 +60,15 @@ let   log
     , log_object
     , log_sep_bot
     , log_sep_top
+    , li
 ;
 
 /*}}}*/
-/*_ options_import {{{*/
-let options_import = function()
+/*}}}*/
+/*  _import {{{*/
+let _import = function()
 {
-    /*_ log_js {{{*/
+    let modules=[ log_js        ]; /*{{{*/
     LF                                                               = log_js.LF;
 
     [ lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX        ] = log_js.LOG_BG_ARR;
@@ -63,17 +81,21 @@ let options_import = function()
 
     [ SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP] = log_js.LOG_SYM;
 
-    log                                 = log_js.log;
-    log_key_val                         = log_js.log_key_val;
-    log_object                          = log_js.log_object;
-    log_sep_bot                         = log_js.log_sep_bot;
-    log_sep_top                         = log_js.log_sep_top;
+    li                              = log_js.log_modulename_key_val;
+    log                             = log_js.log;                                               li("log_js","log"           , log        );
+    log_key_val                     = log_js.log_key_val;                                       li("log_js","log_key_val"   , log_key_val);
+    log_object                      = log_js.log_object;                                        li("log_js","log_object"    , log_object );
+    log_sep_bot                     = log_js.log_sep_bot;                                       li("log_js","log_sep_bot"   , log_sep_bot);
+    log_sep_top                     = log_js.log_sep_top;                                       li("log_js","log_sep_top"   , log_sep_top);
 
     /*}}}*/
+    log_js.log_set_type("O");
+
+    log_js.log_import(options_js, modules);
 };
 /*}}}*/
 /*}}}*/
-    options_import();
+    setTimeout(_import,0);
 /*_ LOG_MAP {{{*/
 let LOG_MAP = {
     O_LOG1_MESSAGE    : false,
@@ -122,14 +144,15 @@ try {
             LOG_MAP[log_tag] = !LOG_MAP[log_tag];
         }
 
-        let   just_set_error = (log_tag == "O_LOG2_ERROR") && LOG_MAP.O_LOG2_ERROR;
-        LOG_MAP.O_LOG2_ERROR =  log_ACTIVATED() || just_set_error;
+        LOG_MAP.O_LOG2_ERROR = (log_tag != "O_LOG2_ERROR") && log_ACTIVATED();
 
         logn_STORE();
     }
     /*}}}*/
     /* LOG    [log_tag] [lastError] [SYN] {{{*/
-    if( chrome.runtime.lastError ) return chrome.runtime.lastError.message;
+    if( chrome.runtime && chrome.runtime.lastError )
+        return            chrome.runtime.lastError.message;
+
     if(!log_tag || (log_tag=="*")) return SYN; // SYMBOL BLACK CIRCLE
 
     let    mark = LOG_MAP[log_tag] ? SYMBOL_CHECK_MARK : L_CLR;
@@ -178,7 +201,7 @@ if( log_this) log("%c "+caller+": %c SAVING [LOG_MAP]", lbL+lf8, lbR+lf9);
 /*_ logn_USAGE {{{*/
 let logn_USAGE = function() /* eslint-disable-line no-unused-vars */
 {
-    let  s  = "%c\n";                          let args = [""]; args.push(lbR+lf0);
+    let  s  = ""                                              , args=[""];
 
     /**/ s += "%c "+O_SCRIPT_ID+".l(2) .. toggle ERROR\n"     ; args.push(lbR+lf2);
     /**/ s += "%c "+O_SCRIPT_ID+".l(3) .. toggle GET\n"       ; args.push(lbR+lf3);
@@ -196,7 +219,7 @@ let logn_USAGE = function() /* eslint-disable-line no-unused-vars */
     args[0] = s;
 
     console.groupCollapsed("%c logn USAGE "+SAD, lbH);
-    console.log.apply     (console, Array.prototype.slice.call(args));
+    console.log.apply(console, args);
     console.groupEnd();
 
     log_object("options_js",options_js);
@@ -218,10 +241,9 @@ let log_LOG_MAP = function()
     if( LOG_MAP.O_LOG0_MORE     ) { s += "%c 0 MORE "       ; args.push(lbC+lb0); }
     if(args.length == 2)          { s += "%c NO LOGGING"    ; args.push(lbR+lf0); }
     else                          { s += "%c "              ; args.push(lbR    ); }
-    /*.................*/ args[0] = s;
 
-
-        console.log.apply           (console, Array.prototype.slice.call(args));
+    args[0] = s;
+    console.log.apply(console, args);
 };
 /*}}}*/
 /*_ log_ACTIVATED {{{*/
@@ -264,6 +286,7 @@ if( log_this) log       ("%c"+_caller+"→"+caller, lb8);
 if( log_this) log_object("..."       , { items_tag, _caller });
 if( log_more) log_object("...items",   items);
 /*}}}*/
+    if( !chrome.storage ) return; /* stand-alone options.html */
     try {
         chrome.storage.sync.set( items );
     }
@@ -319,7 +342,7 @@ if( log_this) log("%c CLEAR COMMIT", lb7);
         o_ui_STORAGE_CLEAR_timer = null;
 
         chrome.storage.sync.clear();
-        document.location.reload();
+        document.location.reload(true); // forceGet
     }
     /*}}}*/
 };
@@ -328,8 +351,6 @@ if( log_this) log("%c CLEAR COMMIT", lb7);
 let o_LOAD_STORE_items = function(items)
 {
     /* LOAD [LOG_MAP] {{{*/
-
-    log_js.log_set_type("O");
 
     /*(____________.____________________!=____________)________.________________=______.________________;*/
     if(typeof items.O_LOG1_MESSAGE      != "undefined") LOG_MAP.O_LOG1_MESSAGE  = items.O_LOG1_MESSAGE  ;
@@ -344,8 +365,7 @@ let o_LOAD_STORE_items = function(items)
     if(typeof items.O_LOG0_MORE         != "undefined") LOG_MAP.O_LOG0_MORE     = items.O_LOG0_MORE     ;
     /*(____________.____________________!=____________)________.________________=______.________________;*/
 
-    let   just_set_error = items.O_LOG2_ERROR && LOG_MAP.O_LOG2_ERROR;
-    LOG_MAP.O_LOG2_ERROR =  log_ACTIVATED() || just_set_error;
+    LOG_MAP.O_LOG2_ERROR = (typeof items.O_LOG2_ERROR == "undefined") && log_ACTIVATED();
 
     logn_STORE();
 
@@ -401,16 +421,23 @@ if( log_this) log("%c "+caller+"%c"+_caller, lbH+lf8, lbH+lf6);
         ,   P_LOG6_UI           : (document.getElementById( "P_LOG6_UI"        ) || {}).checked
         ,   P_LOG7_TABS         : (document.getElementById( "P_LOG7_TABS"      ) || {}).checked
         ,   P_LOG8_STORE        : (document.getElementById( "P_LOG8_STORE"     ) || {}).checked
-        ,   P_LOG9_EVENTS       : (document.getElementById( "P_LOG9_EVENTS"    ) || {}).checked
+        ,   P_LOG9_EVENT        : (document.getElementById( "P_LOG9_EVENT"     ) || {}).checked
         ,   P_LOG0_MORE         : (document.getElementById( "P_LOG0_MORE"      ) || {}).checked
 
+        ,  "WORKER_LOG"         : (document.getElementById( "WORKER_LOG"        ) || {}).checked
+        ,  "BACKGROUND_JS_LOG"  : (document.getElementById( "BACKGROUND_JS_LOG" ) || {}).checked
+        ,  "BG_CONTENT_JS_LOG"  : (document.getElementById( "BG_CONTENT_JS_LOG" ) || {}).checked
+        ,  "BG_CSP_JS_LOG"      : (document.getElementById( "BG_CSP_JS_LOG"     ) || {}).checked
+        ,  "BG_EVENT_JS_LOG"    : (document.getElementById( "BG_EVENT_JS_LOG"   ) || {}).checked
+        ,  "BG_HEADER_JS_LOG"   : (document.getElementById( "BG_HEADER_JS_LOG"  ) || {}).checked
+        ,  "BG_MESSAGE_JS_LOG"  : (document.getElementById( "BG_MESSAGE_JS_LOG" ) || {}).checked
+        ,  "BG_PAGE_JS_LOG"     : (document.getElementById( "BG_PAGE_JS_LOG"    ) || {}).checked
+        ,  "BG_SETTINGS_JS_LOG" : (document.getElementById( "BG_SETTINGS_JS_LOG") || {}).checked
+        ,  "BG_STORE_JS_LOG"    : (document.getElementById( "BG_STORE_JS_LOG"   ) || {}).checked
+        ,  "BG_TABS_JS_LOG"     : (document.getElementById( "BG_TABS_JS_LOG"    ) || {}).checked
     };
-    let   just_set_error    = items.O_LOG2_ERROR || LOG_MAP.O_LOG2_ERROR;
-//console.log("@@@ LOG_MAP.O_LOG2_ERROR:" , LOG_MAP.O_LOG2_ERROR );
-//console.log("@@@ ..items.O_LOG2_ERROR:" , items.O_LOG2_ERROR   );
-//console.log("@@@ ......just_set_error:" , just_set_error       );
 
-    items  .O_LOG2_ERROR    =  log_ACTIVATED() || just_set_error;
+    items  .O_LOG2_ERROR    =  log_ACTIVATED();
 
 if( log_this) log_key_val("items",items, lf8);
     //}}}
@@ -425,10 +452,10 @@ if( log_this) log_key_val("items",items, lf8);
 /* ┌────────────────────────────────────────────────────────────────────────┐ */
 /* │ UI EVENT LISTENERS                                           O_LOG6_UI │ */
 /* └────────────────────────────────────────────────────────────────────────┘ */
-/*_ o_addClickListener {{{*/
-let o_addClickListener = function()
+/*_ o_addEventListeners {{{*/
+let o_addEventListeners = function()
 {
-if(LOG_MAP.O_LOG6_UI) log("%c o_addClickListener", lb6);
+if(LOG_MAP.O_LOG6_UI) log("%c o_addEventListeners", lb6);
 
     /* BUTTONS CLICK LISTENER */
     let id, el;
@@ -443,7 +470,7 @@ if(LOG_MAP.O_LOG6_UI) log("%c o_addClickListener", lb6);
     id = STORAGE_CLEAR  ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener); }
     id = CONSOLE_CLEAR  ; if(el = document.getElementById(id)) { el.addEventListener("click", o_UI_checkbox_listener); }
 
-    /* TEXTAREA INPUT EVENTS LISTENER */
+    /* TEXTAREA INPUT EVENT LISTENER */
     id = FILTER_TEXTAREA; if(el = document.getElementById(id)) { el.addEventListener("input", o_UI_textarea_listener()); }
 
 };
@@ -464,7 +491,7 @@ if(LOG_MAP.O_LOG6_UI) log("%c textarea.input.edit_handler", lb1);
         EDIT_CSP_FILTER();
     };
 
-    /* LISTEN to INPUT EVENTS */
+    /* LISTEN to INPUT EVENT */
     let listener = function()
     {
         if(timer !== null) window.clearTimeout(timer         );
@@ -550,110 +577,103 @@ if( log_more) {
 }}}*/
 /*}}}*/
     if(invalidated) return;
-    /* clicked UI element {{{*/
-    let log_panel     = null;
-    let log_map_div   = null;
-//  let clear_button  = null;
-
-    switch(el_id)
+    /* ● CONSOLE_CLEAR ● LOG_PANEL ● STORAGE_CLEAR {{{*/
+    switch( el_id )
     {
-        case LOG_PANEL     : log_panel      = el_id; break;
-        case LOG_MAP_DIV   : log_map_div    = el_id; break;
-        case STORAGE_CLEAR : clear_button   = el_id; break;
-        case CONSOLE_CLEAR : SEND_CLEAR_MESSAGE();   break;
+    case       CONSOLE_CLEAR : SEND_CLEAR_MESSAGE();                    return;
+    case       LOG_PANEL     : o_UI_show_panel     ( LOG_MAP_DIV   );   return;
+    case       STORAGE_CLEAR : o_storage_sync_clear( STORAGE_CLEAR );   return;
     }
-if( log_more) log_object("...clicked → "+el_id, { el_id, log_panel , log_map_div , clear_button });
-
-    /*}}}*/
-    /* LOG PANEL {{{*/
-    if(log_panel)
-    {
-        o_UI_show_panel(LOG_MAP_DIV);
-
-    }
-    /*}}}*/
-    /* LOG BUTTON {{{*/
-    if(log_map_div)
-    {
+/*}}}*/
+    /* ● LOG_MAP_DIV CHECKBOX {{{*/
 /*{{{
 console.log("e.target..........................................:"); console.dir(e.target                                          );
 console.log("e.target.parentElement............................:"); console.dir(e.target.parentElement                            );
 console.log("e.target.parentElement.parentElement..............:"); console.dir(e.target.parentElement.parentElement              );
 console.log("e.target.parentElement.parentElement.parentElement:"); console.dir(e.target.parentElement.parentElement.parentElement);
 }}}*/
-        /* ID {{{*/
-        let el = (e.target                                     .htmlFor) ? document.getElementById( e.target.htmlFor )        /* label.htmlFor input */
-            :    (e.target                                          .id) ? e.target                                           /* button              */
-            :    (e.target.parentElement                            .id) ? e.target.parentElement                             /* cb_filled_pin       */
-            :    (e.target.parentElement.parentElement              .id) ? e.target.parentElement.parentElement               /* box_container       */
-            :    (e.target.parentElement.parentElement.parentElement.id) ? e.target.parentElement.parentElement.parentElement /* LOG_MAP_DIV_...     */
-            :    null
-        ;
 
-if( log_more) log("%c... LOG BUTTON %c"+el.id+"%c"+el.type
-                  ,lbL          ,lbC       ,lbR        );
+    let el     = e.target.htmlFor  ? document.getElementById( e.target.htmlFor )        /* label.htmlFor input */
+        : (e.target                                          .id) ? e.target                                           /* button              */
+        : (e.target.parentElement                            .id) ? e.target.parentElement                             /* cb_filled_pin       */
+        : (e.target.parentElement.parentElement              .id) ? e.target.parentElement.parentElement               /* box_container       */
+        : (e.target.parentElement.parentElement.parentElement.id) ? e.target.parentElement.parentElement.parentElement /* LOG_MAP_DIV_...     */
+        : null
+    ;
+    if(!el) return;
+
+if( log_this) log(" CLICKED %c "+el_id+"%c "+el.tagName+"%c type "+el.type, lbL,lbC,lbR);
+// console.dir(el);
+
+    switch(el.id) {
+        /* background_js {{{*/
+        case "LOG_MAP_DIV_background": o_UI_TOGGLE_ROW(el); break;
+        case "B_LOG1_MESSAGE"        :
+        case "B_LOG2_ERROR"          :
+        case "B_LOG3_PRESERVE"       :
+        case "B_LOG4_CSP"            :
+        case "B_LOG5_ONREQUEST"      :
+        case "B_LOG6_ONHEADER"       :
+        case "B_LOG7_TABS"           :
+        case "B_LOG8_STORE"          :
+        case "B_LOG9_STAGE"          :
+        case "B_LOG0_MORE"           :
+        /*..........................*/ if(el.type=="checkbox") SEND_LOG_ITEM({ tag:el.id , state:el.checked });
+        break;
+
         /*}}}*/
-        switch(el.id)
-        {
-            /* background_js {{{*/
-            case "LOG_MAP_DIV_background": o_UI_TOGGLE_ROW(el); break;
-            case "B_LOG1_MESSAGE"        :
-            case "B_LOG2_ERROR"          :
-            case "B_LOG3_PRESERVE"       :
-            case "B_LOG4_CSP"            :
-            case "B_LOG5_ONREQUEST"      :
-            case "B_LOG6_ONHEADER"       :
-            case "B_LOG7_TABS"           :
-            case "B_LOG8_STORE"          :
-            case "B_LOG9_STAGE"          :
-            case "B_LOG0_MORE"           :
-            /*..........................*/ if(el.type=="checkbox") SEND_LOG_ITEM({ tag:el.id , state:el.checked });
-            break;
+        /* options_js {{{*/
+        case "LOG_MAP_DIV_options"   : o_UI_TOGGLE_ROW(el); break;
+        case "O_LOG1_MESSAGE"        : if(el.type=="checkbox") o_LOAD_STORE_items( { O_LOG1_MESSAGE:el.checked }); break;
+        case "O_LOG2_ERROR"          : if(el.type=="checkbox") o_LOAD_STORE_items( { O_LOG2_ERROR  :el.checked }); break;
+        case "O_LOG5_SUCCESS"        : if(el.type=="checkbox") o_LOAD_STORE_items( { O_LOG5_SUCCESS:el.checked }); break;
+        case "O_LOG6_UI"             : if(el.type=="checkbox") o_LOAD_STORE_items( { O_LOG6_UI     :el.checked }); break;
+        case "O_LOG8_STORE"          : if(el.type=="checkbox") o_LOAD_STORE_items( { O_LOG8_STORE  :el.checked }); break;
+        case "O_LOG0_MORE"           : if(el.type=="checkbox") o_LOAD_STORE_items( { O_LOG0_MORE   :el.checked }); break;
+        /*}}}*/
+        /* popup_js {{{*/
+        case "LOG_MAP_DIV_popup"     : o_UI_TOGGLE_ROW(el); break;
+        case "P_LOG1_MESSAGE"        :
+        case "P_LOG2_ERROR"          :
+        case "P_LOG6_UI"             :
+        case "P_LOG7_TABS"           :
+        case "P_LOG8_STORE"          :
+        case "P_LOG9_EVENT"          :
+        case "P_LOG0_MORE"           :
+        /*..........................*/ if(el.type=="checkbox") SEND_LOG_ITEM({ tag:el.id , state:el.checked });
+        break;
 
-            /*}}}*/
-            /* options_js {{{*/
-            case "LOG_MAP_DIV_options"   : o_UI_TOGGLE_ROW(el); break;
-            case "O_LOG1_MESSAGE"        : if(el.type=="checkbox") o_LOAD_STORE_items( { O_LOG1_MESSAGE:el.checked }); break;
-            case "O_LOG2_ERROR"          : if(el.type=="checkbox") o_LOAD_STORE_items( { O_LOG2_ERROR  :el.checked }); break;
-            case "O_LOG5_SUCCESS"        : if(el.type=="checkbox") o_LOAD_STORE_items( { O_LOG5_SUCCESS:el.checked }); break;
-            case "O_LOG6_UI"             : if(el.type=="checkbox") o_LOAD_STORE_items( { O_LOG6_UI     :el.checked }); break;
-            case "O_LOG8_STORE"          : if(el.type=="checkbox") o_LOAD_STORE_items( { O_LOG8_STORE  :el.checked }); break;
-            case "O_LOG0_MORE"           : if(el.type=="checkbox") o_LOAD_STORE_items( { O_LOG0_MORE   :el.checked }); break;
-            /*}}}*/
-            /* popup_js {{{*/
-            case "LOG_MAP_DIV_popup"     : o_UI_TOGGLE_ROW(el); break;
-            case "P_LOG1_MESSAGE"        :
-            case "P_LOG2_ERROR"          :
-            case "P_LOG6_UI"             :
-            case "P_LOG7_TABS"           :
-            case "P_LOG8_STORE"          :
-            case "P_LOG9_EVENTS"         :
-            case "P_LOG0_MORE"           :
-            /*..........................*/ if(el.type=="checkbox") SEND_LOG_ITEM({ tag:el.id , state:el.checked });
-            break;
+        /*}}}*/
+        /* logging {{{*/
+        case "LOGGING_DIV_RIGHT"     : o_UI_TOGGLE_ROW(el); break;
 
-            /*}}}*/
-            /* ... {{{*/
-            case "":
-if( log_more) log("%c--- o_UI_CB: ["+log_map_div+"] %c el.id=["+el.id+"]", lb6, lb0);
-            break;
+        case "WORKER_LOG"            :
+        case "BACKGROUND_JS_LOG"     :
+        case "BG_CONTENT_JS_LOG"     :
+        case "BG_CSP_JS_LOG"         :
+        case "BG_EVENT_JS_LOG"       :
+        case "BG_HEADER_JS_LOG"      :
+        case "BG_MESSAGE_JS_LOG"     :
+        case "BG_PAGE_JS_LOG"        :
+        case "BG_SETTINGS_JS_LOG"    :
+        case "BG_STORE_JS_LOG"       :
+        case "BG_TABS_JS_LOG"        :
+        /*..........................*/ if(el.type=="checkbox") SEND_LOG_ITEM({ tag:el.id , state:el.checked });
+        break;
 
-            default:
-if( log_more) log("%c*** o_UI_CB: ["+log_map_div+"] .. case default .. el.id=["+el.id+"] ***", lb2);
-            break;
-            /*}}}*/
-        }
+        /*}}}*/
+        /* ... {{{*/
+        case "":
+if( log_more) log("%c--- o_UI_CB: ["+el.id+"] %c el.id=["+el.id+"]", lb6, lb0);
+        break;
 
-        if(!invalidated) o_STORE_SET_from_UI(caller+"("+el_id+")");
+        default:
+if( log_more) log("%c*** o_UI_CB: ["+el.id+"] .. case default .. el.id=["+el.id+"] ***", lb2);
+        break;
+        /*}}}*/
     }
     /*}}}*/
-    /* UI: RESET STORAGE CLEAR BUTTON STYLE {{{*/
-    if(clear_button)
-    {
-        o_storage_sync_clear( clear_button );
-
-    }
-    /*}}}*/
+    if(!invalidated) o_STORE_SET_from_UI(caller+"("+el_id+")");
 };
 /*}}}*/
 
@@ -686,8 +706,10 @@ if( log_this) log("%c"+caller+"(items x"+Object.keys(items).length+")", lbH+lf6)
 /*}}}*/
 
     /* SYNC LOG_MAP checkbox elements */
-//  let el_checked_panels = []; // PANELS containing some checked el
-let checked_objects = {};
+/*{{{
+//  let (el_checked_panels) = []; // PANELS containing some checked el
+}}}*/
+    let checked_objects = {};
 
     Object.keys(items).forEach(
         function(key)
@@ -698,15 +720,14 @@ let checked_objects = {};
             //  && (el.id.includes("_LOG"))
             ) {
                 el.checked = items[key];
-checked_objects[key] = el.checked;
 
+                checked_objects   [key] = el.checked;
 /*{{{
                 if(el.checked) {
                     let row_panel = el.parentElement.parentElement.parentElement;
                     if( row_panel && !el_checked_panels.includes(row_panel)) el_checked_panels.push(row_panel);
                 }
 }}}*/
-
 //if( log_this) log("...%c"+key+"%c"+items[key], lbL,lbR);
             }
         }
@@ -752,10 +773,14 @@ if( log_this) log("%c"+caller+"%c"+panel_id, lbL+lf6,lbR+lf5);
     let textarea     = document.getElementById( FILTER_TEXTAREA );
     let log_map_div  = document.getElementById( LOG_MAP_DIV     );
 
-    textarea   .style.display = (panel_id == FILTER_TEXTAREA) ? "block" : "none";
-    log_map_div.style.display = (panel_id != FILTER_TEXTAREA) ? "block" : "none";
+    if( log_map_div    .style.display_saved == undefined)
+        log_map_div    .style.display_saved =
+            log_map_div.style.display;
 
-    o_UI_show_panel_radio( panel_id);
+    textarea   .style.display = (panel_id == FILTER_TEXTAREA) ? "block" : "none";
+    log_map_div.style.display = (panel_id != FILTER_TEXTAREA) ? log_map_div    .style.display_saved : "none";
+
+    o_UI_show_panel_radio( panel_id );
 
     o_STORE_SET_from_UI(caller+"("+panel_id+")");
 
@@ -786,20 +811,24 @@ let log_this = LOG_MAP.O_LOG5_SUCCESS;
 if( log_this) log("%c o_UI_show_CSP_FILTER_SUCCESS", lb5);
 if( log_this) log("...response=%c["+response+"]", lb5);
 
+    // ┌───────────────────────────────────────────────────────────────────────┐
+    // │ DETECT javascript/bg_csp.js BUILTINS from those CUSTOMIZED BY USER    │
+    // └───────────────────────────────────────────────────────────────────────┘
+
     let textarea = document.getElementById(FILTER_TEXTAREA);
     textarea.style.backgroundColor =        "";
 
     let bg_color
-        =     (textarea.value.indexOf("# DEFAULT FILTER") == 0) ? DEFAULT_BG_COLOR
-        :     (textarea.value.indexOf("# REMOVE FILTER" ) == 0) ? REMOVE_BG_COLOR
-        :     (textarea.value.indexOf("# NULL FILTER"   ) == 0) ? NULL_FILTER_BG_COLOR
-        :                                                         CUSTOM_BG_COLOR
+        = (textarea.value.indexOf("# DEFAULT FILTER") == 0) ?     DEFAULT_BG_COLOR
+        : (textarea.value.indexOf("# REMOVE FILTER" ) == 0) ?      REMOVE_BG_COLOR
+        : (textarea.value.indexOf("# NULL FILTER"   ) == 0) ? NULL_FILTER_BG_COLOR
+        :                                                          CUSTOM_BG_COLOR
     ;
     let fg_color
-        =     (textarea.value.indexOf("# DEFAULT FILTER") == 0) ? DEFAULT_FG_COLOR
-        :     (textarea.value.indexOf("# REMOVE FILTER" ) == 0) ? REMOVE_FG_COLOR
-        :     (textarea.value.indexOf("# NULL FILTER"   ) == 0) ? NULL_FILTER_FG_COLOR
-        :                                                         CUSTOM_FG_COLOR
+        = (textarea.value.indexOf("# DEFAULT FILTER") == 0) ?     DEFAULT_FG_COLOR
+        : (textarea.value.indexOf("# REMOVE FILTER" ) == 0) ?      REMOVE_FG_COLOR
+        : (textarea.value.indexOf("# NULL FILTER"   ) == 0) ? NULL_FILTER_FG_COLOR
+        :                                                          CUSTOM_FG_COLOR
     ;
 
     textarea.style.backgroundColor = bg_color;
@@ -833,7 +862,7 @@ let o_UI_set_statusline_text = function(text)
         invalidated = true;
         document.body.title = "⚠ RELOAD REQUIRED ⚠";
         let el;
-        /**/el = document.getElementById("div_buttons"); el.style.pointerEvents = "none"; el.style.filter = "grayscale(1) brightness(0.5)";
+        /**/el = document.getElementById("BUTTONS_DIV"); el.style.pointerEvents = "none"; el.style.filter = "grayscale(1) brightness(0.5)";
         /**/el = document.getElementById("LOG_MAP_DIV"); el.style.pointerEvents = "none"; el.style.filter = "grayscale(1) brightness(0.5)";
 
       //document.body.style.filter = "grayscale(1) brightness(0.2)";
@@ -842,6 +871,73 @@ let o_UI_set_statusline_text = function(text)
 };
 /*}}}*/
 /*_ o_UI_SET_tooltips {{{*/
+/* OPTIONS UI ● BUTTONS_DIV {{{
+
+    FILTER3_REMOVE
+    FILTER4_CUSTOM
+    FILTER5_RELAX
+    FILTER6_NONE
+
+    CONSOLE_CLEAR
+    STORAGE_CLEAR
+
+}}}*/
+/* OPTIONS UI ● LOG_MAP_DIV_LEFT {{{
+
+    B_LOG0_MORE
+    B_LOG1_MESSAGE
+    B_LOG2_ERROR
+    B_LOG3_PRESERVE
+    B_LOG4_CSP
+    B_LOG5_ONREQUEST
+    B_LOG6_ONHEADER
+    B_LOG7_TABS
+    B_LOG8_STORE
+    B_LOG9_STAGE
+
+    O_LOG0_MORE
+    O_LOG1_MESSAGE
+    O_LOG2_ERROR
+    O_LOG5_SUCCESS
+    O_LOG6_UI
+    O_LOG8_STORE
+
+    P_LOG0_MORE
+    P_LOG1_MESSAGE
+    P_LOG2_ERROR
+    P_LOG6_UI
+    P_LOG7_TABS
+    P_LOG8_STORE
+    P_LOG9_EVENT
+
+}}}*/
+/* OPTIONS UI ● LOGGING_DIV_RIGHT {{{
+
+    WORKER_LOG
+
+    BACKGROUND_JS_LOG
+
+    BG_CONTENT_JS_LOG
+    BG_CSP_JS_LOG
+    BG_EVENT_JS_LOG
+    BG_HEADER_JS_LOG
+    BG_MESSAGE_JS_LOG
+    BG_PAGE_JS_LOG
+    BG_SETTINGS_JS_LOG
+    BG_STORE_JS_LOG
+    BG_TABS_JS_LOG
+
+}}}*/
+/* REGEX {{{*/
+//nst regexp_BUTTONS_HEAD = new RegExp("^FILTER\d_"           ,  ""); // FILTER3_REMOVE
+const regexp_LOG_MAP_HEAD = new RegExp("^[BOP]_LOG\\d"        ,  ""); // B_LOG0_MORE
+//nst regexp_LOGGING_HEAD = new RegExp("^(BG)_"               ,  ""); // BG_CONTENT.......
+const regexp_LOGGING_TAIL = new RegExp(             "_JS_LOG$",  ""); // ...CONTENT_JS_LOG
+const regexp_BUTTONS_UNDS = new RegExp(         "_"           , "g"); // CONSOLE_CLEAR
+//nst regexp_LOGGING_SW   = new RegExp("^SW$"                 ,  "");
+//nst regexp_LOGGING_BG   = new RegExp("^BACKGROUND$"         ,  "");
+
+/*}}}*/
 let o_UI_SET_tooltips = function()
 {
 /*{{{*/
@@ -871,14 +967,23 @@ if( log_more) log((i+1)+" %c["+title+"]", lb6);
              *
              *}}}*/
             /* TITLE FROM INPUT ID {{{*/
-            if(    title.startsWith( "CSP_"    )
-               ||  title.includes  ( "_LOG"    )
-               ||  title.startsWith( "STORAGE" )
-            ) {
-                let  idx  = title.lastIndexOf("_");
-                if(idx > 0)
-                    title = title.substring(idx+1);
-            }
+
+            if(    title.startsWith( "B_"     ) /* LOG_MAP background */
+               ||  title.startsWith( "O_"     ) /* LOG_MAP options    */
+               ||  title.startsWith( "P_"     ) /* LOG_MAP popup      */
+               ||  title.endsWith  ( "JS_LOG" ) /* LOGGING            */
+               ||  title.startsWith( "FILTER_") /* BUTTONS            */
+               ||  title.endsWith  ( "_CLEAR" ) /* BUTTONS            */
+              )
+                title = title
+//                  .    replace(regexp_BUTTONS_HEAD, "")
+                    .    replace(regexp_LOG_MAP_HEAD, "")
+//                  .    replace(regexp_LOGGING_HEAD, "")
+                    .    replace(regexp_LOGGING_TAIL, "")
+                    .    replace(regexp_BUTTONS_UNDS, " ")
+                    .trim()
+                ;
+
             /*}}}*/
             /* LABEL HTML {{{*/
             let label             = input.nextElementSibling;
@@ -906,20 +1011,53 @@ if( log_more) log_sep_bot("o_UI_SET_tooltips", "LOG6_TAG");
 let o_UI_get_badge_for_title = function(title)
 {
     switch(title) {
-        case "ERROR"    : return "logs script error (!silent)";
-        case "EVENTS"   : return "logs events";
-        case "HEADER"   : return "logs header filtering";
-        case "MORE"     : return "logs more processing details";
-        case "ONHEADER" : return "logs onBeforeRequest header filtering";
-        case "CSP"      : return "logs CSP and MESSAGES parsing";
-        case "PRESERVE" : return "do not clear console between requests";
-        case "STAGE"    : return "logs runtime major steps";
-        case "STORE"    : return "logs storage";
-        case "SUCCESS"  : return "logs CSP JSON parsing";
-        case "TABS"     : return "logs tabs activation and updates";
-        case "UI"       : return "logs UI callbacks";
 
-        default         : return '<h2>TODO</h2>Fetch and return a captionfor "'+ title +'"'; /* eslint-disable-line quotes */
+        /* LOG_MAP ● background options popup {{{*/
+        case "CSP"           : return "logs CSP parsing";
+        case "ERROR"         : return "logs script error (!silent)";
+        case "EVENT"         : return "logs events";
+        case "HEADER"        : return "logs header filtering";
+        case "MESSAGE"       : return "logs MESSAGES sent and receied";
+        case "MORE"          : return "logs more processing details";
+        case "ONHEADER"      : return "logs onBeforeRequest header filtering";
+        case "PRESERVE"      : return "do not clear console between requests";
+        case "STAGE"         : return "logs runtime major steps";
+        case "STORE"         : return "logs storage";
+        case "SUCCESS"       : return "logs CSP JSON parsing";
+        case "TABS"          : return "logs tabs activation and updates";
+        case "UI"            : return "logs UI callbacks";
+
+        case "CONSOLE CLEAR" : return "To clear all Devtools consoles";
+        case "STORAGE CLEAR" : return "To clear chrome.storage data";
+        case "FILTER3_REMOVE": return "Remove all CSP rules";
+        case "FILTER4_CUSTOM": return "Replace with CUSTOM CSP rules ";
+        case "FILTER5_RELAX" : return "Replace with RELAXED CSP rules";
+        case "FILTER6_NONE"  : return "Replace with EMPTY CSP rules";
+        case "LOG_PANEL"     : return "Logging checkbox panel";
+        case "ONREQUEST"     : return "logs HTTP Request commands";
+
+        /*}}}*/
+        /* LOGGING ● bg_xxx.js{{{*/
+        case "SW"                   : return  "logs Service Worker script"     ;
+        case "BACKGROUND"           : return  "logs background main script"    ;
+        case "BG CONTENT"           : return  "logs background content script" ;
+        case "BG CSP"               : return  "logs background csp script"     ;
+        case "BG EVENT"             : return  "logs background event script"   ;
+        case "BG HEADER"            : return  "logs background header script"  ;
+        case "BG MESSAGE"           : return  "logs background message script" ;
+        case "BG PAGE"              : return  "logs background page script"    ;
+        case "BG SETTINGS"          : return  "logs background settings script";
+        case "BG STORE"             : return  "logs background store script"   ;
+        case "BG TABS"              : return  "logs background tabs script"    ;
+
+        /*}}}*/
+        default         :
+        {
+            let  warning_msg = " No caption for ["+ title +"]";
+            log("%c"+warning_msg, lb0);
+//          console.trace();
+            return "<h2>TODO</h2>"+warning_msg;
+        }
     }
 
 };
@@ -944,6 +1082,7 @@ if( log_this) log       ("%c"+_caller+"→"+caller, lb1);
 if( log_this) log_object("..."       , { message_tag, response_handler, _caller });
 if( log_more) log_object(caller      ,   message);
 /*}}}*/
+    if( !chrome.runtime ) return;
     try {
         if(response_handler) chrome.runtime.sendMessage(message, response_handler);
         else                 chrome.runtime.sendMessage(message                  );
@@ -1150,12 +1289,12 @@ let   caller = "SEND_CLEAR_MESSAGE";
         };
     o_sendMessage(message, null, caller); // .. no response_handler
 
-    log_js.log_console_clear(message.preserve); /* clear options console as well */
+    log_js.log_console_clear(message.preserve, caller); /* clear options console as well */
 };
 /*}}}*/
 
 /*_ init c l {{{*/
-let init = () => { o_addClickListener(); chrome.storage.sync.get(null, o_LOAD_STORE_items); };
+let init = () => { o_addEventListeners(); if(chrome.storage) chrome.storage.sync.get(null, o_LOAD_STORE_items); };
 let    c = log_js.clear;
 let    l = logn;
 
@@ -1177,25 +1316,3 @@ let    l = logn;
 let        o =  options_js; /* @so that we can call o.l() from Devtools.console */
 /*......*/ o.init();
 
-/* VIM SIGNS {{{
-:so ~/VIM/signs.vim
-
- :sign place  1 line=179  name=SIGN1 file=C:/LOCAL/DATA/ANDROID/PROJECTS/Chrome_Web_Store/RTabsExtension/javascript/options.js
- :sign place  2 line=255  name=SIGN2 file=C:/LOCAL/DATA/ANDROID/PROJECTS/Chrome_Web_Store/RTabsExtension/javascript/options.js
- :sign place  3 line=474  name=SIGN3 file=C:/LOCAL/DATA/ANDROID/PROJECTS/Chrome_Web_Store/RTabsExtension/javascript/options.js
- :sign place  4 line=568  name=SIGN4 file=C:/LOCAL/DATA/ANDROID/PROJECTS/Chrome_Web_Store/RTabsExtension/javascript/options.js
- :sign place  6 line=699  name=SIGN6 file=C:/LOCAL/DATA/ANDROID/PROJECTS/Chrome_Web_Store/RTabsExtension/javascript/options.js
- :sign place  5 line=701  name=SIGN5 file=C:/LOCAL/DATA/ANDROID/PROJECTS/Chrome_Web_Store/RTabsExtension/javascript/options.js
- :sign place  7 line=967  name=SIGN7 file=C:/LOCAL/DATA/ANDROID/PROJECTS/Chrome_Web_Store/RTabsExtension/javascript/options.js
- :sign place  8 line=1219 name=SIGN8 file=C:/LOCAL/DATA/ANDROID/PROJECTS/Chrome_Web_Store/RTabsExtension/javascript/options.js
-/try {
-/\/\* │ STORAGE                                                   O_LOG8_STORE │ \*\/
-/\/\* │ UI EVENT LISTENERS                                           O_LOG6_UI │ \*\/
-/\/\* │ EVENT \[checkbox\] HANDLERS                                    O_LOG6_UI │ \*\/
-/\/\* │ UI                             O_LOG5_SUCCESS  O_LOG6_UI  O_LOG8_STORE │ \*\/
-/\/\*{{{\*\/
-/\/\* │ MESSAGE                                                 O_LOG1_MESSAGE │ \*\/
-/
-
-:SaveSigns
-}}}*/

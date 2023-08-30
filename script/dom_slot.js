@@ -8,7 +8,7 @@
 /* exported dom_slot, DOM_SLOT_JS_TAG */
 
 const DOM_SLOT_JS_ID        = "dom_slot_js";
-const DOM_SLOT_JS_TAG       = DOM_SLOT_JS_ID  +" (230707:22h:13)";
+const DOM_SLOT_JS_TAG       = DOM_SLOT_JS_ID  +" (230820:21h:10)";
 /*}}}*/
 let dom_slot    = (function() {
 "use strict";
@@ -332,8 +332,8 @@ let get_next_populated_slot = function(slot)
 /* EXPORT */
 /*{{{*/
 return { name : "dom_slot"
-    , logging : (state) => DOM_SLOT_LOG = t_store.setItem("DOM_SLOT_LOG",state)
-    , tagging : (state) => DOM_SLOT_TAG = t_store.setItem("DOM_SLOT_TAG",state)
+    , logging : (state) => DOM_SLOT_LOG = t_store.t_store_set_state("DOM_SLOT_LOG",state)
+    , tagging : (state) => DOM_SLOT_TAG = t_store.t_store_set_state("DOM_SLOT_TAG",state)
     , t_slot_IMPORT
 
     /* PATTERN */

@@ -22,7 +22,7 @@
 */
 
 const DOM_HIDE_JS_ID        = "dom_hide_js";
-const DOM_HIDE_JS_TAG       = DOM_HIDE_JS_ID  +" (230707:14h:57)"; /* eslint-disable-line no-unused-vars */
+const DOM_HIDE_JS_TAG       = DOM_HIDE_JS_ID  +" (230820:21h:09)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_hide    = (function() {
 "use strict";
@@ -1634,8 +1634,8 @@ t_log.console_dir("MASK",      node.node_mask);
 /* EXPORT */
 /*{{{*/
 return { name    : "dom_hide"
-    ,    logging : (state) => DOM_HIDE_LOG = t_store.setItem("DOM_HIDE_LOG",state)
-    ,    tagging : (state) => DOM_HIDE_TAG = t_store.setItem("DOM_HIDE_TAG",state)
+    ,    logging : (state) => DOM_HIDE_LOG = t_store.t_store_set_state("DOM_HIDE_LOG",state)
+    ,    tagging : (state) => DOM_HIDE_TAG = t_store.t_store_set_state("DOM_HIDE_TAG",state)
     ,    t_hide_IMPORT
 
     /* DOM_HIDE1_SELECT */

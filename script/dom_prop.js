@@ -12,7 +12,7 @@
 /* eslint-enable  no-redeclare */
 
 const DOM_PROP_JS_ID        = "dom_prop_js";
-const DOM_PROP_JS_TAG       = DOM_PROP_JS_ID    +" (230707:15h:06)";
+const DOM_PROP_JS_TAG       = DOM_PROP_JS_ID    +" (230820:21h:09)";
 
 /*}}}*/
 let dom_prop    = (function() {
@@ -83,8 +83,8 @@ let t_prop_IMPORT  = function(log_this)
 /*}}}*/
     prop_INTERN();
     /* MODULE LOGGING TAGGING {{{*/
-    DOM_PROP_LOG = DOM_PROP_LOG || dom_store.getItem("DOM_PROP_LOG");
-    DOM_PROP_TAG = DOM_PROP_TAG || dom_store.getItem("DOM_PROP_TAG");
+    DOM_PROP_LOG = DOM_PROP_LOG || dom_store.t_store_getItem("DOM_PROP_LOG");
+    DOM_PROP_TAG = DOM_PROP_TAG || dom_store.t_store_getItem("DOM_PROP_TAG");
 
     /*}}}*/
 if(log_this) log("%c 08 prop", lbH+lf8);
@@ -447,8 +447,8 @@ if( log_this) prop.log(caller);
 /* EXPORT */
 /*{{{*/
 return { name : "dom_prop"
-    , logging : (state) => DOM_PROP_LOG = t_store.setItem("DOM_PROP_LOG",state)
-    , tagging : (state) => DOM_PROP_TAG = t_store.setItem("DOM_PROP_TAG",state)
+    , logging : (state) => DOM_PROP_LOG = t_store.t_store_set_state("DOM_PROP_LOG",state)
+    , tagging : (state) => DOM_PROP_TAG = t_store.t_store_set_state("DOM_PROP_TAG",state)
     , t_prop_IMPORT
 
     , init          : prop_init

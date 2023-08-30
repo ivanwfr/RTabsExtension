@@ -1,5 +1,7 @@
 
-#dom_tools_css_tag  { content: "dom_tools_css (230627:15h:57)"; }
+#dom_tools_css_tag  { content: "dom_tools_css (230816:16h:05) XXX"; }
+
+:host { all: initial; }
 
 /* flag {{{*/
 .flag, .flag.checked {
@@ -5099,64 +5101,64 @@ padding    : 5px             !important;
 
 
 
-.sticky          .sticky_fix         { transform        : translate( 1em, -0.2em); }
-.sticky.point_EE .sticky_fix         { transform        : translate(-1em, -0.2em); }
-.sticky.point_NE .sticky_fix         { transform        : translate(-1em, -0.2em); }
-.sticky.point_NW .sticky_fix         { transform        : translate( 1em, -0.2em); }
-.sticky.point_SE .sticky_fix         { transform        : translate(-1em, -0.2em); }
-.sticky.point_SW .sticky_fix         { transform        : translate( 1em, -0.2em); }
-.sticky.point_WW .sticky_fix         { transform        : translate( 1em, -0.2em); }
+.sticky          .sticky_fix        { transform        : translate( 1em, -0.2em); }
+.sticky.point_EE .sticky_fix        { transform        : translate(-1em, -0.2em); }
+.sticky.point_NE .sticky_fix        { transform        : translate(-1em, -0.2em); }
+.sticky.point_NW .sticky_fix        { transform        : translate( 1em, -0.2em); }
+.sticky.point_SE .sticky_fix        { transform        : translate(-1em, -0.2em); }
+.sticky.point_SW .sticky_fix        { transform        : translate( 1em, -0.2em); }
+.sticky.point_WW .sticky_fix        { transform        : translate( 1em, -0.2em); }
 
-.sticky          .sticky_pen         { transform        : translate( 2em, -0.2em); }
-.sticky.point_EE .sticky_pen         { transform        : translate(-2em, -0.2em); }
-.sticky.point_NE .sticky_pen         { transform        : translate(-2em, -0.2em); }
-.sticky.point_NW .sticky_pen         { transform        : translate( 2em, -0.2em); }
-.sticky.point_SE .sticky_pen         { transform        : translate(-2em, -0.2em); }
-.sticky.point_SW .sticky_pen         { transform        : translate( 2em, -0.2em); }
-.sticky.point_WW .sticky_pen         { transform        : translate( 2em, -0.2em); }
+.sticky          .sticky_pen        { transform        : translate( 2em, -0.2em); }
+.sticky.point_EE .sticky_pen        { transform        : translate(-2em, -0.2em); }
+.sticky.point_NE .sticky_pen        { transform        : translate(-2em, -0.2em); }
+.sticky.point_NW .sticky_pen        { transform        : translate( 2em, -0.2em); }
+.sticky.point_SE .sticky_pen        { transform        : translate(-2em, -0.2em); }
+.sticky.point_SW .sticky_pen        { transform        : translate( 2em, -0.2em); }
+.sticky.point_WW .sticky_pen        { transform        : translate( 2em, -0.2em); }
 
-.sticky          .sticky_refont      { transform        : translate( 0.2em, 0.0em); }
-.sticky.point_EE .sticky_refont      { transform        : translate(-0.2em,-0.0em); }
-.sticky.point_NE .sticky_refont      { transform        : translate(-0.2em, 0.0em); }
-.sticky.point_NW .sticky_refont      { transform        : translate( 0.2em, 0.0em); }
-.sticky.point_SE .sticky_refont      { transform        : translate(-0.2em, 0.0em); }
-.sticky.point_SW .sticky_refont      { transform        : translate( 0.2em,-0.0em); }
-.sticky.point_WW .sticky_refont      { transform        : translate( 0.2em,-0.0em); }
+.sticky          .sticky_refont     { transform        : translate( 0.2em, 0.0em); }
+.sticky.point_EE .sticky_refont     { transform        : translate(-0.2em,-0.0em); }
+.sticky.point_NE .sticky_refont     { transform        : translate(-0.2em, 0.0em); }
+.sticky.point_NW .sticky_refont     { transform        : translate( 0.2em, 0.0em); }
+.sticky.point_SE .sticky_refont     { transform        : translate(-0.2em, 0.0em); }
+.sticky.point_SW .sticky_refont     { transform        : translate( 0.2em,-0.0em); }
+.sticky.point_WW .sticky_refont     { transform        : translate( 0.2em,-0.0em); }
 
-.sticky                      { transform        : rotate(   0   ); }
-.sticky.point_EE             { transform        : rotate(   0   ); }
-.sticky.point_NE             { transform        : rotate( -45deg); }
-.sticky.point_NW             { transform        : rotate(-135deg); }
-.sticky.point_SE             { transform        : rotate(  45deg); }
-.sticky.point_SW             { transform        : rotate( 135deg); }
-.sticky.point_WW             { transform        : rotate(-180deg); }
-
-
+.sticky                             { transform        : rotate(   0   ); }
+.sticky.point_EE                    { transform        : rotate(   0   ); }
+.sticky.point_NE                    { transform        : rotate( -45deg); }
+.sticky.point_NW                    { transform        : rotate(-135deg); }
+.sticky.point_SE                    { transform        : rotate(  45deg); }
+.sticky.point_SW                    { transform        : rotate( 135deg); }
+.sticky.point_WW                    { transform        : rotate(-180deg); }
 
 
-.flipped                     { transform        : rotate(180deg); display:inline-block; }
+
+
+.flipped                            { transform        : rotate(180deg); display:inline-block; }
 
 /*}}}*/
 /* width height {{{*/
-.sticky                               { width : 128px; height : 72px; }
+.sticky                             { width : 128px; height : 72px; }
 
 
 
 
 
 
-.sticky          .sticky_hand_mov     {  width :  32px; height : 32px; }
-.sticky          .sticky_fix          {  width :   1em; height :  1em; }
-.sticky          .sticky_pen          {  width :   2em; height :  1em; }
-.sticky          .sticky_refont       {  width :  100%; height :  1em; }
+.sticky          .sticky_hand_mov   {  width :  32px; height : 32px; }
+.sticky          .sticky_fix        {  width :   1em; height :  1em; }
+.sticky          .sticky_pen        {  width :   2em; height :  1em; }
+.sticky          .sticky_refont     {  width :  100%; height :  1em; }
 
 /*{{{
-                 .sticky_msg_edit *   {  width     : max-content !important; }
+                 .sticky_msg_edit * {  width     : max-content !important; }
 }}}*/
 
-.sticky_ring     .sticky_fix          {  width : 66px !important; height : 66px !important; }
-.sticky_ring     .sticky_pen          {  width : 66px !important; height : 66px !important; }
-.sticky_ring     .sticky_refont       {  width : 66px !important; height : 66px !important; }
+.sticky_ring     .sticky_fix        {  width : 66px !important; height : 66px !important; }
+.sticky_ring     .sticky_pen        {  width : 66px !important; height : 66px !important; }
+.sticky_ring     .sticky_refont     {  width : 66px !important; height : 66px !important; }
 
 
 /*}}}*/

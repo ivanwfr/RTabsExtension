@@ -18,7 +18,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_SHARE_JS_ID       = "dom_share_js";
-const DOM_SHARE_JS_TAG      = DOM_SHARE_JS_ID   +" (230707:22h:12)";
+const DOM_SHARE_JS_TAG      = DOM_SHARE_JS_ID   +" (230820:22h:06)";
 /*}}}*/
 let dom_share   = (function() {
 "use strict";
@@ -909,7 +909,7 @@ if( log_this) {
     }
 
     for(let i = 0; i < removed_items_key_array.length; ++i)
-        t_store.delItem( removed_items_key_array[i] );
+        t_store.t_store_delItem( removed_items_key_array[i] );
 
     /*}}}*/
     /* SYNC  PATTERN AND STICKY {{{*/
@@ -1218,8 +1218,8 @@ if( log_this) log_key_val_group(caller, { data_hostname , data_page_pfx });
 /* EXPORT */
 /*{{{*/
 return { name : "dom_share"
-    , logging : (state) => DOM_SHARE_LOG = t_store.setItem("DOM_SHARE_LOG",state)
-    , tagging : (state) => DOM_SHARE_TAG = t_store.setItem("DOM_SHARE_TAG",state)
+    , logging : (state) => DOM_SHARE_LOG = t_store.t_store_set_state("DOM_SHARE_LOG",state)
+    , tagging : (state) => DOM_SHARE_TAG = t_store.t_store_set_state("DOM_SHARE_TAG",state)
     , t_share_IMPORT
 
     , t_share1_EXPORT

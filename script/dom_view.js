@@ -20,7 +20,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_VIEW_JS_ID        = "dom_view_js";
-const DOM_VIEW_JS_TAG       = DOM_VIEW_JS_ID  +" (230707:16h:45)";
+const DOM_VIEW_JS_TAG       = DOM_VIEW_JS_ID  +" (230820:21h:11)";
 /*}}}*/
 let dom_view    = (function() {
 "use strict";
@@ -883,8 +883,8 @@ let t_view7_clr_panel_capped_from_xy = function(panel)
 /* EXPORT */
 /*{{{*/
 return { name : "dom_view"
-    , logging : (state) => DOM_VIEW_LOG = t_store.setItem("DOM_VIEW_LOG",state)
-    , tagging : (state) => DOM_VIEW_TAG = t_store.setItem("DOM_VIEW_TAG",state)
+    , logging : (state) => DOM_VIEW_LOG = t_store.t_store_set_state("DOM_VIEW_LOG",state)
+    , tagging : (state) => DOM_VIEW_TAG = t_store.t_store_set_state("DOM_VIEW_TAG",state)
     , t_view_IMPORT
 
     , t_view1_is_el_in_viewport

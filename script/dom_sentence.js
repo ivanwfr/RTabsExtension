@@ -23,7 +23,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230707:21h:45)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230820:21h:14)";
 /*}}}*/
 let dom_sentence            = (function() {
 "use strict";
@@ -50,8 +50,8 @@ let t_sentence_IMPORT  = function(_log_this,import_num)
 
     /*}}}*/
     /* MODULE LOGGING TAGGING {{{*/
-    DOM_SENTENCE_LOG = DOM_SENTENCE_LOG || t_store.getItem("DOM_SENTENCE_LOG");
-    DOM_SENTENCE_TAG = DOM_SENTENCE_TAG || t_store.getItem("DOM_SENTENCE_TAG");
+    DOM_SENTENCE_LOG = DOM_SENTENCE_LOG || t_store.t_store_getItem("DOM_SENTENCE_LOG");
+    DOM_SENTENCE_TAG = DOM_SENTENCE_TAG || t_store.t_store_getItem("DOM_SENTENCE_TAG");
 
     /*}}}*/
     /* t_util {{{*/
@@ -107,10 +107,10 @@ let   sentence_INTERN   = function()
     /* lfX {{{*/
     else if((typeof dom_log != "undefined") && dom_log.lfX)
     {
+        lbC = dom_log.lbC;
         lbH = dom_log.lbH;
         lbL = dom_log.lbL;
         lbR = dom_log.lbR;
-        lbC = dom_log.lbC;
         lfX = dom_log.lfX;
         [ lf0 ,lf1 ,lf2 ,lf3 ,lf4 ,lf5 ,lf6 ,lf7 ,lf8 ,lf9 ] = lfX;
     }
@@ -198,14 +198,14 @@ let log_this = _log_this || LOG_MAP.S2_SELECT;
             || t_util.get_el_parent_with_tag  (el, "TABLE"          )    /*        cell collection  */
 
         /* GLOSSARY */
-        /*  || t_util.get_el_parent_with_tag  (el,  "DT"         ) */ /* single cell Term        */
-        /*  || t_util.get_el_parent_with_tag  (el,  "DD"         ) */ /* single cell Description */
-        /*  || t_util.get_el_parent_with_tag  (el, "DL"          ) */ /*        cell collection  .. https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl */
+        /*  || t_util.get_el_parent_with_tag  (el,  "DT"            ) */ /* single cell Term        */
+        /*  || t_util.get_el_parent_with_tag  (el,  "DD"            ) */ /* single cell Description */
+        /*  || t_util.get_el_parent_with_tag  (el, "DL"             ) */ /*        cell collection  .. https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl */
 
         /* COMPOSITION */
-            || t_util.get_el_parent_with_tag  (el, "BLOCKQUOTE"      )
-            || t_util.get_el_parent_with_tag  (el, "DIR"             )
-            || t_util.get_el_parent_with_tag  (el, "DIV"             )
+            || t_util.get_el_parent_with_tag  (el, "BLOCKQUOTE"     )
+            || t_util.get_el_parent_with_tag  (el, "DIR"            )
+            || t_util.get_el_parent_with_tag  (el, "DIV"            )
 
         /* DETAILS */
         /*  || t_util.get_el_parent_with_tag  (el,  "SUMMARY"       ) */
@@ -399,13 +399,13 @@ if( log_this && e) log("%c type=["+e.type+"] e.target.id=["+e.target.id+"]", lbH
     /*}}}*/
     /* SYNC SENTENCE COLORS {{{*/
     if((typeof dom_prop) != "undefined") theme_dark = dom_prop.get        ("theme_dark");
-    else                                 theme_dark = t_store.getItem("theme_dark");
+    else                                 theme_dark = t_store.t_store_getItem("theme_dark");
 
     /*}}}*/
     /* SYNC SCROLL_SMOOTH {{{*/
 /*
     if((typeof dom_prop) != "undefined") scroll_smooth = dom_prop.get   ("scroll_smooth");
-    else                                 scroll_smooth = t_store.getItem("scroll_smooth");
+    else                                 scroll_smooth = t_store.t_store_getItem("scroll_smooth");
 */
     document.getElementsByTagName("HTML")[0].style.scrollBehavior
         = scroll_smooth
@@ -1248,7 +1248,7 @@ let t_SENTENCE_onresize = function(e=window.event)
 /*_ t_SENTENCE_set_theme_dark {{{*/
 let t_SENTENCE_set_theme_dark = function(state)
 {
-    t_store.setItem("theme_dark", state);
+    t_store.t_store_set_state("theme_dark", state);
 };
 /*}}}*/
 /*_ t_SENTENCE_get_theme_dark {{{*/
@@ -1303,7 +1303,7 @@ console.dir(e);
         theme_dark = !theme_dark;
 
         /* apply */
-        t_store.setItem("theme_dark", theme_dark);
+        t_store.t_store_set_value("theme_dark", theme_dark);
 
         /* save */
         if((typeof dom_prop) != "undefined") dom_prop.set("theme_dark", theme_dark);
@@ -1402,8 +1402,8 @@ let get_parent_chain = function(el) /* eslint-disable-line no-unused-vars */
 
 /* ➔ EXPORT {{{*/
 return { name : "dom_sentence"
-    ,    logging : (state) => DOM_SENTENCE_LOG = t_store.setItem("DOM_SENTENCE_LOG",state)
-    ,    tagging : (state) => DOM_SENTENCE_TAG = t_store.setItem("DOM_SENTENCE_TAG",state)
+    ,    logging : (state) => DOM_SENTENCE_LOG = t_store.t_store_set_state("DOM_SENTENCE_LOG",state)
+    ,    tagging : (state) => DOM_SENTENCE_TAG = t_store.t_store_set_state("DOM_SENTENCE_TAG",state)
     ,    t_sentence_IMPORT
     ,    CSS_SENTENCE_CONTAINER
 

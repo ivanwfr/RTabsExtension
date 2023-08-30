@@ -25,7 +25,7 @@
 /* exported dom_util */
 
 const DOM_UTIL_JS_ID        = "dom_util";
-const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (230707:19h:52)";  /* eslint-disable-line no-unused-vars */
+const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (230826:21h:51)";  /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_util    = (function() {
 "use strict";
@@ -95,8 +95,8 @@ let t_util_IMPORT  = function(log_this)
 /*}}}*/
     util_INTERN();
     /* MODULE LOGGING TAGGING {{{*/
-    DOM_UTIL_LOG = DOM_UTIL_LOG || dom_store.getItem("DOM_UTIL_LOG");
-    DOM_UTIL_TAG = DOM_UTIL_TAG || dom_store.getItem("DOM_UTIL_TAG");
+    DOM_UTIL_LOG = DOM_UTIL_LOG || dom_store.t_store_getItem("DOM_UTIL_LOG");
+    DOM_UTIL_TAG = DOM_UTIL_TAG || dom_store.t_store_getItem("DOM_UTIL_TAG");
 
     /*}}}*/
 if(log_this) log("%c 07 util", lbH+lf7);
@@ -896,7 +896,24 @@ let log_this = DOM_UTIL_TAG || DOM_UTIL_LOG || LOG_MAP.EV0_LISTEN;
         let attribute_name    =  ALL_EVENT_ATTRIBUTES[i];
 
         let el_array          =  Array.from( document.querySelectorAll("["+attribute_name+"]") );
-if(!removed_count && el_array.length) log("%c REMOVING EVENT LISTENERS:", lb7);
+
+        /* body style and title {{{*/
+        if(!removed_count && el_array.length)
+        {
+            document.body.style.border
+                = "16px dashed black";
+
+            document.body.title
+                = t_data.SYMBOL_WARNING
+                + "PAGE FREEZED"
+                + t_data.SYMBOL_WARNING
+                + LF+" ● All event listeners"
+                + LF+" ● have  been  removed"
+            ;
+
+            log("%c REMOVING EVENT LISTENERS:", lb7);
+        }
+        /*}}}*/
 
         el_array.forEach((el) => {
 if(log_this) log("["+attribute_name+"] .. "+get_id_or_node_path_tail(el));
@@ -4096,6 +4113,13 @@ let get_url_domain = function(url)
     return  domain.replace(regex_DOMAIN, "$1") || parseURL(url).scheme+"://";
 };
 /*}}}*/
+/*    get_url_path {{{*/
+const regexp_PATH  = new RegExp("\\?.*$", "");
+const get_url_path = function(url)
+{
+    return  url.replace(regexp_PATH, "");
+};
+/*}}}*/
 /*  parseURL {{{*/
 const regexp_URL = new RegExp("^([^:]+):\\/\\/(?:([^@]+)@)?([^\\/:]*)?(?::([\\d]+))?(?:(\\/[^#]*)(?:#(.*))?)?$", "i");
 /*_________________ SEPARATOR:_________^__^__^__________^________________^________________^_________^________^______*/
@@ -4480,8 +4504,8 @@ let log_el_methodNames = function(_obj,_filter_str)
 /* EXPORT */
 /*{{{*/
 return { name : "dom_util"
-    , logging : (state) => DOM_UTIL_LOG = t_store.setItem("DOM_UTIL_LOG", state)
-    , tagging : (state) => DOM_UTIL_TAG = t_store.setItem("DOM_UTIL_TAG", state)
+    , logging : (state) => DOM_UTIL_LOG = t_store.t_store_set_state("DOM_UTIL_LOG", state)
+    , tagging : (state) => DOM_UTIL_TAG = t_store.t_store_set_state("DOM_UTIL_TAG", state)
     , t_util_IMPORT
 
     /* DOM */
@@ -4735,6 +4759,7 @@ return { name : "dom_util"
     /*}}}*/
     /* URL {{{*/
     , get_url_domain
+    , get_url_path
     , parseURL
 
     /*}}}*/

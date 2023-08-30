@@ -17,7 +17,7 @@
 /* eslint-enable  no-redeclare              */
 
 const DOM_LOG_JS_ID         = "dom_log_js";
-const DOM_LOG_JS_TAG        = DOM_LOG_JS_ID  +" (230707:19h:35)";
+const DOM_LOG_JS_TAG        = DOM_LOG_JS_ID  +" (230820:21h:51)";
 /*}}}*/
 let dom_log     = (function() {
 "use strict";
@@ -86,8 +86,8 @@ let t_log_IMPORT  = function(log_this)
 /*}}}*/
     log_INTERN();
     /* MODULE LOGGING TAGGING {{{*/
-    DOM_LOG_LOG = DOM_LOG_LOG || dom_store.getItem("DOM_LOG_LOG");
-    DOM_LOG_TAG = DOM_LOG_TAG || dom_store.getItem("DOM_LOG_TAG");
+    DOM_LOG_LOG = DOM_LOG_LOG || dom_store.t_store_getItem("DOM_LOG_LOG");
+    DOM_LOG_TAG = DOM_LOG_TAG || dom_store.t_store_getItem("DOM_LOG_TAG");
 
     /*}}}*/
 if(log_this) log("%c 06 log", lbH+lf6);
@@ -221,16 +221,18 @@ const lbL  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:
 const lbR  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0 1ex   0   0; padding:0 .5em 0 .5em; border-radius:  0 1em 1em   0; background:linear-gradient(to  right, #333 0%           ,#544 100%);";
 const lbC  = "font-weight:900; line-height:1.5em; border:1px solid gray; margin:   0   0   0   0; padding:0 .5em 0 .5em; border-radius:  0   0   0   0;";
 
-const lb1  = "background-color:#964B00; color:black;";
-const lb2  = "background-color:#FF0000; color:black;";
-const lb3  = "background-color:#FFA500; color:black;";
-const lb4  = "background-color:#FFFF00; color:black;";
-const lb5  = "background-color:#9ACD32; color:black;";
-const lb6  = "background-color:#6495ED; color:black;";
-const lb7  = "background-color:#EE82EE; color:black;";
-const lb8  = "background-color:#A0A0A0; color:black;";
-const lb9  = "background-color:#FFFFFF; color:black;";
-const lb0  = "background-color:#000000; color:gray;";
+/*const lmL  =  "margin-left: 5em;";*//* TODO: patch with $APROJECTS/Chrome_Web_Store/RTabsExtension/javascript/log.js */
+
+const lb1  = "background:#964B00; color:black; padding:0 0.5em;";
+const lb2  = "background:#FF0000; color:black; padding:0 0.5em;";
+const lb3  = "background:#FFA500; color:black; padding:0 0.5em;";
+const lb4  = "background:#FFFF00; color:black; padding:0 0.5em;";
+const lb5  = "background:#9ACD32; color:black; padding:0 0.5em;";
+const lb6  = "background:#6495ED; color:black; padding:0 0.5em;";
+const lb7  = "background:#EE82EE; color:black; padding:0 0.5em;";
+const lb8  = "background:#A0A0A0; color:black; padding:0 0.5em;";
+const lb9  = "background:#FFFFFF; color:black; padding:0 0.5em;";
+const lb0  = "background:#000000; color:gray ; padding:0 0.5em;";
 const lbX = [ lb0 ,lb1 ,lb2 ,lb3 ,lb4 ,lb5 ,lb6 ,lb7 ,lb8 ,lb9 ];
 
 const lf1  = "color:#964B00;";
@@ -243,12 +245,17 @@ const lf7  = "color:#EE82EE;";
 const lf8  = "color:#A0A0A0;";
 const lf9  = "color:#FFFFFF;";
 const lf0  = "color:#707070; text-shadow:#000 2px 2px 1px;"; /* offset-x offset-y blur-radius */
-const lfX = [ lf0 ,lf1 ,lf2 ,lf3 ,lf4 ,lf5 ,lf6 ,lf7 ,lf8 ,lf9 ];
+const lfX  = [ lf0 ,lf1 ,lf2 ,lf3 ,lf4 ,lf5 ,lf6 ,lf7 ,lf8 ,lf9 ];
 
 const dom_log_CSS
     = {   LOG_BG_CSS : { lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX }
         , LOG_FG_CSS : { lf0, lf1, lf2, lf3, lf4, lf5, lf6, lf7, lf8, lf9, lfX }
         , LOG_XX_CSS : { lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb           }
+/*{{{
+/\vlbA|lbB|lbC|lbF|lbH|lbL|lbR|lbS|lbb/
+:grep -l '(lbA\|lbB\|lbC\|lbF\|lbH\|lbL\|lbR\|lbS\|lbb).*LOG_'
+:grep -l '\.lbH'
+}}}*/
     };
 /*}}}*/
 /*➔ dom_log_CHAR {{{*/
@@ -588,6 +595,7 @@ const dom_LOG_MAP
     };
 /*}}}*/
 
+/* TODO: patch with $APROJECTS/Chrome_Web_Store/RTabsExtension/javascript/log.js */
 /*➔ log_key_val {{{*/
 /*{{{*/
 const LF_HEAD = LF+"    ";
@@ -1443,8 +1451,8 @@ const dom_log_transcript
 /* EXPORT */
 /*{{{*/
 return { name : "dom_log"
-    , logging : (state) => DOM_LOG_LOG = t_store.setItem("DOM_LOG_LOG",state)
-    , tagging : (state) => DOM_LOG_TAG = t_store.setItem("DOM_LOG_TAG",state)
+    , logging : (state) => DOM_LOG_LOG = t_store.t_store_set_state("DOM_LOG_LOG",state)
+    , tagging : (state) => DOM_LOG_TAG = t_store.t_store_set_state("DOM_LOG_TAG",state)
     , t_log_IMPORT
 
     /* MODULES */

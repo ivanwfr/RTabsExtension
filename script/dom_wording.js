@@ -9,7 +9,7 @@
 /* eslint-disable no-return-assign */
 
 const DOM_WORDING_JS_ID     = 'dom_wording_js';
-const DOM_WORDING_JS_TAG    = DOM_WORDING_JS_ID +' (230707:16h:46)';
+const DOM_WORDING_JS_TAG    = DOM_WORDING_JS_ID +' (230820:21h:11)';
 /*}}}*/
 let dom_wording = (function() {
 "use strict";
@@ -440,8 +440,8 @@ console.dir(e);
 /* EXPORT */
 /*{{{*/
 return { name : "dom_wording"
-    , logging : (state) => DOM_WORDING_LOG = t_store.setItem("DOM_WORDING_LOG",state)
-    , tagging : (state) => DOM_WORDING_TAG = t_store.setItem("DOM_WORDING_TAG",state)
+    , logging : (state) => DOM_WORDING_LOG = t_store.t_store_set_state("DOM_WORDING_LOG",state)
+    , tagging : (state) => DOM_WORDING_TAG = t_store.t_store_set_state("DOM_WORDING_TAG",state)
     , t_wording_IMPORT
 
     , t_wording_cycle

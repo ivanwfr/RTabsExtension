@@ -9,7 +9,7 @@
 /* exported DOM_STORE_JS_TAG */
 
 const DOM_STORE_JS_ID       = "dom_store_js";
-const DOM_STORE_JS_TAG      = DOM_STORE_JS_ID   +" (230707:22h:16)";
+const DOM_STORE_JS_TAG      = DOM_STORE_JS_ID   +" (230820:23h:08)";
 /*}}}*/
 let dom_store   = (function() {
 "use strict";
@@ -262,11 +262,43 @@ let t_store_getItem = function(key, site_or_page)
     let item
         = (site_or_page == "page") ? localStorage_getItem( t_store_get_page_pfx()+"."+key)
         : (site_or_page == "site") ? localStorage_getItem( t_store_get_site_pfx()+"."+key)
-        :                            localStorage_getItem( store_get_site_or_page_pfx_for_key( key )+"."+key)
+        :                            localStorage_getItem(   store_get_site_or_page_pfx_for_key( key )+"."+key)
     ;
 /*{{{
     let lfs = store_isa_site_or_page_key(key) ? lf5 : lf7;
 logXXX("t_store_getItem %c "+(store_isa_site_or_page_key(key) ? "PAGE" : "SITE")+" %c"+key+" %c"+ item
+    ,                 lbH+lfs                                                    ,lbH+lf4  ,lbH+lfs)
+}}}*/
+    return item;
+};
+/*}}}*/
+/*➔ t_store_setItem {{{*/
+let t_store_setItem = function(key, val, site_or_page)
+{
+    let item
+        = (site_or_page == "page") ? localStorage_setItem( t_store_get_page_pfx()                   +"."+key, val)
+        : (site_or_page == "site") ? localStorage_setItem( t_store_get_site_pfx()                   +"."+key, val)
+        :                            localStorage_setItem(   store_get_site_or_page_pfx_for_key(key)+"."+key, val)
+    ;
+/*{{{
+    let lfs = store_isa_site_or_page_key(key) ? lf5 : lf7;
+logXXX("t_store_setItem %c "+(store_isa_site_or_page_key(key) ? "PAGE" : "SITE")+" %c"+key+" %c"+ item
+    ,                 lbH+lfs                                                    ,lbH+lf4  ,lbH+lfs)
+}}}*/
+    return item;
+};
+/*}}}*/
+/*➔ t_store_delItem {{{*/
+let t_store_delItem = function(key, val, site_or_page)
+{
+    let item
+        = (site_or_page == "page") ? localStorage_delItem( t_store_get_page_pfx()                   +"."+key, val)
+        : (site_or_page == "site") ? localStorage_delItem( t_store_get_site_pfx()                   +"."+key, val)
+        :                            localStorage_delItem(   store_get_site_or_page_pfx_for_key(key)+"."+key, val)
+    ;
+/*{{{
+    let lfs = store_isa_site_or_page_key(key) ? lf5 : lf7;
+logXXX("t_store_delItem %c "+(store_isa_site_or_page_key(key) ? "PAGE" : "SITE")+" %c"+key+" %c"+ item
     ,                 lbH+lfs                                                    ,lbH+lf4  ,lbH+lfs)
 }}}*/
     return item;
@@ -756,27 +788,28 @@ let store_key_tail = function(k)
 /* EXPORT */
 /*{{{*/
 return { name : "dom_store"
-    , logging : (state) => DOM_STORE_LOG = t_store.setItem("DOM_STORE_LOG",state)
-    , tagging : (state) => DOM_STORE_TAG = t_store.setItem("DOM_STORE_TAG",state)
+    , logging : (state) => DOM_STORE_LOG = t_store.t_store_set_state("DOM_STORE_LOG",state)
+    , tagging : (state) => DOM_STORE_TAG = t_store.t_store_set_state("DOM_STORE_TAG",state)
     , t_store_IMPORT
 
     , SITE_URL_TEMPLATE
 
-    /* STORE */
-    , setItem : localStorage_setItem
-    , getItem : localStorage_getItem
-    , delItem : localStorage_delItem
-
-    /* SET */
-    , t_store_set_state
-    , t_store_set_value
-
     /* GET */
     , t_store_getBool
     , t_store_getItem
-    , t_store_parseXY
+
+    /* SET */
+    , t_store_setItem
+    , t_store_set_state
+    , t_store_set_value
+
+    /* DEL */
+    , t_store_delItem
+
+    /* UTIL */
     , t_store_has_some_page_keys
     , t_store_log_site_and_page
+    , t_store_parseXY
 
     /* SCOPE [PAGE] [SITE] */
     , t_store_add_page_key

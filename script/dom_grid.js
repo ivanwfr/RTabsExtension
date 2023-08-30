@@ -13,7 +13,7 @@
 /* eslint-disable no-warning-comments */
 
 const DOM_GRID_JS_ID        = "dom_grid_js";
-const DOM_GRID_JS_TAG       = DOM_GRID_JS_ID    +" (230707:14h:53)";
+const DOM_GRID_JS_TAG       = DOM_GRID_JS_ID    +" (230820:21h:09)";
 /*}}}*/
 let dom_grid    = (function() {
 "use strict";
@@ -997,8 +997,8 @@ let grid_getElement = function(id)
 /* EXPORT */
 /*{{{*/
 return { name : "dom_grid"
-    , logging : (state) => DOM_GRID_LOG = t_store.setItem("DOM_GRID_LOG",state)
-    , tagging : (state) => DOM_GRID_TAG = t_store.setItem("DOM_GRID_TAG",state)
+    , logging : (state) => DOM_GRID_LOG = t_store.t_store_set_state("DOM_GRID_LOG",state)
+    , tagging : (state) => DOM_GRID_TAG = t_store.t_store_set_state("DOM_GRID_TAG",state)
     ,    t_grid_IMPORT
 
     ,    t_grid_IS_ON_GRID

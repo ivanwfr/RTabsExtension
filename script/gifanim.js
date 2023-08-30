@@ -12,7 +12,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_GIFANIM_JS_ID     = "dom_gifanim_js";
-const DOM_GIFANIM_JS_TAG    =  DOM_GIFANIM_JS_ID+" (230519:19h:24)";
+const DOM_GIFANIM_JS_TAG    =  DOM_GIFANIM_JS_ID+" (230809:15h:37)";
 /*}}}*/
 /*{{{*/
 let LOG_THROTTLE_IMG_ONLOAD_DELAY = 2000;
@@ -803,6 +803,7 @@ if(log_this) log("%c on2_window_onload_GifAnim_init", lbb+lbH+lf2);
     let myGifAnim = new GifAnim();
     myGifAnim.gifAnim1_init();
 
+console.warn("● setting youtube_player.src ● may issue Permissions-Policy warning message ●");
     let youtube_player = document.getElementById("youtube_player");
     youtube_player.src = youtube_player.src || youtube_player.getAttribute("data-src");
 

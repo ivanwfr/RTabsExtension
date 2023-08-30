@@ -15,7 +15,7 @@
 /* exported dom_details, DOM_DETAILS_JS_TAG */
 
 const DOM_DETAILS_JS_ID        = "dom_details_js";
-const DOM_DETAILS_JS_TAG       = DOM_DETAILS_JS_ID  +" (230707:20h:54)";  /* eslint-disable-line no-unused-vars */
+const DOM_DETAILS_JS_TAG       = DOM_DETAILS_JS_ID  +" (230820:22h:06)";  /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_details         = (function() {
 "use strict";
@@ -40,8 +40,8 @@ let t_details_IMPORT    = function(_log_this,import_num)
 
     /*}}}*/
     /* MODULE LOGGING TAGGING {{{*/
-    DOM_DETAILS_LOG     = DOM_DETAILS_LOG   || t_store.getItem("DOM_DETAILS_LOG");
-    DOM_DETAILS_TAG     = DOM_DETAILS_TAG   || t_store.getItem("DOM_DETAILS_TAG");
+    DOM_DETAILS_LOG     = DOM_DETAILS_LOG   || t_store.t_store_getItem("DOM_DETAILS_LOG");
+    DOM_DETAILS_TAG     = DOM_DETAILS_TAG   || t_store.t_store_getItem("DOM_DETAILS_TAG");
 
     /*}}}*/
     details_INTERN();
@@ -154,7 +154,7 @@ if(log_this) logBIG(caller, 8);
     /* ➔ RESTORE ONLOAD [open] STATE {{{*/
     let        details_array = document.querySelectorAll("DETAILS");
     Array.from(details_array).forEach( (el) => {
-        let    open = el.id && t_store.getItem(el.id+"_open");
+        let    open = el.id && t_store.t_store_getItem(el.id+"_open");
         el    .open = open;
 if(log_this && open) log("➔ "+el.id+(el.open ? " OPENED":" NOT OPENED"));
     });
@@ -216,8 +216,8 @@ if( log_this) log(details_radio_el ? ("...details_radio_el.checked=["+details_ra
 /*}}}*/
     /* STORAGE {{{*/
     if(details_el.id) {
-        if(details_el.open) t_store.setItem(details_el.id+"_open", "true");
-        else                t_store.delItem(details_el.id+"_open"        );
+        if(details_el.open) t_store.t_store_set_value(details_el.id+"_open", "true");
+        else                t_store.t_store_delItem  (details_el.id+"_open"        );
 
         /* [COOKIE] */
 /*{{{
@@ -326,8 +326,8 @@ log("...["+ details_sibling.tagName + (details_sibling.id ? (" "+details_sibling
 
             if(details_sibling.id)
             {
-                if(details_sibling.open) t_store.setItem(details_sibling.id+"_open", "true");
-                else                     t_store.delItem(details_sibling.id+"_open"        );
+                if(details_sibling.open) t_store.t_store_set_value(details_sibling.id+"_open", "true");
+                else                     t_store.t_store_delItem  (details_sibling.id+"_open"        );
 /*{{{
                 del_cookie(          details_sibling.id+"_open");
 }}}*/
@@ -358,7 +358,7 @@ if( log_this) logBIG(caller+"("+get_id_or_tag_and_className(parent_details)+") .
         if(child_details.id)
         {
             let key = child_details.id+"_open";
-            t_store.delItem( key );
+            t_store.t_store_delItem( key );
         }
     });
 };
@@ -404,8 +404,8 @@ if(DOM_DETAILS_LOG) log("details_radio_toggle("+e.target.tagName+")");
 
     /*}}}*/
     /* STORE NEW STATE {{{*/
-    if(state) t_store.setItem(DETAILS_RADIO_ID, "true");
-    else      t_store.delItem(DETAILS_RADIO_ID        );
+    if(state) t_store.t_store_set_value(DETAILS_RADIO_ID, "true");
+    else      t_store.t_store_delItem  (DETAILS_RADIO_ID        );
 
     /*}}}*/
 /*{{{*/
@@ -435,7 +435,7 @@ if(DOM_DETAILS_LOG) log("details_radio_set_from_localStorage");
     if(!input) return;
     /*}}}*/
     /* GET STORED STATE {{{*/
-    let state = t_store.getItem( DETAILS_RADIO_ID );
+    let state = t_store.t_store_getItem( DETAILS_RADIO_ID );
 
     /*}}}*/
     /* SHOW STATE {{{*/
@@ -670,8 +670,8 @@ if(DOM_DETAILS_LOG) logBIG("restore_details_ontoggle_listener",6);
 /* EXPORT */
 /*{{{*/
 return { name    : "dom_details"
-    ,    logging : (state) => DOM_DETAILS_LOG = t_store.setItem("DOM_DETAILS_LOG", state)
-    ,    tagging : (state) => DOM_DETAILS_TAG = t_store.setItem("DOM_DETAILS_TAG", state)
+    ,    logging : (state) => DOM_DETAILS_LOG = t_store.t_store_set_state("DOM_DETAILS_LOG", state)
+    ,    tagging : (state) => DOM_DETAILS_TAG = t_store.t_store_set_state("DOM_DETAILS_TAG", state)
     ,    t_details_IMPORT
 
     /*   --------------------------------- CALLERS:       */

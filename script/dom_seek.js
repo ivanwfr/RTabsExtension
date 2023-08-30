@@ -24,7 +24,7 @@
 */
 
 const DOM_SEEK_JS_ID        = "dom_seek_js";
-const DOM_SEEK_JS_TAG       = DOM_SEEK_JS_ID    +" (230707:20h:06)";
+const DOM_SEEK_JS_TAG       = DOM_SEEK_JS_ID    +" (230820:21h:10)";
 /*}}}*/
 let dom_seek    = (function() {
 "use strict";
@@ -2747,8 +2747,8 @@ logBIG(caller+"(FROM ["+from_slot+" "+from_num+"] TO ["+to_slot+" "+to_num+"]", 
 /* EXPORT */
 /*{{{*/
 return { name : "dom_seek"
-    , logging : (state) => DOM_SEEK_LOG = t_store.setItem("DOM_SEEK_LOG",state)
-    , tagging : (state) => DOM_SEEK_TAG = t_store.setItem("DOM_SEEK_TAG",state)
+    , logging : (state) => DOM_SEEK_LOG = t_store.t_store_set_state("DOM_SEEK_LOG",state)
+    , tagging : (state) => DOM_SEEK_TAG = t_store.t_store_set_state("DOM_SEEK_TAG",state)
     , t_seek_IMPORT
 
     ,    CSS_SEEK0_ONDOC

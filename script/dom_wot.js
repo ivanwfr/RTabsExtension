@@ -15,7 +15,7 @@
 /* exported dom_wot, DOM_WOT_JS_TAG */
 
 const DOM_WOT_JS_ID      = "dom_wot_js";
-const DOM_WOT_JS_TAG     = DOM_WOT_JS_ID  +" (230707:20h:03)";
+const DOM_WOT_JS_TAG     = DOM_WOT_JS_ID  +" (230820:21h:11)";
 /*}}}*/
 let dom_wot             = (function() {
 "use strict";
@@ -29,8 +29,8 @@ let   DOM_WOT_TAG       = false;
 let t_wot_IMPORT        = function(_log_this,import_num)
 {
     /* MODULE LOGGING TAGGING {{{*/
-    DOM_WOT_LOG         = DOM_WOT_LOG       || dom_store.getItem("DOM_WOT_LOG");
-    DOM_WOT_TAG         = DOM_WOT_TAG       || dom_store.getItem("DOM_WOT_TAG");
+    DOM_WOT_LOG         = DOM_WOT_LOG       || dom_store.t_store_getItem("DOM_WOT_LOG");
+    DOM_WOT_TAG         = DOM_WOT_TAG       || dom_store.t_store_getItem("DOM_WOT_TAG");
 
     /*}}}*/
     wot_INTERN();
@@ -404,7 +404,7 @@ let t_WOT_FOLD_EL = function(el)
 /*_ get_lines_innerHTML {{{*/
 let get_lines_innerHTML = function(lines, line_num) /* eslint-disable-line complexity */
 {
-    let with_line_num = t_store.getItem( LINES_WOT ); /* prop may not be ready yet */
+    let with_line_num = t_store.t_store_getItem( LINES_WOT ); /* prop may not be ready yet */
 
     let innerHTML = "";
     let    l = 0;
@@ -531,7 +531,7 @@ if(h_line.includes("#region")) log(h_line);
 /*_ get_FOLD_EL_innerHTML {{{*/
 let get_FOLD_EL_innerHTML = function(lines,line_num) /* eslint-disable-line complexity */
 {
-    let with_line_num     = t_store.getItem( LINES_WOT ); /* prop may not be ready yet */
+    let with_line_num     = t_store.t_store_getItem( LINES_WOT ); /* prop may not be ready yet */
     let innerHTML         = "";
     let    l              = 0;
     while((l < lines.length))
@@ -689,8 +689,8 @@ if(        log_this
 /* ➔ EXPORT */
 /*{{{*/
 return { name    : "dom_wot"
-    ,    logging : (state) => DOM_WOT_LOG = t_store.setItem("DOM_WOT_LOG", state)
-    ,    tagging : (state) => DOM_WOT_TAG = t_store.setItem("DOM_WOT_TAG", state)
+    ,    logging : (state) => DOM_WOT_LOG = t_store.t_store_set_state("DOM_WOT_LOG", state)
+    ,    tagging : (state) => DOM_WOT_TAG = t_store.t_store_set_state("DOM_WOT_TAG", state)
     ,    t_wot_IMPORT
 
     ,    t_WOT_FOLD_EL

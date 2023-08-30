@@ -13,18 +13,14 @@
 
 /* globals  log_js                    */
 /* globals  background_js             */
-/* globals  bg_event                  */
 /* globals  bg_store                  */
 /* exported bg_tabs                   */
 
 /* eslint-enable  no-redeclare        */
 
 const BG_TABS_SCRIPT_ID  = "bg_tabs";
-const BG_TABS_SCRIPT_TAG =  BG_TABS_SCRIPT_ID +" (230712:21h:43)"; /* eslint-disable-line no-unused-vars */
+const BG_TABS_SCRIPT_TAG =  BG_TABS_SCRIPT_ID +" (230830:22h:00)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
-let bg_tabs  = (function() {
-"use strict";
-
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ TABS                                                          B_LOG7_TABS │
 // └───────────────────────────────────────────────────────────────────────────┘
@@ -35,12 +31,19 @@ let bg_tabs  = (function() {
 :e javascript/bg_event.js
 :e javascript/bg_header.js
 :e javascript/bg_message.js
-:e javascript/bg_page.js
+:e javascript/bg_page.js        " DEBUG_OPERA
 :e javascript/bg_settings.js
 :e javascript/bg_store.js
-"● javascript/bg_tabs.js
+"● javascript/bg_tabs.js        " DEBUG_OPERA
+:e javascript/options.js
+:e javascript/popup.js
+:e javascript/worker.js
 /* └─────────────────────────────┘*/
+let bg_tabs  = (function() {
+"use strict";
+const DEBUG_OPERA = false;
 /* IMPORT {{{*/
+/* modules {{{*/
 /*_ log_js {{{*/
 /* eslint-disable no-unused-vars */
 let   LF;
@@ -58,8 +61,10 @@ let   SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTIO
 let   ellipsis
     , get_callers
     , log
+    , log_console_clear
     , log_object
     , mPadEnd
+    , li
 ;
 
 /*}}}*/
@@ -70,26 +75,25 @@ let log_TAB_HANDLERS_CALLS;
 let log_get_caller_tag_FOR_key_val_caller;
 
 /*}}}*/
-//______________ bg_content
-//______________ bg_csp
-/*_ bg_event {{{*/
-let bg_event_get_last_activated_tabId;
-
-/*}}}*/
-//______________ bg_header
-//______________ bg_message
-//______________ bg_page
-//______________ bg_settings
+//_______________ bg_content
+//_______________ bg_csp
+//_______________ bg_event
+//_______________ bg_header
+//_______________ bg_message
+//_______________ bg_page
+//_______________ bg_settings
 /*_ bg_store {{{*/
 let bg_store_GET_url_key;
 let bg_store_SET_url_settings;
+let bg_store_SAVE_items;
 
 /*}}}*/
-//______________ bg_tabs
-/*_ bg_tabs_import {{{*/
-let bg_tabs_import = function()
+//_______________ bg_tabs
+/*}}}*/
+/*  _import {{{*/
+let _import = function()
 {
-    /*_ log_js {{{*/
+    let modules=[ log_js        ]; /*{{{*/
     LF                                                               = log_js.LF;
 
     [ lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX        ] = log_js.LOG_BG_ARR;
@@ -102,99 +106,240 @@ let bg_tabs_import = function()
 
     [ SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP] = log_js.LOG_SYM;
 
-    ellipsis                            = log_js.ellipsis;
-    get_callers                         = log_js.get_callers;
-    log                                 = log_js.log;
-    log_object                          = log_js.log_object;
-    mPadEnd                             = log_js.mPadEnd;
+    li                = log_js.log_modulename_key_val;
+    ellipsis          = log_js.ellipsis;            li("log_js","ellipsis",ellipsis);
+    get_callers       = log_js.get_callers;         li("log_js","get_callers",get_callers);
+    log               = log_js.log;                 li("log_js","log",log);
+    log_console_clear = log_js.log_console_clear;   li("log_js", "log_console_clear", log_console_clear);
+    log_object        = log_js.log_object;          li("log_js","log_object",log_object);
+    mPadEnd           = log_js.mPadEnd;             li("log_js","mPadEnd",mPadEnd);
 
     /*}}}*/
-    /*_ background_js {{{*/
-    LOG_MAP                               = background_js.LOG_MAP;
+    modules.push( background_js ); /*{{{*/
+    LOG_MAP                               = background_js.LOG_MAP;                               li("background_js","LOG_MAP",LOG_MAP);
 
-    log_TAB_HANDLERS_CALLS                = background_js.log_TAB_HANDLERS_CALLS;
-    log_get_caller_tag_FOR_key_val_caller = background_js.log_get_caller_tag_FOR_key_val_caller;
-
-    /*}}}*/
-    //___________ bg_content
-    //___________ bg_csp
-    //_ bg_event {{{*/
-    bg_event_get_last_activated_tabId = bg_event.bg_event_get_last_activated_tabId;
+    log_TAB_HANDLERS_CALLS                = background_js.log_TAB_HANDLERS_CALLS;                li("background_js","log_TAB_HANDLERS_CALLS",log_TAB_HANDLERS_CALLS);
+    log_get_caller_tag_FOR_key_val_caller = background_js.log_get_caller_tag_FOR_key_val_caller; li("background_js","log_get_caller_tag_FOR_key_val_caller",log_get_caller_tag_FOR_key_val_caller);
 
     /*}}}*/
-    //___________ bg_header
-    //___________ bg_message
-    //___________ bg_page
-    //___________ bg_settings
-    /*_ bg_store {{{*/
-    bg_store_GET_url_key      = bg_store.bg_store_GET_url_key;
-    bg_store_SET_url_settings = bg_store.bg_store_SET_url_settings;
+    //_______________________ bg_content
+    //_______________________ bg_csp
+    //_______________________ bg_event
+    //_______________________ bg_header
+    //_______________________ bg_message
+    //_______________________ bg_page
+    //_______________________ bg_settings
+    modules.push( bg_store      ); /*{{{*/
+    bg_store_GET_url_key                  = bg_store.bg_store_GET_url_key;                       li("bg_store","bg_store_GET_url_key",bg_store_GET_url_key);
+    bg_store_SET_url_settings             = bg_store.bg_store_SET_url_settings;                  li("bg_store","bg_store_SET_url_settings",bg_store_SET_url_settings);
+    bg_store_SAVE_items                   = bg_store.bg_store_SAVE_items;                        li("bg_store","bg_store_SAVE_items",bg_store_SAVE_items);
 
     /*}}}*/
-    //___________ bg_tabs
-//................._import    log_js    background_js    bg_content    bg_csp    bg_event    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
-log("%c     bg_tabs_import %c log_js %c background_js %c bg_content %c ______ %c ________ %c _________ %c bg_message %c _______ %c ____________%c bg_store %c "+"●●●● "
-    ,lbH+lb0              ,lf0      ,lf1             ,lf2          ,lf3      ,lf4        ,lf5         ,lf6          ,lf7       ,lf8           ,lf9        ,lf0+lbH     );
+    //_______________________ bg_tabs
+    log_js.log_import(bg_tabs      , modules);
 };
 /*}}}*/
-    setTimeout(bg_tabs_import,0);
+    setTimeout(_import,0);
 /*}}}*/
+/* LOGGING {{{*/
+let BG_TABS_JS_LOG  = false;
+/*_ logging {{{*/
+let logging = function(state)
+{
+    if(state != undefined) {            BG_TABS_JS_LOG = state;
+        if(state) bg_store_SAVE_items({ BG_TABS_JS_LOG           });
+        else      bg_store_SAVE_items({ BG_TABS_JS_LOG: undefined});
+    } return                            BG_TABS_JS_LOG;
+};
+/*}}}*/
+/*_ log_this_get {{{*/
+let log_this_get = function(_caller)
+{
+    switch(_caller) {
+
+    case "bg_tabs_get_last_activated_tabId" : return BG_TABS_JS_LOG || LOG_MAP.B_LOG7_TABS;
+    case "bg_tabs_set_last_activated_tabId" : return BG_TABS_JS_LOG || LOG_MAP.B_LOG7_TABS;
+
+    case "bg_tabs_del_tabId"                : return BG_TABS_JS_LOG || LOG_MAP.B_LOG7_TABS || LOG_MAP.B_LOG8_STORE;
+    case "bg_tabs_del_tabId_key"            : return BG_TABS_JS_LOG || LOG_MAP.B_LOG7_TABS || LOG_MAP.B_LOG8_STORE;
+    case "bg_tabs_get_tabId_key"            : return BG_TABS_JS_LOG || LOG_MAP.B_LOG7_TABS || LOG_MAP.B_LOG8_STORE;
+    case "bg_tabs_set_tabId_key_items"      : return BG_TABS_JS_LOG || LOG_MAP.B_LOG7_TABS;
+    case "bg_tabs_set_tabId_key_val"        : return BG_TABS_JS_LOG || LOG_MAP.B_LOG7_TABS;
+    case "bg_tabs_url_settings"             : return BG_TABS_JS_LOG || LOG_MAP.B_LOG7_TABS;
+    case "bg_tabs_url_settings_from_cached" : return BG_TABS_JS_LOG || LOG_MAP.B_LOG7_TABS;
+    case "bg_tabs_url_settings_from_others" : return BG_TABS_JS_LOG || LOG_MAP.B_LOG7_TABS;
+
+    }
 
 /*{{{*/
+    log("%c"+BG_TABS_SCRIPT_ID  +"%c log_this_get: missing switch %c"+_caller
+        ,lbH+lb2                 ,lbL+lf2                        ,lbR+lf4    );
+
+    return false;
+/*}}}*/
+};
+/*}}}*/
+/*}}}*/
+/* DATA {{{*/
 let TABS_MAP       = new Map();
 let tabs_Map_cache = new Map();
 
+const PL = "\u25C0"; // < LEFT
+const PR = "\u25B6"; // > RIGHT
+const Dt = "\u25BC"; // V DOWN
 /*}}}*/
 
-/*➔ bg_tabs_log_TABS_MAP {{{*/
-let bg_tabs_log_TABS_MAP = function()
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ LAST ACTIVATED TABID                              ● last_activated_tabId  │
+// └───────────────────────────────────────────────────────────────────────────┘
+/*{{{*/
+let              last_activated_tabId;
+/*}}}*/
+/*➔ bg_tabs_set_last_activated_tabId {{{*/
+let bg_tabs_set_last_activated_tabId = function(tabId )
 {
-    /* SESSION WORKING TABS */
-    if( TABS_MAP.size )
+                 last_activated_tabId = tabId;
+};
+/*}}}*/
+/*➔ bg_tabs_get_last_activated_tabId {{{*/
+let bg_tabs_get_last_activated_tabId = function()
+{
+    return       last_activated_tabId;
+};
+
+/*}}}*/
+
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ GET ● URL_TAB_KEY_VAL                                                     │
+// └───────────────────────────────────────────────────────────────────────────┘
+/*➔ bg_tabs_url_settings {{{*/
+let bg_tabs_url_settings = function(url)
+{
+    return  bg_tabs_url_settings_from_others( url )
+        ||  bg_tabs_url_settings_from_cached( url )
+    ;
+};
+/*}}}*/
+/*_ bg_tabs_url_settings_from_cached {{{*/
+let bg_tabs_url_settings_from_cached = function(url)
+{
+/*{{{*/
+let   caller = "bg_tabs_url_settings_from_cached";
+let log_this = log_this_get(caller);
+let log_more = log_this && LOG_MAP.B_LOG0_MORE;
+
+/*}}}*/
+if( log_more) log("%c bg_tabs_url_settings_from_cached", lbF+lf9);
+    /* cached entry for the specified url {{{*/
+    let storage_url_key = bg_store_GET_url_key( url );
+    let item            = tabs_Map_cache.get( storage_url_key );
+
+    /*}}}*/
+    /* with settings loaded {{{*/
+    if( item && !item.get_settings_answered)
+        item = null;
+
+    if( item )
+        item.from = "FROM CACHED TAB WITH SAME URL";
+    /*}}}*/
+if( log_more && item) log_object(SAL+" "+item.from, item, lbF+lbH+lf8);
+    return item;
+};
+/*}}}*/
+/*_ bg_tabs_url_settings_from_others {{{*/
+/* {{{
+:!start explorer "https://www.w3schools.com/jsref/jsref_some.asp"
+:!start explorer "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys"
+}}}*/
+let bg_tabs_url_settings_from_others = function(url)
+{
+/*{{{*/
+let   caller = "bg_tabs_url_settings_from_others";
+let log_this = log_this_get(caller);
+let log_more = log_this && LOG_MAP.B_LOG0_MORE;
+
+/*}}}*/
+if( log_more) log("%c bg_tabs_url_settings_from_others", lbF+lf9);
+    /* current entry for the specified url {{{*/
+    let item = null; let tabId;
+    for(let key of TABS_MAP.keys())
     {
-        log_js.log_group("%c"+SAR   +"%c TABS_MAP "+SAD
-                         ,lbb+lbH+lb0, lbH+lf3       );
-
-        for(let [key , value] of TABS_MAP      ) log_object(mPadEnd(   "tab "+key,24)+" url="+ellipsis(value.url,80), value,     lbX[value.start ? 5:8], true);
-        for(let [key , value] of tabs_Map_cache) log_object(mPadEnd("cached "+key,24)+" url="+ellipsis(value.url,80), value, lb0+lfX[value.start ? 5:8], true);
-
-        console.groupEnd();
+        let value = TABS_MAP.get(key);
+        if( value.url == url) {
+            item  = value;
+            tabId = key;
+            break;
+        }
     }
 
-    /* LAST ACTIVATED TAB */
-    bg_tabs_log_LAST_ACTIVATED_TAB();
+    /*}}}*/
+    /* with settings loaded {{{*/
+    if( item && !item.get_settings_answered)
+        item = null;
 
-    log_TAB_HANDLERS_CALLS();
+    if( item )
+        item.from = "FROM OTHER TAB WITH SAME URL [TAB #"+tabId+"]";
+    /*}}}*/
+if( log_more && item) log_object(SAL+" "+item.from, item, lbF+lbH+lf8);
+    return item;
 };
 /*}}}*/
-/*➔ bg_tabs_log_LAST_ACTIVATED_TAB {{{*/
-let bg_tabs_log_LAST_ACTIVATED_TAB = function(label,callers=get_callers())
+
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ GET ● TAB_KEY_VAL                                                         │
+// └───────────────────────────────────────────────────────────────────────────┘
+/*➔ bg_tabs_get_tabId_key {{{*/
+/*{{{*/
+let last_key;
+let last_val;
+
+/*}}}*/
+let bg_tabs_get_tabId_key     = function(tabId, key, val="" )
 {
+/*{{{*/
+let   caller = "bg_tabs_get_tabId_key";
+let log_this = DEBUG_OPERA || log_this_get(caller);
+let log_more = DEBUG_OPERA || log_this && LOG_MAP.B_LOG0_MORE;
 
-    /* [lastError] */
-    if(chrome.runtime.lastError)
-        log_object("chrome.runtime.lastError", chrome.runtime.lastError, lbB+lb2, false);
+/*}}}*/
+    if(!tabId) throw new Error("tabId "+tabId);
+    let tab_items = TABS_MAP.get( tabId ) ;
 
-    /* [last_activated_tabId] */
-    let last_activated_tabId = bg_event_get_last_activated_tabId();
-    if(!last_activated_tabId )
-        return;
+    if( tab_items ) val =  tab_items[key] || val;
 
-    let tab_items = TABS_MAP.get(last_activated_tabId);
-    if( tab_items ) {
-        tab_items.callers = callers;
-        log_object((label || "tab "+last_activated_tabId)+" → LAST ACTIVATED", tab_items, lfX[tab_items.start ? 5:8]);
+/*{{{*/
+if( log_more)
+{
+    if(    (key=="url" || key=="ohr" || key=="ohr_saved")
+       && ((key != last_key) || (val != last_val))
+    ) {
+        last_key   = key;
+        last_val   = val;
+
+        log("%c"         +PL+"%c"+caller+"("+tabId+") %c "+key+"%c "+val
+            ,lbb+lbH+lf5     ,lbL                    ,lbC      ,lbR+lfX[val ? 4:6]);
     }
-
+} /*}}}*/
+        return val;
+};
+/*}}}*/
+/*➔ bg_tabs_get_tabId {{{*/
+let bg_tabs_get_tabId     = function(tabId)
+{
+    if(!tabId) throw new Error("tabId "+tabId);
+    return          TABS_MAP.get( tabId );
 };
 /*}}}*/
 
-/*➔ bg_tabs_set_tabId_key_items .. B_LOG7_TABS {{{*/
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ SET ● TAB_KEY_VAL                                                         │
+// └───────────────────────────────────────────────────────────────────────────┘
+/*➔ bg_tabs_set_tabId_key_items {{{*/
 let bg_tabs_set_tabId_key_items = function(tabId, key, items)
 {
 /*{{{*/
-let   caller = "bg_tabs_set_tabId_key_items"; /* eslint-disable-line no-unused-vars */
-let log_this = LOG_MAP.B_LOG7_TABS;
+let   caller = "bg_tabs_set_tabId_key_items";
+let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 /*}}}*/
@@ -254,13 +399,25 @@ if(log_more) log("%c"+SBS+" %c SET TAB"+tabId+"%c"+key+" %c"+itemKey_val
 };
 /*}}}*/
 /*➔ bg_tabs_set_tabId_key_val {{{*/
-let bg_tabs_set_tabId_key_val = function(tabId, key, val    )
+let bg_tabs_set_tabId_key_val = function(tabId,key,val)
 {
+/*{{{*/
+let   caller = "bg_tabs_set_tabId_key_val";
+let log_this = DEBUG_OPERA || log_this_get(caller);
+let log_more = DEBUG_OPERA || log_this && LOG_MAP.B_LOG0_MORE;
+
+if(log_more) {
+    if(key=="url" || key=="ohr" || key=="ohr_saved")
+        log("%c"         +PR+"%c"+caller+"("+tabId+") %c "+key+"%c "+val          +"%c"+get_callers()
+            ,lbb+lbH+lb4     ,lbL                    ,lbC      ,lbR+lfX[val ? 4:6] ,lb0              );
+}
+/*}}}*/
     if(val == undefined) {
         bg_tabs_del_tabId_key(tabId, key);
         return undefined;
     }
     let tab_items;
+    if(!tabId) throw new Error("tabId "+tabId);
     if( tab_items = TABS_MAP.get(tabId))  tab_items[key] = val  ; /* add or update an existing key-entry */
     else            TABS_MAP.set(tabId,           {[key] : val}); /* ......... or create a new key-entry */
 
@@ -270,34 +427,22 @@ let bg_tabs_set_tabId_key_val = function(tabId, key, val    )
 };
 /*}}}*/
 
-/*➔ bg_tabs_get_tabId_key {{{*/
-let bg_tabs_get_tabId_key     = function(tabId, key, val="" )
-{
-    let tab_items = TABS_MAP.get( tabId ) ;
-
-    if( tab_items ) return tab_items[key] || val;
-    else            return                   val;
-};
-/*}}}*/
-/*➔ bg_tabs_get_tabId {{{*/
-let bg_tabs_get_tabId     = function(tabId)
-{
-    return          TABS_MAP.get( tabId );
-};
-/*}}}*/
-
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ DEL ● TAB_KEY_VAL                                                         │
+// └───────────────────────────────────────────────────────────────────────────┘
 /*➔ bg_tabs_del_tabId_key {{{*/
 let bg_tabs_del_tabId_key     = function(tabId, key         )
 {
 /*{{{*/
 let   caller = "bg_tabs_del_tabId_key";
-let log_this = LOG_MAP.B_LOG7_TABS || LOG_MAP.B_LOG8_STORE;
+let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 if( log_more) log("%c "+caller+"%c TAB #"+tabId+"%c"+key
                   ,lbL+lf2    ,lbC+lf2         ,lbR+lf2);
 /*}}}*/
     let tab_items;
+    if(!tabId) throw new Error("tabId "+tabId);
     if( tab_items = TABS_MAP.get(tabId))
     {
         delete tab_items[key];
@@ -307,20 +452,38 @@ if( log_more) log("%c "+caller+"%c TAB #"+tabId+"%c"+key
     }
 };
 /*}}}*/
-/*➔ bg_tabs_del_tabId .. B_LOG7_TABS {{{*/
-let bg_tabs_del_tabId = function(tabId = bg_event_get_last_activated_tabId())
+/*➔ bg_tabs_del_tabId {{{*/
+let bg_tabs_del_tabId = function(tabId = bg_tabs_get_last_activated_tabId())
 {
 /*{{{*/
 let   caller = "bg_tabs_del_tabId";
-let log_this = LOG_MAP.B_LOG7_TABS || LOG_MAP.B_LOG8_STORE;
-let log_more = log_this && LOG_MAP.B_LOG0_MORE;
+let log_this = DEBUG_OPERA || log_this_get(caller);
+let log_more = DEBUG_OPERA || log_this && LOG_MAP.B_LOG0_MORE;
 
 if( log_more) log("%c"+SYMBOL_CONSTRUCTION +"%c "+caller+"%c TAB #"+tabId
                   ,lbL+lf2                  ,lbC+lf2    ,lbR+lf2        );
+
 /*}}}*/
 
-    let item = TABS_MAP.get   (tabId);
-    /*......*/ TABS_MAP.delete(tabId);
+    if(!tabId) throw new Error("tabId "+tabId);
+    let item = TABS_MAP.get       (  tabId    );
+
+/* ┌──────────────────────────────────────────────────────────────────┐ */
+/* │ keep [ohr] on removed tabs:          see javascript/bg_header.js │ */
+/* │ ● Opera won't request the current page from the server on reload │ */
+/* └──────────────────────────────────────────────────────────────────┘ */
+    let ohr = item.ohr || item.ohr_saved;
+    let url = item.url;
+/*{{{*/
+if( log_more)
+    log("%c"         +Dt+"%c"+caller+"("+tabId+") %c "+url+"%c[ohr "     +ohr+"]%c"+get_callers()
+        ,lbb+lbH+lb2+lf9 ,lbL                    ,lb0      ,lb0                ,lb0              );
+
+/*}}}*/
+
+    /*......*/ TABS_MAP.delete(       tabId   );
+
+    if(ohr) bg_tabs_set_tabId_key_val(tabId, "ohr_saved", ohr);
 
     let caller_tag      = log_get_caller_tag_FOR_key_val_caller(caller, undefined, log_js.get_callers_bot());
     bg_store_SET_url_settings(tabId,caller_tag);
@@ -334,86 +497,85 @@ if( log_more) log_object("→ INTO CACHE", item, lbH+lbF+lf2, lbH+lf2);
 };
 /*}}}*/
 
-/*➔ bg_tabs_url_settings_from_cached .. B_LOG7_TABS {{{*/
-let bg_tabs_url_settings_from_cached = function(url)
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ LOG ● TAB_KEY_VAL                                                         │
+// └───────────────────────────────────────────────────────────────────────────┘
+/*➔ bg_tabs_log_TABS_MAP {{{*/
+let bg_tabs_log_TABS_MAP = function()
 {
-/*{{{*/
-let log_this = LOG_MAP.B_LOG7_TABS;
-let log_more = log_this && LOG_MAP.B_LOG0_MORE;
-/*}}}*/
-if( log_more) log("%c bg_tabs_url_settings_from_cached", lbF+lf9);
-    /* cached entry for the specified url {{{*/
-    let storage_url_key = bg_store_GET_url_key( url );
-    let item            = tabs_Map_cache.get( storage_url_key );
-
-    /*}}}*/
-    /* with settings loaded {{{*/
-    if( item && !item.get_settings_answered)
-        item = null;
-
-    if( item )
-        item.from = "FROM CACHED TAB WITH SAME URL";
-    /*}}}*/
-if( log_more && item) log_object(SAL+" "+item.from, item, lbF+lbH+lf8);
-    return item;
-};
-/*}}}*/
-/*➔ bg_tabs_url_settings_from_others .. B_LOG7_TABS {{{*/
-/* {{{
-:!start explorer "https://www.w3schools.com/jsref/jsref_some.asp"
-:!start explorer "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys"
-}}}*/
-let bg_tabs_url_settings_from_others = function(url)
-{
-/*{{{*/
-let log_this = LOG_MAP.B_LOG7_TABS;
-let log_more = log_this && LOG_MAP.B_LOG0_MORE;
-
-/*}}}*/
-if( log_more) log("%c bg_tabs_url_settings_from_others", lbF+lf9);
-    /* current entry for the specified url {{{*/
-    let item = null; let tabId;
-    for(let key of TABS_MAP.keys())
+    /* SESSION WORKING TABS */
+    if( TABS_MAP.size )
     {
-        let value = TABS_MAP.get(key);
-        if( value.url == url) {
-            item  = value;
-            tabId = key;
-            break;
-        }
+        log_js.log_group("%c"+SAR   +"%c TABS_MAP "+SAD
+                         ,lbb+lbH+lb0, lbH+lf3       );
+
+        for(let [key , value] of TABS_MAP      ) log_object(mPadEnd(   "tab "+key,24)+" url="+ellipsis(value.url,80), value,     lbX[value.start ? 5:8], true);
+        for(let [key , value] of tabs_Map_cache) log_object(mPadEnd("cached "+key,24)+" url="+ellipsis(value.url,80), value, lb0+lfX[value.start ? 5:8], true);
+
+        console.groupEnd();
+    }
+    else {
+        log_js.log      ("%c"+SAR   +"%c TABS_MAP ● NONE YET"
+                         ,lbb+lbH+lb0, lbH+lf8               );
     }
 
-    /*}}}*/
-    /* with settings loaded {{{*/
-    if( item && !item.get_settings_answered)
-        item = null;
+    /* LAST ACTIVATED TAB */
+    bg_tabs_log_LAST_ACTIVATED_TAB();
 
-    if( item )
-        item.from = "FROM OTHER TAB WITH SAME URL [TAB #"+tabId+"]";
-    /*}}}*/
-if( log_more && item) log_object(SAL+" "+item.from, item, lbF+lbH+lf8);
-    return item;
+    log_TAB_HANDLERS_CALLS();
+};
+/*}}}*/
+/*➔ bg_tabs_log_LAST_ACTIVATED_TAB {{{*/
+let bg_tabs_log_LAST_ACTIVATED_TAB = function(label,callers=get_callers())
+{
+
+    /* [lastError] */
+    if(chrome.runtime.lastError)
+        log_object("chrome.runtime.lastError", chrome.runtime.lastError, lbB+lb2, false);
+
+    let tabId = bg_tabs_get_last_activated_tabId();
+    if(!tabId )
+        return;
+
+    let tab_items = TABS_MAP.get(tabId);
+    if( tab_items ) {
+        tab_items.callers = callers;
+        log_object((label || "tab "+tabId)+" → LAST ACTIVATED", tab_items, lfX[tab_items.start ? 5:8]);
+    }
+
 };
 /*}}}*/
 
 /*➔ EXPORT {{{*/
     return {  name : "bg_tabs"
+
+        ,             bg_tabs_get_last_activated_tabId
+        ,             bg_tabs_set_last_activated_tabId
+
+        ,             bg_tabs_url_settings
+
+        ,             bg_tabs_set_tabId_key_items
+        ,             bg_tabs_set_tabId_key_val
+
+        ,             bg_tabs_get_tabId
+        ,             bg_tabs_get_tabId_key
+
+        ,             bg_tabs_del_tabId
+        ,             bg_tabs_del_tabId_key
+
+        ,             bg_tabs_log_LAST_ACTIVATED_TAB
+        ,             bg_tabs_log_TABS_MAP
+
+        , logging
         , TABS_MAP
-
-        , bg_tabs_get_tabId
-        , bg_tabs_get_tabId_key
-
-        , bg_tabs_set_tabId_key_items
-        , bg_tabs_set_tabId_key_val
-
-        , bg_tabs_del_tabId
-        , bg_tabs_del_tabId_key
-
-        , bg_tabs_url_settings_from_cached
-        , bg_tabs_url_settings_from_others
-
-        , bg_tabs_log_LAST_ACTIVATED_TAB
-        , bg_tabs_log_TABS_MAP
     };
 /*}}}*/
 }());
+/* TODO {{ {
+ ┌────────────────────────────────────────────────────────────────────────────┐
+ │ NEED TO UNDERSTAND WHEN THE FIRST PAGE [onHeadersReceived] IS DISPATCHED:  │
+ │ ● WHEN   STARTING OPERA                                                    │
+ │ ● WHEN INSTALLING THE EXTENSION                                            │
+ │ ● WHEN   UPDATING THE EXTENSION                                            │
+ └────────────────────────────────────────────────────────────────────────────┘
+}}}*/

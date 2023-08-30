@@ -19,7 +19,7 @@
 */
 
 const DOM_IPC_JS_ID         = "dom_ipc_js";
-const DOM_IPC_JS_TAG        = DOM_IPC_JS_ID     +" (230707:15h:03)";
+const DOM_IPC_JS_TAG        = DOM_IPC_JS_ID     +" (230820:21h:09)";
 /*}}}*/
 let dom_ipc     = (function() {
 "use strict";
@@ -410,6 +410,10 @@ let ipc_contains_a_startup_message = function(ipc)
 const WAITING_FOR_STARTUP_MESSAGE = "TOOLS WAITING";/* FOR A STARTUP MESSAGE FROM EXTENSION";*/
 let t_wait_for_startup_message_from_extension = function(_caller)
 {
+/* CALLERS of [^""'']t_wait_for_startup_message_from_extension: {{{
+/^[^/]*[^""'']\<t_wait_for_startup_message_from_extension\>\s*[(=),}]
+script/dom_tools.js:24809  t_ipc_handle_start:24862:             dom_ipc.t_wait_for_startup_message_from_extension( DOM_TOOLS_JS_ID );
+}}}*/
     if(DOM_IPC_LOG) console.log("%c "+IPC_SCRIPT_ID+" %c "+WAITING_FOR_STARTUP_MESSAGE, IPC_LOG_COLOR, lbF);
 
     let ipc = { t_load : WAITING_FOR_STARTUP_MESSAGE
@@ -427,8 +431,8 @@ let t_wait_for_startup_message_from_extension = function(_caller)
 /* EXPORT */
 /*{{{*/
 return { name : "dom_ipc"
-    , logging : function(state) { return DOM_IPC_LOG = t_store.setItem("DOM_IPC_LOG",state); } /* eslint-disable-line object-shorthand */
-    , tagging : function(state) { return DOM_IPC_TAG = t_store.setItem("DOM_IPC_TAG",state); } /* eslint-disable-line object-shorthand */
+    , logging : function(state) { return DOM_IPC_LOG = t_store.t_store_set_state("DOM_IPC_LOG",state); } /* eslint-disable-line object-shorthand */
+    , tagging : function(state) { return DOM_IPC_TAG = t_store.t_store_set_state("DOM_IPC_TAG",state); } /* eslint-disable-line object-shorthand */
     , t_ipc_IMPORT
     , t_ipc_PARSE
     , t_ipc_add_MutationObserver

@@ -18,7 +18,7 @@
 */
 
 const DOM_I18N_JS_ID        = "dom_i18n_js";
-const DOM_I18N_JS_TAG       = DOM_I18N_JS_ID  +" (230707:15h:02)";
+const DOM_I18N_JS_TAG       = DOM_I18N_JS_ID  +" (230820:21h:09)";
 /*}}}*/
 let dom_i18n    = (function() {
 "use strict";
@@ -93,8 +93,8 @@ let t_i18n_IMPORT  = function(log_this)
 /*}}}*/
     util_INTERN();
     /* MODULE LOGGING TAGGING {{{*/
-    DOM_I18N_LOG = DOM_I18N_LOG || dom_store.getItem("DOM_I18N_LOG");
-    DOM_I18N_TAG = DOM_I18N_TAG || dom_store.getItem("DOM_I18N_TAG");
+    DOM_I18N_LOG = DOM_I18N_LOG || dom_store.t_store_getItem("DOM_I18N_LOG");
+    DOM_I18N_TAG = DOM_I18N_TAG || dom_store.t_store_getItem("DOM_I18N_TAG");
 
     /*}}}*/
 if(log_this) log("%c 07 util", lbH+lf7);
@@ -528,8 +528,8 @@ if(log_this) {
 /** EXPORT */
 /*{{{*/
 return { name : "dom_i18n"
-    , logging : (state) => DOM_I18N_LOG = t_store.setItem("DOM_I18N_LOG",state)
-    , tagging : (state) => DOM_I18N_TAG = t_store.setItem("DOM_I18N_TAG",state)
+    , logging : (state) => DOM_I18N_LOG = t_store.t_store_set_state("DOM_I18N_LOG",state)
+    , tagging : (state) => DOM_I18N_TAG = t_store.t_store_set_state("DOM_I18N_TAG",state)
     , t_i18n_IMPORT
 
     /* I18N  */

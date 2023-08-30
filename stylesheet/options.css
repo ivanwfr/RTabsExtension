@@ -1,5 +1,10 @@
 
-#options_css_tag  { content: "options_css (230507:17h:00)"; }
+#options_css_tag  { content: "options_css (230810:21h:05)"; }
+html {
+    min-width : fit-content;
+    min-height: fit-content;
+    overflow  : auto;
+}
 body /*{{{*/
 {
 /*
@@ -13,6 +18,8 @@ body /*{{{*/
 */
     color            : #55A;
     background       : linear-gradient(to bottom, #fff 0%, #AAA 19.5%, #000 20%, #444 20.5%, #222 32%, #888 100%);
+
+    overflow         : hidden;
 }
 /*}}}*/
 
@@ -34,7 +41,7 @@ button /*{{{*/
     margin:1em;
 }
 /*}}}*/
-#div_buttons /*{{{*/
+#BUTTONS_DIV /*{{{*/
 {
     user-select : none;
     font-weight : 900;
@@ -43,7 +50,7 @@ button /*{{{*/
 /*}}}*/
 .on_hold /*{{{*/
 {
-    transform           : scale(.5);
+    transform           : scale(.8);
     opacity             : .1;
     transition-duration : 3000ms;
     transition-property : all;
@@ -91,13 +98,11 @@ button /*{{{*/
     font-family      : monospace;
 }
 /*}}}*/
-#LOG_MAP_DIV /*{{{*/
+/* LOG_MAP_DIV {{{*/
+#LOG_MAP_DIV
 {
     user-select      : none;
     margin-top       :  1em;
-/*{{{
-    display          : none;
-}}}*/
     width            : 85em;
     height           : 30em;
     font-size        : 12px;
@@ -107,9 +112,11 @@ button /*{{{*/
     background       : linear-gradient(to bottom, #000 0%, #444 100%) !important;
 */
     background       : linear-gradient(to bottom, #444 0%, #000 20%, #444 80%, #000 100%) !important;
+
+    text-shadow      : rgba(170,255,255,0.8) 1px 1px 0px;
 }
-/*}}}*/
-#LOG_MAP_DIV>div /*{{{*/
+
+#LOG_MAP_DIV>div
 {
 /*
     display          : flex;
@@ -122,4 +129,37 @@ button /*{{{*/
     justify-content: space-evenly;
 */
 }
+
+/*}}}*/
+/* GRID ● LOG_MAP_DIV ● LOG_MAP_DIV_LEFT ● LOGGING_DIV_RIGHT {{{*/
+#LOG_MAP_DIV {
+                  display: grid;
+    grid-template-columns: 5fr 1fr; /* LOG_MAP [background_js options_js popup_js] ● logging [bg_xxx_js] */
+                 grid-gap: 0.2em;
+            align-content: space-around;
+}
+
+#LOG_MAP_DIV_LEFT       { grid-column: 1; }
+#LOGGING_DIV_RIGHT      { grid-column: 2; }
+
+#LOGGING_DIV_RIGHT .box { margin-left: 0.5em; }
+
+#LOGGING_DIV_RIGHT {
+    display              : grid;
+    grid-template-columns: min-content min-content;
+
+    font-size            :   80%;
+    margin               : 1.0em;
+    padding              : 1.5em 0.5em 0.5em 0.5em;
+/*
+    background-color     : rgba(128,128,128,0.1);
+    justify-self         : auto;
+    justify-items        : center;
+    justify-content      : space-evenly;
+*/
+ box-shadow: inset 0px 0px 2px 3px rgba(128,128,128,0.5);
+    background-color     : #202020;
+}
+#LOGGING_DIV_RIGHT:before { position: absolute; margin: -0.7em 5em; content: "logging"; }
+
 /*}}}*/

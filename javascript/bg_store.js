@@ -12,18 +12,22 @@
 /* globals  console, chrome           */
 
 /* globals  log_js                    */
+/* globals  worker_js                 */
 /* globals  background_js             */
+/* globals  bg_content                */
 /* globals  bg_csp                    */
+/* globals  bg_event                  */
+/* globals  bg_header                 */
+/* globals  bg_message                */
+/* globals  bg_page                   */
+/* globals  bg_settings               */
 /* globals  bg_tabs                   */
 /* exported bg_store                  */
 
 /* eslint-enable  no-redeclare        */
 const BG_STORE_SCRIPT_ID  = "bg_store";
-const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (230713:16h:43)"; /* eslint-disable-line no-unused-vars */
+const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (230817:18h:19)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
-let bg_store  = (function() {
-"use strict";
-
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ STORE                                                        B_LOG8_STORE │
 // └───────────────────────────────────────────────────────────────────────────┘
@@ -38,8 +42,15 @@ let bg_store  = (function() {
 :e javascript/bg_settings.js
 "● javascript/bg_store.js
 :e javascript/bg_tabs.js
+:e javascript/options.js
+:e javascript/popup.js
+:e javascript/worker.js
 /* └─────────────────────────────┘*/
+let bg_store  = (function() {
+"use strict";
+
 /* IMPORT {{{*/
+/* modules {{{*/
 /*_ log_js {{{*/
 /* eslint-disable no-unused-vars */
 let   LF;
@@ -60,6 +71,7 @@ let   get_callers
     , log_object
     , log_sep_bot
     , log_sep_top
+    , li
 ;
 
 /*}}}*/
@@ -69,9 +81,10 @@ let MANIFEST_VERSION;
 
 let b_check_manifest;
 let log_ACTIVATED;
+let log_STORAGE;
 
 /*}}}*/
-//______________ bg_content
+//_______________ bg_content
 /*_ bg_csp {{{*/
 let FILTER3_REMOVE;
 let FILTER4_CUSTOM;
@@ -80,20 +93,21 @@ let FILTER6_NONE;
 
 let bg_csp_load_filter_rules;
 /*}}}*/
-//______________ bg_event
-//______________ bg_header
-//______________ bg_message
-//______________ bg_page
-//______________ bg_settings
-//______________ bg_store
+//_______________ bg_event
+//_______________ bg_header
+//_______________ bg_message
+//_______________ bg_page
+//_______________ bg_settings
+//_______________ bg_store
 /*_ bg_tabs {{{*/
 let bg_tabs_get_tabId_key;
 
 /*}}}*/
-/*_ bg_store_import {{{*/
-let bg_store_import = function()
+/*}}}*/
+/*  _import {{{*/
+let _import = function()
 {
-    /*_ log_js {{{*/
+    let modules=[ log_js        ]; /*{{{*/
     LF                                                               = log_js.LF;
 
     [ lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX        ] = log_js.LOG_BG_ARR;
@@ -106,56 +120,87 @@ let bg_store_import = function()
 
     [ SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP] = log_js.LOG_SYM;
 
-    get_callers                         = log_js.get_callers;
-    log                                 = log_js.log;
-    log_caller                          = log_js.log_caller;
-    log_object                          = log_js.log_object;
-    log_sep_bot                         = log_js.log_sep_bot;
-    log_sep_top                         = log_js.log_sep_top;
+    li                               = log_js.log_modulename_key_val;
+    get_callers                      = log_js.get_callers;              li("log_js","get_callers",get_callers);
+    log                              = log_js.log;                      li("log_js","log",log);
+    log_caller                       = log_js.log_caller;               li("log_js","log_caller",log_caller);
+    log_object                       = log_js.log_object;               li("log_js","log_object",log_object);
+    log_sep_bot                      = log_js.log_sep_bot;              li("log_js","log_sep_bot",log_sep_bot);
+    log_sep_top                      = log_js.log_sep_top;              li("log_js","log_sep_top",log_sep_top);
     /*}}}*/
-    /*_ background_js {{{*/
-    LOG_MAP                               = background_js.LOG_MAP;
-    MANIFEST_VERSION                      = background_js.MANIFEST_VERSION;
+    modules.push( background_js ); /*{{{*/
+    LOG_MAP                          = background_js.LOG_MAP;           li("background_js","LOG_MAP",LOG_MAP);
+    MANIFEST_VERSION                 = background_js.MANIFEST_VERSION;  li("background_js","MANIFEST_VERSION",MANIFEST_VERSION);
 
-    b_check_manifest                      = background_js.b_check_manifest;
-    log_ACTIVATED                         = background_js.log_ACTIVATED;
+    b_check_manifest                 = background_js.b_check_manifest;  li("background_js","b_check_manifest",b_check_manifest);
+    log_ACTIVATED                    = background_js.log_ACTIVATED;     li("background_js","log_ACTIVATED",log_ACTIVATED);
+    log_STORAGE                      = background_js.log_STORAGE;       li("background_js","log_STORAGE",log_STORAGE);
     /*}}}*/
-    //___________ bg_content
-    /*_ bg_csp {{{*/
-    FILTER3_REMOVE                   = bg_csp.FILTER3_REMOVE;
-    FILTER4_CUSTOM                   = bg_csp.FILTER4_CUSTOM;
-    FILTER5_RELAX                    = bg_csp.FILTER5_RELAX;
-    FILTER6_NONE                     = bg_csp.FILTER6_NONE;
+    //_______________________ bg_content
+    modules.push( bg_csp        ); /*{{{*/
+    FILTER3_REMOVE                   = bg_csp.FILTER3_REMOVE;           li("bg_csp","FILTER3_REMOVE",FILTER3_REMOVE);
+    FILTER4_CUSTOM                   = bg_csp.FILTER4_CUSTOM;           li("bg_csp","FILTER4_CUSTOM",FILTER4_CUSTOM);
+    FILTER5_RELAX                    = bg_csp.FILTER5_RELAX;            li("bg_csp","FILTER5_RELAX",FILTER5_RELAX);
+    FILTER6_NONE                     = bg_csp.FILTER6_NONE;             li("bg_csp","FILTER6_NONE",FILTER6_NONE);
 
-    bg_csp_load_filter_rules         = bg_csp.bg_csp_load_filter_rules;
-
-    /*}}}*/
-    //___________ bg_event
-    //___________ bg_header
-    //___________ bg_message
-    //___________ bg_page
-    //___________ bg_settings
-    //___________ bg_store
-    /*_ bg_tabs {{{*/
-    bg_tabs_get_tabId_key            = bg_tabs.bg_tabs_get_tabId_key;
+    bg_csp_load_filter_rules         = bg_csp.bg_csp_load_filter_rules; li("bg_csp","bg_csp_load_filter_rules",bg_csp_load_filter_rules);
 
     /*}}}*/
-//................._import    log_js    background_js    bg_content    bg_csp    bg_event    bg_header    bg_message    bg_page    bg_settings    bg_store    bg_tabs
-log("%c    bg_store_import %c log_js %c background_js %c __________ %c bg_csp %c ________ %c _________ %c __________ %c _______ %c ____________%c "+"●●●●● %c bg_tabs "
-    ,lbH+lb9              ,lf0      ,lf1             ,lf2          ,lf3      ,lf4        ,lf5         ,lf6          ,lf7       ,lf8           ,lf9+lbH    ,lf0         );
+    //_______________________ bg_event
+    //_______________________ bg_header
+    //_______________________ bg_message
+    //_______________________ bg_page
+    //_______________________ bg_settings
+    //_______________________ bg_store
+    modules.push( bg_tabs       ); /*{{{*/
+    bg_tabs_get_tabId_key            = bg_tabs.bg_tabs_get_tabId_key;   li("bg_tabs","bg_tabs_get_tabId_key",bg_tabs_get_tabId_key);
+
+    /*}}}*/
+    log_js.log_import(bg_store     , modules);
 };
 /*}}}*/
-    setTimeout(bg_store_import,0);
+    setTimeout(_import,0);
 /*}}}*/
+/* LOGGING {{{*/
+let BG_STORE_JS_LOG  = false;
+/*_ logging {{{*/
+let logging = function(state)
+{
+    if(state != undefined) {            BG_STORE_JS_LOG = state;
+        if(state) bg_store_SAVE_items({ BG_STORE_JS_LOG           });
+        else      bg_store_SAVE_items({ BG_STORE_JS_LOG: undefined});
+    } return                            BG_STORE_JS_LOG;
+};
+/*}}}*/
+/*_ log_this_get {{{*/
+let log_this_get = function(_caller)
+{
+    switch(_caller) {
+    case "bg_store_DEL_url_settings"     : return BG_STORE_JS_LOG || LOG_MAP.B_LOG8_STORE;
+    case "bg_store_LOAD_items"           : return BG_STORE_JS_LOG || log_ACTIVATED();
+    case "bg_store_SAVE_items"           : return BG_STORE_JS_LOG || LOG_MAP.B_LOG8_STORE;
+    case "bg_store_SET_url_settings"     : return BG_STORE_JS_LOG || LOG_MAP.B_LOG8_STORE;
+    }
 
+/*{{{*/
+    log("%c"+BG_STORE_SCRIPT_ID +"%c log_this_get: missing switch %c"+_caller
+        ,lbH+lb2                 ,lbL+lf2                        ,lbR+lf4    );
+
+    return false;
+/*}}}*/
+};
+/*}}}*/
+/*}}}*/
 
 /*➔ bg_store_DEL_url_settings .. B_LOG8_STORE {{{*/
 let bg_store_DEL_url_settings = function(tabId, _caller)
 {
 /*{{{*/
 let   caller = "bg_store_DEL_url_settings";
-let log_this = LOG_MAP.B_LOG8_STORE;
+let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
+
+if(!chrome.storage) { log("%c"+SYMBOL_CONSTRUCTION+" chrome.storage is undefined in "+caller, lbb+lbH+lf1); return; }
 
 if( log_this) log("%c "+caller+"%c"+_caller, lbL+lf8, lbR+lf9);
 if( log_more) log_caller();
@@ -227,11 +272,17 @@ let bg_store_GET_url_key = function(url)
 };
 /*}}}*/
 /*➔ bg_store_LOAD_items {{{*/
+/*{{{*/
+let bg_store_LAST_ITEMS;
+
+/*}}}*/
 let bg_store_LOAD_items = function(items)
 {
-    /* LOAD LOG_MAP {{{*/
+    /* UPDATE [bg_store_LAST_ITEMS] {{{*/
+    bg_store_LAST_ITEMS = items;
 
-    log_js.log_set_type("B");
+    /*}}}*/
+    /* LOAD LOG_MAP {{{*/
 
     /*(____________.____________________!=____________)________.________________=______.________________;*/
     if(typeof items.B_LOG1_MESSAGE      != "undefined") LOG_MAP.B_LOG1_MESSAGE  = items.B_LOG1_MESSAGE  ;
@@ -250,7 +301,8 @@ let bg_store_LOAD_items = function(items)
     log_js.set_log_more( LOG_MAP.B_LOG0_MORE ) ;
 
 /*{{{*/
-let log_this = log_ACTIVATED();
+let   caller = "bg_store_LOAD_items";
+let log_this = log_this_get(caller);
 
 if( log_this) log_sep_top(BG_STORE_SCRIPT_ID+" manifest ("+MANIFEST_VERSION+") STORAGE", "LOG3_TAG");
 if( log_this) log_object("Storage items", items, lf3);
@@ -271,6 +323,20 @@ if( log_this) log_object("Storage items", items, lf3);
 /*{{{*/
 if( log_this) log_sep_bot(BG_STORE_SCRIPT_ID+" manifest ("+MANIFEST_VERSION+") STORAGE", "LOG3_TAG");
 /*}}}*/
+
+    /* logging */
+    if(typeof items.WORKER_LOG         != "undefined") worker_js        .logging( items.WORKER_LOG        );
+    if(typeof items.BACKGROUND_JS_LOG  != "undefined") background_js    .logging( items.BACKGROUND_JS_LOG );
+    if(typeof items.BG_CONTENT_JS_LOG  != "undefined") bg_content       .logging( items.BG_CONTENT_JS_LOG );
+    if(typeof items.BG_CSP_JS_LOG      != "undefined") bg_csp           .logging( items.BG_CSP_JS_LOG     );
+    if(typeof items.BG_EVENT_JS_LOG    != "undefined") bg_event         .logging( items.BG_EVENT_JS_LOG   );
+    if(typeof items.BG_HEADER_JS_LOG   != "undefined") bg_header        .logging( items.BG_HEADER_JS_LOG  );
+    if(typeof items.BG_MESSAGE_JS_LOG  != "undefined") bg_message       .logging( items.BG_MESSAGE_JS_LOG );
+    if(typeof items.BG_PAGE_JS_LOG     != "undefined") bg_page          .logging( items.BG_PAGE_JS_LOG    );
+    if(typeof items.BG_SETTINGS_JS_LOG != "undefined") bg_settings      .logging( items.BG_SETTINGS_JS_LOG);
+    if(typeof items.BG_STORE_JS_LOG    != "undefined") bg_store         .logging( items.BG_STORE_JS_LOG   );
+    if(typeof items.BG_TABS_JS_LOG     != "undefined") bg_tabs          .logging( items.BG_TABS_JS_LOG    );
+
 };
 /*}}}*/
 /*➔ bg_store_SAVE_items {{{*/
@@ -278,8 +344,10 @@ let bg_store_SAVE_items = function(items,_caller)
 {
 /*{{{*/
 let   caller = "bg_store_SAVE_items";
-let log_this =             LOG_MAP.B_LOG8_STORE;
+let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
+
+if(!chrome.storage) { log("%c"+SYMBOL_CONSTRUCTION+" chrome.storage is undefined in "+caller, lbb+lbH+lf1); return; }
 
 //  let items_tag = ellipsis(JSON.stringify(items), 70);
     let items_tag = log_js.log_json_prettify(items);
@@ -288,11 +356,25 @@ else if( log_this) log       ("%c "+caller+"%c"+items_tag+"%c"+_caller
                          ,lbL+lb3    ,lbR+lf8       ,lbH             );
 /*}}}*/
     try {
-        chrome.storage.sync.set( items );
+        /* ● DELETE SINGLE { key : undefined} */
+        let     items_single_key_removed;
+        let     items_keys         = Object.keys(items);
+        if(     items_keys.length == 1) {
+            let items_first_key    = items_keys[0];
+            let items_first_val    = items[ items_first_key ];
+            if( items_first_val   == undefined )
+            {
+                chrome.storage.sync.remove( items_first_key );
+                items_single_key_removed = true;
+            }
+        }
+        if(!items_single_key_removed)
+            chrome.storage.sync.set( items );
     }
     catch(error) {
         console.error(BG_STORE_SCRIPT_ID+" ERROR:\n"+ error);
     }
+    log_STORAGE();
 };
 /*}}}*/
 /*➔ bg_store_SET_url_settings .. B_LOG8_STORE {{{*/
@@ -306,7 +388,7 @@ let bg_store_SET_url_settings = function(tabId, _caller)
 {
 /*{{{*/
 let   caller = "bg_store_SET_url_settings";
-let log_this = LOG_MAP.B_LOG8_STORE;
+let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 if( log_more) log("%c "+caller+"%c"+_caller, lbL+lf8, lbR+lf9);
@@ -428,14 +510,14 @@ let bg_store_Object_same_values = function(o1,o2)
 
 /*➔ EXPORT {{{*/
     return {  name : "bg_store"
-
-        ,     bg_store_DEL_url_settings
-        ,     bg_store_GET_url_domain
-        ,     bg_store_GET_url_key
-        ,     bg_store_LOAD_items
-        ,     bg_store_SAVE_items
-        ,     bg_store_SET_url_settings
-
+        ,             bg_store_DEL_url_settings
+        ,             bg_store_GET_LAST_ITEMS : () => bg_store_LAST_ITEMS
+        ,             bg_store_GET_url_domain
+        ,             bg_store_GET_url_key
+        ,             bg_store_LOAD_items
+        ,             bg_store_SAVE_items
+        ,             bg_store_SET_url_settings
+        , logging
     };
 /*}}}*/
 }());
