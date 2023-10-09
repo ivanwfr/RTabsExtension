@@ -19,7 +19,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_TABS_SCRIPT_ID  = "bg_tabs";
-const BG_TABS_SCRIPT_TAG =  BG_TABS_SCRIPT_ID +" (230830:22h:00)"; /* eslint-disable-line no-unused-vars */
+const BG_TABS_SCRIPT_TAG =  BG_TABS_SCRIPT_ID +" (231007:14h:57)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ TABS                                                          B_LOG7_TABS │
@@ -190,21 +190,21 @@ const Dt = "\u25BC"; // V DOWN
 /*}}}*/
 
 // ┌───────────────────────────────────────────────────────────────────────────┐
-// │ LAST ACTIVATED TABID                              ● last_activated_tabId  │
+// │ LAST ACTIVATED TABID                               ● last_activated_tabId │
 // └───────────────────────────────────────────────────────────────────────────┘
 /*{{{*/
-let              last_activated_tabId;
+let             last_activated_tabId;
 /*}}}*/
 /*➔ bg_tabs_set_last_activated_tabId {{{*/
 let bg_tabs_set_last_activated_tabId = function(tabId )
 {
-                 last_activated_tabId = tabId;
+                last_activated_tabId = tabId;
 };
 /*}}}*/
 /*➔ bg_tabs_get_last_activated_tabId {{{*/
 let bg_tabs_get_last_activated_tabId = function()
 {
-    return       last_activated_tabId;
+    return      last_activated_tabId;
 };
 
 /*}}}*/
@@ -302,7 +302,8 @@ let log_this = DEBUG_OPERA || log_this_get(caller);
 let log_more = DEBUG_OPERA || log_this && LOG_MAP.B_LOG0_MORE;
 
 /*}}}*/
-    if(!tabId) throw new Error("tabId "+tabId);
+    if(!tabId) console.trace();
+    if(!tabId) throw new Error("tabId "+tabId+" ● "+get_callers());
     let tab_items = TABS_MAP.get( tabId ) ;
 
     if( tab_items ) val =  tab_items[key] || val;

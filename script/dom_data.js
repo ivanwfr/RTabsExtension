@@ -10,7 +10,7 @@
 */
 
 const DOM_DATA_JS_ID        = "dom_data_js";
-const DOM_DATA_JS_TAG       = DOM_DATA_JS_ID  +" (230427:13h:55)";
+const DOM_DATA_JS_TAG       = DOM_DATA_JS_ID  +" (231001:01h:55)";
 /*}}}*/
 let dom_data    = (function() {
 "use strict";
@@ -369,9 +369,9 @@ const CSS_TRAPPED               = "trapped";
 /*}}}*/
 /* PANEL ZINDEX {{{*/
 const TOOLS_MAX                = 30;
-const ZINDEX_SHADOW_HOST       = 2147483647;
+const ZINDEX_SHADOW_HOST       = "2147483647";
 /*{{{
-const ZINDEX_SHADOW_HOST       = 100;
+const ZINDEX_SHADOW_HOST       = "100";
 }}}*/
 const FONT_SIZE_SHADOW_HOST    = "12px";
 
@@ -742,6 +742,7 @@ const DOC_TOOLS_ID            = "doc_tools";
         , SYMBOL_CLEAR_SCREEN
         , SYMBOL_CLOCKWISE_OPEN_CIRCLE
         , SYMBOL_HEAVY_BALLOT
+        , SYMBOL_SNOWFLAKE
         , SYMBOL_REPLACEMENT_CHAR
 
         , SYMBOL_PARTNERSHIP

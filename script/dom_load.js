@@ -14,7 +14,7 @@
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 const DOM_LOAD_ID    = "dom_load";
-const DOM_LOAD_TAG   =  DOM_LOAD_ID +" (230821:21h:20)";
+const DOM_LOAD_TAG   =  DOM_LOAD_ID +" (231001:02h:28)";
 /*}}}*/
 javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 "use strict";
@@ -255,7 +255,7 @@ let dom_tools_html_data = `
 let dom_host_css_data ="data:text/css,"+ escape(`
 /*INLINE{{{*/
 @charset "utf-8";
-#dom_host_css_tag   { content: "dom_host_css (230525:15h:05)"; }
+#dom_host_css_tag   { content: "dom_host_css (230928:19h:12)"; }
 
 
 .dark * { background : rgba(17,17,17,0.5); color: rgba(221,221,221,0.5); }
@@ -943,18 +943,18 @@ OL.sentence_container { display: block; }
 .sentence { white-space : normal   !important; }
 .sentence { text-align  : left     !important; }
 
-.sentence_container.fs1 , .sentence_container.fs1  * { font-size :  6px; }
-.sentence_container.fs2 , .sentence_container.fs2  * { font-size :  7px; }
-.sentence_container.fs3 , .sentence_container.fs3  * { font-size :  9px; }
-.sentence_container.fs4 , .sentence_container.fs4  * { font-size : 11px; }
-.sentence_container.fs5 , .sentence_container.fs5  * { font-size : 13px; }
-.sentence_container.fs6 , .sentence_container.fs6  * { font-size : 16px; }
-.sentence_container.fs7 , .sentence_container.fs7  * { font-size : 20px; }
-.sentence_container.fs8 , .sentence_container.fs8  * { font-size : 23px; }
-.sentence_container.fs9 , .sentence_container.fs9  * { font-size : 28px; }
-.sentence_container.fs10, .sentence_container.fs10 * { font-size : 34px; }
-.sentence_container.fs11, .sentence_container.fs11 * { font-size : 41px; }
-.sentence_container.fs12, .sentence_container.fs12 * { font-size : 49px; }
+.sentence_container.fs1  *, #log_popup_div.fs1  .xpath * { font-size :  6px !important; }
+.sentence_container.fs2  *, #log_popup_div.fs2  .xpath * { font-size :  7px !important; }
+.sentence_container.fs3  *, #log_popup_div.fs3  .xpath * { font-size :  9px !important; }
+.sentence_container.fs4  *, #log_popup_div.fs4  .xpath * { font-size : 11px !important; }
+.sentence_container.fs5  *, #log_popup_div.fs5  .xpath * { font-size : 13px !important; }
+.sentence_container.fs6  *, #log_popup_div.fs6  .xpath * { font-size : 16px !important; }
+.sentence_container.fs7  *, #log_popup_div.fs7  .xpath * { font-size : 20px !important; }
+.sentence_container.fs8  *, #log_popup_div.fs8  .xpath * { font-size : 23px !important; }
+.sentence_container.fs9  *, #log_popup_div.fs9  .xpath * { font-size : 28px !important; }
+.sentence_container.fs10 *, #log_popup_div.fs10 .xpath * { font-size : 34px !important; }
+.sentence_container.fs11 *, #log_popup_div.fs11 .xpath * { font-size : 41px !important; }
+.sentence_container.fs12 *, #log_popup_div.fs12 .xpath * { font-size : 49px !important; }
 
 .sentence             { overflow         : visible      !important; }
 .sentence, .clause    { display          : block        !important; }
@@ -1068,20 +1068,21 @@ body.dark .clause     {            color : #111                      ; }
 #log_popup_div em      { border        : 1px solid white;  }
 #log_popup_div em      { box-shadow    : 1px 1px 1px #888; }
 
-#log_popup_div .xpath * { max-width     : unset  !important; }
-#log_popup_div .xpath   { font-size     : 12px   !important; }
-#log_popup_div .xpath   { white-space   : pre    !important; }
-#log_popup_div .xpath   { overflow      : auto   !important; }
-#log_popup_div .xpath   { line-height   : normal !important; }
+#log_popup_div .xpath * { max-width     :  unset; }
 
-#log_popup_div .tag    { border-radius : 0.25em 0.25em 0.25em 0.25em; }
-#log_popup_div .left   { border-radius : 0.25em 0      0      0.25em; }
-#log_popup_div .center { border-radius : 0      0      0      0     ; }
-#log_popup_div .right  { border-radius : 0      0.25em 0.25em 0     ; }
+#log_popup_div .xpath   { white-space   :    pre; }
+#log_popup_div .xpath   { overflow      :   auto; }
+#log_popup_div .xpath   { line-height   : normal; }
 
-#log_popup_div .tag    { background    : linear-gradient(to right, rgba(255,255,255,0.4), rgba(136,136,255,0.4)); }
-#log_popup_div .id     { background    : linear-gradient(to right, rgba(255,000,000,0.4), rgba(255,136,136,0.4)); }
-#log_popup_div .class  { background    : linear-gradient(to left , rgba(000,255,000,0.4), rgba(136,255,136,0.4)); }
+
+#log_popup_div .xpath_tag    { border-radius : 0.25em 0.25em 0.25em 0.25em; }
+#log_popup_div .xpath_left   { border-radius : 0.25em 0      0      0.25em; }
+#log_popup_div .xpath_center { border-radius : 0      0      0      0     ; }
+#log_popup_div .xpath_right  { border-radius : 0      0.25em 0.25em 0     ; }
+
+#log_popup_div .xpath_tag    { background    : linear-gradient(to right, rgba(255,255,255,0.4), rgba(136,136,255,0.4)); }
+#log_popup_div .xpath_id     { background    : linear-gradient(to right, rgba(255,000,000,0.4), rgba(255,136,136,0.4)); }
+#log_popup_div .xpath_class  { background    : linear-gradient(to left , rgba(000,255,000,0.4), rgba(136,255,136,0.4)); }
 
 
 
@@ -8915,7 +8916,7 @@ let dom_util_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_UTIL_JS_ID        = "dom_util";
-const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (230820:21h:11)";
+const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (230928:16h:38)";
 
 let dom_util    = (function() {
 "use strict";
@@ -12628,6 +12629,13 @@ let get_url_domain = function(url)
 };
 
 
+const regexp_PATH  = new RegExp("\\?.*$", "");
+const get_url_path = function(url)
+{
+    return  url.replace(regexp_PATH, "");
+};
+
+
 const regexp_URL = new RegExp("^([^:]+):\\/\\/(?:([^@]+)@)?([^\\/:]*)?(?::([\\d]+))?(?:(\\/[^#]*)(?:#(.*))?)?$", "i");
 
 
@@ -12912,25 +12920,25 @@ let get_node_sibling_at_offset = function(node,offset)
  };
 
 
-const PREFIX = "                               \u21B3";
+const PREFIX = "........................................................\u21B3";
 let get_parent_tag_id_class_chain = function(el)
 {
     let array = [];
 
     while( el )
     {
-        let e_class = (el.id || el.className) ? "left"   : ""     ;
-        let i_class = (         el.className) ? "center" : "right";
-        let c_class =                                      "right";
+        let e_class = (el.id || el.className) ? "xpath_left"   : ""     ;
+        let i_class = (         el.className) ? "xpath_center" : "xpath_right";
+        let c_class =                                            "xpath_right";
 
         let el_className = ellipsis_short(el.className);
 
         let rank         = get_nodeName_rank(el);
         let el_tagName   = el.tagName+( (rank > 1) ? "["+rank+"]":"");
 
-        array.push(   (               "<em class='tag   "+e_class+"'>" + el_tagName   +"</em>"     )
-                   +  (el.id        ? "<em class='id    "+i_class+"'>#"+ el.id        +"</em>" : "")
-                   +  (el_className ? "<em class='class "+c_class+"'>."+ el_className +"</em>" : "")
+        array.push(   (               "<em class='xpath_tag   "+e_class+"'>" + el_tagName   +"</em>"     )
+                   +  (el.id        ? "<em class='xpath_id    "+i_class+"'>#"+ el.id        +"</em>" : "")
+                   +  (el_className ? "<em class='xpath_class "+c_class+"'>."+ el_className +"</em>" : "")
                   );
         el = el.parentElement;
     }
@@ -13252,6 +13260,7 @@ return { name : "dom_util"
 
 
     , get_url_domain
+    , get_url_path
     , parseURL
 
 
@@ -34628,7 +34637,7 @@ let dom_sentence_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230820:21h:14)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230928:19h:21)";
 
 let dom_sentence            = (function() {
 "use strict";
@@ -35149,13 +35158,13 @@ if( log_this) console.log(last_clause);
 
     if( xpath_show )
         innerHTML
-            += "<hr>"
-            + "<pre class='xpath'>"
-            +  t_util.get_parent_tag_id_class_chain( container )
+            += "<hr>"+LF
+            + "<pre class='xpath'>"+LF
+            +  t_util.get_parent_tag_id_class_chain( container )+LF
             + "</pre>";
 
-if( tag_this) log("container.innerHTML.length: %c"+container.innerHTML.length, lb7);
-if( log_this) log("container.innerHTML:%c"+LF+container.innerHTML, lb7);
+if( tag_this) log("container.innerHTML.length: %c"+container.innerHTML.length              , lb7);
+if( log_this) log("container.innerHTML:%c"     +LF+container.innerHTML.replace(/>/g,">"+LF), lf7);
 
 
 
@@ -37963,7 +37972,7 @@ let dom_tools_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_TOOLS_JS_ID       = "dom_tools_js" ;
-const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (230821:20h:57)";
+const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (231001:02h:27)";
 
 let dom_tools   = (function() {
 "use strict";
@@ -39215,34 +39224,34 @@ if( log_this) log("%c shadow_host %c"+get_id_or_tag_and_className(shadow_host), 
 
     if(!shadow_host)
     {
-        shadow_host                 = document.querySelector("#shadow_host");
-        if(shadow_host) shadow_root = shadow_host.shadowRoot;
+        shadow_host                     = document.querySelector("#shadow_host");
     }
-
-if(!shadow_host)
-{
-    shadow_host                         = document.createElement("DIV");
-    shadow_host.id                      = "shadow_host";
-    shadow_host.style.fontSize          = "initial";
-    document.documentElement.appendChild( shadow_host );
-
-    if( shadow_host.attachShadow ) {
-        shadow_host.style.zIndex        = t_data.ZINDEX_SHADOW_HOST;
-
-if( log_this || DOM_TOOLS_TAG)    log("%c shadow_host.style.zIndex=["+shadow_host.style.zIndex+"]", lbH+lf1);
-        shadow_host.style.fontSize      = t_data.FONT_SIZE_SHADOW_HOST;
-
-        shadow_root =                     shadow_host.attachShadow({mode: "open"});
+    if(shadow_host)
+    {
+        shadow_root                     = shadow_host.shadowRoot;
     }
     else {
-        logBIG(caller+": shadow_host.attachShadow is missing");
+        shadow_host                     = document.createElement("DIV");
+        shadow_host.id                  = "shadow_host";
+        document.documentElement.appendChild( shadow_host );
+
+        if( shadow_host.attachShadow ) {
+            shadow_root                 = shadow_host.attachShadow({mode: "open"});
+        }
+        else {
+            logBIG(caller+": shadow_host.attachShadow is missing");
 
 
-        shadow_root    = shadow_host;
+            shadow_root                 = shadow_host;
+        }
+        shadow_root.id                  = "shadow_root";
     }
 
-    shadow_root.id     = "shadow_root";
-}
+    shadow_host.style.zIndex            = t_data.ZINDEX_SHADOW_HOST;
+    shadow_host.style.fontSize          = "initial";
+
+
+if( log_this || DOM_TOOLS_TAG)    log("%c shadow_host.style.zIndex=["+shadow_host.style.zIndex+"]", lbH+lf1);
 
 
 
@@ -41489,6 +41498,7 @@ let t_REMOVE_ADS_changed = function(id, state)
     if(state)
     {
         t_util.t_REMOVE_ADS(id);
+        t_util.t_REMOVE_FIXED();
 
         t_sticky.t_sticky_LOAD_ANCHORS_CHANGED();
 
@@ -56922,6 +56932,8 @@ let t_pat_bag_status_set_innerText = function(innerText)
 {
 let log_this = LOG_MAP.S0_PATTERN || LOG_MAP.S2_SELECT;
 
+    if(!fly_log) return;
+
     if(!em_pixels) {
         let    cs = window.getComputedStyle(fly_log);
         em_pixels = parseInt(cs.width) / 1.4;
@@ -61138,7 +61150,7 @@ if( log_this) console.log(_dom_load_id+": LOADING DATA .. try");
         }
         /*}}}*/
         /* LOAD JS - data .. tools {{{*/
-        let fail_or_use_planB   = (chrome && typeof chrome.runtime != "undefined"); /* eslint-disable-line no-undef */
+        let fail_or_use_planB = (typeof chrome != "undefined") && (typeof chrome.runtime != "undefined"); /* eslint-disable-line no-undef */
 
         if(    dom_load_success && !load_js    ( "dom_data_js"    , dom_data_js_data    , shadow_root) ) dom_load_success = fail_or_use_planB;
 
@@ -61266,7 +61278,8 @@ if( log_this) console.log("__"+caller+": %c "+scheme_id+" = "+scheme_arg.length+
         return true;
     }
     else {
-      if(chrome && typeof chrome.runtime == "undefined") { /* eslint-disable-line no-undef */
+        if((typeof chrome != "undefined") && (typeof chrome.runtime != "undefined")) /* eslint-disable-line no-undef */
+        {
 console.log("%c *** "+TOOLS2_SANITY_CHECK_FAILED+"%c on %c"+scheme_id+" ", lbb+lbL+lf2, lbL+lf8, lbR+lf3);
 
         /* share failure diagnostic */
@@ -61286,8 +61299,18 @@ if( log_this) console.log("__"+caller+": %c "+scheme_id+" = "+scheme_arg.length+
 /*… load_js {{{*/
 let load_js = function(id, scheme_arg, parent_el)
 {
-    if( !dom_check_scheme_arg("load_js"     , id, scheme_arg) ) { if(chrome && typeof chrome.runtime != "undefined")          return  true; /* eslint-disable-line no-undef */
-    /*..................................................*/ else { console.warn("%c"+id+" %c BAD SCHEME ARG",lbL+lf2, lbR+lf2); return false; }}
+    if( !dom_check_scheme_arg("load_js"     , id, scheme_arg) )
+    {
+        if((typeof chrome != "undefined") && (typeof chrome.runtime != "undefined")) /* eslint-disable-line no-undef */
+        {
+            return  true;
+        }
+        else {
+            console.warn("%c"+id+" %c BAD SCHEME ARG",lbL+lf2, lbR+lf2);
+
+            return false;
+        }
+    }
     if( document.getElementById(              id            ) ) { console.log ("%c"+id+" %c already loaded",lbL+lf3, lbR+lf3); return  true; }
     let el           = document.createElement("script");
     el.id            = id;
@@ -61445,7 +61468,7 @@ if( log_this) console.log("%c "+IPC_SCRIPT_ID+" %c CHECKING EXTENSION SIGNATURE"
 
 /*}}}*/
     if(!document.body) return; // @see https://remotetabs.com/dev/svg/Cognitive_bias_codex_en.svg
-    let chrome_runtime_is_defined = (chrome && typeof chrome.runtime != "undefined"); /* eslint-disable-line no-undef */
+    let chrome_runtime_is_defined = (typeof chrome != "undefined") && (typeof chrome.runtime != "undefined"); /* eslint-disable-line no-undef */
     let extension_ipc_start_cmd_body_attribute   = "";
     /* BODY-ATTR [IPC_EXTENSION_ID] .. (a body attribute set by a browser extension) {{{*/
     if(typeof document.body.attributes[IPC_EXTENSION_ID] != "undefined")

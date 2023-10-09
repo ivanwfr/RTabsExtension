@@ -25,7 +25,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_SETTINGS_SCRIPT_ID  = "bg_settings";
-const BG_SETTINGS_SCRIPT_TAG =  BG_SETTINGS_SCRIPT_ID +" (230830:21h:56)"; /* eslint-disable-line no-unused-vars */
+const BG_SETTINGS_SCRIPT_TAG =  BG_SETTINGS_SCRIPT_ID +" (231007:00h:45)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ SETTINGS                                         B_LOG7_TABS B_LOG9_STAGE │
@@ -290,7 +290,7 @@ const B_TABS_ACTIVATED_DELAY_MS    = 100;
 :so ~/vimfiles/after/syntax/javascript.vim
 }}}*/
 /*}}}*/
-let bg_settings_tabs1_onActivated = async function(activeInfo)
+let bg_settings_tabs1_onActivated = async function(activeInfo={})
 {
 /*{{{*/
 let   caller = "bg_settings_tabs1_onActivated";
@@ -319,18 +319,20 @@ if( log_this) log("%c"+SD1+"%c "+B_TABS_ACTIVATED+" %c"+tracked_or_unknown_url+"
 
 if( log_more) log_object("url=["+url+"]");
     /*}}}*/
+    /* [tabId] (last activated) {{{*/
+    if(activeInfo.tabId) {
+        bg_tabs_set_last_activated_tabId( activeInfo.tabId );
+
+    }
+    /*}}}*/
     /* IGNORE chrome: {{{*/
     if(url && url.includes(CHROME_SCHEME))
     {
         log_IGNORING(url, caller);
 
-        return;
-    }
-    /*}}}*/
-    /* [tabId] (last activated) {{{*/
-    if(activeInfo.tabId) {
-        bg_tabs_set_last_activated_tabId( activeInfo.tabId );
+        bg_tabs_del_tabId( activeInfo.tabId );
 
+        return;
     }
     /*}}}*/
     /* bg_settings_tabs4_query_active_tab_url {{{*/
@@ -423,8 +425,11 @@ if( log_more) log("%c "+action_tags+": %c"+ log_json({ WAS : url_was , NEW : tab
     /* [changeInfo complete] ➔ [t_load] {{{*/
     if( changeInfo.status == "complete")
     {
+        // This request exceeds the MAX_GETMATCHEDRULES_CALLS_PER_INTERVAL quota.//FIXME
+/*{{{
         if( chrome.declarativeNetRequest )
-            bg_event_onUpdated_declarativeNetRequest(tabId, "changeInfo.status "+changeInfo.status);
+            bg_event_onUpdated_declarativeNetRequest(tabId, changeInfo);
+}}}*/
 
         let start          = bg_tabs_get_tabId_key(tabId, "start"         );
         let tools_deployed = bg_tabs_get_tabId_key(tabId, "tools_deployed");
@@ -439,7 +444,7 @@ if( log_more) log_sep_bot_FOR_caller_callee(caller, "bg_message_tabs_sendMessage
 
             action_tags += " ● SENDING MESSAGE [t_load]";
         }
-        bg_page_POPUP_pageAction (tabId, "changeInfo.status: complete");
+        bg_page_POPUP_pageAction(tabId, "changeInfo.status: complete");
     }
     /*}}}*/
 } finally { /*{{{*/
@@ -499,7 +504,7 @@ let bg_settings_call_later = function(_args)
     if((MANIFEST_VERSION == "v3") && (args && (typeof args.tabId != "undefined")))
     {
         chrome.tabs.query(                  { currentWindow: true, active: true }           )
-            .then ((tabs ) =>               {
+            .then ((tabs)       =>          {
                 args.active_tab =  tabs[0];
                 args.tabId      = (tabs[0] && tabs[0].id);
                 setTimeout(callback, delay, args); })
@@ -526,7 +531,7 @@ let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 /*}}}*/
-if( log_more) log_sep_top(caller, "LOG2_TAG");
+if( log_more) log_sep_top(caller+"(tabId "+tabId+")", "LOG2_TAG");
 try {
 /*{{{*/
 if( log_this) log("%c"+SD2+"%c "+B_GET_ACTIVE_TAB_URL+" %c"+ message.query+" %c ← %c "+message.caller
@@ -541,9 +546,9 @@ if( log_more) log_caller();
     /* bg_settings_query_active_tab_url_callback {{{*/
     if( MANIFEST_VERSION == "v3")
     {
-        await chrome.tabs.query(                { currentWindow: true, active: true })
-            .then (async (tabs ) =>             { await bg_settings_query_active_tab_url_callback(tabs[0], message, response_handler); })
-            .catch((error) =>                   { console.error(BG_SETTINGS_SCRIPT_ID+"."+message.caller, error); })
+        await chrome.tabs.query(message.queryObj || { currentWindow: true, active: true })
+            .then (async (tabs ) =>                 { await bg_settings_query_active_tab_url_callback(tabs[0], message, response_handler); })
+            .catch(      (error) =>                 { console.error(BG_SETTINGS_SCRIPT_ID+"."+message.caller, error); })
         ;
     }
     else {
@@ -560,6 +565,7 @@ if( log_more) log_caller();
 /*{{{*/
 const B_GET_ACTIVE_TAB_URL_CB       = "GET ACTIVE TAB URL CB";
 const B_NO_ACTIVE_TAB               = "NO ACTIVE TAB";
+const B_NO_LAST_ACTIVATED           = "NO LAST ACTIVATED";
 
 /*}}}*/
 let bg_settings_query_active_tab_url_callback = async function(active_tab,message,response_handler)
@@ -616,8 +622,16 @@ if( log_more) log("%c"+caller+" ●●● SETTING url=["  +url+"]", lf4);
     /* 3/3 f(response_handler) .. (send URL as a reply) {{{*/
     /* REPLY TO POPUP URL QUERY (synchronized when URL is known)*/
     if( response_handler )
-        bg_message_onMessage_CB_reply(tabId, message, response_handler);
+    {
+        let response
+            = {   REPLY : "ACTIVE TAB:"+LF+"● [tabId "+(tabId ? tabId : "No tabId")+", "+LF+"● [url "+url+"]"
+                , type  : (tabId ? "answer" : "error")
+                , url
+                , tabId
+            };
 
+        bg_message_onMessage_CB_reply(tabId, message, response, response_handler);
+    }
     /*}}}*/
 // TOO EARLY ? gets undefined items into bg_settings_get_url_settings_callback .. WHY ?
     /* bg_settings_tabs6_get_url_settings {{{*/
@@ -697,14 +711,17 @@ if( log_more) log_object(url_tab.from, url_tab, lbH+lf4);
 
     /*}}}*/
     /* IGNORING CHROME_SCHEME {{{*/
-    if(url && url.includes(CHROME_SCHEME))
+    if(url)
     {
-if( log_this) log_IGNORING(url, caller);
-
         bg_tabs_set_tabId_key_val(tabId, "url", url);
 
-        bg_page_POPUP_pageAction (tabId, "IGNORING CHROME_SCHEME");
-        return false;
+        if(url.includes(CHROME_SCHEME))
+        {
+if( log_this) log_IGNORING(url, caller);
+
+            bg_page_POPUP_pageAction (tabId, "IGNORING CHROME_SCHEME");
+            return false;
+        }
     }
     /*}}}*/
     /* bg_settings_get_url_settings_callback {{{*/
@@ -742,6 +759,9 @@ if( log_more) log("%c URL not yet registered %c chrome.storage.sync.get('"+stora
         bg_tabs_set_tabId_key_val(tabId, "tools_deployed", tools_deployed );
         bg_tabs_set_tabId_key_val(tabId, "t_load"        , TOOLS4_DEPLOYED);
         bg_page_POPUP_pageAction (tabId, "tools_deployed");
+    }
+    else {
+        bg_page_POPUP_pageAction (tabId, "TOOLS NOT DEPLOYED");
     }
     /*}}}*/
     /* ASYNC [return] REPLY */
@@ -838,6 +858,8 @@ if(log_more) log_object("NOTHING ACTIVATED TO SYNC WITH", bg_tabs_get_tabId(tabI
         ,            bg_settings_tabs3_onRemoved
         ,            bg_settings_tabs4_query_active_tab_url
         ,            bg_settings_tabs6_get_url_settings
+        ,            B_NO_ACTIVE_TAB
+        ,            B_NO_LAST_ACTIVATED
         // DEBUG
         , logging
     };

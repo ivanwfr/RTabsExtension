@@ -16,7 +16,7 @@
 /* eslint-enable  no-redeclare              */
 
 const    P_SCRIPT_ID         = "popup_js";
-const    P_SCRIPT_TAG        = P_SCRIPT_ID +"(230822:15h:08)";
+const    P_SCRIPT_TAG        = P_SCRIPT_ID +"(231007:19h:57)";
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ POPUP                                                           EXTENSION │
@@ -43,7 +43,8 @@ let popup_js = (function() {
 /* modules {{{*/
 /*_ log_js {{{*/
 /* eslint-disable no-unused-vars */
-let   LF;
+let   LF     =     String.fromCharCode(10);
+let   LF_TAB = LF+ String.fromCharCode( 9);
 
 let   lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX;
 let   lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb          ;
@@ -206,20 +207,20 @@ if( log_this) log("%c "+caller+": %c SAVING [LOG_MAP]", lbL+lf8, lbR+lf9);
 /*_ logn_USAGE {{{*/
 let logn_USAGE = function() /* eslint-disable-line no-unused-vars */
 {
-    let  s  = ""                                              , args=[""];
+    let  s  = ""                                               , args=[""];
 
-    /**/ s += "%c "+P_SCRIPT_ID+".l(2) .. toggle ERROR\n"     ; args.push(lbR+lf2);
+    /**/ s += "%c "+P_SCRIPT_ID+".l(2) .. toggle ERROR"+LF     ; args.push(lbR+lf2);
 
-    /**/ s += "%c "+P_SCRIPT_ID+".l(4) .. toggle STORE\n"     ; args.push(lbR+lf4);
+    /**/ s += "%c "+P_SCRIPT_ID+".l(4) .. toggle STORE"+LF     ; args.push(lbR+lf4);
 
-    /**/ s += "%c "+P_SCRIPT_ID+".l(6) .. toggle UI\n"        ; args.push(lbR+lf6);
-    /**/ s += "%c "+P_SCRIPT_ID+".l(7) .. toggle TABS\n"      ; args.push(lbR+lf7);
+    /**/ s += "%c "+P_SCRIPT_ID+".l(6) .. toggle UI"+LF        ; args.push(lbR+lf6);
+    /**/ s += "%c "+P_SCRIPT_ID+".l(7) .. toggle TABS"+LF      ; args.push(lbR+lf7);
 
-    /**/ s += "%c "+P_SCRIPT_ID+".l(9) .. toggle EVENT\n"     ; args.push(lbR+lf8);
-    /**/ s += "%c "+P_SCRIPT_ID+".l(0) .. toggle MORE\n"      ; args.push(lbR+lf0);
-    /**/ s += "%c "+P_SCRIPT_ID+".l()  .. logging states\n"   ; args.push(lbR+lf9);
+    /**/ s += "%c "+P_SCRIPT_ID+".l(9) .. toggle EVENT"+LF     ; args.push(lbR+lf8);
+    /**/ s += "%c "+P_SCRIPT_ID+".l(0) .. toggle MORE"+LF      ; args.push(lbR+lf0);
+    /**/ s += "%c "+P_SCRIPT_ID+".l()  .. logging states"+LF   ; args.push(lbR+lf9);
 
-    /**/ s += "%c "+P_SCRIPT_ID+".c    == clear\n"            ; args.push(lbR+lf8);
+    /**/ s += "%c "+P_SCRIPT_ID+".c    == clear"+LF            ; args.push(lbR+lf8);
 
     args[0] = s;
 
@@ -269,7 +270,20 @@ let log_ACTIVATED = function()
 /*}}}*/
 
 /* ┌────────────────────────────────────────────────────────────────────────┐ */
-/* │ [GET] SETTINGS                                            P_LOG9_EVENT │ */
+/* │ UI ● CSS ID ● FILTERS                                                  │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
+/*{{{*/
+const BUTTON_START_ID      = "start";
+
+const FILTER3_REMOVE       = "FILTER3_REMOVE";
+const FILTER4_CUSTOM       = "FILTER4_CUSTOM";
+const FILTER5_RELAX        = "FILTER5_RELAX";
+const FILTER6_NONE         = "FILTER6_NONE";
+
+/*}}}*/
+
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ SETTINGS [GET]                                            P_LOG9_EVENT │ */
 /* └────────────────────────────────────────────────────────────────────────┘ */
 /*_ [popup_tab_settings] {{{*/
 let popup_tab_settings
@@ -304,11 +318,6 @@ if( log_this) log_sep_top(P_SCRIPT_ID+"."+caller, "LOG4_TAG");
 if( log_this) log("QUERY %c popup_url %c"+popup_url+"%c last_activated_tabId %c"+last_activated_tabId
                   ,      lbL+lf6     ,lbR+lf6       ,lbL+lf5                ,lbR                     );
 /*}}}*/
-    /* UPDATE UI {{{*/
-    p_EVENT_add_click_listeners();
-    p_UI_titles_to_tooltips();
-
-    /*}}}*/
     /* MESSAGE TO background_js {{{*/
     let popup_window       =  await chrome.windows.getLastFocused();
     popup_showing_windowId =  popup_window.id || 0;
@@ -329,25 +338,47 @@ if( log_this) log("%c"+SD2+"%c QUERY: "+P_GET_ACTIVE_TAB_URL    +": %c" +log_jso
 /*}}}*/
     p_sendMessage(message, caller);
     /*}}}*/
+} catch(ex) {
+    /*******/ log(P_SCRIPT_ID+"."+caller+":"+ex);
 } finally {
 if( log_this) log_sep_bot(P_SCRIPT_ID+"."+caller, "LOG4_TAG");
 }
 };
 /*}}}*/
-    /* ONLOAD QUERY */
-    setTimeout( popup_query_tab ,0);
+
+/* ┌────────────────────────────────────────────────────────────────────────┐ */
+/* │ POPUP JUST DISPLAYED ● ONLOAD QUERY                 ● DOMContentLoaded │ */
+/* └────────────────────────────────────────────────────────────────────────┘ */
+    /*_ DOMContentLoaded_listener {{{*/
+    let DOMContentLoaded_listener = function ()
+    {
+log("●●● DOMContentLoaded_listener");
+        /* UI SETUP */
+        p_UI_titles_to_tooltips();
+
+        p_EVENT_add_click_listeners();
+
+        /* CLEAR BUTTON_START STATE */
+        p_UI_set_checked_id(BUTTON_START_ID, false);
+
+        if(p_status) p_status.title = "@@@";//FIXME
+
+        /* DISABLE CSP FILTER BUTTONS */
+        show_id_state(BUTTON_START_ID, false);
+        show_id_state(FILTER5_RELAX  , false);
+        show_id_state(FILTER4_CUSTOM , false);
+        show_id_state(FILTER3_REMOVE , false);
+
+        /* CHECK CURRENT TAB */
+        popup_query_tab();
+    };
+    /*}}}*/
+    document.addEventListener("DOMContentLoaded", DOMContentLoaded_listener);
 
 /* ┌────────────────────────────────────────────────────────────────────────┐ */
 /* │ [SHOW]                                                       P_LOG6_UI │ */
 /* └────────────────────────────────────────────────────────────────────────┘ */
 /*{{{*/
-/*    FILTER {{{*/
-const FILTER3_REMOVE       = "FILTER3_REMOVE";
-const FILTER4_CUSTOM       = "FILTER4_CUSTOM";
-const FILTER5_RELAX        = "FILTER5_RELAX";
-const FILTER6_NONE         = "FILTER6_NONE";
-
-/*}}}*/
 /*  COLOR_MAP {{{*/
 let COLOR_MAP = {
       "cc0" : "initial",
@@ -375,10 +406,10 @@ let log_more = log_this && LOG_MAP.P_LOG0_MORE;
 if( log_more) log("%c"+caller+"%c("+start+")", lb6,lb0);
 /*}}}*/
 
-    p_UI_set_checked_id("start", (start == true));
+    p_UI_set_checked_id(BUTTON_START_ID, (start == true));
 
     /* SYMBOL */
-    let    el = document.getElementById("start"); if(!el) return;
+    let    el = document.getElementById(BUTTON_START_ID); if(!el) return;
     let label = el.nextElementSibling;
     label.innerHTML
         = (start == true) ? "&#10074;&#10074;" /* STOP  SYMBOL */
@@ -415,17 +446,20 @@ let log_this = LOG_MAP.P_LOG6_UI;
 let log_more = log_this && LOG_MAP.P_LOG0_MORE;
 if( log_more) log("%c show_has_CSP%c("+has_CSP+")",lb6,lb0);
 
-    let el;
-    if( el = document.getElementById("FILTER5_RELAX" )) if(el) show_has_CSP_cb_filled_pin_parent(has_CSP, el, "cb_filled_pin");
-    if( el = document.getElementById("FILTER4_CUSTOM")) if(el) show_has_CSP_cb_filled_pin_parent(has_CSP, el, "cb_filled_pin");
-    if( el = document.getElementById("FILTER3_REMOVE")) if(el) show_has_CSP_cb_filled_pin_parent(has_CSP, el, "cb_filled_pin");
+    show_id_state(FILTER5_RELAX , has_CSP);
+    show_id_state(FILTER4_CUSTOM, has_CSP);
+    show_id_state(FILTER3_REMOVE, has_CSP);
 };
 /*}}}*/
-/*_ show_has_CSP_cb_filled_pin_parent {{{*/
-let show_has_CSP_cb_filled_pin_parent = function(enabled, el, className)
+/*_ show_id_state {{{*/
+let show_id_state = function(id, enabled)
 {
-    let pl = get_el_parent_with_class(el, className);
+    let el = document.getElementById(id);
+    if(!el) return;
+
+    let pl = get_el_parent_with_class(el, "cb_filled_pin");
     if(!pl) return;
+
     if(enabled) del_el_class(pl, "disabled");
     else        add_el_class(pl, "disabled");
 /*
@@ -529,7 +563,7 @@ else if( log_this) log       ("%c"+caller+"%c"+items_tag+"%c"+_caller
         chrome.storage.sync.set( items );
     }
     catch(error) {
-        console.error(P_SCRIPT_ID+" ERROR:\n"+ error);
+        console.error(P_SCRIPT_ID+" ERROR:"+LF+ error);
         console.trace();
     }
 };
@@ -584,7 +618,8 @@ let log_this = LOG_MAP.P_LOG6_UI;
 let log_more = log_this && LOG_MAP.P_LOG0_MORE;
 
     let input_list  = document.getElementsByTagName( "INPUT" );
-if( log_this) log("%c "+caller+": %c input_list.length=["+ input_list.length+"]", lb6,lb0);
+
+if( log_this) log_sep_top(P_SCRIPT_ID+"."+caller+": input_list.length=["+ input_list.length+"]", "LOG8_TAG");
 if( log_more) log_caller();
 
 let log_items = {};
@@ -595,21 +630,22 @@ let log_items = {};
 
     p_UI_titles_to_tooltips_done = true;
     /*}}}*/
-    for(let i = 0; i < input_list.length; ++i)
-    {
+    for(let i = 0; i < input_list.length; ++i) {
         let input =    input_list[i];
         try {
             /* HTML {{{
-             *
-             * <span  class="box_container">
-             *  <div  class="box cb_filled_pin cb_6">
-             *   <input  id="start" type="checkbox"/>
-             *   <label for="start" >S</label>
-             *   <div class="label_after"></div>
-             *  </div>
-             * </span>
-             *
-             *}}}*/
+             ┌────────────────────────────────────────┐
+             │                                        │
+             │ <span  class="box_container">          │
+             │  <div  class="box cb_filled_pin cb_6"> │
+             │   <input  id="start" type="checkbox"/> │
+             │   <label for="start" >S</label>        │
+             │   <div class="label_after"></div>      │
+             │  </div>                                │
+             │ </span>                                │
+             │                                        │
+             └────────────────────────────────────────┘
+            }}}*/
             /* TITLE FROM INPUT ID {{{*/
             let    title = input.id;
             if(    title.startsWith("CSP_")
@@ -620,7 +656,7 @@ let log_items = {};
                     title = title.substring(idx+1);
             }
 
-//if( log_more) log("..."+(i+1)+" %c"+title+"%c", lb6,lbA);
+if( log_more) console.log("..."+(i+1)+" %c"+title+"%c", lb6,lbA);
             /*}}}*/
             /* LABEL HTML {{{*/
             let label             = input.nextElementSibling;
@@ -633,16 +669,14 @@ let log_items = {};
             if( caption = label_after.nextElementSibling)
             {
                 caption.innerHTML = p_UI_get_badge_for_title(title);
-
-//if( log_more) log("...caption.innerHTML=["+caption.innerHTML+"]");
-  if( log_more) log_items[i+1] = { title , caption : caption.innerHTML };
+                log_items[i+1]    = { title , caption: caption.innerHTML };
             }
             /*}}}*/
         }
         catch(ex) { console.warn("*** "+caller+": "+ ex); }
     }
-if( log_more) log_object(caller+": items", log_items, lbH+lf8);
-
+if( log_this) log_object(caller+": items", log_items, lbH+lf8, false);
+if( log_this) log_sep_bot(P_SCRIPT_ID+"."+caller+": input_list.length=["+ input_list.length+"]", "LOG8_TAG");
 };
 /*}}}*/
 /*_ p_UI_get_badge_for_title {{{*/
@@ -650,16 +684,16 @@ let p_UI_get_badge_for_title = function(title)
 {
     switch(title) {
 
-        case "start"        : return "START-STOP the extension on this page";
+        case BUTTON_START_ID : return "START-STOP the extension on this page";
 
-        case FILTER3_REMOVE : return "Remove CSP completely from this page";
-        case FILTER4_CUSTOM : return "Apply CUSTOM CSP filter";
-        case FILTER5_RELAX  : return "RELAX this page CSP to make it accept this extension";
+        case FILTER3_REMOVE  : return "Remove CSP completely from this page";
+        case FILTER4_CUSTOM  : return "Apply CUSTOM CSP filter";
+        case FILTER5_RELAX   : return "RELAX this page CSP to make it accept this extension";
 
-        case "cancelreq"    : return "Block all outgoing requests from this page";
-        case "LOG_IPC"      : return "Toggle LOC_IPC .. (dom_load or dom_tools)";
+        case "cancelreq"     : return "Block all outgoing requests from this page";
+        case "LOG_IPC"       : return "Toggle LOC_IPC .. (dom_load or dom_tools)";
 
-        default             : return '<h2>TODO</h2>Fetch and return a captionfor "'+ title +'"'; /* eslint-disable-line quotes */
+        default              : return '<h2>TODO</h2>Fetch and return a captionfor "'+ title +'"'; /* eslint-disable-line quotes */
     }
 
 };
@@ -683,97 +717,162 @@ if( log_this) log("%c"+caller+"%c"+id+"%c →→→ "+checked
 /*}}}*/
 /*_ p_UI_show_message {{{*/
 /*{{{*/
+const CSS_COLOR_ERROR      = "#FF6666";
+const CSS_COLOR_PENDING    = "#FFDD66";
+const CSS_COLOR_ANSWER     = "#66FF66";
+const CSS_COLOR_UNKNOWN    = "#6666FF";
+
 const P_SHOW_MESSAGE_DELAY = 3000;
 let p_status;
 
 /*}}}*/
 let p_UI_show_message = function(message)
 {
+let log_this = log_ACTIVATED();
+    log_this=true;//FIXME
     /* [p_status] CREATE {{{*/
     if(!p_status )
     {
         p_status                   = document.createElement("P");
         p_status.id                = "p_status";
 
-        p_status.style.margin      = "auto";
-        p_status.style.whiteSpace  = "pre-wrap";
-        p_status.style.color       = "#66FF66";
-        p_status.style.textAlign   = "center";
-
-        p_status.innerHTML         = message.replace("\n","<br>");
+        p_status.addEventListener("click", (e) => e.target.classList.toggle("collapsed"));
 
         document.body.insertBefore(p_status, null); // i.e. at the end
     }
     /*}}}*/
-    p_status.style.display = "block";
+    /*  [p_status] UPDATE {{{*/
+    p_status.title
+        = log_js.log_object_val_format(message)
+        .  replace(   /\u21B5 */g, LF_TAB+"\u21B5 ")
+        .  replace(        /← */g, LF_TAB+"← "     )
+        .  replace(        /↑ */g, LF_TAB+" ↑ "    )
+        .  replace(       /^ +/gm,           ""    )
+        .  replace(    /^\. *●/gm,          "●"    )
+        .  replace(       /^\./gm,        " - "    )
+    ;
+if( log_this) console.log(p_status.title);
 
-    setTimeout(() => { if(p_status) p_status.style.display = "none"; }, P_SHOW_MESSAGE_DELAY);
+    p_status.innerHTML
+        = (    message.REPLY
+           ||  message.caller
+           ||  message.status
+           ||  message.title
+           || p_status.title
+          )
+        .  replace(LF,"<br>");
 
+    del_el_class(p_status, "collapsed");
+
+    p_status.style.color
+        = (message.type ==   "error") ? CSS_COLOR_ERROR
+        : (message.type == "pending") ? CSS_COLOR_PENDING
+        : (message.type ==  "answer") ? CSS_COLOR_ANSWER
+        :                               CSS_COLOR_UNKNOWN
+    ;
+
+
+    if(message.type == "answer")
+        setTimeout(() => {
+            if( p_status ) add_el_class(p_status, "collapsed");
+        }, P_SHOW_MESSAGE_DELAY);
+    /*}}}*/
 };
 /*}}}*/
-/*_ p_UI_show_reload_required {{{*/
+/*_ p_UI_show_error {{{*/
 /*{{{*/
-let p_reload_required;
+let p_error;
+let p_reload_button;
+let p_logging_label;
 
 /*}}}*/
-let p_UI_show_reload_required = function(reason)
+let p_UI_show_error = function(reason="NO reason")
 {
 /*{{{*/
 let log_this = log_ACTIVATED();
 
 /*}}}*/
-    /* [p_reload_required] CREATE {{{*/
-    let msg_HTML
-        = "Page<br>reload<br>required"
-        + "<br>"+SYMBOL_CONSTRUCTION+" "+reason+ " "+SYMBOL_CONSTRUCTION
-        + (log_this ? "<br>log_ACTIVATED()" : "");
+    /* [p_error] CREATE {{{*/
 
-    if(!p_reload_required )
+    if(!p_error )
     {
-        p_reload_required                   = document.createElement("P");
-        p_reload_required.id                = "p_reload_required";
+        /* [p_error] {{{*/
+        p_error       = document.createElement("P");
+        p_error.id    = "p_error";
 
-        p_reload_required.style.width       = "100%";
-        p_reload_required.style.height      = "100%";
+        let settings_div        = document.getElementById("settings_div");
+        settings_div.appendChild( p_error );
 
-        p_reload_required.style.fontSize    = "300%";
-        p_reload_required.style.color       = "#FF00FF";
-        p_reload_required.style.textAlign   = "center";
+        /*}}}*/
+        /* [p_reload_button] {{{*/
+        p_reload_button             = document.createElement("BUTTON");
+        p_reload_button.id          = "reload_button";
+        p_reload_button.title       = LF
+            +                         "Reloads the current page"+LF
+            +                         " using the selected location method bellow";
+        p_reload_button.innerHTML   = "<b>&#x27F3;</b> &nbsp; Reload Page &nbsp; <b>&#x27F3;</b>";
+        settings_div.appendChild( p_reload_button );
 
-        p_reload_required.innerHTML         = msg_HTML;
+        p_reload_button.addEventListener("click", p_reload_button_listener);
+        /*}}}*/
+        /* [loggging] {{{*/
 
-        let settings_div = document.getElementById("settings_div");
-        settings_div.appendChild( p_reload_required );
+        let logging_checkbox      = document.createElement("INPUT");
+        logging_checkbox.type     = "checkbox";
+        logging_checkbox.id       = "logging";
+
+        p_logging_label           = document.createElement("LABEL");
+        p_logging_label.id        = "logging_label";
+        p_logging_label.for       = logging_checkbox.id;
+        p_logging_label.innerText = "logging only";
+        p_logging_label.title
+            = "DO NOT RELOAD"+LF
+            + "● just log the reload command in the content page console";
+
+        p_logging_label.appendChild( logging_checkbox );
+
+        settings_div   .appendChild( p_logging_label  );
+        /*}}}*/
     }
     /*}}}*/
-    /* [p_reload_required] SHOW {{{*/
-    p_reload_required.style.display = "block";
+    /* [p_error] MESSAGE {{{*/
+    let msg_HTML
+        = "Page reload required"
+        + "<br>"+SYMBOL_CONSTRUCTION+" "+reason+ " "+SYMBOL_CONSTRUCTION
+//      + (log_this ? "<br>● log_ACTIVATED() ●" : "")
+    ;
 
-if( log_this ) log("%c"+p_reload_required.innerHTML.replace("<br>"," "), lbb);
-if( log_this ) log_caller();
+    p_error.innerHTML = msg_HTML;
     /*}}}*/
-    /* [p_reload_required] DELAY-HIDE {{{*/
+    /* [p_error] SHOW {{{*/
+    p_error.style.display = "block";
+    p_reload_button  .style.display = "inline-block";
+    p_logging_label  .style.display = "inline-block";
 
-//  setTimeout(() => if(p_reload_required) p_reload_required.style.display = "none", 2000);//FIXME
-
-//if(!log_this) setTimeout(() => window.close(), 2000);
+if( log_this ) log("%c"+p_error.innerHTML.replace("<br>"," "), lbb);
+if( log_this ) log_caller();
     /*}}}*/
 };
 /*}}}*/
-/*_ p_UI_clear_reload_required_and_reload {{{*/
-let p_UI_clear_reload_required_and_reload = function()
+/*_ p_UI_hide_error {{{*/
+let p_UI_hide_error = function()
 {
-/*{{{*/
-//let log_this = log_ACTIVATED();
-
-//if( log_this ) log_caller();
-/*}}}*/
-    if( p_reload_required )
+    if( p_error )
     {
-        p_reload_required.style.display = "none";
-        p_reload_required               = null;
-//      document.location.reload(true); // forceGet
+        p_error          .style.display = "none";
+        p_reload_button  .style.display = "none";
+        p_logging_label  .style.display = "none";
     }
+};
+/*}}}*/
+/*_ p_reload_button_listener {{{*/
+let p_reload_button_listener = function(e) /* eslint-disable-line no-unused-vars */
+{
+    let  logging_el = document.getElementById  ("logging");
+    let  logging = (logging_el && logging_el.checked);
+
+//  p_sendMessage_handler({ cmd:"reload" , logging }, "p_reload_button_listener");
+    p_sendMessage        ({ cmd:"reload" , logging }, "p_reload_button_listener");
 };
 /*}}}*/
 /*}}}*/
@@ -796,6 +895,12 @@ if( log_this) log("%c p_EVENT_add_click_listeners: p_EVENT_add_click_listeners_a
 /*}}}*/
     if( p_EVENT_add_click_listeners_added ) return;
     /**/p_EVENT_add_click_listeners_added = true;
+    /* [close_span] 'click' {{{*/
+    let close_span          = document.getElementById("close_span");
+    close_span.addEventListener("click", (e) => { /* eslint-disable-line no-unused-vars */
+        window.close();
+    });
+    /*}}}*/
     /* [settings_div] 'click' {{{*/
     let settings_div          = document.getElementById("settings_div");
     settings_div.addEventListener("click", (e) => {
@@ -873,7 +978,10 @@ let log_this = LOG_MAP.P_LOG9_EVENT || !chrome.runtime;
         =  e.target              .getElementsByTagName("INPUT")[0]
         || e.target.parentElement.getElementsByTagName("INPUT")[0]
     ;
-    if(!check_el) return;
+    if(!check_el                ) return;
+//log("check_el.id=["+check_el.id+"] ● check_el.parentElement.className=["+check_el.parentElement.className+"]");//FIXME
+    if( check_el.parentElement.classList.contains("disabled")) return;
+    if( check_el.id == "logging") return;
 
     /* script check handling */
     if( e.preventDefault  ) e.preventDefault ();
@@ -903,23 +1011,16 @@ if(log_this) log("%c"+caller+"%c"+check_el_id+"%c →→→ "+check_el.checked
     /* if   [last_activated_tabId]   [popup_url] {{{*/
     if(!last_activated_tabId || !popup_url)
     {
-        let reason
-            = !last_activated_tabId ? "NO tabId"
-            : !popup_url            ? "NO URL"
-            :                         "RELOAD REQUIRED"
-        ;
-        p_UI_show_reload_required( reason );
-
         popup_query_tab();
     }
     /*}}}*/
     /* else [start] {{{*/
-    else if(check_el_id           == "start")
+    else if(check_el_id           == BUTTON_START_ID)
     {
         /* TOGGLE start */
         let value = check_el.checked ? false : true;
 
-        p_EVENT_click_set_name_value("start", value);
+        p_EVENT_click_set_name_value(BUTTON_START_ID, value);
     }
     /*}}}*/
     /* else [csp_filter] .. [start ON] {{{*/
@@ -934,10 +1035,10 @@ if(log_this) log("%c"+caller+"%c"+check_el_id+"%c →→→ "+check_el.checked
 
 //      if(csp_filter && !popup_tab_settings.start)
 //      {
-//          p_EVENT_click_set_name_value("start", true);
+//          p_EVENT_click_set_name_value(BUTTON_START_ID, true);
 //      }
 
-        p_EVENT_click_set_name_value("start", true);
+        p_EVENT_click_set_name_value(BUTTON_START_ID, true);
         p_EVENT_click_set_name_value("csp_filter", csp_filter);
     }
     /*}}}*/
@@ -1005,7 +1106,7 @@ if( log_this) log("%c p_EVENT_click_set_name_value(name=[%c"+name+"%c], value=[%
         break;
         /*}}}*/
         /* send message for extension properties */
-        case "start": /*{{{*/
+        case BUTTON_START_ID: /*{{{*/
         {
 //          show_start(popup_tab_settings.start); // response dependent
             let message = { [name] : value };
@@ -1074,7 +1175,7 @@ if( log_this) log       ("%c"+caller, lb1);
 if( log_this) log_object("message",message);
 /*}}}*/
     if( !chrome.runtime ) return;
-    /* ADD MESSAGE REPLY LISTENERS {{{*/
+    /* ADD MESSAGE RESPONSE LISTENERS {{{*/
     if(!p_addMessageListener_has_been_called)
         p_addMessageListener();
 
@@ -1157,11 +1258,11 @@ if( log_this) log_object(caller+" ➔ "+p_get_response_tag(response), response);
 
     else
         log(caller+"%c NO RESPONSE %c ➔ %c To be expected when target process is not running"
-            , lbb+lbH+lf3  ,lbb+lbL+lf5 ,lbb+lbR+lf5);
+            , lbb+lbH+lf3    ,lbL+lf5 , lbR+lf5);
 };
 /*}}}*/
 /*}}}*/
-/* LISTEN REPLY {{{*/
+/* LISTEN RESPONSE {{{*/
 /*_ p_addMessageListener {{{*/
 /*{{{*/
 let p_addMessageListener_has_been_called;
@@ -1197,7 +1298,9 @@ let p_onMessage_CB = function(message, sender, response_handler)
 /*{{{*/
 let   caller = "p_onMessage_CB";
 let log_this = LOG_MAP.P_LOG1_MESSAGE && !message.set_log_tag;
+    log_this=true;//FIXME
 let log_more = log_this && LOG_MAP.P_LOG0_MORE;
+    log_more=true;//FIXME
 
 let log_tag  = "LOG8_TAG";
 /*}}}*/
@@ -1319,14 +1422,6 @@ if( log_this) log("SET %c title %c "+message.title, lbL+lf9, lbR+lf5);
         document.body.title = message.title;
     }
     /*}}}*/
-    /*       [message.status] {{{*/
-    if(typeof message.status != "undefined")
-    {
-if( log_this) log("SET %c status %c "+message.status, lbL+lf9, lbR+lf5);
-
-        log_tag = p_onMessage_CB_check_RELOAD_REQUIRED(message);
-    }
-    /*}}}*/
     /*       [message.has_CSP] {{{*/
     if(typeof message.has_CSP != "undefined")
     {
@@ -1391,37 +1486,43 @@ if( log_this) log("SET %c typeface %c "+message.typeface, lbL+lf9, lbR+lf5);
         show_typeface(message.typeface);
     }
     /*}}}*/
-
+/*{{{*/
 if( log_this) log_object("popup_tab_settings ["+(popup_url || "NO URL")+"]", popup_tab_settings, lb0);
 
-    // UI UPDATE
-    p_UI_titles_to_tooltips();
-
-if(log_more) log("...return "+(response_handler != null)+ " .. (response_handler != null)");
-        return (response_handler != null); // whether to wait for an async response .. or not
-} finally {
-    if(log_this) log_sep_bot(P_SCRIPT_ID+"."+caller, "LOG8_TAG");
-}
-};
 /*}}}*/
-/*_ p_onMessage_CB_check_RELOAD_REQUIRED {{{*/
-let p_onMessage_CB_check_RELOAD_REQUIRED = function(message)
-{
-    /* [message.status] .. [NO ACTIVE TAB] .. [Page reload required] {{{*/
-    if(message.status)
-    {
-        if(message.status.includes("NO ACTIVE TAB"))
-        {
-            p_UI_show_message( message.status );
+    // RELOAD REQUIRED {{{*/
+    let reload_required
+        = !last_activated_tabId         ? "NO tabId"
+        : !message.status               ? "NO message.status"
+//      :  message.status != "complete" ? "(status != complete)"
+//      : !popup_url                    ? "NO URL"   // not an error .. a query will fix it
+        :                                ""
+    ;
 
-            return "LOG8_TAG";
-        }
-        else {
-            p_UI_clear_reload_required_and_reload();
-        }
-    }
+    if(reload_required)
+        p_UI_show_error( reload_required );
+    else
+        p_UI_hide_error();
+
     /*}}}*/
-    return "LOG0_TAG";
+    /* BUTTON_START STATE {{{*/
+    let ignored_url = message.title && message.title.includes("IGNORED URL");
+
+    show_id_state(BUTTON_START_ID, !reload_required && !ignored_url);
+
+    /*}}}*/
+
+    // RETURN
+    /*{{{*/
+    if(log_more) log("...return (response_handler != null)=["+(response_handler != null)+"]");
+
+    return (response_handler != null); // whether to wait for an async response .. or not
+    /*}}}*/
+
+} finally {
+    p_UI_show_message( message );
+if(log_this) log_sep_bot(P_SCRIPT_ID+"."+caller, log_tag);
+}
 };
 /*}}}*/
 /*_ p_onMessage_CB_SET_LOG_MAP {{{*/
@@ -1541,12 +1642,23 @@ let p_get_response_tag = function(o)
 /* ┌────────────────────────────────────────────────────────────────────────┐ */
 /* │ EXPORT PUBLIC POPUP FUNCTIONS                                          │ */
 /* └────────────────────────────────────────────────────────────────────────┘ */
-/* init c l sg {{{*/
+/* init c l ● sg pcb {{{*/
 let init = () => { chrome.storage.sync.get(null, p_LOAD_STORE_items); };
 let    c = log_js.clear;
-let    l = logn;
+/*     l = {{{*/
+//t    l = logn;
+let    l = function(args)
+{
+    logn(args);
+
+    let s = ""; Object.keys(p).forEach((f) => s += LF+"● p."+f+((typeof p[f] == "function") ? "()":""));
+
+    console.log(P_SCRIPT_ID+" Devtools console commands:"+ s);
+};
+/*}}}*/
 
 let sg = function() { chrome.storage.sync.get(null, (items) => log_object(P_SCRIPT_ID+": local.storage",items, lf9, false)); };
+let pcb = p_onMessage_CB;
 /*}}}*/
 // TEST_SETTINGS {{{
 
@@ -1573,24 +1685,42 @@ const TEST_SETTINGS_TEST
     };
 /*}}}*/
     /* return {{{*/
-    return { name     : P_SCRIPT_ID
+    return { name     : P_SCRIPT_TAG
            , init             // reload storage
            , c                // console.clear();
            , l                // log .. set .. get .. show
+           , logn
            , sg
-           , reload   : popup_query_tab
-        // DEBUG
-        , click_start : () => p_EVENT_click_set_name_value("start",  true)
-        , click_stop  : () => p_EVENT_click_set_name_value("start", false)
-        , om          : () => p_onMessage_CB({ cmd:"XXX" }, { sender:"Devtools" }, console.log)
-        , oc          : () => p_onMessage_CB({ console_clear:"OK" , preserve:true }, { sender:"Devtools" }, (o) => console.warn(JSON.stringify(o)))
-        , off         : () => p_sendMessage_response_handler({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_OFF  })
-        , on          : () => p_sendMessage_response_handler({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_ON   })
-        , on3         : () => p_sendMessage_response_handler({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_CSP3 })
-        , on4         : () => p_sendMessage_response_handler({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_CSP4 })
-        , on5         : () => p_sendMessage_response_handler({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_CSP5 })
-        , onCLEAR     : () => p_sendMessage_response_handler({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_CLEAR})
-        , onTEST      : () => p_sendMessage_response_handler({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_TEST })
+           //reload   : async () => await popup_query_tab() /* eslint-disable-line no-return-await */
+           , reload   :                   popup_query_tab
+           , close    : window.close
+
+        // P_RESPONSE_HANDLER
+        , p_sendMessage_response_handler
+        , clear       : () => p_sendMessage_response_handler({ console_clear:"OK" , preserve:true                                 }, { sender:"Devtools" }, (o) => console.warn(JSON.stringify(o)))
+
+        // P_MESSAGE_CB _____ pcb({ RESPONSE___________________________________________________________}, { SENDER____________}, response_handler_____________________ )
+        , CLEAR       : () => pcb({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_CLEAR})
+        , TEST        : () => pcb({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_TEST })
+        , OFF         : () => pcb({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_OFF  })
+        , ON          : () => pcb({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_ON   })
+        , CSP_3       : () => pcb({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_CSP3 })
+        , CSP_4       : () => pcb({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_CSP4 })
+        , CSP_5       : () => pcb({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_CSP5 })
+
+        , bg_REPLY    : () => pcb({ REPLY  : "NO [tabId] YET TO RELOAD", caller: "b_onMessage_CB"             })
+        , bg_handler  : () => pcb({ handler: "BG_MESSAGE_SCRIPT_ID"+" → bg_message_onMessage_CB_reply(action)"})
+
+        // POPUP_UI_EVENTS
+        , start       : () => p_EVENT_click_set_name_value(BUTTON_START_ID,  true)
+        , stop        : () => p_EVENT_click_set_name_value(BUTTON_START_ID, false)
+        , p_UI_set_checked_id
+        , show_has_CSP
+
+        , p_UI_show_error
+        , p_UI_hide_error
+
+        // LOG_STATUS
         , status      : () => {
             log_object(  P_SCRIPT_ID,
                        { lastError : chrome.runtime && chrome.runtime.lastError

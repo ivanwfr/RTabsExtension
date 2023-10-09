@@ -1,6 +1,7 @@
 
 #checkbox_css_tag  { content: "checkbox_css (230822:15h:22)"; }
 
+
 /* checkbox_css_tag {{{ */
 #checkbox_css_tag {
     border        : 5px dashed #FF00A5;
@@ -41,6 +42,8 @@
 }
 
 /*}}}*/
+
+
 /* .box_container {{{*/
 .box_container {
     cursor         : pointer;
@@ -71,6 +74,7 @@ border: 1px dotted red;
 */
 }
 /*}}}*/
+
 /* .box {{{*/
 .box {
     position:relative;
@@ -510,9 +514,7 @@ border: 1px dotted red;
 .cb_marker_out input[type=checkbox]:checked + label:after { opacity    : 1; }
 /*}}}*/
 
-.cb_marker_dot .label_after { position: relative; margin: 1em -50%; }
-
-/* .cb_filled_pin {{ {*/
+/* .cb_filled_pin {{{*/
 .cb_filled_pin_spacer { /*{{{*/
     font-size      : 250%;
     position       : relative; width: 2em; height: 2em;
@@ -565,6 +567,9 @@ border: 1px dotted red;
 }
 /*}}}*/
 /* label_after {{{*/
+
+.cb_marker_dot .label_after { position: relative; margin: 1em -50%; }
+
 .cb_filled_pin /*...input..........................label......*/ .label_after {
     pointer-events  : none;
     position        : absolute;
@@ -688,7 +693,6 @@ border: 1px dotted red;
 .box.cb_9 input[type=checkbox]:checked + label:before        { background : linear-gradient(to top, #DDDDDD 10%, #222 50%, #000 100%); }
 
 /*}}}*/
-/*}}}*/
 /*{{{
 .cb_filled_pin.light                                                            { background: rgba(96,96,96,.6) !important; }
 .cb_filled_pin.light                                 label                      { background: rgba(96,96,96,.6) !important; }
@@ -718,6 +722,7 @@ border: 1px dotted red;
 .cb_filled_pin:before.light                                                     { background: rgba(255,0,0,.6) !important; }
 
 }}}*/
+/*}}}*/
 
 /* disabled {{{*/
 .disabled { pointer-events  : none        !important; }

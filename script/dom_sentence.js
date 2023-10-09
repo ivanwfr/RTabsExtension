@@ -23,7 +23,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230820:21h:14)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230928:19h:21)";
 /*}}}*/
 let dom_sentence            = (function() {
 "use strict";
@@ -582,13 +582,13 @@ if( log_this) console.log(last_clause);
 
     if( xpath_show )
         innerHTML
-            += "<hr>"
-            + "<pre class='xpath'>"
-            +  t_util.get_parent_tag_id_class_chain( container )
+            += "<hr>"+LF
+            + "<pre class='xpath'>"+LF
+            +  t_util.get_parent_tag_id_class_chain( container )+LF
             + "</pre>";
 
-if( tag_this) log("container.innerHTML.length: %c"+container.innerHTML.length, lb7);
-if( log_this) log("container.innerHTML:%c"+LF+container.innerHTML, lb7);
+if( tag_this) log("container.innerHTML.length: %c"+container.innerHTML.length              , lb7);
+if( log_this) log("container.innerHTML:%c"     +LF+container.innerHTML.replace(/>/g,">"+LF), lf7);
 
     /*}}}*/
 /*{{{*/

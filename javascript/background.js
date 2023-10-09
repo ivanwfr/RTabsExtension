@@ -30,7 +30,7 @@
 const MANIFEST_VERSION      = (typeof chrome.tabs.executeScript == "undefined") ?  "v3" : "v2";
 
 const B_SCRIPT_ID           = "background_js";
-const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (230830:21h:56)"; /* eslint-disable-line no-unused-vars */
+const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (231007:15h:07)"; /* eslint-disable-line no-unused-vars */
 const DOM_TOOLS_JS_ID       = "dom_tools_js";
 const DOM_LOAD_ID           = "dom_load";
 /*}}}*/
@@ -88,6 +88,7 @@ let   ellipsis
 //_______________ background_js
 /*_ bg_content {{{*/
 let bg_content_scripts_loaded;
+let bg_content_scripts_reload;
 
 /*}}}*/
 //_______________ bg_csp
@@ -146,6 +147,7 @@ let _import = function()
     //_______________________ background_js
     modules.push( bg_content    ); /*{{{*/
     bg_content_scripts_loaded       = bg_content.bg_content_scripts_loaded;                     li("bg_content","bg_content_scripts_loaded",bg_content_scripts_loaded);
+    bg_content_scripts_reload       = bg_content.bg_content_scripts_reload;                     li("bg_content","bg_content_scripts_reload",bg_content_scripts_reload);
 
     /*}}}*/
     //_______________________ bg_csp
@@ -605,7 +607,7 @@ let log_this = log_this_get(caller) || _log_this;
     let      manifest       =   chrome.runtime.getManifest();
     let info_pageAction     = ((chrome.pageAction && chrome.pageAction             ));
     let info_action         = ((chrome.action     && chrome.action                 ));
-    let info_executeScript  = ((chrome.tabs       && chrome.tabs.executeScript     ));
+    let info_executeScript  = ((chrome.tabs       && chrome.tabs.     executeScript));
     let info_scripting      = ((chrome.scripting  && chrome.scripting.executeScript));
     let info_tabs_scripting = ((chrome.scripting  && chrome.tabs     .executeScript));
 
@@ -674,7 +676,7 @@ if( log_this) log("b_sleep DONE");
 // └───────────────────────────────────────────────────────────────────────────┘
 /*➔ init c l r {{{*/
 let init = () => {
-    if(chrome.storage) {
+    if( chrome.storage ) {
         chrome.storage.sync.get(null, bg_store_LOAD_items);
     }
     else {
@@ -684,12 +686,12 @@ let init = () => {
     setTimeout(bg_event_addListeners,500);
 };
 let    c = log_js.clear;
-let    l = logn;
+//t    l = logn;
 let    r = reload;
-let   tl = () => bg_tabs.bg_tabs_get_last_activated_tabId();
-let last = function() { bg_tabs_log_LAST_ACTIVATED_TAB(); };
-let tabs = function() { bg_tabs_log_TABS_MAP();           };
-let tdel = function() { bg_tabs_del_tabId();      };
+let   tl = bg_tabs.bg_tabs_get_last_activated_tabId;
+let last = bg_tabs_log_LAST_ACTIVATED_TAB;
+let tabs = bg_tabs_log_TABS_MAP;
+let tdel = bg_tabs_del_tabId;
 /*}}}*/
 /*_ l_paused {{{*/
 /*{{{*/
@@ -709,15 +711,28 @@ let p = function()
 };
 /*}}}*/
 
+/* eslint-disable no-shadow */
+let p_reload = function(logging=false)
+{
+console.log("p_reload");
+
+    let message = { cmd: "reload" , logging };
+
+    chrome.tabs.query(    { currentWindow : false, active: true }) // any window
+        .then ((tabs ) => { message.tabId = tabs[0].id;     bg_message.bg_message_onMessage_CB_query(message); })
+        .catch((error) => { console.error(B_SCRIPT_ID+". p_reload: "+message.cmd, error); })
+    ;
+};
+/* eslint-enable  no-shadow */
+
     /*  return {{{*/
 
     return { name : B_SCRIPT_ID
         , logging
 
-        , init    // reload storage
-        , c       // console.clear();
-        , l       // log .. set .. get .. show
-        , L : () => { b.l(-1); b.l(3);  setTimeout(() => { console.clear(); b.l(); }, 1000); }
+        , init                          // reload storage
+        , c                             // console.clear();
+        , l       : (arg) => logn(arg)  // log .. set .. get .. show
         , r       // chrome.runtime.reload(); // Reloads the app or extension
         , p       // pause [ TOOLS_START .. onMessage .. onAlarm .. onUpdated .. onActivated .. onRemoved ]
         , "---------- DEBUG API ------------------" : "---------------------------------------"
@@ -734,6 +749,8 @@ let p = function()
 
         , reload  : ()    => setTimeout(() => bg_page.bg_page2_RELOAD            ({tabId: tl()}            ), 1000)
         , relreq  : ()    =>                  bg_page.bg_page2_RELOAD_if_required({tabId: tl()})
+
+        , p_reload
 
         , loaded  : ()    => setTimeout(() => bg_content_scripts_loaded(        tl()                       ), 1000)
         , loadedic: ()    => setTimeout(() => bg_content_scripts_loaded(        tl(), true/*ignore_cache*/ ), 1000)
@@ -762,6 +779,7 @@ let p = function()
         , tabs
         , tdel
         , rules   : ()    => bg_settings.bg_settings_tabs2_onUpdated_declarativeNetRequest(tl())
+        , active  : ()    => bg_settings.bg_settings_tabs1_onActivated()
 
         , "---------- STORAGE --------------------" : "---------------------------------------"
         , ls      : log_STORAGE
@@ -959,7 +977,7 @@ setTimeout(b.init,500); /* @so that caller may terminate before */
 :!start explorer "https://www.html5rocks.com/en/tutorials/security/content-security-policy/#source-whitelists"
 
 }}}*/
-/* VIM: {{ {
+/* VIM: {{{
 :new ~/VIM/Pvim.txt
 :new  $APROJECTS/Chrome_Web_Store/OHRExtension
 :vnew C:/LOCAL/USR/ivan/VIM/after/syntax/javascript_BAK_BOT_LOG_TOP.vim

@@ -26,7 +26,7 @@
 
 /* eslint-enable  no-redeclare        */
 const BG_STORE_SCRIPT_ID  = "bg_store";
-const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (230817:18h:19)"; /* eslint-disable-line no-unused-vars */
+const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (230831:16h:10)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ STORE                                                        B_LOG8_STORE │
@@ -349,11 +349,11 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 if(!chrome.storage) { log("%c"+SYMBOL_CONSTRUCTION+" chrome.storage is undefined in "+caller, lbb+lbH+lf1); return; }
 
-//  let items_tag = ellipsis(JSON.stringify(items), 70);
-    let items_tag = log_js.log_json_prettify(items);
-if(      log_more) log_object(caller+": chrome.storage.sync.set("+items_tag+")", { ...items , callers: LF+get_callers() }, lb0);
-else if( log_this) log       ("%c "+caller+"%c"+items_tag+"%c"+_caller
-                         ,lbL+lb3    ,lbR+lf8       ,lbH             );
+//t items_tag = log_js.log_json_prettify  (items);
+let items_tag = log_js.log_o_keys_toString(items, 80);
+if( log_this)   log("%c "+caller+"%c"+items_tag+"%c"+_caller
+                  ,lbL+lb3       ,lbR+lf8       ,lbH        );
+if( log_more)   log_object("items", { ...items , callers: LF+get_callers() }, lb0);
 /*}}}*/
     try {
         /* ● DELETE SINGLE { key : undefined} */

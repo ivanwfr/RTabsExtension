@@ -25,7 +25,7 @@
 
 /* eslint-enable  no-redeclare        */
 const BG_MESSAGE_SCRIPT_ID  = "bg_message";
-const BG_MESSAGE_SCRIPT_TAG =  BG_MESSAGE_SCRIPT_ID +" (230830:21h:56)"; /* eslint-disable-line no-unused-vars */
+const BG_MESSAGE_SCRIPT_TAG =  BG_MESSAGE_SCRIPT_ID +" (231007:19h:01)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ MESSAGE POPUP                                              B_LOG1_MESSAGE │
@@ -52,7 +52,7 @@ let bg_message  = (function() {
 /*{{{*/
 /*_ log_js {{{*/
 /* eslint-disable no-unused-vars */
-let   LF;
+let   LF        = String.fromCharCode(10);
 
 let   lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX;
 let   lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb          ;
@@ -92,6 +92,7 @@ let log_sep_top_FOR_caller_callee;
 /*}}}*/
 /*_ bg_content {{{*/
 let bg_content_scripts_loaded;
+let bg_content_scripts_reload;
 
 /*}}}*/
 /*_ bg_csp {{{*/
@@ -122,6 +123,7 @@ let bg_page2_RELOAD_if_required;
 /*}}}*/
 /*_ bg_settings {{{*/
 let bg_settings_tabs4_query_active_tab_url;
+let B_NO_LAST_ACTIVATED;
 
 /*}}}*/
 /*_ bg_store {{{*/
@@ -186,6 +188,7 @@ let _import = function()
     /*}}}*/
     modules.push( bg_content    ); /*{{{*/
     bg_content_scripts_loaded              = bg_content.bg_content_scripts_loaded;                li("bg_content","bg_content_scripts_loaded",bg_content_scripts_loaded);
+    bg_content_scripts_reload              = bg_content.bg_content_scripts_reload;                li("bg_content","bg_content_scripts_reload",bg_content_scripts_reload);
 
     /*}}}*/
     //_______________________ bg_event
@@ -215,6 +218,7 @@ let _import = function()
     /*}}}*/
     modules.push( bg_settings   ); /*{{{*/
     bg_settings_tabs4_query_active_tab_url = bg_settings.bg_settings_tabs4_query_active_tab_url;  li("bg_settings","bg_settings_tabs4_query_active_tab_url",bg_settings_tabs4_query_active_tab_url);
+    B_NO_LAST_ACTIVATED                    = bg_settings.B_NO_LAST_ACTIVATED;                     li("bg_settings","B_NO_LAST_ACTIVATED"                   ,B_NO_LAST_ACTIVATED                   );
 
     /*}}}*/
     modules.push( bg_store      ); /*{{{*/
@@ -332,7 +336,7 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 if( log_this) log       ("%c"+_caller+" → "+caller, lb1);
 if( log_more) log_caller();
-if( log_more) log("chrome.runtime.lastError=["+ chrome.runtime.lastError +"]");
+if( log_more && chrome.runtime.lastError) log("chrome.runtime.lastError=["+ chrome.runtime.lastError +"]");
 
 //t     action_tag = message.cmd || message.csp_filter || message.set_log_tag || message.caller;
 //( log_this) log_object("..."       , { action_tag, _caller });
@@ -350,7 +354,7 @@ if( log_this) log("%c The popup UI is not showing", lbb+lbH+lb8);
 
     }
     catch(ex) {
-        console.error(B_SCRIPT_ID+" ERROR:\n"+ ex);
+        console.error(B_SCRIPT_ID+" ERROR:"+LF+ ex);
     }
 };
 /*}}}*/
@@ -442,6 +446,19 @@ let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 if( b_is_paused() ) { log("%c"+SYMBOL_CONSTRUCTION+" PAUSED in "+caller, lbb+lbH+lf1); return false; } // whether to wait for an async response .. or not
+
+    let action_tags
+        = ((typeof message.caller        != "undefined") ? (" → "       +message.caller       ) : "")
+        + ((typeof message.focus         != "undefined") ? (" . "       +message.focus        ) : "")
+        + ((typeof message.removed       != "undefined") ? (" . "       +message.removed      ) : "")
+        + ((typeof message.closed        != "undefined") ? (" . "       +message.closed       ) : "")
+        + ((typeof message.set_log_tag   != "undefined") ? (" → "       +message.set_log_tag  ) : "")
+        + ((typeof message.set_log_state != "undefined") ? (" → "       +message.set_log_state) : "")
+        + ((typeof message.cmd           != "undefined") ? (" →   cmd: "+message.cmd          ) : "")
+        + ((typeof message.query         != "undefined") ? (" → query: "+message.query        ) : "")
+        + ((typeof message.start         != "undefined") ? (" → start: "+message.start        ) : "")
+        + ((typeof message.csp_filter    != "undefined") ? (" . "       +message.csp_filter   ) : "")
+    ;
 /*}}}*/
 /* IGNORE MESSAGE FROM SELF {{{*/
     if(   message.caller
@@ -463,20 +480,9 @@ if( log_this) {
         return false; // whether to wait for an async response .. or not
     }
     /*}}}*/
-/* LOG {{{*/
 
-    let action_tags
-        = ((typeof message.caller        != "undefined") ? (" → "       +message.caller       ) : "")
-        + ((typeof message.focus         != "undefined") ? (" . "       +message.focus        ) : "")
-        + ((typeof message.removed       != "undefined") ? (" . "       +message.removed      ) : "")
-        + ((typeof message.closed        != "undefined") ? (" . "       +message.closed       ) : "")
-        + ((typeof message.set_log_tag   != "undefined") ? (" → "       +message.set_log_tag  ) : "")
-        + ((typeof message.set_log_state != "undefined") ? (" → "       +message.set_log_state) : "")
-        + ((typeof message.cmd           != "undefined") ? (" →   cmd: "+message.cmd          ) : "")
-        + ((typeof message.query         != "undefined") ? (" → query: "+message.query        ) : "")
-        + ((typeof message.start         != "undefined") ? (" → start: "+message.start        ) : "")
-        + ((typeof message.csp_filter    != "undefined") ? (" . "       +message.csp_filter   ) : "")
-    ;
+try {
+/* LOG {{{*/
 
 if( log_ACTIVATED() || message.set_log_tag) log_console_clear(LOG_MAP.B_LOG3_PRESERVE, action_tags);
 if( log_more) log_sep_top(caller+" .. "+action_tags, "LOG8_TAG");
@@ -491,7 +497,53 @@ if( log_this) log_object(  caller+action_tags
                          }
                          , (message.start ? lf5 : lf0), !log_more); // collapsed
 /*}}}*/
-try {
+    /* [message.cmd == "reload"] ● POPUP BUTTON CLICKED {{{*/
+    if(message.cmd == "reload")
+    {
+        log("● RELOAD");
+        // NO tabs ● MANUAL RELOAD {{{
+        let last_tabId = bg_tabs_get_last_activated_tabId(caller);
+        if(!last_tabId && !message.tabId)
+        {
+            if( response_handler )
+            {
+                let response
+                    = {   "● MESSAGE": "" , ...message
+                        , REPLY      : "NO tabId"  +LF
+                        +              "● RELOADING:"+LF
+                        +              "1 bg_message_onMessage_CB_query will reload the current page"+LF
+                        +              "2 then send a message to POPUP (if it is still connected)"
+                        , type       : "pending"
+                        , caller     : caller + (message.caller ? " replying to "+message.caller : "")
+                    };
+if( log_this) log_object("SENDING A REPLY TO "+message.cmd, response); // collapsed
+
+                response_handler( response );
+            }
+            if(!last_tabId && !message.tabId)
+            {
+                chrome.tabs.query({}) // any window, any tab ● https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/query
+                    .then ((tabs ) => {
+
+                        tabs.forEach((tab) => {
+                            if(!message.tabId || tab.active) {
+                                message.tabId      = tab.id;
+                                message.tab_active = tab.active;
+                            }
+                        });
+if( log_this) log("%c RELOADING %c tabId "+message.tabId+"%c active "+message.tab_active
+                 , lbb+lbL     ,lbb+lbC                  ,lbb+lbR+lbX[message.tab_active ? 5:2]);
+
+                        bg_message_onMessage_CB_query( message );
+                    })
+                    .catch((error) => { console.error(BG_MESSAGE_SCRIPT_ID+"."+caller+": "+message.cmd, error); })
+                ;
+            }
+            return false; // whether to wait for an async response .. or not
+        }
+        //}}}
+    }
+    /*}}}*/
     /* [popup_showing_windowId] {{{*/
     if( typeof message.popup_showing_windowId != "undefined")
     {
@@ -522,8 +574,9 @@ if( log_this) log("%c"+SD2    +"%c SET %c LOG_MAP %c "+message.set_log_tag
     }
     /*}}}*/
     /* [query] {{{*/
-    else if( typeof message.query          != "undefined")
-    {
+    else if(   (typeof message.query  != "undefined")
+            || (       message.cmd    == "reload"   )
+           ) {
 if( log_this) log("%c"+SD3    +"%c calling bg_message_onMessage_CB_query"
                   ,lbb+lbH+lb3 ,lf4                                     );
 
@@ -548,7 +601,7 @@ if( log_this) log("%c"+SD4    +"%c calling bg_message_onMessage_CB_tab"
         setTimeout(bg_message_onMessage_CB_tab,0,message, response_handler);
     }
     /*}}}*/
-if(log_this) log("%c"+SD5     +"%c "+caller+" ...return "+(response_handler != null)+  " .. (response_handler != null)"
+if(log_this) log("%c"+SD5     +"%c "+caller+" ...return (response_handler != null)=["+(response_handler != null)+"]"
                  ,lbb+lbH+lb5  ,lf4);
 
     return (response_handler != null); // whether to wait for an async response .. or not
@@ -565,76 +618,106 @@ if( log_this || log_ACTIVATED() || LOG_MAP.B_LOG0_MORE) log_STORAGE();
 // └──────────────────┘
 /*_ bg_message_onMessage_CB_query {{{*/
 /*{{{*/
-const B_TABS_ON_MESSAGE_QUERY     = "TABS ON MESSAGE QUERY: ";
+const B_TABS_ON_MESSAGE_QUERY     = "TABS ON MESSAGE QUERY";
 
 /*}}}*/
-let bg_message_onMessage_CB_query = async function(message, response_handler=null)
+let bg_message_onMessage_CB_query = /*async*/ function(message, response_handler=null)
 {
 /*{{{*/
 let   caller = "bg_message_onMessage_CB_query";
 let log_this = log_this_get(caller);
 
-if( log_this) log("%c "+caller+"%c message.query %c"+message.query
-                  ,lbL+lf1    ,lbC+lf1         ,lbR+lf1          );
+let action
+    = (message.cmd == "reload") ? "reload "+message.tabId
+    : (message.query          ) ? "query " +message.query
+    :                             undefined
+;
+
+if( log_this) log("%c "+caller+"%c action %c"+action
+                  ,lbL+lf1    ,lbC+lf1   ,lbR+lf1   );
+if( log_this) console.trace();
 /*}}}*/
-    /* NO [tabId] - LOG2_TAG - [NO lAST ACTIVATED TAB] .. f(bg_tabs_get_last_activated_tabId) {{{*/
-    let tabId = bg_tabs_get_last_activated_tabId(caller);
+    /* ● [NO tabId] - LOG2_TAG - error B_NO_LAST_ACTIVATED .. f(bg_tabs_get_last_activated_tabId) {{{*/
+    let tabId = message.tabId || bg_tabs_get_last_activated_tabId(caller);
     if(!tabId )
     {
-        if(!message.status)
-            message.status = B_TABS_ON_MESSAGE_QUERY+"NO LAST ACTIVATED";
+        let response
+            = {   REPLY : B_TABS_ON_MESSAGE_QUERY+": "+B_NO_LAST_ACTIVATED
+                , type  : "error"
 
-log("%c"+SD1+    "%c NO tabId %c"+message.status
-    ,lbb+lbH+lf1 ,lbL+lb2    ,lbR+lf2           );
-console.trace();
+            };
+if( log_this) log("%c"+SD1+"%c"+response.REPLY,lbb+lbH+lf1 ,lbH+lb2);
 
         if( response_handler )
-            bg_message_onMessage_CB_reply(tabId, message, response_handler);
+            bg_message_onMessage_CB_reply(tabId, message, response, response_handler);
 
         return "LOG2_TAG";
     }
     /*}}}*/
-    /* NO [url] YET - LOG3_TAG - NEED TAB URL {{{*/
-    let url = bg_tabs_get_tabId_key(tabId, "url");
-    if(!url )
+    /* ● [  RELOAD] - LOG3_TAG - pending bg_content_scripts_reload {{{*/
+    if(message.cmd == "reload")
     {
-if( log_this) log("%c"+SD2+   "%c NEED TAB URL CALLING %c bg_settings_tabs4_query_active_tab_url"
-                  ,lbB+lbH+lb2,lf3                    ,lf3                                           );
+        let response
+            = {   REPLY : B_TABS_ON_MESSAGE_QUERY+": RELOADING"
+                , type  : "pending"
+                , tabId
+            };
+if( log_this) log("%c"+SD1+"%c"+response.REPLY,lbb+lbH+lf1 ,lbH+lb3);
 
-        await bg_settings_tabs4_query_active_tab_url( tabId
-                                                        , { query: "QUERY TAB URL" , caller: log_js.get_callers_bot() }
-                                                        , response_handler
-                                                      );
+        if( response_handler )
+            bg_message_onMessage_CB_reply(tabId, message, response, response_handler);
+
+        /* [bg_content executeScript] */
+        message.tabId = tabId;
+        bg_content_scripts_reload( message );
 
         return "LOG3_TAG";
     }
     /*}}}*/
-    /* OK [url] LOG4_TAG - HAVE AN URL FOR A REPLY TO POPUP QUERY ANSWER {{{*/
-    /* NOTE: popup_js has no clue about its own tabId .. short of an async call to getCurrent */
-    if( url )
+    /* ● [  NO URL] - LOG4_TAG - NEED TAB URL {{{*/
+    let url = bg_tabs_get_tabId_key(tabId, "url");
+    if(!url )
     {
-        if(!message.status)
-            message.status = B_TABS_ON_MESSAGE_QUERY+"HAVE URL";
+if( log_this) log("%c"+SD2+   "%c NEED TAB URL CALLING %c bg_settings_tabs4_query_active_tab_url [tabId "+tabId+"]"
+                  ,lbB+lbH+lb2,lf3                    ,lf3                                           );
 
-if( log_this) log("%c"+SD3+   "%c"+message.status
-                  ,lbb+lbH+lb3,lf4               );
-
-        if( response_handler )
-            bg_message_onMessage_CB_reply(tabId, message, response_handler);
+        /*await*/ bg_settings_tabs4_query_active_tab_url( tabId
+                                                        , { query: "QUERY TAB URL" , caller: log_js.get_callers_bot() }
+                                                        , response_handler
+                                                      );
 
         return "LOG4_TAG";
     }
     /*}}}*/
-    /* DEFAULT [TAB SYNC] .. QUERY ANSWERED {{{*/
-    else {
-        if(!message.status)
-            message.status = B_TABS_ON_MESSAGE_QUERY+"UNEXPECTED QUERY";
-
-if( log_this) log("%c "+caller+"%c"+SD4+   "%c"+message.status+": "+message.query
-                  ,lbb+lbH+lb2,lbb+lbH+lb4,lbb+lf2                              );
+    /* ● [HAVE URL] - LOG5_TAG - HAVE AN URL FOR A REPLY TO POPUP QUERY ANSWER {{{*/
+    /* NOTE: popup_js has no clue about its own tabId .. short of an async call to getCurrent */
+    if( url )
+    {
+        let response
+            = {   REPLY : B_TABS_ON_MESSAGE_QUERY+": HAVE URL"
+                , type  : "answer"
+                , url
+            };
+if( log_this) log("%c"+SD3+"%c"+response.REPLY, lbb+lbH+lb3,lf4);
 
         if( response_handler )
-            bg_message_onMessage_CB_reply(tabId, message, response_handler);
+            bg_message_onMessage_CB_reply(tabId, message, response, response_handler);
+
+            return "LOG5_TAG";
+        }
+        /*}}}*/
+        /* ..[ DEFAULT] - LOG8_TAG - [TAB SYNC] .. QUERY ANSWERED {{{*/
+    else {
+        let response
+            = {   REPLY : B_TABS_ON_MESSAGE_QUERY+": UNEXPECTED QUERY"
+                , type  : "error"
+
+            };
+if( log_this) log("%c "+caller+"%c"+SD4+   "%c action: "+action
+                  ,lbb+lbH+lb2 ,lbb+lbH+lb4,lbb+lf2            );
+
+        if( response_handler )
+            bg_message_onMessage_CB_reply(tabId, message, response, response_handler);
 
         return "LOG8_TAG";
     }
@@ -642,53 +725,76 @@ if( log_this) log("%c "+caller+"%c"+SD4+   "%c"+message.status+": "+message.quer
 };
 /*}}}*/
 /*➔ bg_message_onMessage_CB_reply {{{*/
-let bg_message_onMessage_CB_reply = function(tabId,message,response_handler)
+let bg_message_onMessage_CB_reply = function(tabId,message,response,response_handler)
 {
 /*{{{*/
 let   caller = "bg_message_onMessage_CB_reply";
 let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
-if( log_more) log_sep_top(caller+" "+message.query);
-if( log_this)   log("%c "+caller+"%c message.query %c"+message.query
-                    ,lbL+lf9     ,lbC+lf9         ,lbR+lf9          );
+let action
+    = (message.cmd == "reload") ? "reload tabId=["+tabId+"]"
+    : (message.query          ) ? "query "+message.query
+    :                             undefined
+;
+
+if( log_more) log_sep_top(caller+" "+action);
+if( log_this)   log("%c "+caller+"%c action %c"+action
+                    ,lbL+lf9     ,lbC+lf9  ,lbR+lf9   );
 /*}}}*/
 
     // ATTRIBUTES {{{
-    let            url =  bg_tabs_get_tabId_key(tabId, "url");
+    let            url =   tabId && bg_tabs_get_tabId_key(tabId, "url");
     let tab_attributes = { tabId , url };
 
     //}}}
     // SETTINGS {{{
-    let       start    =  bg_tabs_get_tabId_key(tabId, "start"         )
-        ||              !!bg_tabs_get_tabId_key(tabId, "tools_deployed");/*if(     start)*/tab_attributes.     start =      start;
-    let  csp_filter    =  bg_tabs_get_tabId_key(tabId, "csp_filter"    );  if(csp_filter)  tab_attributes.csp_filter = csp_filter;
-    let   cancelreq    =  bg_tabs_get_tabId_key(tabId, "cancelreq"     );  if( cancelreq)  tab_attributes. cancelreq =  cancelreq;
-    let       theme    =  bg_tabs_get_tabId_key(tabId, "theme"         );  if(     theme)  tab_attributes.     theme =      theme;
-    let    typeface    =  bg_tabs_get_tabId_key(tabId, "typeface"      );  if(  typeface)  tab_attributes.  typeface =   typeface;
-    let       color    =  bg_tabs_get_tabId_key(tabId, "color"         );  if(     color)  tab_attributes.     color =      color;
+    let tab_items;
+    if( tabId )
+    {
+        let        get =  bg_tabs_get_tabId_key;
 
-    let   tab_items    =  bg_tabs_get_tabId    (tabId);
+        let      start =  get(tabId, "start"         )
+            ||          !!get(tabId, "tools_deployed");/*if(     start)*/tab_attributes.     start =      start;
+        let csp_filter =  get(tabId, "csp_filter"    );  if(csp_filter)  tab_attributes.csp_filter = csp_filter;
+        let  cancelreq =  get(tabId, "cancelreq"     );  if( cancelreq)  tab_attributes. cancelreq =  cancelreq;
+        let      theme =  get(tabId, "theme"         );  if(     theme)  tab_attributes.     theme =      theme;
+        let   typeface =  get(tabId, "typeface"      );  if(  typeface)  tab_attributes.  typeface =   typeface;
+        let      color =  get(tabId, "color"         );  if(     color)  tab_attributes.     color =      color;
 
+        /**/ tab_items =  bg_tabs_get_tabId    (tabId);
+    }
+    else {
+        /**/  tab_items           = null;
+
+        tab_attributes.     start = undefined;
+        tab_attributes.csp_filter = undefined;
+        tab_attributes. cancelreq = undefined;
+        tab_attributes.     theme = undefined;
+        tab_attributes.  typeface = undefined;
+        tab_attributes.     color = undefined;
+    }
     //}}}
 try{
     // [response] {{{
-    let response
-        = {   MESSAGE__________________________ : "▼" , ...message
-            , ATTRIBUTES_______________________ : "▼" , ...tab_attributes
-            , ITEMS____________________________ : "▼" , ...tab_items
-            , HANDLER__________________________ : "▼" ,    handler : BG_MESSAGE_SCRIPT_ID+" → "+caller+"(query "+message.query+")"
+    response
+        = {   "● RESPONSE"   : "" , ...response
+            , "● MESSAGE"    : "" , ...message
+            , "● ATTRIBUTES" : "" , ...tab_attributes
+            , "● ITEMS"      : "" , ...tab_items
+            , "● HANDLER"    : "" ,    handler : BG_MESSAGE_SCRIPT_ID+" → "+caller+"(action "+action+")"
         };
 
-    if( response.caller )
-        response.caller = BG_MESSAGE_SCRIPT_ID+": response to a call from ["+response.caller+"]";
+if( log_this) log(caller+"%c popup_showing_windowId=["+popup_showing_windowId+"]", lbb+lbH+lb4);
+    if( response_handler &&  popup_showing_windowId)
+        response.caller = BG_MESSAGE_SCRIPT_ID+":"+LF+"response to a call from "+LF+response.caller;
 
-if( log_this) log_object("SENDING A REPLY TO "+message.caller, response, lf9, !log_more); // collapsed
+if( log_this) log_object("SENDING A REPLY TO "+message.caller, response, lb9, !log_more); // collapsed
 
-    response_handler(     response );
+    response_handler( response );
     //}}}
 } catch(error) {
-    log(caller+": response_handler "+error.response); // response_handler is not a function...
+    log(caller+": "+error.message); // response_handler is not a function...
     console.dir(  response_handler );
 }
 if( log_more) log_sep_bot(caller+" "+message.query);
@@ -904,7 +1010,7 @@ if( log_more) log_object("TAB["+message.tabId+"]", bg_tabs_get_tabId(message.tab
     if( response_handler )
     {
         if( message.caller )
-            message.caller = BG_MESSAGE_SCRIPT_ID+": response to a call from ["+message.caller+"]";
+            message.caller = BG_MESSAGE_SCRIPT_ID+":"+LF+"response to a call from "+LF+message.caller;
 
         message.status
             = ((message.status||"") +" "+B_TABS_ON_MESSAGE + what_changed).trim();
@@ -1142,6 +1248,7 @@ if(log_this) log(caller+"%c [UNHANDLED message.csp_filter]=["+csp_filter+"]", lf
         , bg_message_onMessage_CB
         , bg_message_onMessage_CB_TAB_start
         , bg_message_onMessage_CB_TAB_stop
+        , bg_message_onMessage_CB_query
     };
     /*}}}*/
 }());

@@ -58,7 +58,7 @@
 /* eslint-disable no-warning-comments */
 
 const DOM_TOOLS_JS_ID       = "dom_tools_js" ;
-const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (230821:20h:57)";
+const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (231001:02h:27)";
 /*}}}*/
 let dom_tools   = (function() {
 "use strict";
@@ -1452,36 +1452,36 @@ if( log_this) log("%c shadow_host %c"+get_id_or_tag_and_className(shadow_host), 
     /* IN CASE [shadow_host] HAS BEEN ALREADY BEEN CREATED BY [dom_load] */
     if(!shadow_host)
     {
-        shadow_host                 = document.querySelector("#shadow_host");
-        if(shadow_host) shadow_root = shadow_host.shadowRoot;
+        shadow_host                     = document.querySelector("#shadow_host");
     }
-
-if(!shadow_host)
-{
-    shadow_host                         = document.createElement("DIV");
-    shadow_host.id                      = "shadow_host";
-    shadow_host.style.fontSize          = "initial";
-    document.documentElement.appendChild( shadow_host );
-
-    if( shadow_host.attachShadow ) {
-        shadow_host.style.zIndex        = t_data.ZINDEX_SHADOW_HOST;
-/*{{{
-        shadow_host.style.zIndex        = parseInt((t_util.t_get_divs_style_z_index_max()+1000) / 1000) * 1000;
-}}}*/
-if( log_this || DOM_TOOLS_TAG)    log("%c shadow_host.style.zIndex=["+shadow_host.style.zIndex+"]", lbH+lf1);
-        shadow_host.style.fontSize      = t_data.FONT_SIZE_SHADOW_HOST;
-
-        shadow_root =                     shadow_host.attachShadow({mode: "open"});
+    if(shadow_host)
+    {
+        shadow_root                     = shadow_host.shadowRoot;
     }
     else {
-        logBIG(caller+": shadow_host.attachShadow is missing");
-        /* doc + tools event clash         */
-        /* shadow_root = document.body;    */
-        shadow_root    = shadow_host;
+        shadow_host                     = document.createElement("DIV");
+        shadow_host.id                  = "shadow_host";
+        document.documentElement.appendChild( shadow_host );
+
+        if( shadow_host.attachShadow ) {
+            shadow_root                 = shadow_host.attachShadow({mode: "open"});
+        }
+        else {
+            logBIG(caller+": shadow_host.attachShadow is missing");
+            /* doc + tools event clash         */
+            /* shadow_root              = document.body;    */
+            shadow_root                 = shadow_host;
+        }
+        shadow_root.id                  = "shadow_root";
     }
 
-    shadow_root.id     = "shadow_root";
-}
+    shadow_host.style.zIndex            = t_data.ZINDEX_SHADOW_HOST;
+    shadow_host.style.fontSize          = "initial";
+/*{{{
+    shadow_host.style.fontSize          = t_data.FONT_SIZE_SHADOW_HOST;
+}}}*/
+
+if( log_this || DOM_TOOLS_TAG)    log("%c shadow_host.style.zIndex=["+shadow_host.style.zIndex+"]", lbH+lf1);
     /*}}}*/
     /* [shadow_root] HEAD charset utf-8 .. (200624: relying on script charset="utf-8" attribute instead) {{{*/
 /*{{{
@@ -3841,6 +3841,7 @@ log("t_REMOVE_ADS_changed("+id+" , "+state+") %c"+ (by_user_or_from_storage ? "b
     if(state)
     {
         t_util.t_REMOVE_ADS(id);
+        t_util.t_REMOVE_FIXED();
 
         t_sticky.t_sticky_LOAD_ANCHORS_CHANGED();
 
@@ -20566,6 +20567,8 @@ let em_pixels;
 let t_pat_bag_status_set_innerText = function(innerText)
 {
 let log_this = LOG_MAP.S0_PATTERN || LOG_MAP.S2_SELECT;
+
+    if(!fly_log) return;
 
     if(!em_pixels) {
         let    cs = window.getComputedStyle(fly_log);

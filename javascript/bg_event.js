@@ -20,11 +20,12 @@
 /* globals  bg_page                   */
 /* globals  bg_settings               */
 /* globals  bg_store                  */
+/* globals  bg_tabs                   */
 
 /* eslint-enable  no-redeclare        */
 
 const BG_EVENT_SCRIPT_ID  = "bg_event";
-const BG_EVENT_SCRIPT_TAG =  BG_EVENT_SCRIPT_ID +" (230830:19h:36)"; /* eslint-disable-line no-unused-vars */
+const BG_EVENT_SCRIPT_TAG =  BG_EVENT_SCRIPT_ID +" (231006:23h:58)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ EVENT LISTENERS                                              B_LOG8_STORE │
@@ -85,6 +86,7 @@ let bg_header_addListener;
 //_______________ bg_event
 /*_ bg_message {{{*/
 let bg_message_onMessage_addListener;
+let bg_message_onMessage_CB_query;
 
 /*}}}*/
 /*_ bg_page {{{*/
@@ -95,9 +97,15 @@ let bg_page1_UNLOAD_TAB;
 let bg_settings_tabs1_onActivated;
 let bg_settings_tabs2_onUpdated;
 let bg_settings_tabs3_onRemoved;
+let bg_settings_tabs4_query_active_tab_url;
+let bg_settings_tabs6_get_url_settings;
 
 /*}}}*/
-//_______________ bg_tabs
+/*_ bg_tabs {{{*/
+let bg_tabs_get_last_activated_tabId;
+let bg_tabs_get_tabId_key;
+
+/*}}}*/
 /*_ bg_store {{{*/
 let bg_store_SAVE_items;
 
@@ -141,6 +149,7 @@ let _import = function()
     /*}}}*/
     modules.push( bg_message    ); /*{{{*/
     bg_message_onMessage_addListener= bg_message.bg_message_onMessage_addListener;  li("bg_message","bg_message_onMessage_addListener",bg_message_onMessage_addListener);
+    bg_message_onMessage_CB_query   = bg_message.bg_message_onMessage_CB_query;     li("bg_message","bg_message_onMessage_CB_query",bg_message_onMessage_CB_query);
 
     /*}}}*/
     modules.push( bg_page       ); /*{{{*/
@@ -148,16 +157,22 @@ let _import = function()
 
     /*}}}*/
     modules.push( bg_settings   ); /*{{{*/
-    bg_settings_tabs1_onActivated   = bg_settings.bg_settings_tabs1_onActivated;    li("bg_settings","bg_settings_tabs1_onActivated",bg_settings_tabs1_onActivated);
-    bg_settings_tabs2_onUpdated     = bg_settings.bg_settings_tabs2_onUpdated;      li("bg_settings","bg_settings_tabs2_onUpdated",bg_settings_tabs2_onUpdated);
-    bg_settings_tabs3_onRemoved     = bg_settings.bg_settings_tabs3_onRemoved;      li("bg_settings","bg_settings_tabs3_onRemoved",bg_settings_tabs3_onRemoved);
+    bg_settings_tabs1_onActivated          = bg_settings.bg_settings_tabs1_onActivated;          li("bg_settings","bg_settings_tabs1_onActivated",bg_settings_tabs1_onActivated);
+    bg_settings_tabs2_onUpdated            = bg_settings.bg_settings_tabs2_onUpdated;            li("bg_settings","bg_settings_tabs2_onUpdated",bg_settings_tabs2_onUpdated);
+    bg_settings_tabs3_onRemoved            = bg_settings.bg_settings_tabs3_onRemoved;            li("bg_settings","bg_settings_tabs3_onRemoved",bg_settings_tabs3_onRemoved);
+    bg_settings_tabs4_query_active_tab_url = bg_settings.bg_settings_tabs4_query_active_tab_url; li("bg_settings","bg_settings_tabs4_query_active_tab_url",bg_settings_tabs4_query_active_tab_url);
+    bg_settings_tabs6_get_url_settings     = bg_settings.bg_settings_tabs6_get_url_settings;     li("bg_settings","bg_settings_tabs6_get_url_settings",bg_settings_tabs6_get_url_settings);
 
     /*}}}*/
     modules.push( bg_store      ); /*{{{*/
     bg_store_SAVE_items             = bg_store.bg_store_SAVE_items;                 li("bg_store","bg_store_SAVE_items",bg_store_SAVE_items);
 
     /*}}}*/
-    //_______________________ bg_tabs
+    modules.push( bg_tabs       ); /*{{{*/
+    bg_tabs_get_last_activated_tabId    = bg_tabs.bg_tabs_get_last_activated_tabId;                 li("bg_store","bg_tabs_get_last_activated_tabId",bg_tabs_get_last_activated_tabId);
+    bg_tabs_get_tabId_key               = bg_tabs.bg_tabs_get_tabId_key;                 li("bg_store","bg_tabs_get_tabId_key",bg_tabs_get_tabId_key);
+
+    /*}}}*/
     log_js.log_import(bg_event     , modules);
 };
 /*}}}*/
@@ -181,6 +196,7 @@ let log_this_get = function(_caller)
 
     case "bg_event_addListeners"                      : return BG_EVENT_JS_LOG || worker_js.logging();
     case "bg_event_declarativeNetRequest_addListener" : return BG_EVENT_JS_LOG || worker_js.logging();
+    case "bg_event_onLoad_check_current_tab"          : return BG_EVENT_JS_LOG || worker_js.logging();
     case "bg_event_onActivated_addListener"           : return BG_EVENT_JS_LOG || worker_js.logging();
     case "bg_event_onBeforeunload_addListener"        : return BG_EVENT_JS_LOG || log_ACTIVATED();
     case "bg_event_onRemoved_addListener"             : return BG_EVENT_JS_LOG || worker_js.logging();
@@ -188,9 +204,6 @@ let log_this_get = function(_caller)
     case "bg_event_webNavigation_addListener"         : return BG_EVENT_JS_LOG || worker_js.logging();
 
     case "bg_event_onUpdated_declarativeNetRequest"   : return BG_EVENT_JS_LOG;// add specific LOG for declarativeNetRequest //FIXME
-    case "bg_event_check_CSP_Matched_rules"           : return BG_EVENT_JS_LOG;// add specific LOG for declarativeNetRequest //FIXME
-    case "bg_event_check_CSP_rulesMatchedInfo"        : return BG_EVENT_JS_LOG;// add specific LOG for declarativeNetRequest //FIXME
-    case "bg_event_check_rules_CSP"                   : return BG_EVENT_JS_LOG;// add specific LOG for declarativeNetRequest //FIXME
     }
 
 /*{{{*/
@@ -242,6 +255,8 @@ if( log_more) chrome.permissions.getAll().then((args) => log_object("BROWSER PER
 if( log_this) console.groupEnd();
 
 if( log_this || log_ACTIVATED() || LOG_MAP.B_LOG0_MORE) log_STORAGE();
+
+    bg_event_onLoad_check_current_tab();
 };
 /*}}}*/
 /*_ bg_event_onActivated_addListener {{{*/
@@ -256,6 +271,7 @@ let log_this = log_this_get(caller);
         return;
 
     chrome.tabs.onActivated.addListener( bg_settings_tabs1_onActivated );
+
 };
 /*}}}*/
 /*_ bg_event_onBeforeunload_addListener {{{*/
@@ -316,7 +332,7 @@ let log_this = log_this_get(caller);
     chrome.webNavigation.onCommitted.addListener(function(details) {
         if(details.frameId === 0) // Only listen for top-level frames.
         {
-if(BG_EVENT_JS_LOG) log_object("onCommitted", details);
+if( log_this) log_object("webNavigation.onCommitted "+details.url, details, lbH+lf5);
         }
     });
 
@@ -324,10 +340,43 @@ if(BG_EVENT_JS_LOG) log_object("onCommitted", details);
 /*}}}*/
 
 // ┌───────────────────────────────────────────────────────────────────────────┐
+// │ ONLOAD                                                                    │
+// └───────────────────────────────────────────────────────────────────────────┘
+/*_ bg_event_onLoad_check_current_tab {{{*/
+let bg_event_onLoad_check_current_tab = async function()
+{
+/*{{{*/
+let   caller = "bg_event_onLoad_check_current_tab";
+let log_this = log_this_get(caller);
+
+/*}}}*/
+    let message
+        = {   query   : "url"
+            , tabId   : bg_tabs.bg_tabs_get_last_activated_tabId()
+            , queryObj: {}
+            , caller
+        };
+
+    await        bg_settings_tabs4_query_active_tab_url(message.tabId, message);
+    let tabId  = bg_tabs_get_last_activated_tabId();
+    let url    = bg_tabs_get_tabId_key(tabId, "url");
+    /*........*/ bg_settings_tabs6_get_url_settings(tabId, url);
+
+if( log_this) log("%c"+caller+"%c tabId "+tabId+" %c url "+url
+                  ,lbL+lb0    ,lbC+lb0  ,lbR+lb0              );
+};
+/*}}}*/
+
+// ┌───────────────────────────────────────────────────────────────────────────┐
 // │ declarativeNetRequest                                     ● manifest.json │
 // └───────────────────────────────────────────────────────────────────────────┘
-const CONTENT_SECURITY_POLICY = "content-security-policy";
 /*_ bg_event_declarativeNetRequest_addListener {{{*/
+/*{{{*/
+const LOG_RULEMATCHED_COOLDOWN_MS = 2000;
+let   last_onRuleMatchedDebug_call_time              =    0;
+let   last_onRuleMatchedDebug_burst_nb               =    0;
+
+/*}}}*/
 let bg_event_declarativeNetRequest_addListener = function()
 {
 /*{{{*/
@@ -339,23 +388,37 @@ let log_this = log_this_get(caller);
         return;
 
     chrome.declarativeNetRequest.onRuleMatchedDebug.addListener(function(details) {
-if(BG_EVENT_JS_LOG) log_object("onRuleMatchedDebug", details);
+
+        /* ONLY LOG THE FIRST OF A BURST */
+        let this_time = new Date().getTime() % 86400000;
+        if((this_time - last_onRuleMatchedDebug_call_time) > LOG_RULEMATCHED_COOLDOWN_MS)
+        {
+            last_onRuleMatchedDebug_call_time = this_time;  // LOGGING FIRST OF BUNCH
+            last_onRuleMatchedDebug_burst_nb  = 1;
+        }
+        else {
+            last_onRuleMatchedDebug_burst_nb += 1;          // ONLY COUNT THE FOLLOWERS
+            return;
+        }
+
+if( log_this) log_object("onRuleMatchedDebug ● FIRST RULE MATCH", details);
+//( log_this) log       ("onRuleMatchedDebug", log_js.log_o_keys_toString(details));
+//( log_this) log       ("onRuleMatchedDebug", log_js.log_json_prettify(details));
     });
 
 };
 /*}}}*/
 /*_ bg_event_onUpdated_declarativeNetRequest {{{*///FIXME
-let bg_event_onUpdated_declarativeNetRequest = async function(tabId,_caller)
+let bg_event_onUpdated_declarativeNetRequest = async function(tabId,changeInfo)
 {
 /*{{{*/
 let   caller = "bg_event_onUpdated_declarativeNetRequest";
 let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
-if( log_this) log(caller);
 /*}}}*/
 //FIXME
-if(BG_EVENT_JS_LOG) log(_caller);
+if( log_this) log("tabs.onUpdated %c"+last_onRuleMatchedDebug_burst_nb+" RULES MATCHED %c"+changeInfo.status, lbb+lbL+lb5, lbb+lbR+lb5);
 /*{{{
     let      enabledRulesets = await chrome.declarativeNetRequest.getEnabledRulesets();
 console.log("enabledRulesets", enabledRulesets );
@@ -366,63 +429,20 @@ console.log("enabledRulesets", enabledRulesets );
 console.log("matchedRules"   , matchedRules    );
 }}}*/
 
-    let matched_array = matchedRules.rulesMatchedInfo;
-/*{{{*/
-if(BG_EVENT_JS_LOG) {
-    for(let i=0;  i < matched_array.length;++i) {
+    let         matched_array = matchedRules.rulesMatchedInfo;
+if( log_more && matched_array.length) {
+    let cnt = "1...";
+    log_object(       "matched[  0  ]",                    matched_array[0], lb0);
+    for(let i=1;  i < matched_array.length;++i) {
         let matched = matched_array[i];
-        log_object("matched["+i+"]", matched);
+//      log_object(   "matched["+i+"]", matched                            , lb0);
+        log       ("%c matched["+cnt+"]"+ log_js.log_o_keys_toString(matched), lb0);
+//      log       ("%c matched["+cnt+"]"+ log_js.log_json_prettify  (matched), lb0);
     }
 }
+/*{{{*/
 /*}}}*/
 
-if(log_more) {
-    bg_event_check_CSP_Matched_rules   ( matched_array                  );
-    bg_event_check_CSP_rulesMatchedInfo( matched_array.rulesMatchedInfo );
-    bg_event_check_rules_CSP           ( matched_array                  );
-}
-
-};
-/*}}}*/
-/*_ bg_event_check_CSP_Matched_rules {{{*/
-let bg_event_check_CSP_Matched_rules = function(matched_array)
-{
-try {
-    matched_array.forEach((rule) => {
-        if(   rule.action.type === "modifyHeaders"
-              && rule.action.responseHeaders.some((header) => (header.header.toLowerCase() == CONTENT_SECURITY_POLICY))
-          )
-            console.log("Matched rule:", rule);
-    });
-} catch(ex) { console.warn(ex.message); }
-};
-/*}}}*/
-/*_ bg_event_check_CSP_rulesMatchedInfo {{{*/
-let bg_event_check_CSP_rulesMatchedInfo = function(rulesMatchedInfo)
-{
-try {
-    rulesMatchedInfo.forEach((ruleInfo ) => {
-        let rule = ruleInfo.rule;
-        if( rule.actions.some((action) => action.type === "modifyHeaders"
-                              &&          action.responseHeaders.some((header) => header.header.toLowerCase() == CONTENT_SECURITY_POLICY))
-          )
-            console.log("Matched rule:", rule);
-    });
-} catch(ex) { console.warn(ex.message); }
-};
-/*}}}*/
-/*_ bg_event_check_rules_CSP {{{*/
-let bg_event_check_rules_CSP = function(matched_array)
-{
-    try {
-        matched_array.forEach((ruleInfo) => {
-            let   rule = ruleInfo.rule;
-            if(   rule.action.type === "modifyHeaders"
-               && rule.action.responseHeaders.some((header) => header.header.toLowerCase() == CONTENT_SECURITY_POLICY)
-              )
-                console.log("Matched rule:", rule);
-        });
-    } catch(ex) { console.warn(ex.message); }
 };
 /*}}}*/
 
@@ -439,5 +459,23 @@ let bg_event_check_rules_CSP = function(matched_array)
 :vnew C:/LOCAL/USR/ivan/VIM/after/syntax/javascript_BAK_BOT_LOG_TOP.vim
 :so ~/VIM/after/syntax/javascript_BAK_BOT_LOG_TOP.vim
 
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │ ● https://developer.chrome.com/docs/devtools/overrides/#override-headers   │
+  │ ● https://github.com/ChromeDevTools/rfcs/discussions/4                     │
+  ├────────────────────────────────────────────────────────────────────────────┤
+  │ ● ../WORKSPACE/github.com/.headers                                         │
+  ├────────────────────────────────────────────────────────────────────────────┤
+  │                                                                            │
+  │ ● With the new Header Overrides feature in DevTools, you can specify       │
+  │   response headers locally.                                                │
+  │                                                                            │
+  │ ● When Chrome (with DevTools open and header overrides enabled) loads      │
+  │   a page for which header overrides are defined,                           │
+  │   Chrome behaves as if these overridden HTTP headers are coming            │
+  │   from the remote server.                                                  │
+  │                                                                            │
+  │ ● This allows you to locally experiment with different values              │
+  │   for HTTP response headers.                                               │
+  └────────────────────────────────────────────────────────────────────────────┘
 
 */

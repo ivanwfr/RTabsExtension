@@ -25,7 +25,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_HEADER_SCRIPT_ID  = "bg_header";
-const BG_HEADER_SCRIPT_TAG =  BG_HEADER_SCRIPT_ID +" (230830:19h:19)"; /* eslint-disable-line no-unused-vars */
+const BG_HEADER_SCRIPT_TAG =  BG_HEADER_SCRIPT_ID +" (230928:21h:22)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ HTTP HEADER                                    B_LOG4_CSP B_LOG6_ONHEADER │
@@ -250,8 +250,9 @@ let log_this_get = function(_caller)
     switch(_caller) {
     case "bg_header_addListener"                            : return BG_HEADER_JS_LOG || LOG_MAP.B_LOG6_ONHEADER || worker_js.logging();
     case "bg_header_onHeadersReceived"                      : return BG_HEADER_JS_LOG || LOG_MAP.B_LOG6_ONHEADER || PROVIDING_DEFAULT_HEADER_CSP_TO_FILTER;
-    case "bg_header_onHeadersReceived_PATCH_CSP"                             : return BG_HEADER_JS_LOG || LOG_MAP.B_LOG6_ONHEADER || PROVIDING_DEFAULT_HEADER_CSP_TO_FILTER;
+    case "bg_header_onHeadersReceived_PATCH_CSP"            : return BG_HEADER_JS_LOG || LOG_MAP.B_LOG6_ONHEADER || PROVIDING_DEFAULT_HEADER_CSP_TO_FILTER;
 
+    case "bg_header0_check_charset_idx"                     : return BG_HEADER_JS_LOG || LOG_MAP.B_LOG6_ONHEADER;
     case "bg_header0_check_csp_idx"                         : return BG_HEADER_JS_LOG || LOG_MAP.B_LOG6_ONHEADER;
     case "bg_header1_check_SAVED_URL_SETTINGS"              : return BG_HEADER_JS_LOG || LOG_MAP.B_LOG6_ONHEADER || PROVIDING_DEFAULT_HEADER_CSP_TO_FILTER;
     case "bg_header2_check_URL_TO_SKIP"                     : return BG_HEADER_JS_LOG || LOG_MAP.B_LOG6_ONHEADER;
@@ -373,11 +374,12 @@ let   caller = "bg_header_onHeadersReceived";
 let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
-//if( log_ACTIVATED() ) log_console_clear(LOG_MAP.B_LOG3_PRESERVE, caller);//FIXME .. may be triggered by page reloading calls
+//if( log_ACTIVATED() ) log_console_clear(LOG_MAP.B_LOG3_PRESERVE, caller);// may be triggered by page reloading calls
 
+    let log_tag = "LOG8_TAG";
 /*}}}*/
     // ┌───────────────────────────────────────────────────────────────────────┐
-    // │ FIXME ● Opera does not dispatch main page url responseHeaders ● FIXME │
+    // │ Opera does not (always) dispatch main page responseHeaders    ● FIXME │
     // └───────────────────────────────────────────────────────────────────────┘
     /* [tabId] [url] [ohr] {{{*/
     let tabId = details.tabId;
@@ -405,8 +407,12 @@ if( log_this) log("%c OHR  %c SETTING TAB url=["+url+"] %c ohr=["+ohr+"]"
         bg_tabs_set_tabId_key_val(tabId, "url", url);
     }
     /*}}}*/
+if( log_this && details.url == url) log_sep_top(caller+" "+details.url, log_tag);
+try {
+//log_object("bg_header_onHeadersReceived.details", details);
+//console.log( details );
     /* ORH ● SKIPPING [ALREADY  RECEIVED ] {{{*/
-    if( ohr )
+    if(ohr && !log_this)
     {
 if( log_more) log("%c OHR  %c SKIPPING ALREADY RECEIVED url["+url+"]"
                   ,lbH+lf6,lbH+lf6                  );
@@ -435,6 +441,10 @@ if( log_this) log("%c OHR  %c HANDLING url=["+details.url+"]"
 
     return bg_header_onHeadersReceived_PATCH_CSP( details );
     /*}}}*/
+}
+finally {
+if( log_this && details.url == url) log_sep_bot(caller, log_tag);
+}
 };
 /*}}}*/
 /*_ bg_header_onHeadersReceived_PATCH_CSP {{{*/
@@ -464,16 +474,19 @@ let csp_filter = bg_tabs_get_tabId_key(tabId, "csp_filter");
 if( log_more) log_sep_top(caller+(PROVIDING_DEFAULT_HEADER_CSP_TO_FILTER ? " ➔ PROVIDING_DEFAULT_HEADER_CSP_TO_FILTER" : ""), log_tag);
     let csp_filter_applied;
     let csp_filter_effect  = FILTER_APPLIED8_NO_CSP;
+    let charset_idx        = -1;
     let csp_idx            = -1;
 try {
-    /* bg_header0_check_csp_idx {{{*/
-    csp_idx  = bg_header0_check_csp_idx(tabId, details.url, details.responseHeaders);
+    /* bg_header0_check_charset_idx ● bg_header0_check_csp_idx {{{*/
+    charset_idx = bg_header0_check_charset_idx(tabId, details.url, details.responseHeaders);
+    csp_idx     = bg_header0_check_csp_idx    (tabId, details.url, details.responseHeaders);
 
     let args = { initiator       : details.initiator
         ,        responseHeaders : details.responseHeaders
         ,        tabId
         ,        url             : details.url
         ,        csp_filter
+        ,        charset_idx
         ,        csp_idx
     };
     /*}}}*/
@@ -576,6 +589,46 @@ if( log_this || log_ACTIVATED() || LOG_MAP.B_LOG0_MORE) log_STORAGE();
 // ┌──────────┐
 // │ HANDLER  │
 // └──────────┘
+/*_ bg_header0_check_charset_idx {{{*/
+let bg_header0_check_charset_idx = function(tabId,url,responseHeaders)
+{
+/*{{{*/
+let   caller = "bg_header0_check_charset_idx";
+let log_this = log_this_get(caller);
+let log_more = log_this && LOG_MAP.B_LOG0_MORE;
+
+/*}}}*/
+    /* [charset_idx] {{{*/
+    let charset_idx = -1;
+    let charset_name;
+    for(let i=0; i < responseHeaders.length; ++i)
+    {
+        let    name  = responseHeaders[i].name.toLowerCase();
+        if(    name ==         "content-type"
+        ) {
+            charset_idx  = i;
+            charset_name = name;
+            break;
+        }
+    }
+
+    bg_tabs_set_tabId_key_val(tabId, "charset_name", charset_name);
+    /*}}}*/
+/*LOG{{{*/
+
+if(charset_idx >= 0) {
+//  if( log_more) log("%c FOUND HEADER [Content-Type] IN:%c "+bg_store_GET_url_domain(url), lbL+lb6,lbR+lf6);
+    if( log_more) log("%c FOUND HEADER [Content-Type] IN:%c "+                        url , lbL+lb6,lbR+lf6);
+    if( log_this) log_object(" → responseHeaders["+charset_idx+"] → ["+charset_name+"]"   , responseHeaders[charset_idx],lf6,false); //collapsed
+//  if( log_more) log        (  "responseHeaders["+charset_idx+"]");
+    if( log_more) console.log(  "responseHeaders["+charset_idx+"]", responseHeaders[  charset_idx  ]);
+} else {
+    if( log_more) log("%c ...NO HEADER [Content-Type] IN:%c "+bg_store_GET_url_domain(url), lbL+lb6,lbR+lf6);
+}
+/*}}}*/
+    return charset_idx;
+};
+/*}}}*/
 /*_ bg_header0_check_csp_idx {{{*/
 let bg_header0_check_csp_idx = function(tabId,url,responseHeaders)
 {
@@ -622,7 +675,6 @@ if(csp_idx >= 0) {
 //    responseHeaders.splice(index,1);
 //}
 }}}*/
-
     return csp_idx;
 };
 /*}}}*/
@@ -778,6 +830,7 @@ try {
         let message
             = {   REPLY  : log_result
                 , csp_filter
+                , type   : "answer"
                 , caller : BG_HEADER_SCRIPT_ID+".".caller
             };
         setTimeout(bg_message_sendMessage, 1000, message, caller); /* let popup icon blink */
@@ -796,6 +849,7 @@ try {
 
         let message
             = {   csp_filter
+                , type   : "answer"
                 , caller : BG_HEADER_SCRIPT_ID+".".caller
             };
         setTimeout(bg_message_sendMessage, 1000, message, caller);
@@ -842,7 +896,7 @@ try {
 if( log_this) log_object("FILTER MATCH "+SYN+" "+log_result, { url , csp_filter, header_domain , taburl_domain }, lf6);
 }
 };
-        /*}}}*/
+/*}}}*/
 /*_ bg_header6_get_csp_filter_rules {{{*/
 let bg_header6_get_csp_filter_rules = function(args)
 {

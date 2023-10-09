@@ -1,0 +1,22 @@
+[
+    {
+        "id"         : 1,
+        "priority"   : 1,
+        "condition"  : {
+            "regexFilter" : "\\.(cs|js|json|css|lua|md)",
+            "resourceTypes": ["main_frame"]
+        },
+        "action"     : {
+            "type"        : "modifyHeaders",
+            "responseHeaders"   : [
+                {
+                    "header"      : "Content-Type",
+                    "operation"   : "set",
+                    "value"       : "text/javascript; charset=utf-8"
+                }
+            ]
+        }
+    }
+]
+
+

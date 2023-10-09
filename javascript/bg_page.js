@@ -15,6 +15,7 @@
 /* globals  log_js                    */
 /* globals  background_js             */
 /* globals  bg_csp                    */
+/* globals  bg_message                */
 /* exported bg_page                   */
 /* globals  bg_store                  */
 /* globals  bg_tabs                   */
@@ -22,7 +23,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_PAGE_SCRIPT_ID  = "bg_page";
-const BG_PAGE_SCRIPT_TAG =  BG_PAGE_SCRIPT_ID +" (230830:21h:57)"; /* eslint-disable-line no-unused-vars */
+const BG_PAGE_SCRIPT_TAG =  BG_PAGE_SCRIPT_ID +" (231005:19h:53)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ PAGE ACTION                                                   B_LOG7_TABS │
@@ -89,7 +90,10 @@ let log_ACTIVATED;
 //_______________ bg_csp
 //_______________ bg_event
 //_______________ bg_header
-//_______________ bg_message
+/*_ bg_message {{{*/
+let bg_message_sendMessage;
+
+/*}}}*/
 //_______________ bg_page
 //_______________ bg_settings
 /*_ bg_store {{{*/
@@ -150,7 +154,10 @@ let _import = function()
     //_______________________ bg_csp
     //_______________________ bg_event
     //_______________________ bg_header
-    //_______________________ bg_message
+    modules.push( bg_message    ); /*{{{*/
+    bg_message_sendMessage              = bg_message.bg_message_sendMessage;                li("background_js","bg_message_sendMessage",bg_message_sendMessage);
+
+    /*}}}*/
     //_______________________ bg_page
     //_______________________ bg_settings
     modules.push( bg_store      ); /*{{{*/
@@ -186,14 +193,14 @@ let logging = function(state)
 let log_this_get = function(_caller)
 {
     switch(_caller) {
-    case "bg_page1_UNLOAD"                : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG1_MESSAGE || LOG_MAP.B_LOG9_STAGE;
-    case "bg_page2_RELOAD"                : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG1_MESSAGE || LOG_MAP.B_LOG9_STAGE;
-    case "bg_page2_RELOAD_GET_script"     : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG1_MESSAGE;
-    case "bg_page2_RELOAD_if_required"    : return BG_PAGE_JS_LOG || log_ACTIVATED();
-    case "bg_page3_RELOAD_FROM_SCRATCH"   : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG1_MESSAGE || LOG_MAP.B_LOG9_STAGE;
-    case "bg_page_GET_CheckContentScript" : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG1_MESSAGE;
-    case "bg_page_POPUP_pageAction"       : return BG_PAGE_JS_LOG || log_ACTIVATED();
-    case "bg_page_get_popup_title"        : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG7_TABS;
+    case "bg_page1_UNLOAD"                : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG9_STAGE;
+    case "bg_page2_RELOAD"                : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG9_STAGE;
+    case "bg_page2_RELOAD_GET_script"     : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG9_STAGE;
+    case "bg_page2_RELOAD_if_required"    : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG9_STAGE;
+    case "bg_page3_RELOAD_FROM_SCRATCH"   : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG9_STAGE;
+    case "bg_page_GET_CheckContentScript" : return BG_PAGE_JS_LOG;
+    case "bg_page_POPUP_pageAction"       : return BG_PAGE_JS_LOG;
+    case "bg_page_get_popup_title"        : return BG_PAGE_JS_LOG;
     }
 
 /*{{{*/
@@ -317,6 +324,31 @@ if( log_more) log_caller();
     if(chrome.action && chrome.action.setTitle) chrome.action.setTitle({tabId , title         });
     if(chrome.action && chrome.action.show    ) chrome.action.show    ( tabId                  );
 
+    /*}}}*/
+    /* MESSAGE TO POPUP {{{*/
+    if(   (pageAction.includes("status"  )
+       && (pageAction.includes("complete"))))
+    {
+        let message = {  caller
+            , type : "answer"
+            , title
+            , tabId
+            , url
+            , status
+            , start
+            , csp_filter
+            , cancelreq
+            , has_CSP
+            , csp_name
+            , csp_filter_applied
+            , csp_filter_effect
+            , t_load
+            , tools_deployed
+        };
+if( log_more) log_object("...bg_message_sendMessage("+url+")", message);
+
+        bg_message_sendMessage(message, caller);
+    }
     /*}}}*/
 /*{{{
 //let icon_url =  chrome.runtime.getURL(icon_path);

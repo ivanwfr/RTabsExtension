@@ -26,7 +26,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_CONTENT_SCRIPT_ID  = "bg_content";
-const BG_CONTENT_SCRIPT_TAG =  BG_CONTENT_SCRIPT_ID +" (230830:14h:28)"; /* eslint-disable-line no-unused-vars */
+const BG_CONTENT_SCRIPT_TAG =  BG_CONTENT_SCRIPT_ID +" (231004:00h:19)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ CONTENT SCRIPT                                   B_LOG7_TABS B_LOG9_STAGE │
@@ -556,11 +556,83 @@ let bg_content_get_time_elapsed_dhms = function(d,h,m,s)
 };
 /*}}}*/
 
+    // ┌────────────────────────────────────────────────────────────────────────┐
+    // │ CONTENT PAGE SCRIPTING ● RELOADING    ● chrome.scripting.executeScript │
+    // └────────────────────────────────────────────────────────────────────────┘
+    /*_ reload {{{*/
+//  let reload_expecting_url;
+    let bg_content_scripts_reload = function(message)
+    {
+        // ┌────────────────────────────────────────────────────────────────────┐
+        // │ RELOAD POPUP COMMAND            ● popup.js ● p_send_reload_message │
+        // └────────────────────────────────────────────────────────────────────┘
+        let { method="replace", tabId, url="", logging } = message; /* eslint-disable-line no-shadow */
+
+        if(!url && (method != "reload")) method = "reload"; /* assign and replace needs an url */
+
+        if(logging)
+        {
+            log(BG_CONTENT_SCRIPT_ID+" ● LOGGING location."+method+" COMMAND IN Content-Page's Devtools ●");
+        }
+        else {
+            log(BG_CONTENT_SCRIPT_ID+" ● RELOADING [tabId "+tabId+"] ( location."+method+" ):");
+
+            if(url) {
+                log(BG_CONTENT_SCRIPT_ID+" ● expecting  URL ▼");
+                log(BG_CONTENT_SCRIPT_ID+" ● ............."+   url);
+            }
+//          reload_expecting_url = url;
+        }
+
+        // ┌───────────────────────────────────────────────────────────────┐
+        // │ ● DEFINE CONTENT PAGE RELOAD SCRIPT                           │
+        // ├───────────────────────────────────────────────────────────────┤
+        // ├ trying to get OPERA to forget its cache ● NOT WORKING SO FAR  │
+        // ├───────────────────────────────────────────────────────────────┤
+        // ├ document.location.reload (true) ● reload no-cache             │
+        // ├ document.location.assign ( url) ● add to history              │
+        // ├ document.location.replace( url) ● ... or not                  │
+        // └───────────────────────────────────────────────────────────────┘
+        chrome.scripting.executeScript( { target: { tabId }
+                                        ,   func: reload_executeScript_func
+                                        ,   args: [ url, method, logging ]
+        })
+        .catch((error) => { console.warn(error); chrome.runtime.sendMessage({ error: error.message });});
+    };
+    /*}}}*/
+    /*_ reload_executeScript_func {{{*/
+    let reload_executeScript_func = function(url,method,logging) /* eslint-disable-line no-shadow */
+    {
+        // ┌───────────────────────────────────────────────────────────────────┐
+        // │ ● just log content-script command in Devtools console  ● popup.js │
+        // └───────────────────────────────────────────────────────────────────┘
+        if( logging ) {
+            const STYLE = "font-size:150%; border: 3px orange solid; border-radius:1em; padding:0 1em;";
+            switch(method) {
+            case "reload"  : console.log("%c document.location.reload (   true  );", STYLE); break;
+            case "assign"  : console.log("%c document.location.assign ('"+url+"');", STYLE); break;
+            case "replace" : console.log("%c document.location.replace('"+url+"');", STYLE); break;
+            }
+        }
+        // ┌───────────────────────────────────────────────────────────────────┐
+        // │ ● or execute  content-script command                              │
+        // └───────────────────────────────────────────────────────────────────┘
+        else {
+            switch(method) {
+            case "reload"  :                 document.location.reload (   true  );           break;
+            case "assign"  :                 document.location.assign (   url   );           break;
+            case "replace" :                 document.location.replace(   url   );           break;
+            }
+        }
+    };
+    /*}}}*/
+
 /*➔ EXPORT {{{*/
     return {  name : "bg_content"
         ,             bg_content_scripts_get_tools_deployed
         ,             bg_content_scripts_loaded
         ,             bg_content_scripts_loaded_parse_message
+        ,             bg_content_scripts_reload
         ,             logging
     };
 /*}}}*/

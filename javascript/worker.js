@@ -33,7 +33,7 @@
 /* eslint-enable  no-unused-vars */
 
 const    S_SCRIPT_ID         = "worker_js";
-const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (230817:18h:46)";
+const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (231007:15h:13)";
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ SERVICE WORKER                                                            │
@@ -61,7 +61,6 @@ let worker_js;//FIXME
 /* modules {{{*/
 /* importScripts {{{*/
 importScripts("log.js"        );
-importScripts("background.js" );
 importScripts("bg_content.js" );
 importScripts("bg_csp.js"     );
 importScripts("bg_event.js"   );
@@ -72,6 +71,7 @@ importScripts("bg_settings.js");
 importScripts("bg_store.js"   );
 importScripts("bg_tabs.js"    );
 
+importScripts("background.js" );
 /*}}}*/
     log_js.log_set_type("S");
     log_js.log_sep_top(S_SCRIPT_TAG, "LOG0_TAG");
@@ -226,7 +226,7 @@ let init = function()
 // │ EVENT                                                                     │
 // └───────────────────────────────────────────────────────────────────────────┘
 /*_ webNavigation_addListeners {{{*/
-let webNavigation_addListeners = function()
+let webNavigation_addListeners = function() /* eslint-disable-line no-unused-vars */
 {
     log_event(S_SCRIPT_ID+" ● ADDING EXTENSION EVENT LISTENERS:");
 
@@ -254,7 +254,7 @@ let webNavigation_addListeners = function()
     chrome.webNavigation.onTabReplaced             .addListener( (details) => _lo(S_SCRIPT_ID+" ● onTabReplaced"             , details) );
 };
 /*}}}*/
-    if( chrome.webNavigation ) webNavigation_addListeners();
+//  if( chrome.webNavigation ) webNavigation_addListeners();//FIXME
 
 /* ┌────────────────────────────────────────────────────────────────────────┐ */
 /* │ EVENT [install]                                                        │ */

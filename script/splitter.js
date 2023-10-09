@@ -10,7 +10,7 @@ javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 let DOM_LOAD_ID         = "dom_splitter";
-let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (230821:21h:19)";
+let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (231001:02h:29)";
 let DOM_HOST_CSS_ID     = "dom_host_css";
 let DOM_TOOLS_HTML_ID   = "dom_tools_html";
 /*}}}*/
@@ -40,7 +40,7 @@ let   console_warn  = function(  msg=null) { try {                          cons
 let dom_host_css_data ="data:text/css,"+ escape(`
 /*INLINE{{{*/
 @charset "utf-8";
-#dom_host_css_tag   { content: "dom_host_css (230525:15h:05)"; }
+#dom_host_css_tag   { content: "dom_host_css (230928:19h:12)"; }
 
 
 .dark * { background : rgba(17,17,17,0.5); color: rgba(221,221,221,0.5); }
@@ -728,18 +728,18 @@ OL.sentence_container { display: block; }
 .sentence { white-space : normal   !important; }
 .sentence { text-align  : left     !important; }
 
-.sentence_container.fs1 , .sentence_container.fs1  * { font-size :  6px; }
-.sentence_container.fs2 , .sentence_container.fs2  * { font-size :  7px; }
-.sentence_container.fs3 , .sentence_container.fs3  * { font-size :  9px; }
-.sentence_container.fs4 , .sentence_container.fs4  * { font-size : 11px; }
-.sentence_container.fs5 , .sentence_container.fs5  * { font-size : 13px; }
-.sentence_container.fs6 , .sentence_container.fs6  * { font-size : 16px; }
-.sentence_container.fs7 , .sentence_container.fs7  * { font-size : 20px; }
-.sentence_container.fs8 , .sentence_container.fs8  * { font-size : 23px; }
-.sentence_container.fs9 , .sentence_container.fs9  * { font-size : 28px; }
-.sentence_container.fs10, .sentence_container.fs10 * { font-size : 34px; }
-.sentence_container.fs11, .sentence_container.fs11 * { font-size : 41px; }
-.sentence_container.fs12, .sentence_container.fs12 * { font-size : 49px; }
+.sentence_container.fs1  *, #log_popup_div.fs1  .xpath * { font-size :  6px !important; }
+.sentence_container.fs2  *, #log_popup_div.fs2  .xpath * { font-size :  7px !important; }
+.sentence_container.fs3  *, #log_popup_div.fs3  .xpath * { font-size :  9px !important; }
+.sentence_container.fs4  *, #log_popup_div.fs4  .xpath * { font-size : 11px !important; }
+.sentence_container.fs5  *, #log_popup_div.fs5  .xpath * { font-size : 13px !important; }
+.sentence_container.fs6  *, #log_popup_div.fs6  .xpath * { font-size : 16px !important; }
+.sentence_container.fs7  *, #log_popup_div.fs7  .xpath * { font-size : 20px !important; }
+.sentence_container.fs8  *, #log_popup_div.fs8  .xpath * { font-size : 23px !important; }
+.sentence_container.fs9  *, #log_popup_div.fs9  .xpath * { font-size : 28px !important; }
+.sentence_container.fs10 *, #log_popup_div.fs10 .xpath * { font-size : 34px !important; }
+.sentence_container.fs11 *, #log_popup_div.fs11 .xpath * { font-size : 41px !important; }
+.sentence_container.fs12 *, #log_popup_div.fs12 .xpath * { font-size : 49px !important; }
 
 .sentence             { overflow         : visible      !important; }
 .sentence, .clause    { display          : block        !important; }
@@ -853,20 +853,21 @@ body.dark .clause     {            color : #111                      ; }
 #log_popup_div em      { border        : 1px solid white;  }
 #log_popup_div em      { box-shadow    : 1px 1px 1px #888; }
 
-#log_popup_div .xpath * { max-width     : unset  !important; }
-#log_popup_div .xpath   { font-size     : 12px   !important; }
-#log_popup_div .xpath   { white-space   : pre    !important; }
-#log_popup_div .xpath   { overflow      : auto   !important; }
-#log_popup_div .xpath   { line-height   : normal !important; }
+#log_popup_div .xpath * { max-width     :  unset; }
 
-#log_popup_div .tag    { border-radius : 0.25em 0.25em 0.25em 0.25em; }
-#log_popup_div .left   { border-radius : 0.25em 0      0      0.25em; }
-#log_popup_div .center { border-radius : 0      0      0      0     ; }
-#log_popup_div .right  { border-radius : 0      0.25em 0.25em 0     ; }
+#log_popup_div .xpath   { white-space   :    pre; }
+#log_popup_div .xpath   { overflow      :   auto; }
+#log_popup_div .xpath   { line-height   : normal; }
 
-#log_popup_div .tag    { background    : linear-gradient(to right, rgba(255,255,255,0.4), rgba(136,136,255,0.4)); }
-#log_popup_div .id     { background    : linear-gradient(to right, rgba(255,000,000,0.4), rgba(255,136,136,0.4)); }
-#log_popup_div .class  { background    : linear-gradient(to left , rgba(000,255,000,0.4), rgba(136,255,136,0.4)); }
+
+#log_popup_div .xpath_tag    { border-radius : 0.25em 0.25em 0.25em 0.25em; }
+#log_popup_div .xpath_left   { border-radius : 0.25em 0      0      0.25em; }
+#log_popup_div .xpath_center { border-radius : 0      0      0      0     ; }
+#log_popup_div .xpath_right  { border-radius : 0      0.25em 0.25em 0     ; }
+
+#log_popup_div .xpath_tag    { background    : linear-gradient(to right, rgba(255,255,255,0.4), rgba(136,136,255,0.4)); }
+#log_popup_div .xpath_id     { background    : linear-gradient(to right, rgba(255,000,000,0.4), rgba(255,136,136,0.4)); }
+#log_popup_div .xpath_class  { background    : linear-gradient(to left , rgba(000,255,000,0.4), rgba(136,255,136,0.4)); }
 
 
 
@@ -2513,7 +2514,7 @@ let dom_tools_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_TOOLS_JS_ID  = "dom_tools";
-const DOM_TOOLS_JS_TAG = DOM_TOOLS_JS_ID +" (230707:21h:52)";
+const DOM_TOOLS_JS_TAG = DOM_TOOLS_JS_ID +" (230924:19h:23)";
 
 let dom_tools = (function() {
 "use strict";
@@ -2645,7 +2646,7 @@ else if(log_this                 ) log8("→→→ long_press_handler: t_scroll_
 
     let has_moved = (Math.abs(onMoveDXY.x) >= MOVE_MIN)
         ||          (Math.abs(onMoveDXY.y) >= MOVE_MIN);
-console.log(caller+": %c onMoveDXY=["+onMoveDXY.x+" "+onMoveDXY.y+"]", ("color: "+(has_moved ? "red" : "green")+";"));
+
     if( has_moved    ) return;
 
     let { container , cells } = dom_sentence.t_SENTENCE_GET_EL_CONTAINER(onDown_EL, log_this);
@@ -3376,7 +3377,7 @@ let dom_sentence_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230820:21h:14)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230928:19h:21)";
 
 let dom_sentence            = (function() {
 "use strict";
@@ -3897,13 +3898,13 @@ if( log_this) console.log(last_clause);
 
     if( xpath_show )
         innerHTML
-            += "<hr>"
-            + "<pre class='xpath'>"
-            +  t_util.get_parent_tag_id_class_chain( container )
+            += "<hr>"+LF
+            + "<pre class='xpath'>"+LF
+            +  t_util.get_parent_tag_id_class_chain( container )+LF
             + "</pre>";
 
-if( tag_this) log("container.innerHTML.length: %c"+container.innerHTML.length, lb7);
-if( log_this) log("container.innerHTML:%c"+LF+container.innerHTML, lb7);
+if( tag_this) log("container.innerHTML.length: %c"+container.innerHTML.length              , lb7);
+if( log_this) log("container.innerHTML:%c"     +LF+container.innerHTML.replace(/>/g,">"+LF), lf7);
 
 
 

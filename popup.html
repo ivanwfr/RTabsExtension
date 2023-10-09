@@ -1,13 +1,5 @@
 <!DOCTYPE HTML>
-<html>
- <!-- COMMENT {{{
-  This page is shown when the extension button is clicked,
-  because the "browser_action" field in manifest.json
-  contains the "default_popup" key with value "popup.html".
-  - JavaScript and HTML must be in separate files: see our Content Security
-  - Policy documentation[1] for details and explanation.
-  - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
-  }}}-->
+<html style="font-family:'fixed'">
   <head><!--{{{-->
    <title>RTabs Popup</title>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -18,8 +10,9 @@
   </head>
   <!--}}}-->
   <body>
+   <span id="close_span">✕</span>
    <h1 id="title" style="color:#666; text-align:center;">RTabs Settings</h1>
-   <span id = "popup_html_tag" style="display:none">RTabs popup (230803:13h:39)</span>
+   <span id = "popup_html_tag" style="display:none">RTabs popup (231005:17h:43)</span>
    <!-- [settings_div] {{{-->
    <div id="settings_div">
     <div class="popup_div">
