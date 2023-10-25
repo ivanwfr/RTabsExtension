@@ -9,15 +9,17 @@
 /* eslint-disable prefer-rest-params */
 
 const LOG_JS_ID         = "log_js";
-const LOG_JS_TAG        =  LOG_JS_ID +" (231007:21h:41)";
+const LOG_JS_TAG        =  LOG_JS_ID +" (231025:14h:01)";
 /*}}}*/
 let log_js = (function() {
 "use strict";
-
 let log_this = false; /* eslint-disable-line no-unused-vars */
 let log_more = false; let set_log_more = (_log_more) => log_more = _log_more;
 
-/* CSS {{{*/
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ LOG DATA                                                                  │
+// └───────────────────────────────────────────────────────────────────────────┘
+/* LOG CSS {{{*/
 const lbA  = "background-color:inherit;   color:inherit;";
 
 const lbF  = "font-size:120%; font-weight:500; border:2px solid white;";
@@ -61,7 +63,7 @@ const LOG_FG_ARR = [ lf0, lf1, lf2, lf3, lf4, lf5, lf6, lf7, lf8, lf9, lfX ];
 const LOG_XX_ARR = [ lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb           ];
 
 /*}}}*/
-/* SYM {{{*/
+/* LOG SYM {{{*/
 
 const SYMBOL_FUNCTION         = "ƒ";            // "\u0083" // "No break here"
 const SYMBOL_CHECK_MARK       = "✔";            // "\u2714";
@@ -111,43 +113,159 @@ const LOG_CHR = [L_CHK, L_NEW, L_ARD, L_ARL, L_ARR, L_ARU, L_CLR, L_FNC, L_WRN];
 const LOG_SYM = [SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP];
 
 /*}}}*/
-/* CHAR {{{*/
+/* LOG CHAR {{{*/
 const LF        = String.fromCharCode(10);
 //nst NL        = "#x21B5;";
 const NL        = "\u21B5";
 
 /*}}}*/
+
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ CONSOLE COMMANDS ● clear ● pause ● reload                                 │
+// └───────────────────────────────────────────────────────────────────────────┘
+//{{{
+/*➔ log_console_clear {{{*/
+/*{{{*/
+const CLEAR_CONSOLE_INTERVAL_MS = 1000;
+let   last_call_time            =    0;
+let   log_console_clear_count   =    0;
+
+/*}}}*/
+let log_console_clear        = function(preserve_log,_caller="")
+{
+    _caller += get_callers_bot();
+
+    let result, l_x;
+try {
+    /* ✕ DEBOUNCED {{{*/
+    let this_time = new Date().getTime() % 86400000;
+    if((this_time - last_call_time) < CLEAR_CONSOLE_INTERVAL_MS)
+    {
+        /**/l_x =      log_console_clear_count % 10;
+        /**/result =      "%c CONSOLE CLEAR %c#"+ log_console_clear_count +" COOL DOWN %c "+mPadEnd(_caller+" ",80,"-");
+
+        last_call_time = this_time; // and start over from there
+        return;
+    }
+    last_call_time = this_time;
+
+    /*}}}*/
+    /* ✕ PREVENTED {{{*/
+    if(preserve_log) {
+        setTimeout(() => {
+            l_x    = ++log_console_clear_count % 10;
+            result =      "%c CONSOLE CLEAR %c#"+ log_console_clear_count +" PREVENTED %c"+mPadEnd(_caller+" ",80,"-");
+        });
+    }
+    /*}}}*/
+    /* ✓ CLEAR {{{*/
+    else {
+        /**/l_x    = ++log_console_clear_count % 10;
+        /**/result =      "%c CONSOLE CLEAR %c#"+ log_console_clear_count +"           %c"+mPadEnd(_caller+" ",80,"-");
+
+        /**/console.clear();
+    }
+    /*}}}*/
+} finally {
+    if(log_more && result)
+        console.log(result,lbb+lf0    ,lfX[l_x]                                        ,lf0);
+    //.....................%c CONSOLE CLEAR %c.........................................%c............................*/
+}
+};
+/*}}}*/
+/*_ clear {{{*/
+let clear = function(pausable)
+{
+    log_console_clear();
+
+    if(pausable && pausable.l_paused )
+        log_pause( pausable );
+
+    return chrome.runtime.lastError
+        ?  chrome.runtime.lastError.message
+        :  SYMBOL_CHECK_MARK+" CLEARED";
+};
+/*}}}*/
+/*_ pause {{{*/
+let pause = function(pausable)
+{
+    pausable.l_paused = !pausable.l_paused;
+
+    log_pause( pausable );
+
+    let sym = pausable.l_paused
+        ?      SYMBOL_CHECK_MARK
+        :      SYMBOL_NOT_CHECKED
+    ;
+
+    return chrome.runtime.lastError
+        ?  chrome.runtime.lastError.message
+        :  sym
+    ;
+};
+let log_pause = function( pausable )
+{
+    let id = pausable.id ? pausable.id :LOG_JS_ID;
+
+    if(pausable.l_paused) log(SYMBOL_CONSTRUCTION +"%c "+ id +" PAUSED  ", lbb+lb0+lf3);
+    else                  log(SYMBOL_CONSTRUCTION +"%c "+ id +" RUNNING ", lbb+lb0+lf5);
+};
+/*}}}*/
+/*_ reload {{{*/
+let reload = function()
+{
+    chrome.runtime.reload(); // Reloads the app or extension
+};
+/*}}}*/
+/*}}}*/
+
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ LOG PREFIX SYMBOL                ● BACKGROUND ● POPUP ● OPTIONS ● CONTENT │
+// └───────────────────────────────────────────────────────────────────────────┘
 /* LOG_TYPE {{{*/
 /*➔ log_set_type {{{*/
 /*{{{*/
-const   LOG_TYPE_B_CSS  = lbb+lbH+lf7;
-const   LOG_TYPE_C_CSS  = lbb+lbH+lf6;
-const   LOG_TYPE_O_CSS  = lbb+lbH+lf5;
-const   LOG_TYPE_P_CSS  = lbb+lbH+lf4;
-const   LOG_TYPE_S_CSS  = lbb+lbH+lf3;
-const   LOG_TYPE_DEFAULT= lbb+lbH+lf2;
+const   LOG_TYPE_B_CSS  = lf7; /*     BACKGROUND SCRIPT */
+const   LOG_TYPE_C_CSS  = lf6; /*        CONTENT SCRIPT */
+const   LOG_TYPE_O_CSS  = lf5; /*        OPTIONS SCRIPT */
+const   LOG_TYPE_P_CSS  = lf4; /*          POPUP SCRIPT */
+const   LOG_TYPE_W_CSS  = lf3; /* SERVICE WORKER SCRIPT */
+const   LOG_TYPE_DEFAULT= lf2;
 
 let     log_type_sym;
-let     log_type_css;
+let     log_type_lfx;
 /*
 j0"*y$
 log_js.clear(); log_js.log_set_type("B"); log_js.log("%c RED %c GREEN %c BLUE", "color:red","color:green","color:blue");
 */
 /*}}}*/
-let log_set_type = function(type_sym)
+let log_set_type = function(type_sym,logging)
 {
 let caller = "log_set_type";
 
 
     switch(type_sym)
     {
-    case "B": log_type_sym = type_sym+" ● "; log_type_css = LOG_TYPE_B_CSS  ; break;
-    case "C": log_type_sym = type_sym+" ● "; log_type_css = LOG_TYPE_C_CSS  ; break;
-    case "O": log_type_sym = type_sym+" ● "; log_type_css = LOG_TYPE_O_CSS  ; break;
-    case "P": log_type_sym = type_sym+" ● "; log_type_css = LOG_TYPE_P_CSS  ; break;
-    case "S": log_type_sym = type_sym+" ● "; log_type_css = LOG_TYPE_S_CSS  ; break;
-    default : log_type_sym = type_sym+" ● "; log_type_css = LOG_TYPE_DEFAULT;
-    console.warn(caller+": UNEXPECTED LOG TYPE ["+type_sym+"]");
+    case "B": log_type_sym = type_sym+" ● "; log_type_lfx = LOG_TYPE_B_CSS  ; if(logging) log(    "Background context"); break;
+    case "C": log_type_sym = type_sym+" ● "; log_type_lfx = LOG_TYPE_C_CSS  ; if(logging) log("Content Script context"); break;
+    case "O": log_type_sym = type_sym+" ● "; log_type_lfx = LOG_TYPE_O_CSS  ; if(logging) log(       "Options context"); break;
+    case "P": log_type_sym = type_sym+" ● "; log_type_lfx = LOG_TYPE_P_CSS  ; if(logging) log(         "Popup context"); break;
+    case "W": log_type_sym = type_sym+" ● "; log_type_lfx = LOG_TYPE_W_CSS  ; if(logging) log("Service Worker context"); break;
+    default : log_type_sym = type_sym+" ● "; log_type_lfx = LOG_TYPE_DEFAULT; if(logging) log(           "top context");
+    console.warn(caller+"("+type_sym+") ● UNEXPECTED LOG TYPE"+LF
+                 + "■ It should be one of:"                   +"%c"+LF
+                 + "● "+caller+"%c(B) for BACKGROUND SCRIPT"  +"%c"+LF
+                 + "● "+caller+"%c(C) for CONTENT SCRIPT"     +"%c"+LF
+                 + "● "+caller+"%c(O) for OPTIONS"            +"%c"+LF
+                 + "● "+caller+"%c(P) for POPUP"              +"%c"+LF
+                 + "● "+caller+"%c(W) for SERVICE WORKER"
+                 ,                                              lf9
+                 ,              LOG_TYPE_B_CSS,                 lf9
+                 ,              LOG_TYPE_C_CSS,                 lf9
+                 ,              LOG_TYPE_O_CSS,                 lf9
+                 ,              LOG_TYPE_P_CSS,                 lf9
+                 ,              LOG_TYPE_W_CSS
+                );
     console.trace();
     }
 };
@@ -166,7 +284,7 @@ let log_type_insert_type_sym_args = function(args) /* eslint-disable-line no-unu
         args.splice( 0 // start
                    , 1 // deleteCount
                    , "%c"+log_type_sym+format
-                   ,      log_type_css
+                   ,      log_type_lfx+lbb+lbH
                    //, ...args
                    );
 /*{{{
@@ -176,68 +294,191 @@ let log_type_insert_type_sym_args = function(args) /* eslint-disable-line no-unu
 };
 /*}}}*/
 /*}}}*/
-/* LOG_UTIL {{{*/
-/*➔ log_socket {{{*/
-let log_socket = function(socket)
-{
-    console.log(  "...WebSocket:\n"
-                + "   ┌ socket.url                 .. "+ socket.url     +"\n"
-                + "   └ socket.version             .. "+ socket.version +"\n"
-               );
 
-    if(             socket.request )
-        log_request(socket.request);
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ LOG FORMATTING                                                            │
+// └───────────────────────────────────────────────────────────────────────────┘
+/*_  LOG_TAGS {{{*/
+let  LOG_TAGS  = {
+    "LOG1_TAG" : 1,  "1" : 1,
+    "LOG2_TAG" : 2,  "2" : 2,
+    "LOG3_TAG" : 3,  "3" : 3,
+    "LOG4_TAG" : 4,  "4" : 4,
+    "LOG5_TAG" : 5,  "5" : 5,
+    "LOG6_TAG" : 6,  "6" : 6,
+    "LOG7_TAG" : 7,  "7" : 7,
+    "LOG8_TAG" : 8,  "8" : 8,
+    "LOG9_TAG" : 9,  "9" : 9,
+    "LOG0_TAG" : 0,  "0" : 0
+   };
+
+/*}}}*/
+/*_  STYLE_TOP STYLE_BOT {{{*/
+/*{{{
+const STYLE_TOP = "font-weight:900; border:1px #0ff3 solid; border-radius:3em 3em .1em .1em; padding:  0 80% 8em 2em; background:linear-gradient(to bottom, #00F2 0%, #0082 100%);";
+const STYLE_BOT = "color:#0FF8;     border:1px #0ff3 solid; border-radius:.1em .1em 3em 3em; padding:8em 80% 0em 2em; background:linear-gradient(to    top, #0042 0%, #0040 100%);";
+const STYLE_TOP = "font-weight:900; border:0px #000 solid; border-radius:2em 2em .1em .1em; padding:  0 1em 1em 2em; overflow:visible;";
+const STYLE_BOT = "color:#0FF8;     border:0px #000 solid; border-radius:.1em .1em 2em 2em; padding:1em 1em 0em 2em; overflow:visible;";
+const STYLE_TOP = "font-weight:900; border:1px #000 solid; border-radius:2em 2em .1em .1em; padding:  0 20% 8em 2em;";
+const STYLE_BOT = "color:#0FF8;     border:1px #000 solid; border-radius:.1em .1em 2em 2em; padding:8em 20% 0em 2em;";
+}}}*/
+const LOG_SEP_ARG_LINE_LEN = 100;
+
+/*{{{
+const STYLE_TOP = "font-weight:900; border:2px #444 solid; border-radius:2em 2em .1em .1em; padding:  0 20% 2em 2em;";
+const STYLE_BOT = "color:#0FF8;     border:2px #444 solid; border-radius:.1em .1em 2em 2em; padding:2em 20% 0em 2em; margin-left:0.3em;";
+}}}*/
+const STYLE_TOP = "font-weight:900; border:2px #444 solid; border-radius:1em 1em .1em .1em; padding:  0 20% 1em 1em;";
+const STYLE_BOT = "color:#0FF8;     border:2px #444 solid; border-radius:.1em .1em 1em 1em; padding:1em 20% 0em 1em; margin-left:0.3em;";
+
+const STYLE_BG_TOP=[];
+      STYLE_BG_TOP [1] = " background:linear-gradient(to bottom, #964B0060 0%, #2222 100%); border-bottom: 2px solid #964B00;";
+      STYLE_BG_TOP [2] = " background:linear-gradient(to bottom, #FF0000   0%, #2222 100%); border-bottom: 2px solid #FF0000;";
+      STYLE_BG_TOP [3] = " background:linear-gradient(to bottom, #FFA50060 0%, #2222 100%); border-bottom: 2px solid #FFA500;";
+      STYLE_BG_TOP [4] = " background:linear-gradient(to bottom, #FFFF0060 0%, #2222 100%); border-bottom: 2px solid #FFFF00;";
+      STYLE_BG_TOP [5] = " background:linear-gradient(to bottom, #9ACD3260 0%, #2222 100%); border-bottom: 2px solid #9ACD32;";
+      STYLE_BG_TOP [6] = " background:linear-gradient(to bottom, #6495ED60 0%, #2222 100%); border-bottom: 2px solid #6495ED;";
+      STYLE_BG_TOP [7] = " background:linear-gradient(to bottom, #EE82EE60 0%, #2222 100%); border-bottom: 2px solid #EE82EE;";
+      STYLE_BG_TOP [8] = " background:linear-gradient(to bottom, #A0A0A060 0%, #2222 100%); border-bottom: 2px solid #A0A0A0;";
+      STYLE_BG_TOP [9] = " background:linear-gradient(to bottom, #FFFFFF   0%, #2222 100%); border-bottom: 2px solid #FFFFFF; color:black;";
+      STYLE_BG_TOP [0] = " background:linear-gradient(to bottom, #000000   0%, #2222 100%); border-bottom: 2px solid #000000;";
+
+const STYLE_BG_BOT=[];
+      STYLE_BG_BOT [1] = " background:linear-gradient(to    top, #964B0060 0%, #2222 100%); border-top   : 2px solid #964B00;";
+      STYLE_BG_BOT [2] = " background:linear-gradient(to    top, #FF0000   0%, #2222 100%); border-top   : 2px solid #FF0000;";
+      STYLE_BG_BOT [3] = " background:linear-gradient(to    top, #FFA50060 0%, #2222 100%); border-top   : 2px solid #FFA500;";
+      STYLE_BG_BOT [4] = " background:linear-gradient(to    top, #FFFF0060 0%, #2222 100%); border-top   : 2px solid #FFFF00;";
+      STYLE_BG_BOT [5] = " background:linear-gradient(to    top, #9ACD3260 0%, #2222 100%); border-top   : 2px solid #9ACD32;";
+      STYLE_BG_BOT [6] = " background:linear-gradient(to    top, #6495ED60 0%, #2222 100%); border-top   : 2px solid #6495ED;";
+      STYLE_BG_BOT [7] = " background:linear-gradient(to    top, #EE82EE60 0%, #2222 100%); border-top   : 2px solid #EE82EE;";
+      STYLE_BG_BOT [8] = " background:linear-gradient(to    top, #A0A0A060 0%, #2222 100%); border-top   : 2px solid #A0A0A0;";
+      STYLE_BG_BOT [9] = " background:linear-gradient(to    top, #FFFFFF   0%, #2222 100%); border-top   : 2px solid #FFFFFF; color:black;";
+      STYLE_BG_BOT [0] = " background:linear-gradient(to    top, #000000   0%, #2222 100%); border-top   : 2px solid #000000;";
+/*}}}*/
+/*➔ log_SYN {{{*/
+let log_SYN = function(msg, val)
+{
+    if(val) log(SYN+" %c "+msg+" %c "+val+"", lb0, lb8);
+    else    log(SYN+" %c "+msg              , lb0     );
 };
 /*}}}*/
-/*➔ log_request {{{*/
+/*_ log_sep_top {{{*/
+let log_sep_top = function(arg_line="", log_tag="")
+{
+    /* TIME */
+//  console.time(arg_line);
+
+    /* FORMAT */
+    arg_line = mPadEnd(ellipsis(arg_line,150),LOG_SEP_ARG_LINE_LEN);
+
+    /* FOLD .. GROUP START */
+    let format = log_type_sym ? "%c"+" "+log_type_sym+". "+arg_line
+        :                       "%c "                     +arg_line;
+
+    let style = STYLE_TOP + STYLE_BG_TOP[LOG_TAGS[log_tag]];
+
+    console.groupCollapsed(format, style);
+
+    /* CALLERS */
+    if( log_more ) log_sep_callers();
+
+};
+/*}}}*/
+/*_ log_sep_bot {{{*/
+let log_sep_bot = function(arg_line="", log_tag="")
+{
+    /* GROUP END */
+    /*..............*/ console.groupEnd();
+
+    /* TIME */
+    //  console.timeEnd(arg_line);
+
+    /* FORMAT */
+    arg_line = mPadEnd(ellipsis(arg_line,150),LOG_SEP_ARG_LINE_LEN);
+
+    /* FOLD */
+    let format = log_type_sym ? "%c"+" "+log_type_sym+". "+arg_line
+        :                       "%c "                     +arg_line;
+
+    let style = STYLE_BOT + STYLE_BG_BOT[LOG_TAGS[log_tag]];
+
+    //if( format.includes("→") ) format.replace(/→/, "%c → %c");
+
+    console.log(format, style);
+};
+    /*}}}*/
+/*_ log_sep_callers {{{*/
 /*{{{*/
-const R_CAPITAL     = "\\s*[A-Z]\\S+";
-const R_PARENTH     = "\\s+\\([^\\)]+\\)";
-const regexp_UA     = new RegExp("(("+R_CAPITAL+")("+R_PARENTH+")*)", "g");
+let last_callers;
 
-const R_LINE_INDENT = "   │ request.headers.user-agent  ➔";
 /*}}}*/
-let log_request = function(request)
+let log_sep_callers = function()
 {
-
-    let user_agent = (" "+request.headers['user-agent']).replace(regexp_UA, "\n"+R_LINE_INDENT+"$&"); /* eslint-disable-line quotes */
-
-    console.log( "...request:\n"
-                + "   ┌ request.url                .. "+ request.url                +"\n"
-                + "   │ request.method             .. "+ request.method             +"\n"
-                + "   │ request.headers.host       .. "+ request.headers.host       +"\n"
-                + "   │ request.headers.origin     .. "+ request.headers.origin
-                +       user_agent +"\n"
-                + "   │ request.headers.connection .. "+ request.headers.connection +"\n"   // The Upgrade header field is used by clients to invite the server to switch to one of the listed protocols
-                + "   └ request.headers.upgrade    .. "+ request.headers.upgrade
-               );
-};
-/*}}}*/
-/*➔ log_csp_rules {{{*/
-let log_csp_rules = function(title,headers_csp_value)
-{
-    log_sep_top(title, "LOG6_TAG");
-
-    let i; let csp_rules = headers_csp_value.split(";");
-    for(i=0; i<csp_rules.length; ++i)
-    {
-        let idx = (i+1)+"/"+csp_rules.length;
-
-        let           v = csp_rules[i].trim();
-        if(           v.indexOf(" ") < 0)  log("%c"+idx+" %c"+v
-                                               ,lbH      ,lbH+lb8);
-        else {
-            let lhs = v.split(" ")[0];     let rhs = v.substring(lhs.length+1);
-            if( rhs.indexOf  (" ")<0)      log("%c"+idx+" %c"+lhs   +"%c"+rhs
-                                               ,lbH      ,lbL+lf8    ,lbR+lf0);
-            else                           log("%c"+idx+" %c"+lhs+LF+"%c"+v.substring(lhs.length).replace(/ /g,"\n → ")
-                                               ,lbH      ,lbH+lf8    ,lb0                                              );
-        }
+    // ┌───────────────────────────────────────────────────────────────────────┐
+    // │ stack-trace once per source-code-line ────── FILTER OUT LOOPS CLUTTER │
+    // └───────────────────────────────────────────────────────────────────────┘
+    let    callers  = get_callers();
+    if(    callers
+       && (callers != last_callers)
+      ) {
+        console.log("%c"+callers, lf0);
+        last_callers  =  callers;
     }
-    log_sep_bot("CSP RULES", "LOG6_TAG");
 };
 /*}}}*/
 
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ LOG DATA TYPES       ● log ● group ● caller ● Object ● keys ● Node ● JSON │
+// └───────────────────────────────────────────────────────────────────────────┘
+//{{{
+
+// ● LOG TRACE
+/*➔ log {{{*/
+let log = function()
+{
+/*{{{
+- [arguments] variable is not an array
+- it's an array-like structure.
+- if full Array functionality is needed
+- this can be achieved in the following way:
+- var argumentsArray = Array.prototype.slice.apply( arguments );
+}}}*/
+    let args = Array.prototype.slice.call(arguments);
+
+    if( log_type_sym ) log_type_insert_type_sym_args(args);
+
+    console.log.apply(console, args);
+};
+/*}}}*/
+/*➔ logBIG {{{*/
+let logBIG = function(msg, lfx=lf7)
+{
+    let lxx = (typeof lfx == "number")
+        ?         lbb+lbH+lfX[lfx]              /* just the index   */
+        :                     lfx;              /* or a color style */
+
+    console.log("%c "+L_NEW+" %c "+msg, lbb+lbH+lf9, lxx);
+};
+/*}}}*/
+/*➔ logXXX {{{*/
+let logXXX = function()
+{
+    arguments[0] = "XXX "+arguments[0];
+    console.log.apply(console, Array.prototype.slice.call(arguments));
+};
+/*}}}*/
+/*➔ log_group {{{*/
+let log_group = function()
+{
+    let args = Array.prototype.slice.call(arguments);
+
+    if( log_type_sym ) log_type_insert_type_sym_args(args);
+
+    console.groupCollapsed.apply(console, args);
+};
+/*}}}*/
+
+// ● LOG PROCESS
 /*➔ log_caller {{{*/
 let log_caller = function(level_max)
 {
@@ -310,7 +551,7 @@ let get_ex_stack_line_match = function(ex_stack_line)
     let file = matches[2];
     let line = matches[3];
     let col  = matches[4];
-    let match= mPadStart(func, 48)+".. "+file+" "+line+":"+col;
+    let match= mPadStart(func, 48)+".. "+file+" ● "+line+":"+col;
 
 /*{{{
 console.log(ex_stack_line);
@@ -326,98 +567,8 @@ console.log("..match..........=["+match     +"]");
 };
 /*}}}*/
 
-/*➔ log {{{*/
-let log = function()
-{
-/*{{{
-- [arguments] variable is not an array
-- it's an array-like structure.
-- if full Array functionality is needed
-- this can be achieved in the following way:
-- var argumentsArray = Array.prototype.slice.apply( arguments );
-}}}*/
-    let args = Array.prototype.slice.call(arguments);
-
-    if( log_type_sym ) log_type_insert_type_sym_args(args);
-
-    console.log.apply(console, args);
-
-    if( log_more ) log_callers();
-};
-/*}}}*/
-/*_ log_callers {{{*/
-/*{{{*/
-let last_callers;
-
-/*}}}*/
-let log_callers = function()
-{
-    // ┌───────────────────────────────────────────────────────────────────────┐
-    // │ stack-trace once per source-code-line ────────── REJECT LOOPS CLUTTER │
-    // └───────────────────────────────────────────────────────────────────────┘
-    let    callers  = get_callers();
-    if(    callers
-       && (callers != last_callers)
-      ) {
-        console.log("%c"+callers, lf0);
-        last_callers  =  callers;
-    }
-};
-/*}}}*/
-/*➔ log_group {{{*/
-let log_group = function()
-{
-    let args = Array.prototype.slice.call(arguments);
-
-    if( log_type_sym ) log_type_insert_type_sym_args(args);
-
-    console.groupCollapsed.apply(console, args);
-};
-/*}}}*/
-/*➔ strip_QUOTE {{{*/
-/*{{{*/
-const regexp_QUOTE = new RegExp("[\\u0022\\u0027]", "g"); /* "' */
-
-/*}}}*/
-let strip_QUOTE = function(text)
-{
-    return text
-        .   replace(regexp_QUOTE,  " ")
-        .   trim()
-    ;
-};
-/*}}}*/
-/*➔ logBIG {{{*/
-let logBIG = function(msg, lfx=lf7)
-{
-    let lxx = (typeof lfx == "number")
-        ?         lbb+lbH+lfX[lfx]              /* just the index   */
-        :                     lfx;              /* or a color style */
-
-    console.log("%c "+L_NEW+" %c "+msg, lbb+lbH+lf9, lxx);
-};
-/*}}}*/
-/*➔ logXXX {{{*/
-let logXXX = function()
-{
-    arguments[0] = "XXX "+arguments[0];
-    console.log.apply(console, Array.prototype.slice.call(arguments));
-};
-/*}}}*/
-/*➔ strip_CR_LF {{{*/
-const regexp_CR    = new RegExp("\\r"  , "g");
-const regexp_LF    = new RegExp("\\n *", "g");
-const regexp_COMMA = new RegExp(" *, *", "g"); /* eslint-disable-line no-unused-vars */
-let strip_CR_LF    = function(text)
-{
-    return text
-        .   replace(regexp_CR,  "")
-        .   replace(regexp_LF, " ")
-        .   trim()
-    ;
-};
-/*}}}*/
-/*➔ ●log_object {{{*/
+// ● LOG OBJECTS
+/*➔ ● log_object ● log_members ● log_o_sort {{{*/
 let  log_o_sort = function( o_name, o, lxx, collapsed         ) {              _log_object({o_name, o, lxx, collapsed, sorted: true}); };
 let  log_object = function( o_name, o, lxx, collapsed         ) {              _log_object({o_name, o, lxx, collapsed              }); };
 let _log_object = function({o_name, o, lxx, collapsed, sorted})
@@ -425,13 +576,18 @@ let _log_object = function({o_name, o, lxx, collapsed, sorted})
 /* args {{{*/
     if(      lxx == undefined)       lxx = lb0;
     if(collapsed == undefined) collapsed = true;
-    if( o && typeof o     == "string") {
-        if(o_name)
-            log("%c"+SAR+   "%c"+o_name+" "+SAR+"%c"+o
-                ,lbb+lbH+lb0,lbH+lxx            ,lbH+lxx);
+    if( o && typeof o     == "string")
+    {
+        /* SYM COLOR */
+        let o_num  = (o_name && parseInt(o_name)) || 0;
+        let lbx    = lbX[o_num];
+
+        if( o_name )
+            log("%c"+SAR+"%c"+o_name+" "+SAR+"%c"+o
+                ,        lbx,lbH+lxx         ,lbH+lxx);
         else
-            console.log(                         "%c"+o
-                                                ,lmL+lxx);
+            console.log(                     "%c"+o
+                                             ,lmL+lxx);
         return;
 
     }
@@ -446,34 +602,49 @@ let _log_object = function({o_name, o, lxx, collapsed, sorted})
 
     if( o_name.length > 100) o_name = ellipsis(o_name, 100);
 
-    if( log_type_sym ) {
-        if(collapsed) console.groupCollapsed("%c"+log_type_sym+"%c"+SAR+"%c"+o_name+" "+SAD, log_type_css, lbb+lbH+lb0, lbH+lxx);
-        else          console.group         ("%c"+log_type_sym+"%c"+SAR+"%c"+o_name+" "+SAD, log_type_css, lbb+lbH+lb0, lbH+lxx);
+    if( log_type_sym )
+    {
+        /* SYM COLOR */
+        let o_num  = (o_name && parseInt(o_name)) || 0;
+        let lbx    = lbX[o_num];
+
+        if(collapsed) console.groupCollapsed("%c"+log_type_sym    +"%c"+SAR    +"%c"+o_name+" "+SAD
+                                             ,log_type_lfx+lbb+lbH, lbb+lbH+lbx, lbH+lxx           );
+
+        else          console.group         ("%c"+log_type_sym    +"%c"+SAR    +"%c"+o_name+" "+SAD
+                                             ,log_type_lfx+lbb+lbH, lbb+lbH+lbx, lbH+lxx           );
     } else {
-        if(collapsed) console.groupCollapsed(                           "%c"+o_name+" "+SAD              , lbH+lxx);
-        else          console.group         (                           "%c"+o_name+" "+SAD              , lbH+lxx);
+        if(collapsed) console.groupCollapsed(                      "%c"+o_name             +" "+SAD
+                                                                   ,lbH+lxx                        );
+
+        else          console.group         (                      "%c"+o_name             +" "+SAD
+                                                                   ,lbH+lxx                        );
     }
 /*}}}*/
+    /*  keys {{{*/
+    let keys
+        = (sorted ? Object.keys(o).toSorted()
+           :        Object.keys(o)
+          )
+        .filter((key) => (key != "caller")); /* filter out caller .. as it should be part of the label */
+
+    /*}}}*/
     /*  key_length_max {{{*/
     let key_length_max = 0;
     if(!sorted)
-        Object
-            .keys(o)
+            keys
             .forEach((key) => { if( key_length_max < key.length) key_length_max = key.length; });
     key_length_max = Math.max(36,   key_length_max);
     /*}}}*/
-    let keys
-        = sorted
-        ? Object.keys(o).toSorted()
-        : Object.keys(o) ;
-
+    /*  mPad_fnc {{{*/
     let mPad_fnc = sorted ? mPadEnd : mPadStart;
 
-//  Object
-//      .keys(o)
+    /*}}}*/
+    /* key..val {{{*/
+/* eslint-disable no-unused-expressions */
+    let something_logged = false;
     keys.forEach((key) => {
             let val = o[key];
-/* eslint-disable no-unused-expressions */
             let l_v;    ((val ==  true      ) || (val == "ON" )) ? (lxx=lf5 , l_v = lb5)
                 :       ((val ==  false     ) || (val == "OFF")) ? (lxx=lf6 , l_v = lb6)
                 :       ((val ==  undefined )                  ) ? (lxx=lf0 , l_v = lf0)
@@ -483,87 +654,21 @@ let _log_object = function({o_name, o, lxx, collapsed, sorted})
                 : (String(val).indexOf("=>")      >= 0         ) ? (          l_v = lxx) /* (the one from args) */
                 :                                                  (lxx=lf9 , l_v = lb0)
             ;
-/* eslint-enable  no-unused-expressions */
-        if(val != false)//FIXME
+        if(val != false) {
+            something_logged = true;
             console.log("%c "+mPad_fnc(key,key_length_max)+": %c"+log_object_val_format(o[key]),lxx,l_v);
+        }
         });
+/* eslint-enable  no-unused-expressions */
+    /*}}}*/
 /* collapsed {{{*/
+    if(!something_logged) console.log("%c no value set ", lbb+lbH+lb0);
     console.groupEnd("%c"+o_name+" "+SAU, lbH+lxx);
 /*}}}*/
 };
-/*}}}*/
-/*➔ ●log_members {{{*/
 let  log_members = log_object;
 /*}}}*/
-/*➔ log_modulename_key_val {{{*/
-let log_modulename_key_val = function(module_name,key,val)
-{
-    if(val == undefined)
-        log("%c IMPORT FAILED %c"+module_name+" ● "+key+"%c"+get_callers_bot()
-            ,lbL+lb2         ,lbC+lf2                   ,lbR+lf8              );
-};
-/*}}}*/
-/*➔ log_import {{{*/
-/*{{{*/
-let IMPORTED_MAP
-        = new Map([[ "log_js"        , undefined ]
-            ,      [ "background_js" , undefined ]
-            ,      [ "bg_content"    , undefined ]
-            ,      [ "bg_csp"        , undefined ]
-            ,      [ "bg_event"      , undefined ]
-            ,      [ "bg_header"     , undefined ]
-            ,      [ "bg_message"    , undefined ]
-            ,      [ "bg_page"       , undefined ]
-            ,      [ "bg_settings"   , undefined ]
-            ,      [ "bg_store"      , undefined ]
-            ,      [ "bg_tabs"       , undefined ]
-            ,      [ "popup_js"      , undefined ]
-        ]);
-
-let IMPORTER_LENGTH = 0;
-    IMPORTED_MAP.forEach((value,key) => IMPORTER_LENGTH = Math.max(IMPORTER_LENGTH, key.length) );
-
-/*}}}*/
-let log_import = function(importer,imported_modules)
-{
-    /* CLEAR MAP    */ IMPORTED_MAP    .forEach((value,key) => IMPORTED_MAP.set(          key, undefined  ));
-    /* SET  MODULES */ imported_modules.forEach((module)    => IMPORTED_MAP.set(  module.name, 0          ));
-    /* SET IMPORTER ........................................*/ IMPORTED_MAP.set(importer.name, 1          ) ;
-
-
-    let       s  = "";
-    let    args  = [];
-    let    num   =  0;
-
-    IMPORTED_MAP.forEach((value,key) => {
-        if(key && (key == importer.name))
-        {
-            /**/                   s  = " %c"+mPadEnd(key, IMPORTER_LENGTH)+s; /* INSERT IMPORTER */
-            /**/                   args.unshift(lbH + lbX[num % 10]         ); /* INSERT COLOR    */
-            /**/
-            /**/                   s += " %c"+mPadEnd("●", key.length,"●"   ); /* APPEND MARKER   */
-            /**/                   args.push   (      lfX[num % 10]         ); /* APPEND COLOR    */
-        }
-        else {
-            if(value != undefined) s += " %c"+             key               ; /* APPEND MODULE   */
-            else                   s += " %c"+mPadEnd("_", key.length,"_"   ); /* APPEND MARKER   */
-            /**/                   args.push   (      lfX[num % 10]         ); /* APPEND COLOR    */
-        }
-
-        num += 1;
-    });
-
-    /* INSERT LABELS */
-    args.unshift( s );
-    log.apply(console, args);
-
-/*{{{
-log_object(mPadStart(importer.name, IMPORTER_LENGTH), IMPORTED_MAP, lf7, false);
-}}}*/
-};
-/*}}}*/
-
-/*➔ log_key_val {{{*/
+/*➔ log_key_val log_key_val_group {{{*/
 /*{{{*/
 const LF_TAB = LF+"    ";
 
@@ -671,7 +776,7 @@ let log_object_val_format = function(val,lxx)
          &&   text.length > TEXT_LENGTH_MAX          )  text = ellipsis(text, TEXT_LENGTH_MAX);
 
     if(             typeof HTMLElement != "undefined"
-         && val instanceof HTMLElement            )  text = get_id_or_tag_and_className(val);
+         && val instanceof HTMLElement            )  text = log_Node_get_id_or_tag_and_className(val);
     else if( Array.isArray(val)                      )  text = "ARRAY["+val.length+"] ● "+ellipsis(val.toString().replace(/,/g," ● "), TEXT_LENGTH_MAX);
     else if(        typeof val   == "object"         )  text = log_json(val,lxx);
     else if(        typeof val   == "function"       ) {
@@ -687,8 +792,8 @@ let log_object_val_format = function(val,lxx)
     return    text;
 };
 /*}}}*/
-/*_ get_id_or_tag_and_className {{{ */
-let get_id_or_tag_and_className = function(node)
+/*_ log_Node_get_id_or_tag_and_className {{{ */
+let log_Node_get_id_or_tag_and_className = function(node)
 {
     let result
         = !node           ? ("null_node"                        )
@@ -700,6 +805,50 @@ let get_id_or_tag_and_className = function(node)
 
 };
 /*}}}*/
+/*➔ log_o_keys {{{*/
+let log_o_keys = function(title,o,lfx=9)
+{
+    let lxx = (typeof lfx == "number")
+        ?         lfX[lfx]              /* just the index */
+        :             lfx;              /* or an fg color */
+
+    let keys = Object.keys(o).filter((key) => (key != "caller")); /* caller should be part of the label */
+
+    log("%c"+title+"%c keys %c ● "+keys.replace(/,/g," ● ")
+        ,lbL+lxx   ,lbC+lxx,lbR+lxx                        );
+};
+/*}}}*/
+/*➔ log_o_keys_toString {{{*/
+/* eslint-disable newline-per-chained-call */
+let log_o_keys_toString = function(o,len_max)
+{
+    if(!o)
+        return typeof o;
+
+    if(typeof o == "object")
+    {
+        let    keys_str = "";
+
+        let keys = Object.keys(o).filter((key) => (key != "caller")); /* caller should be part of the label */
+
+        keys.forEach((key) => (o[key] != false) && (o[key] != "OFF") && (keys_str += " ● "+key));
+
+        return (len_max)
+            ?   ellipsis(keys_str, len_max)
+            :            keys_str
+        ;
+    }
+
+    if(typeof  o.name == "string")
+        return o.name;
+
+    else
+        return typeof o;
+};
+/* eslint-enable  newline-per-chained-call */
+/*}}}*/
+
+// ● LOG JSON
 /*➔ log_json {{{*/
 /*{{{*/
 const regexp_XBRACE = new RegExp("^{|}$"                    , "g");
@@ -718,8 +867,12 @@ let log_json = function(o,lxx)
     if(             o == null     ) return "null";
     if(             o == undefined) return "undefined";
     if(!Object.keys(o).length     ) return "empty";
-    if(             o.id          ) return "#"+o.id+(o.className ? ("."+o.className.replace(/ /g,".")) : "");
-    if(             o.tagName     ) return     o.tagName;
+    if(         typeof HTMLElement != "undefined"
+       && o instanceof HTMLElement)
+    {
+        if(         o.id          ) return "#"+o.id+(o.className ? ("."+o.className.replace(/ /g,".")) : "");
+        if(         o.tagName     ) return     o.tagName;
+    }
 
     /* ONLY KEEP ATTRIBUTES WITH VALUES {{{*/
     let         o_with_values = {};
@@ -832,268 +985,80 @@ let log_json_prettify = function(items,len_max)
     ;
 };
     /*}}}*/
-/*_ log_o_keys {{{*/
-let log_o_keys = function(title,o,lfx=9)
-{
-    let lxx = (typeof lfx == "number")
-        ?         lfX[lfx]              /* just the index */
-        :             lfx;              /* or an fg color */
 
-    log("%c"+title+"%c keys %c ● "
-        +Object.keys(o).toString()
-        .replace(/,/g," ● ")
-        ,lbL+lxx   ,lbC+lxx,lbR+lxx
-       );
+//}}}
+
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ LOG EXTENSION                                                             │
+// └───────────────────────────────────────────────────────────────────────────┘
+/*➔ log_modulename_key_val {{{*/
+let log_modulename_key_val = function(module_name,key,val)
+{
+    if(val == undefined)
+        log("%c IMPORT FAILED %c"+module_name+" ● "+key+"%c"+get_callers_bot()
+            ,lbL+lb2         ,lbC+lf2                   ,lbR+lf8              );
 };
 /*}}}*/
-/*_ log_o_keys_toString {{{*/
-/* eslint-disable newline-per-chained-call */
-let log_o_keys_toString = function(o,len_max)
-{
-    if(!o)
-        return typeof o;
-
-    if(typeof o == "object")
-    {
-        let    keys_str = "";
-
-        Object.keys(o).forEach((key) => (o[key] != false) && (o[key] != "OFF") && (keys_str += " ● "+key));
-
-        return (len_max)
-            ?   ellipsis(keys_str, len_max)
-            :            keys_str
-        ;
-    }
-
-    if(typeof o.name == "string")
-        return o.name;
-
-    else
-        return typeof o;
-};
-/* eslint-enable  newline-per-chained-call */
-/*}}}*/
-
-/*➔ log_sep_top log_sep_bot  {{{*/
-/*_  LOG_TAGS {{{*/
-let  LOG_TAGS  = {
-    "LOG1_TAG" : 1,  "1" : 1,
-    "LOG2_TAG" : 2,  "2" : 2,
-    "LOG3_TAG" : 3,  "3" : 3,
-    "LOG4_TAG" : 4,  "4" : 4,
-    "LOG5_TAG" : 5,  "5" : 5,
-    "LOG6_TAG" : 6,  "6" : 6,
-    "LOG7_TAG" : 7,  "7" : 7,
-    "LOG8_TAG" : 8,  "8" : 8,
-    "LOG9_TAG" : 9,  "9" : 9,
-    "LOG0_TAG" : 0,  "0" : 0
-   };
-
-/*}}}*/
-/*_ STYLE_TOP STYLE_BOT {{{*/
-/*{{{
-const STYLE_TOP = "font-weight:900; border:1px #0ff3 solid; border-radius:3em 3em .1em .1em; padding:  0 80% 8em 2em; background:linear-gradient(to bottom, #00F2 0%, #0082 100%);";
-const STYLE_BOT = "color:#0FF8;     border:1px #0ff3 solid; border-radius:.1em .1em 3em 3em; padding:8em 80% 0em 2em; background:linear-gradient(to    top, #0042 0%, #0040 100%);";
-const STYLE_TOP = "font-weight:900; border:0px #000 solid; border-radius:2em 2em .1em .1em; padding:  0 1em 1em 2em; overflow:visible;";
-const STYLE_BOT = "color:#0FF8;     border:0px #000 solid; border-radius:.1em .1em 2em 2em; padding:1em 1em 0em 2em; overflow:visible;";
-const STYLE_TOP = "font-weight:900; border:1px #000 solid; border-radius:2em 2em .1em .1em; padding:  0 20% 8em 2em;";
-const STYLE_BOT = "color:#0FF8;     border:1px #000 solid; border-radius:.1em .1em 2em 2em; padding:8em 20% 0em 2em;";
-}}}*/
-const LOG_SEP_ARG_LINE_LEN = 100;
-
-/*{{{
-const STYLE_TOP = "font-weight:900; border:2px #444 solid; border-radius:2em 2em .1em .1em; padding:  0 20% 2em 2em;";
-const STYLE_BOT = "color:#0FF8;     border:2px #444 solid; border-radius:.1em .1em 2em 2em; padding:2em 20% 0em 2em; margin-left:0.3em;";
-}}}*/
-const STYLE_TOP = "font-weight:900; border:2px #444 solid; border-radius:1em 1em .1em .1em; padding:  0 20% 1em 1em;";
-const STYLE_BOT = "color:#0FF8;     border:2px #444 solid; border-radius:.1em .1em 1em 1em; padding:1em 20% 0em 1em; margin-left:0.3em;";
-
-const STYLE_BG_TOP=[];
-      STYLE_BG_TOP [1] = " background:linear-gradient(to bottom, #964B0060 0%, #2222 100%); border-bottom: 2px solid #964B00;";
-      STYLE_BG_TOP [2] = " background:linear-gradient(to bottom, #FF0000   0%, #2222 100%); border-bottom: 2px solid #FF0000;";
-      STYLE_BG_TOP [3] = " background:linear-gradient(to bottom, #FFA50060 0%, #2222 100%); border-bottom: 2px solid #FFA500;";
-      STYLE_BG_TOP [4] = " background:linear-gradient(to bottom, #FFFF0060 0%, #2222 100%); border-bottom: 2px solid #FFFF00;";
-      STYLE_BG_TOP [5] = " background:linear-gradient(to bottom, #9ACD3260 0%, #2222 100%); border-bottom: 2px solid #9ACD32;";
-      STYLE_BG_TOP [6] = " background:linear-gradient(to bottom, #6495ED60 0%, #2222 100%); border-bottom: 2px solid #6495ED;";
-      STYLE_BG_TOP [7] = " background:linear-gradient(to bottom, #EE82EE60 0%, #2222 100%); border-bottom: 2px solid #EE82EE;";
-      STYLE_BG_TOP [8] = " background:linear-gradient(to bottom, #A0A0A060 0%, #2222 100%); border-bottom: 2px solid #A0A0A0;";
-      STYLE_BG_TOP [9] = " background:linear-gradient(to bottom, #FFFFFF   0%, #2222 100%); border-bottom: 2px solid #FFFFFF; color:black;";
-      STYLE_BG_TOP [0] = " background:linear-gradient(to bottom, #000000   0%, #2222 100%); border-bottom: 2px solid #000000;";
-
-const STYLE_BG_BOT=[];
-      STYLE_BG_BOT [1] = " background:linear-gradient(to    top, #964B0060 0%, #2222 100%); border-top   : 2px solid #964B00;";
-      STYLE_BG_BOT [2] = " background:linear-gradient(to    top, #FF0000   0%, #2222 100%); border-top   : 2px solid #FF0000;";
-      STYLE_BG_BOT [3] = " background:linear-gradient(to    top, #FFA50060 0%, #2222 100%); border-top   : 2px solid #FFA500;";
-      STYLE_BG_BOT [4] = " background:linear-gradient(to    top, #FFFF0060 0%, #2222 100%); border-top   : 2px solid #FFFF00;";
-      STYLE_BG_BOT [5] = " background:linear-gradient(to    top, #9ACD3260 0%, #2222 100%); border-top   : 2px solid #9ACD32;";
-      STYLE_BG_BOT [6] = " background:linear-gradient(to    top, #6495ED60 0%, #2222 100%); border-top   : 2px solid #6495ED;";
-      STYLE_BG_BOT [7] = " background:linear-gradient(to    top, #EE82EE60 0%, #2222 100%); border-top   : 2px solid #EE82EE;";
-      STYLE_BG_BOT [8] = " background:linear-gradient(to    top, #A0A0A060 0%, #2222 100%); border-top   : 2px solid #A0A0A0;";
-      STYLE_BG_BOT [9] = " background:linear-gradient(to    top, #FFFFFF   0%, #2222 100%); border-top   : 2px solid #FFFFFF; color:black;";
-      STYLE_BG_BOT [0] = " background:linear-gradient(to    top, #000000   0%, #2222 100%); border-top   : 2px solid #000000;";
-/*}}}*/
-/*_ log_sep_top {{{*/
-let log_sep_top = function(arg_line="", log_tag="")
-{
-    /* TIME */
-//  console.time(arg_line);
-
-    /* FORMAT */
-    arg_line = mPadEnd(ellipsis(arg_line,150),LOG_SEP_ARG_LINE_LEN);
-
-    /* FOLD .. GROUP START */
-    let format = log_type_sym ? "%c"+" "+log_type_sym+". "+arg_line
-        :                       "%c "                     +arg_line;
-
-    let style = STYLE_TOP + STYLE_BG_TOP[LOG_TAGS[log_tag]];
-
-    console.groupCollapsed(format, style);
-
-    /* CALLERS */
-    if( log_more ) log_callers();
-
-};
-/*}}}*/
-/*_ log_sep_bot {{{*/
-let log_sep_bot = function(arg_line="", log_tag="")
-{
-    /* GROUP END */
-    /*..............*/ console.groupEnd();
-
-    /* TIME */
-    //  console.timeEnd(arg_line);
-
-    /* FORMAT */
-    arg_line = mPadEnd(ellipsis(arg_line,150),LOG_SEP_ARG_LINE_LEN);
-
-    /* FOLD */
-    let format = log_type_sym ? "%c"+" "+log_type_sym+". "+arg_line
-        :                       "%c "                     +arg_line;
-
-    let style = STYLE_BOT + STYLE_BG_BOT[LOG_TAGS[log_tag]];
-
-    //if( format.includes("→") ) format.replace(/→/, "%c → %c");
-
-    console.log(format, style);
-};
-    /*}}}*/
-/*}}}*/
-
-/*➔ log_console_clear {{{*/
+/*➔ log_import {{{*/
 /*{{{*/
-const CLEAR_CONSOLE_INTERVAL_MS = 1000;
-let   last_call_time            =    0;
-let   log_console_clear_count   =    0;
+let IMPORTED_MAP
+        = new Map([[ "log_js"        , undefined ]
+            ,      [ "background_js" , undefined ]
+            ,      [ "bg_content"    , undefined ]
+            ,      [ "bg_csp"        , undefined ]
+            ,      [ "bg_event"      , undefined ]
+            ,      [ "bg_header"     , undefined ]
+            ,      [ "bg_message"    , undefined ]
+            ,      [ "bg_page"       , undefined ]
+            ,      [ "bg_settings"   , undefined ]
+            ,      [ "bg_store"      , undefined ]
+            ,      [ "bg_tabs"       , undefined ]
+            ,      [ "popup_js"      , undefined ]
+        ]);
+
+let IMPORTER_LENGTH = 0;
+    IMPORTED_MAP.forEach((value,key) => IMPORTER_LENGTH = Math.max(IMPORTER_LENGTH, key.length) );
 
 /*}}}*/
-let log_console_clear        = function(preserve_log,_caller="")
+let log_import = function(importer,imported_modules)
 {
-    _caller += get_callers_bot();
+if(!log_type_sym) return;//FIXME
 
-    let result, l_x;
-try {
-    /* DEBOUNCING {{{*/
-    let this_time = new Date().getTime() % 86400000;
-    if((this_time - last_call_time) < CLEAR_CONSOLE_INTERVAL_MS)
-    {
-        /**/l_x =      log_console_clear_count % 10;
-        /**/result =      "%c CONSOLE CLEAR %c#"+ log_console_clear_count +" COOL DOWN %c "+mPadEnd(_caller+" ",80,"-");
+    /* CLEAR MAP    */ IMPORTED_MAP    .forEach((value,key) => IMPORTED_MAP.set(          key, undefined  ));
+    /* SET  MODULES */ imported_modules.forEach((module)    => IMPORTED_MAP.set(  module.name, 0          ));
+    /* SET IMPORTER ........................................*/ IMPORTED_MAP.set(importer.name, 1          ) ;
 
-        last_call_time = this_time; // and start over from there
-        return;
-    }
-    last_call_time = this_time;
 
-    /*}}}*/
-    /* PRVENTED {{{*/
-    if(preserve_log) {
-        setTimeout(() => {
-            l_x    = ++log_console_clear_count % 10;
-            result =      "%c CONSOLE CLEAR %c#"+ log_console_clear_count +" PREVENTED %c"+mPadEnd(_caller+" ",80,"-");
-        });
-    }
-    /*}}}*/
-    /* CLEAR {{{*/
-    else {
-        /**/l_x    = ++log_console_clear_count % 10;
-        /**/result =      "%c CONSOLE CLEAR %c#"+ log_console_clear_count +"           %c"+mPadEnd(_caller+" ",80,"-");
+    let       s  = "";
+    let    args  = [];
+    let    num   =  0;
 
-        /**/console.clear();
-    }
-    /*}}}*/
-} finally {
-    if(log_more && result)
-        console.log(result,lbb+lf0    ,lfX[l_x]                                        ,lf0);
-    //.....................%c CONSOLE CLEAR %c.........................................%c............................*/
-}
+    IMPORTED_MAP.forEach((value,key) => {
+        if(key && (key == importer.name))
+        {
+            /**/                   s  = " %c"+mPadEnd(key, IMPORTER_LENGTH)+s; /* INSERT IMPORTER */
+            /**/                   args.unshift(lbH + lbX[num % 10]         ); /* INSERT COLOR    */
+            /**/
+            /**/                   s += " %c"+mPadEnd("●", key.length,"●"   ); /* APPEND MARKER   */
+            /**/                   args.push   (      lfX[num % 10]         ); /* APPEND COLOR    */
+        }
+        else {
+            if(value != undefined) s += " %c"+             key               ; /* APPEND MODULE   */
+            else                   s += " %c"+mPadEnd("_", key.length,"_"   ); /* APPEND MARKER   */
+            /**/                   args.push   (      lfX[num % 10]         ); /* APPEND COLOR    */
+        }
+
+        num += 1;
+    });
+
+    /* INSERT LABELS */
+    args.unshift( s );
+    log.apply(console, args);
+
+/*{{{
+log_object(mPadStart(importer.name, IMPORTER_LENGTH), IMPORTED_MAP, lf7, false);
+}}}*/
 };
-/*}}}*/
-/*➔ log_SYN {{{*/
-let log_SYN = function(msg, val)
-{
-    if(val) log(SYN+" %c "+msg+" %c "+val+"", lb0, lb8);
-    else    log(SYN+" %c "+msg              , lb0     );
-};
-/*}}}*/
-/*➔ log_permission {{{*/
-let log_permission = function(script_id, namespace, functionality, permission, logging=true)
-{
-    let  fnc = mPadStart(functionality,32);
-    let perm = mPadEnd  (permission   ,10);
-
-    script_id = mPadEnd(script_id,20);
-
-    if(namespace != undefined)
-    {
-if(logging) log("%c"+script_id+"%c"+fnc+'%c ... manifest permission specified %c'+perm     /* eslint-disable-line quotes */
-                ,lbL           ,lbC     ,lbC+lf5                             ,lbR    +lf5);
-
-        return true;
-    }
-    else {
-console    .log("%c"+script_id+"%c"+fnc+'%c *** manifest permission required  %c'+perm     /* eslint-disable-line quotes */
-                ,lbL          ,lbR      ,lbb+lbL+lf2                         ,lbb+lbR+lf2);
-
-        log_caller();
-
-        return false;
-    }
-};
-/*}}}*/
-/*➔ ellipsis {{{*/
-let HORIZONTAL_ELLLIPSIS = "\u2026";    /* … */
-let ellipsis = function(msg, length=64)
-{
-    msg = String(msg);
-
-    let trailer
-        = (msg.indexOf("\n") >= 0) ? LF + HORIZONTAL_ELLLIPSIS
-        :                                 HORIZONTAL_ELLLIPSIS
-    ;
-
-    return (msg.length <= length)
-        ?   msg
-        :   msg.substring(0, length - trailer.length)
-        +   trailer
-    ;
-
-};
-/*}}}*/
-/*➔ truncate {{{*/
-let truncate = function(msg, length=80)
-{
-    msg = strip_CR_LF( String(msg) );
-    return (msg.length <= length)
-        ?   msg
-        :   msg.substring(0, length-3)+"..."
-    ;
-};
-/*}}}*/
-/*➔ mPadStart {{{*/
-let mPadStart = function(s,l,c=" ") { s = String(s); while(s.length < l) s = c+s; return s; };
-/*}}}*/
-/*➔ mPadEnd{{{*/
-let mPadEnd   = function(s,l,c=" ") { s = String(s); while(s.length < l) s = s+c; return s; };
 /*}}}*/
 /*➔ log_CSP {{{*/
 /*{{{*/
@@ -1144,101 +1109,242 @@ log_sep_top(title, log_tag);
 log_sep_bot(title, log_tag);
 };
 /*}}}*/
-/*}}}*/
-/* CONSOLE COMMANDS .. [clear pause reload] {{{*/
-/*_ clear {{{*/
-let clear = function(pausable)
+/*➔ log_csp_rules {{{*/
+let log_csp_rules = function(title,headers_csp_value)
 {
-    log_console_clear();
+    log_sep_top(title, "LOG6_TAG");
 
-    if(pausable && pausable.l_paused )
-        log_pause( pausable );
+    let i; let csp_rules = headers_csp_value.split(";");
+    for(i=0; i<csp_rules.length; ++i)
+    {
+        let idx = (i+1)+"/"+csp_rules.length;
 
-    return chrome.runtime.lastError
-        ?  chrome.runtime.lastError.message
-        :  SYMBOL_CHECK_MARK+" CLEARED";
+        let           v = csp_rules[i].trim();
+        if(           v.indexOf(" ") < 0)  log("%c"+idx+" %c"+v
+                                               ,lbH      ,lbH+lb8);
+        else {
+            let lhs = v.split(" ")[0];     let rhs = v.substring(lhs.length+1);
+            if( rhs.indexOf  (" ")<0)      log("%c"+idx+" %c"+lhs   +"%c"+rhs
+                                               ,lbH      ,lbL+lf8    ,lbR+lf0);
+            else                           log("%c"+idx+" %c"+lhs+LF+"%c"+v.substring(lhs.length).replace(/ /g,"\n → ")
+                                               ,lbH      ,lbH+lf8    ,lb0                                              );
+        }
+    }
+    log_sep_bot("CSP RULES", "LOG6_TAG");
 };
 /*}}}*/
-/*_ pause {{{*/
-let pause = function(pausable)
+/*➔ log_permission {{{*/
+let log_permission = function(script_id, namespace, functionality, permission, logging=true)
 {
-    pausable.l_paused = !pausable.l_paused;
+    let  fnc = mPadStart(functionality,32);
+    let perm = mPadEnd  (permission   ,10);
 
-    log_pause( pausable );
+    script_id = mPadEnd(script_id,20);
 
-    let sym = pausable.l_paused
-        ?      SYMBOL_CHECK_MARK
-        :      SYMBOL_NOT_CHECKED
+    if(namespace != undefined)
+    {
+if(logging) log("%c"+script_id+"%c"+fnc+'%c ... manifest permission specified %c'+perm     /* eslint-disable-line quotes */
+                ,lbL           ,lbC     ,lbC+lf5                             ,lbR    +lf5);
+
+        return true;
+    }
+    else {
+console    .log("%c"+script_id+"%c"+fnc+'%c *** manifest permission required  %c'+perm     /* eslint-disable-line quotes */
+                ,lbL          ,lbR      ,lbb+lbL+lf2                         ,lbb+lbR+lf2);
+
+        log_caller();
+
+        return false;
+    }
+};
+/*}}}*/
+/*➔ log_socket {{{*/
+let log_socket = function(socket)
+{
+    console.log(  "...WebSocket:\n"
+                + "   ┌ socket.url                 .. "+ socket.url     +"\n"
+                + "   └ socket.version             .. "+ socket.version +"\n"
+               );
+
+    if(             socket.request )
+        log_socket_request(socket.request);
+};
+/*}}}*/
+/*_ log_socket_request {{{*/
+/*{{{*/
+const R_CAPITAL     = "\\s*[A-Z]\\S+";
+const R_PARENTH     = "\\s+\\([^\\)]+\\)";
+const regexp_UA     = new RegExp("(("+R_CAPITAL+")("+R_PARENTH+")*)", "g");
+
+const R_LINE_INDENT = "   │ request.headers.user-agent  ➔";
+/*}}}*/
+let log_socket_request = function(request)
+{
+
+    let user_agent = (" "+request.headers['user-agent']).replace(regexp_UA, "\n"+R_LINE_INDENT+"$&"); /* eslint-disable-line quotes */
+
+    console.log( "...request:\n"
+                + "   ┌ request.url                .. "+ request.url                +"\n"
+                + "   │ request.method             .. "+ request.method             +"\n"
+                + "   │ request.headers.host       .. "+ request.headers.host       +"\n"
+                + "   │ request.headers.origin     .. "+ request.headers.origin
+                +       user_agent +"\n"
+                + "   │ request.headers.connection .. "+ request.headers.connection +"\n"   // The Upgrade header field is used by clients to invite the server to switch to one of the listed protocols
+                + "   └ request.headers.upgrade    .. "+ request.headers.upgrade
+               );
+};
+/*}}}*/
+
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ UTIL                                                                      │
+// └───────────────────────────────────────────────────────────────────────────┘
+/*➔ sleep {{{*/
+let sleep = async function(delay)
+{
+if( log_this) log("%c"+SD6+"%c SLEEPING "+delay+"ms %c "+log_js.get_callers_bot(), lbB+lf6, lbH+lf6, lbb+lbH+lb6);
+
+    await new Promise(function executor(resolve)
+                      {
+                          setTimeout(() => resolve((log_this) && log("resolve: sleep "+delay+" DONE") ), delay);
+                      });
+
+/*{{{*/
+if( log_this) log("sleep DONE");
+/*}}}*/
+};
+/*}}}*/
+/*➔ strip_QUOTE {{{*/
+/*{{{*/
+const regexp_QUOTE = new RegExp("[\\u0022\\u0027]", "g"); /* "' */
+
+/*}}}*/
+let strip_QUOTE = function(text)
+{
+    return text
+        .   replace(regexp_QUOTE,  " ")
+        .   trim()
+    ;
+};
+/*}}}*/
+/*➔ strip_CR_LF {{{*/
+const regexp_CR    = new RegExp("\\r"  , "g");
+const regexp_LF    = new RegExp("\\n *", "g");
+const regexp_COMMA = new RegExp(" *, *", "g"); /* eslint-disable-line no-unused-vars */
+let strip_CR_LF    = function(text)
+{
+    if(!text) return "null text";
+    return text
+        .   replace(regexp_CR,  "")
+        .   replace(regexp_LF, " ")
+        .   trim()
+    ;
+};
+/*}}}*/
+/*➔ ellipsis {{{*/
+let HORIZONTAL_ELLLIPSIS = "\u2026";    /* … */
+let ellipsis = function(msg, length=64)
+{
+    msg = String(msg);
+
+    let trailer
+        = (msg.indexOf("\n") >= 0) ? LF + HORIZONTAL_ELLLIPSIS
+        :                                 HORIZONTAL_ELLLIPSIS
     ;
 
-    return chrome.runtime.lastError
-        ?  chrome.runtime.lastError.message
-        :  sym
+    return (msg.length <= length)
+        ?   msg
+        :   msg.substring(0, length - trailer.length)
+        +   trailer
+    ;
+
+};
+/*}}}*/
+/*➔ truncate {{{*/
+let truncate = function(msg, length=80)
+{
+    msg = strip_CR_LF( String(msg) );
+    return (msg.length <= length)
+        ?   msg
+        :   msg.substring(0, length-3)+"..."
     ;
 };
-let log_pause = function( pausable )
-{
-    let id = pausable.id ? pausable.id :LOG_JS_ID;
+/*}}}*/
+/*➔ mPadStart {{{*/
+let mPadStart = function(s,l,c=" ") { s = String(s); while(s.length < l) s = c+s; return s; };
+/*}}}*/
+/*➔ mPadEnd{{{*/
+let mPadEnd   = function(s,l,c=" ") { s = String(s); while(s.length < l) s = s+c; return s; };
+/*}}}*/
 
-    if(pausable.l_paused) log(SYMBOL_CONSTRUCTION +"%c "+ id +" PAUSED  ", lbb+lb0+lf3);
-    else                  log(SYMBOL_CONSTRUCTION +"%c "+ id +" RUNNING ", lbb+lb0+lf5);
-};
-/*}}}*/
-/*_ reload {{{*/
-let reload = function()
-{
-    chrome.runtime.reload(); // Reloads the app or extension
-};
-/*}}}*/
-/*}}}*/
 /* EXPORT {{{*/
 return { name : LOG_JS_ID
-    ,           logBIG
-    ,           logXXX
-    ,           log_CSP
-    ,           log_SYN
-    ,           log_caller
-    ,           log_console_clear
-    ,           log_csp_rules
-    ,           log_group
-    ,           log_json
-    ,           log_json_prettify
-    ,           log_key_val
-    ,           log_key_val_group
-    ,           log_members
-    ,           log_o_keys
-    ,           log_o_keys_toString
-    ,           log_o_sort
-    ,           log_object
-    ,           log_object_val_format
-    ,           log_pause
-    ,           log_permission
-    ,           log_sep_bot
-    ,           log_sep_top
-    ,           log_set_type
-    ,           log_socket
 
-    ,           log_modulename_key_val
-    ,           log_import             //RENAME //FIXME
+    // LOG TRACE
+    ,    log
+    ,    logBIG
+    ,    logXXX
+    ,    log_group
 
-    ,    clear
+    // LOG PROCESS
+    ,    log_caller
+    ,    parse_ex_stack_FUNC_FILE_LINE_COL
+    ,    get_ex_stack_line_match
+
+    // LOG OBJECTS
+    ,    log_members
+    ,    log_object
+    ,    log_o_sort
+
+    ,    log_key_val
+    ,    log_key_val_group
+    ,    log_object_val_format
+
+    ,    log_o_keys
+    ,    log_o_keys_toString
+
+    // LOG JSON
+    ,    log_json
+    ,    log_json_prettify
+
+    // LOG EXTENSION
+    ,    log_modulename_key_val
+    ,    log_import
+    ,    log_CSP
+    ,    log_csp_rules
+    ,    log_permission
+    ,    log_socket
+
+    // UTIL
+    ,    sleep
+    ,    strip_CR_LF
+    ,    strip_QUOTE
     ,    ellipsis
+    ,    truncate
+    ,    mPadEnd
+    ,    mPadStart
+
+    // LOG FORMATTING
+    ,    log_SYN
+    ,    log_sep_bot
+    ,    log_sep_top
+
+    // CONSOLE
+    ,    log_console_clear
+    ,    clear
+    ,    pause
+    ,    reload
+
+    ,           log_pause
+    ,           log_set_type
+
+
     ,    get_callers
     ,    get_callers_bot
     ,    get_callers_lst
-    ,    get_ex_stack_line_match
-    ,    log
 
-    ,    mPadEnd
-    ,    mPadStart
-    ,    parse_ex_stack_FUNC_FILE_LINE_COL
-    ,    pause
-    ,    reload
     ,    set_log_more
-    ,    strip_CR_LF
-    ,    strip_QUOTE
-    ,    truncate
 
+    // LOG DATA
     ,    LF
     ,    LOG_BG_ARR
     ,    LOG_FG_ARR
@@ -1256,4 +1362,4 @@ if(log_js.log_this) console.log("%c XXX LOADING "+LOG_JS_TAG, "color:lime; font-
 
 try { module.exports = log_js; } catch(ex) { /*console.log(ex);*/ } /* server.js require */
 
-// $LOCAL/STORE/DEV/PROJECTS/RTabs/Util/RTabs_Profiles/DEV/javascript/dom_log.js
+// @see $RPROFILES/script/dom_log.js

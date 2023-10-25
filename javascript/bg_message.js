@@ -25,7 +25,7 @@
 
 /* eslint-enable  no-redeclare        */
 const BG_MESSAGE_SCRIPT_ID  = "bg_message";
-const BG_MESSAGE_SCRIPT_TAG =  BG_MESSAGE_SCRIPT_ID +" (231007:19h:01)"; /* eslint-disable-line no-unused-vars */
+const BG_MESSAGE_SCRIPT_TAG =  BG_MESSAGE_SCRIPT_ID +" (231024:17h:01)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ MESSAGE POPUP                                              B_LOG1_MESSAGE │
@@ -47,6 +47,7 @@ const BG_MESSAGE_SCRIPT_TAG =  BG_MESSAGE_SCRIPT_ID +" (231007:19h:01)"; /* esli
 /* └─────────────────────────────┘*/
 let bg_message  = (function() {
 "use strict";
+let BG_MESSAGE_JS_LOG  = false;
 
 /* IMPORT {{{*/
 /*{{{*/
@@ -64,7 +65,8 @@ let   L_CHK, L_NEW, L_ARD, L_ARL, L_ARR, L_ARU, L_CLR, L_FNC, L_WRN;
 let   SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP;
 /* eslint-enable no-unused-vars */
 
-let   log
+let   ellipsis
+    , log
     , log_SYN
     , log_caller
     , log_console_clear
@@ -122,8 +124,7 @@ let bg_page2_RELOAD_if_required;
 
 /*}}}*/
 /*_ bg_settings {{{*/
-let bg_settings_tabs4_query_active_tab_url;
-let B_NO_LAST_ACTIVATED;
+let bg_settings_is_a_supported_URL;
 
 /*}}}*/
 /*_ bg_store {{{*/
@@ -136,13 +137,15 @@ let bg_store_SET_url_settings;
 /*}}}*/
 /*_ bg_tabs {{{*/
 let bg_tabs_del_tabId_key;
-let bg_tabs_get_last_activated_tabId;
+let bg_tabs_get_tabId_last_activated;
 let bg_tabs_get_tabId;
 let bg_tabs_get_tabId_key;
 let bg_tabs_set_tabId_key_items;
 let bg_tabs_set_tabId_key_val;
+let bg_tabs_get_url;
 
 /*}}}*/
+const O_SCRIPT_ID = "options_js";
 /*}}}*/
 /*  _import {{{*/
 let _import = function()
@@ -161,15 +164,16 @@ let _import = function()
     [ SYMBOL_FUNCTION, SYMBOL_CHECK_MARK, SYMBOL_NOT_CHECKED, SYMBOL_CONSTRUCTION, SYMBOL_ROCKET, SYMBOL_ASSIGN, SYMBOL_GEAR, SYMBOL_THUMBS_UP] = log_js.LOG_SYM;
 
     li                = log_js.log_modulename_key_val;
-    log               = log_js.log;                 li("log_js", "log"              , log              );
-    log_SYN           = log_js.log_SYN;             li("log_js", "log_SYN"          , log_SYN          );
-    log_caller        = log_js.log_caller;          li("log_js", "log_caller"       , log_caller       );
-    log_console_clear = log_js.log_console_clear;   li("log_js", "log_console_clear", log_console_clear);
-    log_object        = log_js.log_object;          li("log_js", "log_object"       , log_object       );
+    ellipsis          = log_js.ellipsis;               li("log_js","ellipsis",ellipsis);
+    log               = log_js.log;                    li("log_js", "log"              , log              );
+    log_SYN           = log_js.log_SYN;                li("log_js", "log_SYN"          , log_SYN          );
+    log_caller        = log_js.log_caller;             li("log_js", "log_caller"       , log_caller       );
+    log_console_clear = log_js.log_console_clear;      li("log_js", "log_console_clear", log_console_clear);
+    log_object        = log_js.log_object;             li("log_js", "log_object"       , log_object       );
 //  log_permission    = log_js.log_permission;
-    log_sep_bot       = log_js.log_sep_bot;         li("log_js", "log_sep_bot"      , log_sep_bot      );
-    log_sep_top       = log_js.log_sep_top;         li("log_js", "log_sep_top"      , log_sep_top      );
-    mPadEnd           = log_js.mPadEnd;             li("log_js", "mPadEnd"          , mPadEnd          );
+    log_sep_bot       = log_js.log_sep_bot;            li("log_js", "log_sep_bot"      , log_sep_bot      );
+    log_sep_top       = log_js.log_sep_top;            li("log_js", "log_sep_top"      , log_sep_top      );
+    mPadEnd           = log_js.mPadEnd;                li("log_js", "mPadEnd"          , mPadEnd          );
 
     /*}}}*/
     modules.push( background_js ); /*{{{*/
@@ -217,8 +221,7 @@ let _import = function()
 
     /*}}}*/
     modules.push( bg_settings   ); /*{{{*/
-    bg_settings_tabs4_query_active_tab_url = bg_settings.bg_settings_tabs4_query_active_tab_url;  li("bg_settings","bg_settings_tabs4_query_active_tab_url",bg_settings_tabs4_query_active_tab_url);
-    B_NO_LAST_ACTIVATED                    = bg_settings.B_NO_LAST_ACTIVATED;                     li("bg_settings","B_NO_LAST_ACTIVATED"                   ,B_NO_LAST_ACTIVATED                   );
+    bg_settings_is_a_supported_URL         = bg_settings.bg_settings_is_a_supported_URL;    li("bg_settings","bg_settings_is_a_supported_URL",bg_settings_is_a_supported_URL);
 
     /*}}}*/
     modules.push( bg_store      ); /*{{{*/
@@ -231,11 +234,12 @@ let _import = function()
     /*}}}*/
     modules.push( bg_tabs       ); /*{{{*/
     bg_tabs_del_tabId_key                  = bg_tabs.bg_tabs_del_tabId_key;                       li("bg_tabs","bg_tabs_del_tabId_key",bg_tabs_del_tabId_key);
-    bg_tabs_get_last_activated_tabId       = bg_tabs.bg_tabs_get_last_activated_tabId;            li("bg_tabs","bg_tabs_get_last_activated_tabId",bg_tabs_get_last_activated_tabId);
+    bg_tabs_get_tabId_last_activated       = bg_tabs.bg_tabs_get_tabId_last_activated;            li("bg_tabs","bg_tabs_get_tabId_last_activated",bg_tabs_get_tabId_last_activated);
     bg_tabs_get_tabId                      = bg_tabs.bg_tabs_get_tabId;                           li("bg_tabs","bg_tabs_get_tabId",bg_tabs_get_tabId);
     bg_tabs_get_tabId_key                  = bg_tabs.bg_tabs_get_tabId_key;                       li("bg_tabs","bg_tabs_get_tabId_key",bg_tabs_get_tabId_key);
     bg_tabs_set_tabId_key_items            = bg_tabs.bg_tabs_set_tabId_key_items;                 li("bg_tabs","bg_tabs_set_tabId_key_items",bg_tabs_set_tabId_key_items);
     bg_tabs_set_tabId_key_val              = bg_tabs.bg_tabs_set_tabId_key_val;                   li("bg_tabs","bg_tabs_set_tabId_key_val",bg_tabs_set_tabId_key_val);
+    bg_tabs_get_url                        = bg_tabs.bg_tabs_get_url;                             li("bg_tabs","bg_tabs_get_url",bg_tabs_get_url);
 
     /*}}}*/
     log_js.log_import(bg_message   , modules);
@@ -244,7 +248,6 @@ let _import = function()
     setTimeout(_import,0);
 /*}}}*/
 /* LOGGING {{{*/
-let BG_MESSAGE_JS_LOG  = false;
 /*_ logging {{{*/
 let logging = function(state)
 {
@@ -282,7 +285,6 @@ let log_this_get = function(_caller)
 };
 /*}}}*/
 /*}}}*/
-const O_SCRIPT_ID = "options_js";
 
 // ┌──────────────────┐
 // │ SEND ● MESSAGE   │
@@ -344,7 +346,7 @@ if( log_more && chrome.runtime.lastError) log("chrome.runtime.lastError=["+ chro
 if( log_this) log_object(caller      ,   message);
 /*}}}*/
     try {
-        if( popup_showing_windowId ) {
+        if( popup_is_connected ) {
 if( log_this) log("%c The popup UI is ●●● showing", lbb+lbH+lb4);
             chrome.runtime.sendMessage(message, bg_response_handler);
         }
@@ -399,7 +401,7 @@ let bg_message_onMessage_addListener = function()
 /*}}}*/
 /*_ bg_message_monitor_popup_window {{{*/
 /*{{{*/
-let   popup_showing_windowId;
+let   popup_is_connected;
 
 /*}}}*/
 let bg_message_monitor_popup_window = function()
@@ -411,7 +413,7 @@ let log_this = log_this_get(caller);
 if( log_this) log(caller);
 /*}}}*/
     // ┌───────────────────────────────────────────────────────────────────────┐
-    // │ MONITOR popup_showing_windowId                                        │
+    // │ MONITOR popup_is_connected                                            │
     // │ ● initialized by bg_message_onMessage_CB triggered by popup_js.       │
     // │ ● sending message to popup_js should only happen when the id is set.  │
     // └───────────────────────────────────────────────────────────────────────┘
@@ -425,7 +427,7 @@ if(log_this_get(caller)) log_object("MONITORING popup connection port", port);
                 port.onDisconnect.addListener(function() {
 if(log_this_get(caller)) log(caller+"%c popup connection closed", lbb+lbH+lb8);
 
-                    popup_showing_windowId = 0;
+                    popup_is_connected = 0;
                 });
             }
         });
@@ -502,17 +504,18 @@ if( log_this) log_object(  caller+action_tags
     {
         log("● RELOAD");
         // NO tabs ● MANUAL RELOAD {{{
-        let last_tabId = bg_tabs_get_last_activated_tabId(caller);
+        let last_tabId = bg_tabs_get_tabId_last_activated(caller);
         if(!last_tabId && !message.tabId)
         {
+            /* [response_handler] {{{*/
             if( response_handler )
             {
                 let response
                     = {   "● MESSAGE": "" , ...message
-                        , REPLY      : "NO tabId"  +LF
-                        +              "● RELOADING:"+LF
-                        +              "1 bg_message_onMessage_CB_query will reload the current page"+LF
-                        +              "2 then send a message to POPUP (if it is still connected)"
+                        , REPLY      : "NO tabId"
+                        +              "● RELOADING:"
+                        +              "● bg_message_onMessage_CB_query will reload the current page"
+                        +              "● then send a message to POPUP (if it is still connected)"
                         , type       : "pending"
                         , caller     : caller + (message.caller ? " replying to "+message.caller : "")
                     };
@@ -520,6 +523,8 @@ if( log_this) log_object("SENDING A REPLY TO "+message.cmd, response); // collap
 
                 response_handler( response );
             }
+            /*}}}*/
+            /* NO tabId {{{*/
             if(!last_tabId && !message.tabId)
             {
                 chrome.tabs.query({}) // any window, any tab ● https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/query
@@ -539,17 +544,18 @@ if( log_this) log("%c RELOADING %c tabId "+message.tabId+"%c active "+message.ta
                     .catch((error) => { console.error(BG_MESSAGE_SCRIPT_ID+"."+caller+": "+message.cmd, error); })
                 ;
             }
+            /*}}}*/
             return false; // whether to wait for an async response .. or not
         }
         //}}}
     }
     /*}}}*/
-    /* [popup_showing_windowId] {{{*/
-    if( typeof message.popup_showing_windowId != "undefined")
+    /* [popup_is_connected] {{{*/
+    if( typeof message.popup_is_connected != "undefined")
     {
-        popup_showing_windowId = message.popup_showing_windowId;
+        popup_is_connected = message.popup_is_connected;
 
-if( log_this) log(caller+"%c popup_showing_windowId=["+popup_showing_windowId+"]", lbb+lbH+lb4);
+if( log_this) log("%c popup_is_connected=["+popup_is_connected+"]", lbb+lbH+lb4);
     }
     /*}}}*/
     /*  [csp_filter] {{{*/
@@ -619,6 +625,7 @@ if( log_this || log_ACTIVATED() || LOG_MAP.B_LOG0_MORE) log_STORAGE();
 /*_ bg_message_onMessage_CB_query {{{*/
 /*{{{*/
 const B_TABS_ON_MESSAGE_QUERY     = "TABS ON MESSAGE QUERY";
+const B_TABS_NO_LAST_ACTIVATED    = "NO LAST ACTIVATED";
 
 /*}}}*/
 let bg_message_onMessage_CB_query = /*async*/ function(message, response_handler=null)
@@ -637,12 +644,12 @@ if( log_this) log("%c "+caller+"%c action %c"+action
                   ,lbL+lf1    ,lbC+lf1   ,lbR+lf1   );
 if( log_this) console.trace();
 /*}}}*/
-    /* ● [NO tabId] - LOG2_TAG - error B_NO_LAST_ACTIVATED .. f(bg_tabs_get_last_activated_tabId) {{{*/
-    let tabId = message.tabId || bg_tabs_get_last_activated_tabId(caller);
+    /* ● [NO tabId] - LOG2_TAG - error B_TABS_NO_LAST_ACTIVATED .. f(bg_tabs_get_tabId_last_activated) {{{*/
+    let tabId = message.tabId || bg_tabs_get_tabId_last_activated(caller);
     if(!tabId )
     {
         let response
-            = {   REPLY : B_TABS_ON_MESSAGE_QUERY+": "+B_NO_LAST_ACTIVATED
+            = {   REPLY : B_TABS_ON_MESSAGE_QUERY+": "+B_TABS_NO_LAST_ACTIVATED
                 , type  : "error"
 
             };
@@ -678,13 +685,13 @@ if( log_this) log("%c"+SD1+"%c"+response.REPLY,lbb+lbH+lf1 ,lbH+lb3);
     let url = bg_tabs_get_tabId_key(tabId, "url");
     if(!url )
     {
-if( log_this) log("%c"+SD2+   "%c NEED TAB URL CALLING %c bg_settings_tabs4_query_active_tab_url [tabId "+tabId+"]"
+if( log_this) log("%c"+SD2+   "%c NEED TAB URL CALLING %c bg_tabs_get_url [tabId "+tabId+"]"
                   ,lbB+lbH+lb2,lf3                    ,lf3                                           );
 
-        /*await*/ bg_settings_tabs4_query_active_tab_url( tabId
-                                                        , { query: "QUERY TAB URL" , caller: log_js.get_callers_bot() }
-                                                        , response_handler
-                                                      );
+        /*await*/ bg_tabs_get_url( tabId
+                                 , { query: "QUERY TAB URL" , caller: log_js.get_callers_bot() }
+                                 , response_handler
+                                 );
 
         return "LOG4_TAG";
     }
@@ -693,9 +700,20 @@ if( log_this) log("%c"+SD2+   "%c NEED TAB URL CALLING %c bg_settings_tabs4_quer
     /* NOTE: popup_js has no clue about its own tabId .. short of an async call to getCurrent */
     if( url )
     {
+        let REPLY = B_TABS_ON_MESSAGE_QUERY+": "
+            +     (  !url                                   ? "NO url"
+                   : !bg_settings_is_a_supported_URL(url)   ? "UNSUPPORTED URL IGNORED"
+                   :                                          ellipsis(url,64))
+        ;
+
+        let type  =  !url                                   ? "error url MISSING"
+            :        !bg_settings_is_a_supported_URL(url)   ? "error url UNSUPPORTED"
+            :                                                 "answer"
+        ;
+
         let response
-            = {   REPLY : B_TABS_ON_MESSAGE_QUERY+": HAVE URL"
-                , type  : "answer"
+            = {   REPLY
+                , type
                 , url
             };
 if( log_this) log("%c"+SD3+"%c"+response.REPLY, lbb+lbH+lb3,lf4);
@@ -738,7 +756,7 @@ let action
     :                             undefined
 ;
 
-if( log_more) log_sep_top(caller+" "+action);
+if( log_more) log_sep_top(caller+" "+action, "LOG8_TAG");
 if( log_this)   log("%c "+caller+"%c action %c"+action
                     ,lbL+lf9     ,lbC+lf9  ,lbR+lf9   );
 /*}}}*/
@@ -765,14 +783,14 @@ if( log_this)   log("%c "+caller+"%c action %c"+action
         /**/ tab_items =  bg_tabs_get_tabId    (tabId);
     }
     else {
-        /**/  tab_items           = null;
+        /**/ tab_items = null;
 
-        tab_attributes.     start = undefined;
-        tab_attributes.csp_filter = undefined;
-        tab_attributes. cancelreq = undefined;
-        tab_attributes.     theme = undefined;
-        tab_attributes.  typeface = undefined;
-        tab_attributes.     color = undefined;
+//      tab_attributes.     start = undefined;
+//      tab_attributes.csp_filter = undefined;
+//      tab_attributes. cancelreq = undefined;
+//      tab_attributes.     theme = undefined;
+//      tab_attributes.  typeface = undefined;
+//      tab_attributes.     color = undefined;
     }
     //}}}
 try{
@@ -783,21 +801,33 @@ try{
             , "● ATTRIBUTES" : "" , ...tab_attributes
             , "● ITEMS"      : "" , ...tab_items
             , "● HANDLER"    : "" ,    handler : BG_MESSAGE_SCRIPT_ID+" → "+caller+"(action "+action+")"
+            ,        callers : log_js.get_callers()
+/*{{{
+            , "● FIXME"      : ""
+            ,   "ENTITIES"   : "&#x1F914; &#x26A0;"
+            ,   "COLORED"    : "⛔⟄ ❂ ❓❗⭐⭕⚡✅❌"
+            ,   "UTF-8"      : "… € ← ↑ → ↓ ■ ▲ ▼ ● ☀ ★ ⚙ ✔ ✕ ✖ ✗ ✘ ➔"
+            ,   "UNICODE"    : "\u2026 \u20AC \u2190 \u2191 \u2192 \u2193 \u25A0 \u25B2 \u25BC \u25CF \u2600 \u2605 \u2699 \u2714 \u2715 \u2716 \u2717 \u2718 \u2794"
+            ,   "OHR title"  : "🤔 …it looks like "
+}}}*/
         };
 
-if( log_this) log(caller+"%c popup_showing_windowId=["+popup_showing_windowId+"]", lbb+lbH+lb4);
-    if( response_handler &&  popup_showing_windowId)
-        response.caller = BG_MESSAGE_SCRIPT_ID+":"+LF+"response to a call from "+LF+response.caller;
+if( log_this) log(caller+"%c popup_is_connected=["+popup_is_connected+"]", lbb+lbH+lb4);
+    if( response_handler &&  popup_is_connected)
+    {
+        response.caller = BG_MESSAGE_SCRIPT_ID+": response to a call from "+response.caller;
 
 if( log_this) log_object("SENDING A REPLY TO "+message.caller, response, lb9, !log_more); // collapsed
 
-    response_handler( response );
+        response_handler( response );
+    }
+    bg_page_POPUP_pageAction(tabId, { caller, ...response });
     //}}}
 } catch(error) {
     log(caller+": "+error.message); // response_handler is not a function...
     console.dir(  response_handler );
 }
-if( log_more) log_sep_bot(caller+" "+message.query);
+if( log_more) log_sep_bot(caller+" "+message.query, "LOG8_TAG");
 };
 /*}}}*/
 
@@ -907,7 +937,7 @@ if( log_this) log_object(caller+" start: "+message.start, message, (message.star
         return "LOG2_TAG";
     }
     /*}}}*/
-if( log_more) log_sep_top(caller);
+if( log_more) log_sep_top(caller,"LOG8_TAG");
 try {
     /* [start TOGGLE] .. [start OFF] {{{*/
     let start_changed      = false;
@@ -1010,7 +1040,7 @@ if( log_more) log_object("TAB["+message.tabId+"]", bg_tabs_get_tabId(message.tab
     if( response_handler )
     {
         if( message.caller )
-            message.caller = BG_MESSAGE_SCRIPT_ID+":"+LF+"response to a call from "+LF+message.caller;
+            message.caller = BG_MESSAGE_SCRIPT_ID+": response to a call from "+message.caller;
 
         message.status
             = ((message.status||"") +" "+B_TABS_ON_MESSAGE + what_changed).trim();
@@ -1031,7 +1061,7 @@ if( log_this) log_object("sending response_handler message", message, lf5);
     //}}}
 }
 finally {
-if(log_more) log_sep_bot(caller);
+if(log_more) log_sep_bot(caller,"LOG8_TAG");
 if( log_this || log_ACTIVATED() || LOG_MAP.B_LOG0_MORE) log_STORAGE();
 }
 };
@@ -1075,7 +1105,8 @@ if( log_more) log_sep_top_FOR_caller_callee(caller, "bg_message_tabs_sendMessage
         result = await                               bg_message_tabs_sendMessage(tabId, message, caller );
 if( log_more) log_sep_bot_FOR_caller_callee(caller, "bg_message_tabs_sendMessage: "+action_tags);
     /*}}}*/
-    bg_page_POPUP_pageAction(tabId, caller); /* update popup */
+        /* update popup */
+        bg_page_POPUP_pageAction(tabId, { caller, ...message });
 
     }
 
@@ -1118,7 +1149,8 @@ if( log_more) log_sep_top_FOR_caller_callee(caller, "bg_message_tabs_sendMessage
     let result = await                               bg_message_tabs_sendMessage(tabId, message, caller );
 if( log_more) log_sep_bot_FOR_caller_callee(caller, "bg_message_tabs_sendMessage: "+action_tags);
     /*}}}*/
-    bg_page_POPUP_pageAction(tabId, caller); /* update popup */
+    /* update popup */
+    bg_page_POPUP_pageAction(tabId, { caller, ...message });
 
 if( log_this) log_object("...return result", result);
     return result;
@@ -1149,9 +1181,6 @@ if(LOG_MAP.B_LOG2_ERROR) log("%c REJECTING USELESS ["+message.csp_filter+"] FOR 
     ,                        lbL+lf9                                           ,lbR+lf2                     ,lbH+lf2);
 
         message.csp_filter = "";
-
-        /* reject popup rejected selection */
-        bg_page_POPUP_pageAction(message.tabId, JSON.stringify(message)); /* update popup */
     }
     /*}}}*/
     /* REMOVE CURRENT FILTER {{{*/
@@ -1168,6 +1197,8 @@ if( log_this) log("%c "+caller+": SELECTING ["+message.csp_filter+"] FOR %c"+bg_
 
     }
     /*}}}*/
+    /* update popup */
+    bg_page_POPUP_pageAction(message.tabId, { caller, url, ...message });
 };
 /*}}}*/
 
@@ -1239,16 +1270,18 @@ if(log_this) log(caller+"%c [UNHANDLED message.csp_filter]=["+csp_filter+"]", lf
 
     /*➔ EXPORT {{{*/
     return {  name : "bg_message"
-        ,             bg_message_onMessage_CB_reply
-        ,             bg_message_onMessage_addListener
-        ,             bg_message_sendMessage
-        ,             bg_message_tabs_sendMessage
-        ,             logging
+        ,     logging
+
+        ,     bg_message_onMessage_CB_reply
+        ,     bg_message_onMessage_addListener
+        ,     bg_message_sendMessage
+        ,     bg_message_tabs_sendMessage
+
         // DEBUG
-        , bg_message_onMessage_CB
-        , bg_message_onMessage_CB_TAB_start
-        , bg_message_onMessage_CB_TAB_stop
-        , bg_message_onMessage_CB_query
+        ,     bg_message_onMessage_CB
+        ,     bg_message_onMessage_CB_TAB_start
+        ,     bg_message_onMessage_CB_TAB_stop
+        ,     bg_message_onMessage_CB_query
     };
     /*}}}*/
 }());

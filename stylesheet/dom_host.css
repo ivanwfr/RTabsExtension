@@ -105,7 +105,7 @@ body.anchor_node             { outline : 3px double #FF0000 !important; }
 .wall_of_text_split                   { border        : 0                !important; }
 .wall_of_text_split                   { padding       : 0                !important; }
 .wall_of_text_split                   { margin        : 0                !important; }
-.wall_of_text_split                   { white-space   : pre-wrap         !important; } /*//FIXME was commented-out .. find out why */
+.wall_of_text_split                   { white-space   : pre-wrap         !important; }
 .wall_of_text_split                   { word-wrap     : break-word       !important; }
 /*{{{
 .wall_of_text_split                   { border        : 7px ridge red    !important; }
@@ -457,7 +457,7 @@ DETAILS[open] > * {
 /*}}}*/
 /* TYPE {{{*/
 
-/* //FIXME 220414 .. http://ndpsoftware.com/git-cheatsheet.html {{{
+/* (220414) .. http://ndpsoftware.com/git-cheatsheet.html {{{
 em {
     background-color  : #fafafa;
     border            : 0px solid #aaa;
@@ -765,12 +765,12 @@ OL.sentence_container { display: block; }
 /*{{{
 :new C:/LOCAL/DATA/ANDROID/PROJECTS/iwintoo/XPH/stylesheet/dom_host.css
 }}}*/
-/*//FIXME
+/*
 table { border-collapse: collapse !important; }
 */
 .rejected {
     margin           : 0.5em;
-/*//FIXME
+/*
     outline          : 5px rgba(000,136,000,0.5) solid;
 */
 }

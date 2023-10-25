@@ -26,7 +26,7 @@
 
 /* eslint-enable  no-redeclare        */
 const BG_STORE_SCRIPT_ID  = "bg_store";
-const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (230831:16h:10)"; /* eslint-disable-line no-unused-vars */
+const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (231024:17h:02)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ STORE                                                        B_LOG8_STORE │
@@ -48,6 +48,7 @@ const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (230831:16h:10)"; /* eslint-d
 /* └─────────────────────────────┘*/
 let bg_store  = (function() {
 "use strict";
+let BG_STORE_JS_LOG  = false;
 
 /* IMPORT {{{*/
 /* modules {{{*/
@@ -79,7 +80,6 @@ let   get_callers
 let LOG_MAP;
 let MANIFEST_VERSION;
 
-let b_check_manifest;
 let log_ACTIVATED;
 let log_STORAGE;
 
@@ -97,7 +97,10 @@ let bg_csp_load_filter_rules;
 //_______________ bg_header
 //_______________ bg_message
 //_______________ bg_page
-//_______________ bg_settings
+/*_ bg_settings {{{*/
+let bg_settings_check_manifest;
+
+/*}}}*/
 //_______________ bg_store
 /*_ bg_tabs {{{*/
 let bg_tabs_get_tabId_key;
@@ -132,7 +135,6 @@ let _import = function()
     LOG_MAP                          = background_js.LOG_MAP;           li("background_js","LOG_MAP",LOG_MAP);
     MANIFEST_VERSION                 = background_js.MANIFEST_VERSION;  li("background_js","MANIFEST_VERSION",MANIFEST_VERSION);
 
-    b_check_manifest                 = background_js.b_check_manifest;  li("background_js","b_check_manifest",b_check_manifest);
     log_ACTIVATED                    = background_js.log_ACTIVATED;     li("background_js","log_ACTIVATED",log_ACTIVATED);
     log_STORAGE                      = background_js.log_STORAGE;       li("background_js","log_STORAGE",log_STORAGE);
     /*}}}*/
@@ -150,7 +152,10 @@ let _import = function()
     //_______________________ bg_header
     //_______________________ bg_message
     //_______________________ bg_page
-    //_______________________ bg_settings
+    modules.push( bg_settings   ); /*{{{*/
+    bg_settings_check_manifest       = bg_settings.bg_settings_check_manifest;  li("bg_settings","bg_settings_check_manifest",bg_settings_check_manifest);
+
+    /*}}}*/
     //_______________________ bg_store
     modules.push( bg_tabs       ); /*{{{*/
     bg_tabs_get_tabId_key            = bg_tabs.bg_tabs_get_tabId_key;   li("bg_tabs","bg_tabs_get_tabId_key",bg_tabs_get_tabId_key);
@@ -162,7 +167,6 @@ let _import = function()
     setTimeout(_import,0);
 /*}}}*/
 /* LOGGING {{{*/
-let BG_STORE_JS_LOG  = false;
 /*_ logging {{{*/
 let logging = function(state)
 {
@@ -309,7 +313,7 @@ if( log_this) log_object("Storage items", items, lf3);
 /*}}}*/
     /*}}}*/
     /* MANIFEST {{{*/
-    b_check_manifest();
+    bg_settings_check_manifest();
 
     /*}}}*/
     /* LOAD CSP FILTERS {{{*/
@@ -337,6 +341,9 @@ if( log_this) log_sep_bot(BG_STORE_SCRIPT_ID+" manifest ("+MANIFEST_VERSION+") S
     if(typeof items.BG_STORE_JS_LOG    != "undefined") bg_store         .logging( items.BG_STORE_JS_LOG   );
     if(typeof items.BG_TABS_JS_LOG     != "undefined") bg_tabs          .logging( items.BG_TABS_JS_LOG    );
 
+    /* log background script status */
+    background_js.logn();
+
 };
 /*}}}*/
 /*➔ bg_store_SAVE_items {{{*/
@@ -349,10 +356,11 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
 if(!chrome.storage) { log("%c"+SYMBOL_CONSTRUCTION+" chrome.storage is undefined in "+caller, lbb+lbH+lf1); return; }
 
+if( log_this && !_caller) _caller = log_js.get_callers_bot();
 //t items_tag = log_js.log_json_prettify  (items);
 let items_tag = log_js.log_o_keys_toString(items, 80);
-if( log_this)   log("%c "+caller+"%c"+items_tag+"%c"+_caller
-                  ,lbL+lb3       ,lbR+lf8       ,lbH        );
+if( log_this)   log("%c "+caller+"%c"+items_tag+"%c caller "+_caller
+                  ,lbL+lb3       ,lbR+lf8       ,lbH+lb0            );
 if( log_more)   log_object("items", { ...items , callers: LF+get_callers() }, lb0);
 /*}}}*/
     try {
@@ -509,15 +517,17 @@ let bg_store_Object_same_values = function(o1,o2)
 /*}}}*/
 
 /*➔ EXPORT {{{*/
-    return {  name : "bg_store"
-        ,             bg_store_DEL_url_settings
-        ,             bg_store_GET_LAST_ITEMS : () => bg_store_LAST_ITEMS
-        ,             bg_store_GET_url_domain
-        ,             bg_store_GET_url_key
-        ,             bg_store_LOAD_items
-        ,             bg_store_SAVE_items
-        ,             bg_store_SET_url_settings
-        , logging
+    return { name : "bg_store"
+        ,    logging
+
+        ,    bg_store_GET_url_domain
+        ,    bg_store_GET_url_key
+        ,    bg_store_SET_url_settings
+        ,    bg_store_DEL_url_settings
+
+        ,    bg_store_LOAD_items
+        ,    bg_store_SAVE_items
+        ,    bg_store_GET_LAST_ITEMS : () => bg_store_LAST_ITEMS
     };
 /*}}}*/
 }());

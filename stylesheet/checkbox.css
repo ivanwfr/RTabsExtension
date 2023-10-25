@@ -1,5 +1,5 @@
 
-#checkbox_css_tag  { content: "checkbox_css (230822:15h:22)"; }
+#checkbox_css_tag  { content: "checkbox_css (231012:20h:13)"; }
 
 
 /* checkbox_css_tag {{{ */
@@ -62,9 +62,15 @@
 }
 /* set geometry to contain all children */
 .box_container {
+/*{{{
     display        : inline-block;
+}}}*/
+    display        : inline-grid;
     width          : auto;
     height         : auto;
+}
+#BUTTONS_DIV>.box_container {
+    width           : 10%;
 }
 .box_container>div {
 /*

@@ -25,7 +25,7 @@
 /* exported dom_util */
 
 const DOM_UTIL_JS_ID        = "dom_util";
-const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (230930:19h:58)";  /* eslint-disable-line no-unused-vars */
+const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (231013:19h:41)";  /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_util    = (function() {
 "use strict";
@@ -1984,7 +1984,7 @@ let log_this = DOM_UTIL_TAG || DOM_UTIL_LOG || LOG_MAP.T1_DOM_LOAD;
     Array.from(document.body.getElementsByTagName("*"  )).forEach((el) => {
         if((window.getComputedStyle(el).getPropertyValue("position") == "fixed"))
         {
-if( log_this) log(caller+" ● "+(el.id || el.tagName)+"\n", el);
+if( log_this) log(caller+" ● "+(el.id || el.tagName)+LF, el);
             el.style.display = "none";
         }
     });

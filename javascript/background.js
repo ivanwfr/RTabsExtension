@@ -30,9 +30,8 @@
 const MANIFEST_VERSION      = (typeof chrome.tabs.executeScript == "undefined") ?  "v3" : "v2";
 
 const B_SCRIPT_ID           = "background_js";
-const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (231007:15h:07)"; /* eslint-disable-line no-unused-vars */
+const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (231025:15h:24)"; /* eslint-disable-line no-unused-vars */
 const DOM_TOOLS_JS_ID       = "dom_tools_js";
-const DOM_LOAD_ID           = "dom_load";
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ BACKGROUND                                                      EXTENSION │
@@ -44,16 +43,17 @@ const DOM_LOAD_ID           = "dom_load";
 :e javascript/bg_event.js
 :e javascript/bg_header.js
 :e javascript/bg_message.js
-:e javascript/bg_page.js        " DEBUG_OPERA
+:e javascript/bg_page.js         " DEBUG_OPERA
 :e javascript/bg_settings.js
 :e javascript/bg_store.js
-:e javascript/bg_tabs.js        " DEBUG_OPERA
+:e javascript/bg_tabs.js         " DEBUG_OPERA
 :e javascript/options.js
 :e javascript/popup.js
 :e javascript/worker.js
 /* └─────────────────────────────┘*/
 let background_js = (function() {
 "use strict";
+let BACKGROUND_JS_LOG = false;
 
 /* IMPORT {{{*/
 /* modules {{{*/
@@ -110,7 +110,7 @@ let bg_store_SAVE_items;
 let bg_tabs_del_tabId;
 let bg_tabs_get_tabId_key;
 let bg_tabs_log_LAST_ACTIVATED_TAB;
-let bg_tabs_log_TABS_MAP;
+let bg_tabs_log_TABS;
 let bg_tabs_set_tabId_key_val;
 
 /*}}}*/
@@ -166,27 +166,25 @@ let _import = function()
 
     /*}}}*/
     modules.push( bg_tabs       ); /*{{{*/
-    bg_tabs_del_tabId               = bg_tabs.bg_tabs_del_tabId;                                li("bg_tabs","bg_tabs_del_tabId",bg_tabs_del_tabId);
-    bg_tabs_get_tabId_key           = bg_tabs.bg_tabs_get_tabId_key;                            li("bg_tabs","bg_tabs_get_tabId_key",bg_tabs_get_tabId_key);
-    bg_tabs_log_LAST_ACTIVATED_TAB  = bg_tabs.bg_tabs_log_LAST_ACTIVATED_TAB;                   li("bg_tabs","bg_tabs_log_LAST_ACTIVATED_TAB",bg_tabs_log_LAST_ACTIVATED_TAB);
-    bg_tabs_log_TABS_MAP            = bg_tabs.bg_tabs_log_TABS_MAP;                             li("bg_tabs","bg_tabs_log_TABS_MAP",bg_tabs_log_TABS_MAP);
-    bg_tabs_set_tabId_key_val       = bg_tabs.bg_tabs_set_tabId_key_val;                        li("bg_tabs","bg_tabs_set_tabId_key_val",bg_tabs_set_tabId_key_val);
+    bg_tabs_del_tabId               = bg_tabs.bg_tabs_del_tabId;                li("bg_tabs","bg_tabs_del_tabId",bg_tabs_del_tabId);
+    bg_tabs_get_tabId_key           = bg_tabs.bg_tabs_get_tabId_key;            li("bg_tabs","bg_tabs_get_tabId_key",bg_tabs_get_tabId_key);
+    bg_tabs_log_LAST_ACTIVATED_TAB  = bg_tabs.bg_tabs_log_LAST_ACTIVATED_TAB;   li("bg_tabs","bg_tabs_log_LAST_ACTIVATED_TAB",bg_tabs_log_LAST_ACTIVATED_TAB);
+    bg_tabs_log_TABS                = bg_tabs.bg_tabs_log_TABS;                 li("bg_tabs","bg_tabs_log_TABS",bg_tabs_log_TABS);
+    bg_tabs_set_tabId_key_val       = bg_tabs.bg_tabs_set_tabId_key_val;        li("bg_tabs","bg_tabs_set_tabId_key_val",bg_tabs_set_tabId_key_val);
 
     /*}}}*/
-    log_js.log_set_type("B");
     log_js.log_import(background_js, modules);
 };
 /*}}}*/
-/*}}}*/
     setTimeout(_import,0);
+/*}}}*/
 /* LOGGING {{{*/
-let BACKGROUND_JS_LOG  = false;
 /*_ logging {{{*/
 let logging = function(state)
 {
-    if(state != undefined) {           BACKGROUND_JS_LOG = state;
-        if(state) bg_store_SAVE_items({BACKGROUND_JS_LOG           });
-        else      bg_store_SAVE_items({BACKGROUND_JS_LOG: undefined});
+    if(state != undefined) {            BACKGROUND_JS_LOG = state;
+        if(state) bg_store_SAVE_items({ BACKGROUND_JS_LOG            });
+        else      bg_store_SAVE_items({ BACKGROUND_JS_LOG: undefined });
     }
     return BACKGROUND_JS_LOG;
 };
@@ -195,9 +193,7 @@ let logging = function(state)
 let log_this_get = function(_caller)
 {
     switch(_caller) {
-    case "b_check_manifest"       : return BACKGROUND_JS_LOG || log_ACTIVATED();
-    case "b_sleep"                : return BACKGROUND_JS_LOG || LOG_MAP.B_LOG9_STAGE;
-    case "logn_STORE"             : return BACKGROUND_JS_LOG || LOG_MAP.B_LOG8_STORE;
+    case "logn_STORE"                      : return BACKGROUND_JS_LOG || LOG_MAP.B_LOG8_STORE;
     }
 
 /*{{{*/
@@ -209,7 +205,7 @@ let log_this_get = function(_caller)
 };
         /*}}}*/
 /*}}}*/
-/* LOG_MAP {{{*/
+/*  ● LOG_MAP ● CHROME_API {{{*/
 /*➔ LOG_MAP {{{*/
 let LOG_MAP = {
     B_LOG1_MESSAGE    : false,
@@ -224,7 +220,7 @@ let LOG_MAP = {
     B_LOG0_MORE       : false
 };
 /*}}}*/
-/* CHROME_API_DICT {{{*/
+/*_ CHROME_API_DICT {{{*/
     const CHROME_API_DICT
     = { action                              : !!chrome.action
       , app                                 : !!chrome.app
@@ -334,23 +330,24 @@ if( log_this) log(caller+": %c SAVING [LOG_MAP]", lb8);
 let logn_USAGE = function()
 {
     let  s  = ""                         , args=[""];
-    /**/ s += "%c b.l(1) .. MESSAGE\n"   ; args.push(    lf1);
-    /**/ s += "%c b.l(2) .. ERROR\n"     ; args.push(    lf2);
-    /**/ s += "%c b.l(3) .. PRESERVE\n"  ; args.push(    lf3);
-    /**/ s += "%c b.l(4) .. CSP\n"       ; args.push(    lf4);
-    /**/ s += "%c b.l(5) .. ONREQUEST\n" ; args.push(    lf5);
-    /**/ s += "%c b.l(6) .. ONHEADER\n"  ; args.push(    lf6);
-    /**/ s += "%c b.l(7) .. TABS\n"       ; args.push(    lf7);
-    /**/ s += "%c b.l(8) .. STORE\n"     ; args.push(    lf8);
-    /**/ s += "%c b.l(9) .. STAGE\n"     ; args.push(    lf9);
-    /**/ s += "%c b.l(0) .. MORE\n"      ; args.push(    lf0);
-    /**/ s += "%c b.l( ) .. status\n"    ; args.push(    lf9);
-    /**/ s += "%c b.r    == reload\n"    ; args.push(    lf8);
-    /**/ s += "%c b.c    == clear\n"     ; args.push(    lf8);
-    /**/ s += "%c b.p    == pause"       ; args.push(    lf8);
+    /**/ s += "%c b.l(1) "+(LOG_MAP.B_LOG1_MESSAGE   ? "✔":"..")+" MESSAGE\n"   ; args.push(    lf1);
+    /**/ s += "%c b.l(2) "+(LOG_MAP.B_LOG2_ERROR     ? "✔":"..")+" ERROR\n"     ; args.push(    lf2);
+    /**/ s += "%c b.l(3) "+(LOG_MAP.B_LOG3_PRESERVE  ? "✔":"..")+" PRESERVE\n"  ; args.push(    lf3);
+    /**/ s += "%c b.l(4) "+(LOG_MAP.B_LOG4_CSP       ? "✔":"..")+" CSP\n"       ; args.push(    lf4);
+    /**/ s += "%c b.l(5) "+(LOG_MAP.B_LOG5_ONREQUEST ? "✔":"..")+" ONREQUEST\n" ; args.push(    lf5);
+    /**/ s += "%c b.l(6) "+(LOG_MAP.B_LOG6_ONHEADER  ? "✔":"..")+" ONHEADER\n"  ; args.push(    lf6);
+    /**/ s += "%c b.l(7) "+(LOG_MAP.B_LOG7_TABS      ? "✔":"..")+" TABS\n"      ; args.push(    lf7);
+    /**/ s += "%c b.l(8) "+(LOG_MAP.B_LOG8_STORE     ? "✔":"..")+" STORE\n"     ; args.push(    lf8);
+    /**/ s += "%c b.l(9) "+(LOG_MAP.B_LOG9_STAGE     ? "✔":"..")+" STAGE\n"     ; args.push(    lf9);
+    /**/ s += "%c b.l(0) "+(LOG_MAP.B_LOG0_MORE      ? "✔":"..")+" MORE\n"      ; args.push(    lf0);
+    /**/ s += "%c"                                    +" b.l( ) .. status\n"    ; args.push(    lf9);
+    /**/ s += "%c"                                    +" b.r    == reload\n"    ; args.push(    lf8);
+    /**/ s += "%c"                                    +" b.c    == clear\n"     ; args.push(    lf8);
+    /**/ s += "%c"                                    +" b.p    == pause"       ; args.push(    lf8);
     args[0] = s;
 
-    log_js.log_group ("%c"+SAR+"%c LOG_MAP "+SAD, lbb+lbH+lb0, lbH+lb0);
+    log_js.log_group ("%c"+SAR    +"%c LOG_MAP "+SAD+"%c ...toggle with b.l(n) .. bl(-1) for all"
+                      ,lbb+lbH+lb0 ,lbH+lb0          ,lf8);
     console.log.apply(console, args);
     console.groupEnd();
 };
@@ -377,7 +374,12 @@ let log_LOG_MAP = function(items)
     {
         console.groupCollapsed.apply(console, args);
 
-        logn_USAGE();
+        bg_tabs_log_TABS();
+
+        if(!chrome.storage)
+            log_o_sort(SYMBOL_CONSTRUCTION+"chrome.storage is undefined"+SYMBOL_CONSTRUCTION+" LOG_MAP", LOG_MAP, lb2+lf4);
+        else
+            log_o_sort("STORAGE (x"+Object.keys(items).length+")",items, lf7);
 
         /* CHROME_API_DICT {{{*/
         let chrome_api_defined = {};
@@ -389,14 +391,9 @@ let log_LOG_MAP = function(items)
 
         /*}}}*/
 
-        if(!chrome.storage)
-            log_o_sort(SYMBOL_CONSTRUCTION+"chrome.storage is undefined"+SYMBOL_CONSTRUCTION+" LOG_MAP", LOG_MAP, lb2+lf4);
-        else
-            log_o_sort("STORAGE",items, lf7);
-
-        bg_tabs_log_TABS_MAP();
-
         log_object("background_js",background_js, lf9);
+
+        logn_USAGE();
 
         console.groupEnd();
     }
@@ -448,7 +445,7 @@ let logging_ACTIVATED = function()
 };
 /*}}}*/
 /*➔ log_IGNORING {{{*/
-let log_IGNORING = function(url,caller)
+let log_IGNORING = function(url,_caller)
 {
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ NOTIFY LOGGING EXCEPTION ABOUT SOME TRIVIAL ITEMS                         │
@@ -456,16 +453,16 @@ let log_IGNORING = function(url,caller)
 
     if(!log_ACTIVATED()) return;
 
-    let key = caller;
+    let key = _caller;
     let idx = log_get_IDX_for_caller(key) ;
     let lfx = lfX[ idx ];
-    log("%c"+L_CLR+"%c"+mPadEnd(caller,40)+"%c IGNORING %c"+url
-        ,lbb+lf2   ,lbL+lfx                ,lbC+lf2    ,lbR+lb0);
+    log("%c"+L_CLR+"%c"+mPadEnd(_caller,40)+"%c IGNORING %c"+ellipsis(url,64)
+        ,lbb+lf2   ,lbL+lfx                 ,lbC+lf2    ,lbR+lb0             );
 };
 /*}}}*/
-    /*➔ log_STORAGE {{{*/
-    /*{{{*/
-    const B_STORAGE_GET_DELAY = 2000;
+/*➔ log_STORAGE {{{*/
+/*{{{*/
+const B_STORAGE_GET_DELAY = 500;
 
 let   log_STORAGE_timer;
 /*}}}*/
@@ -574,108 +571,15 @@ let   log_get_IDX_for_caller= function(key)
 };
 /*}}}*/
 /*}}}*/
-/*{{{*/
-const B_ON_HEADER_RECEIVED = "HEADER RECEIVED";
-
-const CHROME_SCHEME       = "chrome:";
-const CHROME_SCHEME_REGEX = /.*chrome:/;
-
-/*}}}*/
 
 // ┌───────────────────────────────────────────────────────────────────────────┐
-// │ MANIFEST                                           MANIFEST_VERSION=="v3" │
+// │ INIT: LOAD STORAGE then ADD EVENT LISTENERS                               │
 // └───────────────────────────────────────────────────────────────────────────┘
-/*➔ b_check_manifest {{{*/
-// eslint-disable no-redeclare */
-// eslint-disable no-undef     */
-let b_check_manifest = async function(_log_this=false)
-{
-/*{{{*/
-let caller   = "b_check_manifest";
-let log_this = log_this_get(caller) || _log_this;
-//t log_tag  = (MANIFEST_VERSION == "v3") ? "LOG3_TAG" : "LOG2_TAG";
-
-/*}}}*/
-
-    // ┌──────────────────────────────────────────────────────────┐
-    // │ Manifest version  [chrome.runtime.getManifest]           │
-    // │ Popup action      [chrome.pageAction] .. [chrome.action] │
-    // │ executeScript     [chrome.tabs]                          │
-    // │ executeScript     [chrome.scripting]                     │
-    // └──────────────────────────────────────────────────────────┘
-
-    let      manifest       =   chrome.runtime.getManifest();
-    let info_pageAction     = ((chrome.pageAction && chrome.pageAction             ));
-    let info_action         = ((chrome.action     && chrome.action                 ));
-    let info_executeScript  = ((chrome.tabs       && chrome.tabs.     executeScript));
-    let info_scripting      = ((chrome.scripting  && chrome.scripting.executeScript));
-    let info_tabs_scripting = ((chrome.scripting  && chrome.tabs     .executeScript));
-
-/*{{{*/
-if( log_this)
-{
-    log_object("MANIFEST v"+manifest.manifest_version, manifest, lfX[manifest.manifest_version]);
-
-    if(chrome.permissions)
-    {
-        let permissions = await chrome.permissions.getAll();
-        log_object("● permissions ", permissions, lf5);
-    }
-    if(chrome.declarativeNetRequest)
-    {
-        let dynamic_Rules = await chrome.declarativeNetRequest.getDynamicRules();
-        if(dynamic_Rules.length) log_object("● dynamic_Rules ", dynamic_Rules, lf6);
-        else                     log    ("%c ● dynamic_Rules is EMPTY"   , lbH+lb0);
-
-        let session_Rules = await chrome.declarativeNetRequest.getSessionRules();
-        if(session_Rules.length) log_object("● session_Rules ", session_Rules, lf7);
-        else                     log    ("%c ● session_Rules is EMPTY"   , lbH+lb0);
-    }
-
-    let api_features =
-        { "chrome.tabs.executeScript"           : (typeof info_executeScript  )
-        , "chrome.action"                       : (typeof info_action         )
-        , "chrome.pageAction"                   : (typeof info_pageAction     )
-        , "chrome.scripting.executeScript"      : (typeof info_scripting      )
-        , "chrome.tabs_scripting.executeScript" : (typeof info_tabs_scripting )
-        };
-    log_object("API FEATURES", api_features, lf3);
-}
-/*}}}*/
-};
-// eslint-enable  no-undef     */
-// eslint-enable  no-redeclare */
-/*}}}*/
-
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │ UTIL                                                                      │
-// └───────────────────────────────────────────────────────────────────────────┘
-/*_ b_sleep {{{*/
-let b_sleep = async function(delay)
-{
-/*{{{*/
-let   caller = "b_sleep";
-let log_this = log_this_get(caller);
-
-if( log_this) log("%c"+SD6+"%c SLEEPING "+delay+"ms %c "+log_js.get_callers_bot(), lbB+lf6, lbH+lf6, lbb+lbH+lb6);
-/*}}}*/
-
-    await new Promise(function executor(resolve)
-                      {
-                          setTimeout(() => resolve((log_this) && log("resolve: sleep "+delay+" DONE") ), delay);
-                      });
-
-/*{{{*/
-if( log_this) log("b_sleep DONE");
-/*}}}*/
-};
-/*}}}*/
-
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │ EXPORT                                                                    │
-// └───────────────────────────────────────────────────────────────────────────┘
-/*➔ init c l r {{{*/
+/*➔ init {{{*/
 let init = () => {
+
+    log_js.log_set_type("B", BACKGROUND_JS_LOG);
+
     if( chrome.storage ) {
         chrome.storage.sync.get(null, bg_store_LOAD_items);
     }
@@ -685,13 +589,6 @@ let init = () => {
     }
     setTimeout(bg_event_addListeners,500);
 };
-let    c = log_js.clear;
-//t    l = logn;
-let    r = reload;
-let   tl = bg_tabs.bg_tabs_get_last_activated_tabId;
-let last = bg_tabs_log_LAST_ACTIVATED_TAB;
-let tabs = bg_tabs_log_TABS_MAP;
-let tdel = bg_tabs_del_tabId;
 /*}}}*/
 /*_ l_paused {{{*/
 /*{{{*/
@@ -710,7 +607,7 @@ let p = function()
     log(sym +" .. l_paused=["+l_paused+"]");
 };
 /*}}}*/
-
+/*_ p_reload {{{*/
 /* eslint-disable no-shadow */
 let p_reload = function(logging=false)
 {
@@ -724,23 +621,36 @@ console.log("p_reload");
     ;
 };
 /* eslint-enable  no-shadow */
+/*}}}*/
+/*➔ c l r {{{*/
+let    c = log_js.clear;
+//t    l = logn;
+let    r = reload;
+let   tl = bg_tabs.bg_tabs_get_tabId_last_activated;
+let last = bg_tabs_log_LAST_ACTIVATED_TAB;
+let tabs = bg_tabs_log_TABS;
+let tdel = bg_tabs_del_tabId;
+/*}}}*/
 
-    /*  return {{{*/
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ EXPORT                                                              DEBUG │
+// └───────────────────────────────────────────────────────────────────────────┘
+    /* ● return {{{*/
 
     return { name : B_SCRIPT_ID
-        , logging
+        ,    logging
 
         , init                          // reload storage
+        , logn
+
         , c                             // console.clear();
         , l       : (arg) => logn(arg)  // log .. set .. get .. show
         , r       // chrome.runtime.reload(); // Reloads the app or extension
         , p       // pause [ TOOLS_START .. onMessage .. onAlarm .. onUpdated .. onActivated .. onRemoved ]
+
         , "---------- DEBUG API ------------------" : "---------------------------------------"
-        , b_check_manifest
-        , mf      : ()    =>   b_check_manifest(true)
         , op      : ()    =>   chrome.runtime.openOptionsPage()
         , pi      : ()    =>   chrome.runtime.getPlatformInfo         ((info ) => log_object ("PlatformInfo",info,lbb+lbH+lb0,false))
-        , b_sleep
 
         , "---------- DEBUG API v2 ---------------" : "---------------------------------------"
         , de    : ()      =>   chrome.runtime.getPackageDirectoryEntry((entry) => console.log("Package Directory Entry:", entry))
@@ -765,7 +675,7 @@ console.log("p_reload");
         , m_csp6  : ()    =>       bg_message.bg_message_onMessage_CB({ tabId: tl(), csp_filter: bg_csp.FILTER6_NONE   },"Devtools")
 
         , "---------- MESSAGES TO popup ----------" : "---------------------------------------"
-        , pa      : ()    =>                  bg_page.bg_page_POPUP_pageAction (tl()                   , "Devtools")
+        , pa      : ()    =>                  bg_page.bg_page_POPUP_pageAction (tl(), { caller: "Devtools", ...bg_tabs.bg_tabs_get_tabId(tl()) })
         , pan     : (n)   =>                  bg_page.bg_page_SHOW_ICON_NUM    (tl(), n)
         , sm      : (msg={cmd:"Devtools"}) => bg_message.bg_message_sendMessage(msg, "Devtools") // (msg,_caller)
 
@@ -778,8 +688,8 @@ console.log("p_reload");
         , last
         , tabs
         , tdel
-        , rules   : ()    => bg_settings.bg_settings_tabs2_onUpdated_declarativeNetRequest(tl())
-        , active  : ()    => bg_settings.bg_settings_tabs1_onActivated()
+        , rules   : ()    => bg_tabs.bg_tabs_declarativeNetRequest_onUpdated(tl())
+        , active  : ()    => bg_tabs.bg_tabs_onActivated()
 
         , "---------- STORAGE --------------------" : "---------------------------------------"
         , ls      : log_STORAGE
@@ -787,11 +697,7 @@ console.log("p_reload");
         , sc      : ()    => { chrome.storage.sync.clear(); log_STORAGE(); }
 
         , "---------- USED BY [bg_<modules>] -----" :  "---------------------------------------"
-        , B_ON_HEADER_RECEIVED
         , B_SCRIPT_ID
-        , CHROME_SCHEME
-        , CHROME_SCHEME_REGEX
-        , DOM_LOAD_ID
         , DOM_TOOLS_JS_ID
         , LF
         , LOG_MAP
@@ -814,17 +720,21 @@ console.log("p_reload");
 //}}}
 
 })();
+
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ LOAD                                                                      │
 // └───────────────────────────────────────────────────────────────────────────┘
 /*{{{*/
 if(!chrome.action) chrome.action = chrome.pageAction;
-let        b =  background_js; /* @so that we can call b.l() from Devtools.console */
-//......*/ b.mf();
-
+let b =  background_js; /* @so that we can call b.l() from Devtools.console */
 setTimeout(b.init,500); /* @so that caller may terminate before */
+/*}}}*/
 
-/* chrome.runtime .. f(manifest v2,v3) {{{*/
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ DOC                                                                       │
+// └───────────────────────────────────────────────────────────────────────────┘
+/*{{{*/
+/* ● chrome.runtime .. f(manifest v2,v3) {{{*/
 
 // v2
 // console.log("chrome.runtime.getPackageDirectoryEntry:", chrome.runtime.getPackageDirectoryEntry);
@@ -834,11 +744,6 @@ setTimeout(b.init,500); /* @so that caller may terminate before */
 // console.log("chrome.runtime.getPlatformInfo:"         , chrome.runtime.getPlatformInfo         );
 
 /*}}}*/
-//}}}
-
-// ┌───────────────────────────────────────────────────────────────────────────┐
-// │ DOC                                                                       │
-// └───────────────────────────────────────────────────────────────────────────┘
 /* ● WebExtensions API declarativeNetRequest {{{
 :e manifest.json
 
@@ -977,7 +882,16 @@ setTimeout(b.init,500); /* @so that caller may terminate before */
 :!start explorer "https://www.html5rocks.com/en/tutorials/security/content-security-policy/#source-whitelists"
 
 }}}*/
-/* VIM: {{{
+/* VIM {{{
+:grep                  bg_settings_is_a_supported_URL
+:help errorformat
+:new  ~/VIM/OPTIONS/tags.vim|:235
+:e    ~/VIM/MAP/mapKeys.func.vim|:427
+
+:new  ~/VIM/
+:new  ~/VIM/OPTIONS/autocmd.vim
+:new  ~/VIM/syntax/qf.vim
+
 :new ~/VIM/Pvim.txt
 :new  $APROJECTS/Chrome_Web_Store/OHRExtension
 :vnew C:/LOCAL/USR/ivan/VIM/after/syntax/javascript_BAK_BOT_LOG_TOP.vim
@@ -985,3 +899,5 @@ setTimeout(b.init,500); /* @so that caller may terminate before */
 :e ~/VIM/SCRIPTS/make_eslint.vim
 :e $WPROJECTS/RTabs/Util/RTabs_Profiles/DEV/script/dom_tools.js
 }}}*/
+/*}}}*/
+

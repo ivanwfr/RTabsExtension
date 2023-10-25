@@ -19,14 +19,14 @@
 // globals  bg_header                 */
 // globals  bg_message                */
 /* globals  bg_page                   */
-// globals  bg_settings               */
+/* globals  bg_settings               */
 /* globals  bg_store                  */
 /* globals  bg_tabs                   */
 
 /* eslint-enable  no-redeclare        */
 
 const BG_CONTENT_SCRIPT_ID  = "bg_content";
-const BG_CONTENT_SCRIPT_TAG =  BG_CONTENT_SCRIPT_ID +" (231004:00h:19)"; /* eslint-disable-line no-unused-vars */
+const BG_CONTENT_SCRIPT_TAG =  BG_CONTENT_SCRIPT_ID +" (231024:17h:01)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ CONTENT SCRIPT                                   B_LOG7_TABS B_LOG9_STAGE │
@@ -48,6 +48,7 @@ const BG_CONTENT_SCRIPT_TAG =  BG_CONTENT_SCRIPT_ID +" (231004:00h:19)"; /* esli
 /* └─────────────────────────────┘*/
 let bg_content  = (function() {
 "use strict";
+let BG_CONTENT_JS_LOG  = false;
 
 /* IMPORT {{{*/
 /* modules {{{*/
@@ -78,9 +79,6 @@ let   get_callers
 /*}}}*/
 /*_ background_js {{{*/
 let B_SCRIPT_ID;
-let CHROME_SCHEME;
-let CHROME_SCHEME_REGEX;
-let DOM_LOAD_ID;
 let DOM_TOOLS_JS_ID;
 let LOG_MAP;
 let MANIFEST_VERSION;
@@ -101,7 +99,11 @@ let bg_page_GET_CheckContentScript;
 let bg_page_RUN_CheckContentScript;
 
 /*}}}*/
-//_______________ bg_settings
+/*_ bg_settings {{{*/
+let DOM_LOAD_ID;
+let bg_settings_is_a_supported_URL;
+
+/*}}}*/
 /*_ bg_store {{{*/
 let bg_store_GET_url_key;
 let bg_store_SAVE_items;
@@ -141,9 +143,6 @@ let _import = function()
     /*}}}*/
     modules.push( background_js ); /*{{{*/
     B_SCRIPT_ID                     = background_js.B_SCRIPT_ID;                   li("background_js","B_SCRIPT_ID",B_SCRIPT_ID);
-    CHROME_SCHEME                   = background_js.CHROME_SCHEME;                 li("background_js","CHROME_SCHEME",CHROME_SCHEME);
-    CHROME_SCHEME_REGEX             = background_js.CHROME_SCHEME_REGEX;           li("background_js","CHROME_SCHEME_REGEX",CHROME_SCHEME_REGEX);
-    DOM_LOAD_ID                     = background_js.DOM_LOAD_ID;                   li("background_js","DOM_LOAD_ID",DOM_LOAD_ID);
     DOM_TOOLS_JS_ID                 = background_js.DOM_TOOLS_JS_ID;               li("background_js","DOM_TOOLS_JS_ID",DOM_TOOLS_JS_ID);
     LOG_MAP                         = background_js.LOG_MAP;                       li("background_js","LOG_MAP",LOG_MAP);
     MANIFEST_VERSION                = background_js.MANIFEST_VERSION;              li("background_js","MANIFEST_VERSION",MANIFEST_VERSION);
@@ -160,11 +159,15 @@ let _import = function()
     //_______________________ bg_header
     //_______________________ bg_message
     modules.push( bg_page       ); /*{{{*/
-    bg_page_GET_CheckContentScript       = bg_page.bg_page_GET_CheckContentScript;           li("bg_page","bg_page_GET_CheckContentScript",bg_page_GET_CheckContentScript);
-    bg_page_RUN_CheckContentScript       = bg_page.bg_page_RUN_CheckContentScript;           li("bg_page","bg_page_RUN_CheckContentScript",bg_page_RUN_CheckContentScript);
+    bg_page_GET_CheckContentScript  = bg_page.bg_page_GET_CheckContentScript;           li("bg_page","bg_page_GET_CheckContentScript",bg_page_GET_CheckContentScript);
+    bg_page_RUN_CheckContentScript  = bg_page.bg_page_RUN_CheckContentScript;           li("bg_page","bg_page_RUN_CheckContentScript",bg_page_RUN_CheckContentScript);
 
     /*}}}*/
-    //_______________________ bg_settings
+    modules.push( bg_settings   ); /*{{{*/
+    DOM_LOAD_ID                     = bg_settings.DOM_LOAD_ID;                     li("bg_settings","DOM_LOAD_ID",DOM_LOAD_ID);
+    bg_settings_is_a_supported_URL  = bg_settings.bg_settings_is_a_supported_URL;  li("bg_settings","bg_settings_is_a_supported_URL",bg_settings_is_a_supported_URL);
+
+    /*}}}*/
     modules.push( bg_store      ); /*{{{*/
     bg_store_GET_url_key            = bg_store.bg_store_GET_url_key;               li("bg_store","bg_store_GET_url_key",bg_store_GET_url_key);
     bg_store_SAVE_items             = bg_store.bg_store_SAVE_items;                li("bg_store","bg_store_SAVE_items",bg_store_SAVE_items);
@@ -183,7 +186,6 @@ let _import = function()
     setTimeout(_import,0);
 /*}}}*/
 /* LOGGING {{{*/
-let BG_CONTENT_JS_LOG  = false;
 /*_ logging {{{*/
 let logging = function(state)
 {
@@ -199,7 +201,7 @@ let log_this_get = function(_caller)
     switch(_caller) {
     case "bg_content_get_time_before_or_after"      : return BG_CONTENT_JS_LOG || LOG_MAP.B_LOG7_TABS || (LOG_MAP.B_LOG9_STAGE && LOG_MAP.B_LOG0_MORE);
     case "bg_content_get_time_elapsed_dhms"         : return BG_CONTENT_JS_LOG || LOG_MAP.B_LOG7_TABS || (LOG_MAP.B_LOG9_STAGE && LOG_MAP.B_LOG0_MORE);
-    case "bg_content_scripts_get_inject_time"       : return BG_CONTENT_JS_LOG || LOG_MAP.B_LOG7_TABS || (LOG_MAP.B_LOG9_STAGE && LOG_MAP.B_LOG0_MORE);
+    case "bg_content_scripts_get_dom_load_time"     : return BG_CONTENT_JS_LOG || LOG_MAP.B_LOG7_TABS || (LOG_MAP.B_LOG9_STAGE && LOG_MAP.B_LOG0_MORE);
     case "bg_content_scripts_get_tools_deployed"    : return BG_CONTENT_JS_LOG || LOG_MAP.B_LOG7_TABS || (LOG_MAP.B_LOG9_STAGE && LOG_MAP.B_LOG0_MORE);
     case "bg_content_scripts_get_tools_load_time"   : return BG_CONTENT_JS_LOG || LOG_MAP.B_LOG7_TABS || (LOG_MAP.B_LOG9_STAGE && LOG_MAP.B_LOG0_MORE);
     case "bg_content_scripts_loaded"                : return BG_CONTENT_JS_LOG || LOG_MAP.B_LOG7_TABS || (LOG_MAP.B_LOG9_STAGE && LOG_MAP.B_LOG0_MORE);
@@ -216,7 +218,7 @@ let log_this_get = function(_caller)
 };
 /*}}}*/
 /*}}}*/
-/*{{{*/
+/*  ● BG_LAUNCH_TIME ● ACTION [UNDEFINED UPDATED CACHED] {{{*/
 const BG_LAUNCH_TIME   = parseInt(new Date().getTime() / 1000) % 86400; // seconds per day
 
 const ACTION_UNDEFINED = "NO ACTION";
@@ -225,6 +227,9 @@ const ACTION_CACHED    =   "CACHED" ;
 
 /*}}}*/
 
+    // ┌────────────────────────────────────────────────────────────────────────┐
+    // │ TOOLS ● LOADED ● DEPLOYED                                              │
+    // └────────────────────────────────────────────────────────────────────────┘
 /*➔ bg_content_scripts_get_tools_deployed {{{*/
 let bg_content_scripts_get_tools_deployed = function(message)
 {
@@ -270,10 +275,8 @@ try {
     /* [UPDATED] {{{*/
     if(!content_scripts_reply_message && tabId)
     {
-        let   url = bg_tabs_get_tabId_key(tabId, "url");
-        if(   url.includes( CHROME_SCHEME    )
-           || url.includes("chrome-extension")
-          )
+        let url =   bg_tabs_get_tabId_key(tabId, "url");
+        if( url && !bg_settings_is_a_supported_URL(url))
         {
             log_IGNORING(url, caller);
         }
@@ -360,7 +363,7 @@ if( log_more) log_sep_bot(caller+" "+cs_status.content_scripts_loaded, log_tag);
 /*➔ bg_content_scripts_loaded_parse_message {{{*/
 let bg_content_scripts_loaded_parse_message = function(tabId,message)
 {
-    let c_s_inject_time                      = bg_content_scripts_get_inject_time    (message);
+    let c_s_inject_time                      = bg_content_scripts_get_dom_load_time  (message);
     let tools_load_time                      = bg_content_scripts_get_tools_load_time(message);
     let content_scripts_loaded
         = (c_s_inject_time > BG_LAUNCH_TIME) ? bg_content_get_time_before_or_after(c_s_inject_time, BG_LAUNCH_TIME)
@@ -376,8 +379,8 @@ let bg_content_scripts_loaded_parse_message = function(tabId,message)
 };
 /*}}}*/
 
-/*_ bg_content_scripts_get_inject_time {{{*/
-let bg_content_scripts_get_inject_time = function(message)
+/*_ bg_content_scripts_get_dom_load_time {{{*/
+let bg_content_scripts_get_dom_load_time = function(message)
 {
     let load_message
         =               message
@@ -457,15 +460,11 @@ if( log_more) log_object("third_then_arg", third_then_arg);
 }}}*/
                 .catch((error) => {
 if( log_more) log_object("catch_error", error);
-                    if( error.message.includes(CHROME_SCHEME) )
-                    {
-                        let url = error.message.replace(CHROME_SCHEME_REGEX, CHROME_SCHEME);
-                        log_IGNORING(url, caller);
-                    }
-                    else {
-                        log("%c "+caller+":\n%c"+error.message, lbC+lf2, lbC+lf2);
-                        bg_tabs_log_LAST_ACTIVATED_TAB(caller+" ERROR", get_callers());
-                    }
+
+                    log("%c "+caller+":\n%c"+error.message, lbC+lf2, lbC+lf2);
+
+                    bg_tabs_log_LAST_ACTIVATED_TAB(caller+" ERROR", get_callers());
+
                     log_caller();
 
                     bg_tabs_del_tabId_key(tabId, "content_scripts_reply_message");
@@ -503,6 +502,7 @@ if( log_more) log("%c "+caller+": (MANIFEST_VERSION=='v2'): ..... chrome.tabs.ex
 if(log_more) log_object("content_scripts_reply_message", content_scripts_reply_message, lf7);
 };
 /*}}}*/
+
 /*_ bg_content_get_time_before_or_after {{{*/
 /*{{{*/
 const M_SEC = 60;         // seonds per minute
@@ -525,7 +525,7 @@ let bg_content_get_time_before_or_after = function(sec_from, sec_to=0)
     let h       = Math.floor(s / H_SEC); if(s >= H_SEC) s -= h * H_SEC; // consume hours   .. remains minutes
     let m       = Math.floor(s / M_SEC); if(s >= M_SEC) s -= m * M_SEC; // consume minutes .. remains seconds
 
-    if(h==1) { h=0; m+=60; }                    // "1 min" .. "119 min"
+    if(h==1) { h=0; m+=60; }                                            // "1 min" .. "119 min"
 
     let before_or_after = (ms_from < ms_to) ? " EARLIER" : " LATER";
     return bg_content_get_time_elapsed_dhms(d, h, m, s)+ before_or_after;
@@ -572,10 +572,10 @@ let bg_content_get_time_elapsed_dhms = function(d,h,m,s)
 
         if(logging)
         {
-            log(BG_CONTENT_SCRIPT_ID+" ● LOGGING location."+method+" COMMAND IN Content-Page's Devtools ●");
+            log(    BG_CONTENT_SCRIPT_ID+" ● LOGGING location."+method+" COMMAND IN Content-Page's Devtools ●");
         }
         else {
-            log(BG_CONTENT_SCRIPT_ID+" ● RELOADING [tabId "+tabId+"] ( location."+method+" ):");
+            log(    BG_CONTENT_SCRIPT_ID+" ● RELOADING [tabId "+tabId+"] ( location."+method+" ):");
 
             if(url) {
                 log(BG_CONTENT_SCRIPT_ID+" ● expecting  URL ▼");
@@ -629,11 +629,12 @@ let bg_content_get_time_elapsed_dhms = function(d,h,m,s)
 
 /*➔ EXPORT {{{*/
     return {  name : "bg_content"
-        ,             bg_content_scripts_get_tools_deployed
-        ,             bg_content_scripts_loaded
-        ,             bg_content_scripts_loaded_parse_message
-        ,             bg_content_scripts_reload
-        ,             logging
+        ,     logging
+
+        ,     bg_content_scripts_get_tools_deployed
+        ,     bg_content_scripts_loaded
+        ,     bg_content_scripts_loaded_parse_message
+        ,     bg_content_scripts_reload
     };
 /*}}}*/
 }());

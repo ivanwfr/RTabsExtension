@@ -22,7 +22,7 @@
 */
 
 const DOM_HIDE_JS_ID        = "dom_hide_js";
-const DOM_HIDE_JS_TAG       = DOM_HIDE_JS_ID  +" (230820:21h:09)"; /* eslint-disable-line no-unused-vars */
+const DOM_HIDE_JS_TAG       = DOM_HIDE_JS_ID  +" (231013:19h:40)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_hide    = (function() {
 "use strict";
@@ -1559,7 +1559,7 @@ let _dom_hide_csv_to_html = function(csv)
         html += path+"<br>";
     }
 /*
-    logXXX("_dom_hide_csv_to_html: ...return\n"+html)
+    logXXX("_dom_hide_csv_to_html: ...return"+LF+html)
 */
     return html;
 };

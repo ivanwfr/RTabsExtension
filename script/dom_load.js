@@ -14,7 +14,7 @@
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 const DOM_LOAD_ID    = "dom_load";
-const DOM_LOAD_TAG   =  DOM_LOAD_ID +" (231001:02h:28)";
+const DOM_LOAD_TAG   =  DOM_LOAD_ID +" (231025:15h:32)";
 /*}}}*/
 javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 "use strict";
@@ -5225,7 +5225,7 @@ background-size    : 100% 100% !important;
 
 
 .sticky_msg_edit {
-    outline      : 2px dotted red;
+    outline     : 2px dotted red;
     box-shadow  : rgba(000,000,000,0.5) 6px 2px  7px 0px;
 
 
@@ -6093,7 +6093,7 @@ let dom_data_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_DATA_JS_ID        = "dom_data_js";
-const DOM_DATA_JS_TAG       = DOM_DATA_JS_ID  +" (230427:13h:55)";
+const DOM_DATA_JS_TAG       = DOM_DATA_JS_ID  +" (231001:01h:55)";
 
 let dom_data    = (function() {
 "use strict";
@@ -6431,7 +6431,7 @@ const CSS_TRAPPED               = "trapped";
 
 
 const TOOLS_MAX                = 30;
-const ZINDEX_SHADOW_HOST       = 2147483647;
+const ZINDEX_SHADOW_HOST       = "2147483647";
 
 const FONT_SIZE_SHADOW_HOST    = "12px";
 
@@ -6802,6 +6802,7 @@ const DOC_TOOLS_ID            = "doc_tools";
         , SYMBOL_CLEAR_SCREEN
         , SYMBOL_CLOCKWISE_OPEN_CIRCLE
         , SYMBOL_HEAVY_BALLOT
+        , SYMBOL_SNOWFLAKE
         , SYMBOL_REPLACEMENT_CHAR
 
         , SYMBOL_PARTNERSHIP
@@ -7022,7 +7023,7 @@ let dom_log_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_LOG_JS_ID         = "dom_log_js";
-const DOM_LOG_JS_TAG        = DOM_LOG_JS_ID  +" (230820:21h:51)";
+const DOM_LOG_JS_TAG        = DOM_LOG_JS_ID  +" (231025:15h:31)";
 
 let dom_log     = (function() {
 "use strict";
@@ -7204,6 +7205,9 @@ let log_IMPORT = function()
 };
 
 
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ LOG DATA                                                                  │
+// └───────────────────────────────────────────────────────────────────────────┘
 
 const dom_log_STRING
     = {   L_ARL
@@ -7274,135 +7278,9 @@ const dom_log_CHAR
 
 
 
-const console_clear = function(  msg=null) { console.clear(); if(msg) console.log ("%c.. by "+msg,CS);                   };
-const console_dir   = function(a1,a2=null) {
-    let o   = (a2) ? a2 : a1;
-    let msg = (a2) ? a1 : null;
-    if( msg )
-        console.log ("%c"+msg+":",CS);
-    console.dir  (o);
-};
-const console_table = function(o,msg=null) {                  if(msg) console.log ("%c"+msg+":"  ,CS); console.table(o); };
-const console_log   = function(  msg     ) {                          console.log (     msg         );                   };
-const console_warn  = function(  msg=null) {                          console.warn(     msg         );                   };
-
-const CONSOLE_CLEAR_COOLDOWN_DELAY = 1000;
-
-let console_clear_cooldown_timeout;
-
-let console_clear_post = function(msg=null)
-{
-    if( console_clear_cooldown_timeout )
-    {
-        log("%c CONSOLE CLEARED BY "+msg+" %c LOG PRESERVED FOR "+CONSOLE_CLEAR_COOLDOWN_DELAY+"ms", lbb+lbH+lf8, lbb+lbH+lf9);
-    }
-    else {
-        log();
-        console_clear( msg );
-        console_clear_cooldown_timeout
-            = setTimeout( function() { console_clear_cooldown_timeout = null; }
-                        , CONSOLE_CLEAR_COOLDOWN_DELAY);
-    }
-};
-
-const dom_log_console
-    = {   console_clear
-        , console_clear_post
-        , console_dir
-        , console_log
-        , console_table
-        , console_warn
-    };
-
-
-
-let logSD0 = function(          format, ...args) { _logSD(dom_data.SD0, lf0, format, ...args); };
-let logSD1 = function(          format, ...args) { _logSD(dom_data.SD1, lf1, format, ...args); };
-let logSD2 = function(          format, ...args) { _logSD(dom_data.SD2, lf2, format, ...args); };
-let logSD3 = function(          format, ...args) { _logSD(dom_data.SD3, lf3, format, ...args); };
-let logSD4 = function(          format, ...args) { _logSD(dom_data.SD4, lf4, format, ...args); };
-let logSD5 = function(          format, ...args) { _logSD(dom_data.SD5, lf5, format, ...args); };
-let logSD6 = function(          format, ...args) { _logSD(dom_data.SD6, lf6, format, ...args); };
-let logSD7 = function(          format, ...args) { _logSD(dom_data.SD7, lf7, format, ...args); };
-let logSD8 = function(          format, ...args) { _logSD(dom_data.SD8, lf8, format, ...args); };
-let logSD9 = function(          format, ...args) { _logSD(dom_data.SD9, lf9, format, ...args); };
-let _logSD = function(sym, lfx, format, ...args) { console.log("%c "+sym+"%c"+format, lbS+lfx, lbA, ...args); };
-
-const dom_log_SYM_DIGIT
-    = {   logSD0
-        , logSD1
-        , logSD2
-        , logSD3
-        , logSD4
-        , logSD5
-        , logSD6
-        , logSD7
-        , logSD8
-        , logSD9
-    };
-
-
-
-
-let log_caller = function(level_max)
-{
-    let stack_trace = get_callers( level_max );
-
-    if( stack_trace.includes(LF) ) console.log("%c"+stack_trace.replace(LF,"%c"+LF), lbH+lf6, lf8);
-    else                         { console.log("%c"+stack_trace                    , lf6+lbF     ); console.trace(); }
-};
-let get_callers = function(level_max)
-{
-    let xx, ex_stack;
-    try {   xx.raise(); } catch(ex) { ex_stack = parse_ex_stack_FUNC_FILE_LINE_COL(ex.stack, level_max); }
-    return  ex_stack.trim();
-};
-
-
-
-
-
-let parse_ex_stack_FUNC_FILE_LINE_COL = function(text, level_max=10)
-{
-    let  result = "";
-    let   lines = text.split(LF);
-    let     sym = L_ARL;
-    let line_match;
-    for(let i=2; i<=(2+level_max); ++i)
-    {
-        if( String(lines[i]).includes("at log_caller") ) continue;
-        if( String(lines[i]).includes("log.js"       ) ) continue;
-
-        if( line_match = get_ex_stack_line_match(lines[i]) )
-            result    += (result ? LF : "") + sym+" "+line_match;
-        sym = L_ARU;
-    }
-
-    return result;
-};
-
-
-
-const regexp_FUNC_FILE_LINE_COL = new RegExp("\\s*at\\s*([^\\(]+)\\s+\\((?:[^\\/]*\\/)*(\..+?):(\\d+?):(\\d+?)");
-
-
-let get_ex_stack_line_match = function(ex_stack_line)
-{
-    let matches = regexp_FUNC_FILE_LINE_COL.exec(ex_stack_line);
-
-    if(!matches ) return "";
-
-    let func = matches[1].replace("Object.","");
-    let file = matches[2];
-    let line = matches[3];
-    let col  = matches[4];
-    let match= mPadStart(func, 48)+".. "+file+" "+line+":"+col;
-
-
-    return match;
-};
-
-
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ LOG ACTIVATION                                                            │
+// └───────────────────────────────────────────────────────────────────────────┘
 
 
 const LOG_MAP = {
@@ -7563,228 +7441,89 @@ const dom_LOG_MAP
     };
 
 
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ CONSOLE                                                                   │
+// └───────────────────────────────────────────────────────────────────────────┘
 
+const console_clear = function(  msg=null) { console.clear(); if(msg) console.log ("%c.. by "+msg,CS);                   };
+const console_dir   = function(a1,a2=null) {
+    let o   = (a2) ? a2 : a1;
+    let msg = (a2) ? a1 : null;
+    if( msg )
+        console.log ("%c"+msg+":",CS);
+    console.dir  (o);
+};
+const console_table = function(o,msg=null) {                  if(msg) console.log ("%c"+msg+":"  ,CS); console.table(o); };
+const console_log   = function(  msg     ) {                          console.log (     msg         );                   };
+const console_warn  = function(  msg=null) {                          console.warn(     msg         );                   };
 
+const CONSOLE_CLEAR_COOLDOWN_DELAY = 1000;
 
-const LF_HEAD = LF+"    ";
+let console_clear_cooldown_timeout;
 
-
-let log_key_val       = function(name, o, lxx       ) { return log_key_val_group(name, o, lxx, true); };
-let log_key_val_group = function(name, o, lfx=7, group=true)
+let console_clear_post = function(msg=null)
 {
-    let lxx = (typeof lfx == "number")
-        ?         lfX[lfx]
-        :             lfx;
-
-    if(!o) {
-        console.log(name+": %c null object ", (lxx || lb0));
-        return "";
-    }
-
-
-
-    name = mPadEnd(name, 60);
-    if(group) console.groupCollapsed("  %c"+ name+" ...", ((lbH+lxx) || lb0));
-    else      console.log           ("  %c"+ name       , ((lbH+lxx) || lb0));
-
-    let result = "";
-
-    if( Array.isArray(o) )
+    if( console_clear_cooldown_timeout )
     {
-        console.table(o);
-
-        Array.from(o).forEach(
-                              (value,index) => {
-                                  result += (index ? LF:"")
-                                      +      index +" .. "
-                                      +((value.key && value.val)
-                                        ?    "{ key:"+mPadEnd(value.key,32)
-                                        +    ", val:"+value.val
-                                        +    "}"
-                                        :    value.toString()
-                                       );
-                              });
+        log("%c CONSOLE CLEARED BY "+msg+" %c LOG PRESERVED FOR "+CONSOLE_CLEAR_COOLDOWN_DELAY+"ms", lbb+lbH+lf8, lbb+lbH+lf9);
     }
     else {
-
-        let n = 1;
-        Object.keys(o)
-            .forEach(
-                      function(key) {
-                          let   val = o[key];
-                          let   l_v = lf2;
-                          try { l_v =      (val          ==  null        ) ?     lb0
-                                  :        (val          ==  undefined   ) ?     lb0
-                                  :        (val          ==  "null_node" ) ?     lb0
-                                  :        (val          ==  "NO"        ) ?     lf3
-                                  :        (val          ==  "[]"        ) ?     lf3
-                                  :        (val          ==  false       ) ?     lf3
-                                  :        (val          ==  true        ) ?     lb5
-                                  :        (typeof val   == "object"     ) ?     lb7
-                                  :  String(val).startsWith( L_NEW       ) ? lbH+lf9
-                                  :  String(val).startsWith( L_CHK       ) ?     lf8
-                                  :  String(val).includes  ( LF          ) ? lbF+lf5
-                                  :  String(val).includes  ( " "         ) ? lbH+lf5
-                                  :                                              lf4
-                              ;
-                          } catch(ex) { val = LF+ex.message; l_v = lbb+lb2; }
-
-                          let ovf = log_object_val_format(val, lxx);
-
-                          let l_O = ovf.includes("%c") ? lxx : "";
-
-                          console.log(" %c|||%c "+mPadStart(   key, 36) +" %c"+ovf
-                                      , lb0 ,(lxx || lb0)                 ,l_v,l_O);
-
-                          result +=   "||| "  +             key      +" <em class='cc"+(++n)+"'>"+ ovf   +"</em><br>"+LF       ;
-                      }
-                    );
+        log();
+        console_clear( msg );
+        console_clear_cooldown_timeout
+            = setTimeout( function() { console_clear_cooldown_timeout = null; }
+                        , CONSOLE_CLEAR_COOLDOWN_DELAY);
     }
-    if(group) console.groupEnd();
-    return result;
 };
 
+const dom_log_console
+    = {   console_clear
+        , console_clear_post
+        , console_dir
+        , console_log
+        , console_table
+        , console_warn
+    };
 
 
-const TEXT_LENGTH_MAX = 96;
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ LOG FORMATTING                                                            │
+// └───────────────────────────────────────────────────────────────────────────┘
 
 
+let logSD0 = function(          format, ...args) { _logSD(dom_data.SD0, lf0, format, ...args); };
+let logSD1 = function(          format, ...args) { _logSD(dom_data.SD1, lf1, format, ...args); };
+let logSD2 = function(          format, ...args) { _logSD(dom_data.SD2, lf2, format, ...args); };
+let logSD3 = function(          format, ...args) { _logSD(dom_data.SD3, lf3, format, ...args); };
+let logSD4 = function(          format, ...args) { _logSD(dom_data.SD4, lf4, format, ...args); };
+let logSD5 = function(          format, ...args) { _logSD(dom_data.SD5, lf5, format, ...args); };
+let logSD6 = function(          format, ...args) { _logSD(dom_data.SD6, lf6, format, ...args); };
+let logSD7 = function(          format, ...args) { _logSD(dom_data.SD7, lf7, format, ...args); };
+let logSD8 = function(          format, ...args) { _logSD(dom_data.SD8, lf8, format, ...args); };
+let logSD9 = function(          format, ...args) { _logSD(dom_data.SD9, lf9, format, ...args); };
+let _logSD = function(sym, lfx, format, ...args) { console.log("%c "+sym+"%c"+format, lbS+lfx, lbA, ...args); };
 
-let log_object_val_format = function(val,lxx)
-{
-    let text;
-    try    {                                            text = String(val); } catch(ex) { text = LF+ex.message; }
-    if     (                                   !text )  text = "[]";
-
-    if(       text.includes(        L_ARU           ))  text = text.replace(L_ARU, " %c");
-    if(      !text.includes(        LF              )
-         &&   text.length > TEXT_LENGTH_MAX          )  text = ellipsis(text, TEXT_LENGTH_MAX);
-
-    if     (               val instanceof HTMLElement)  text = get_id_or_tag_and_className(val);
-    else if( Array.isArray(val)                      )  text = "ARRAY["+val.length+"] "+  ellipsis(val.toString().replace(/,/g," _ "), TEXT_LENGTH_MAX);
-    else if(        typeof val   == "object"         )  text = log_json(val,lxx);
-    else if(        typeof val   == "function"       ) {
-        if(String(val).indexOf("=>") >= 0)              text = L_FNC +" "+ (val.name || "anonymous")+" "+val;
-        else                                            text = L_FNC +" "+ (val.name || "anonymous");
-    }
-
-    return    text;
-};
-
-
-
-
-const regexp_BRACES = new RegExp("^{|}$"                    , "g");
-const regexp_BSLASH = new RegExp("\\\\"                     , "g");
-
-const regexp_COMMA  = new RegExp(" *, *"                    , "g");
-const regexp_QUOTE  = new RegExp("[\\u0022\\u0027]"         , "g");
-
-const regexp_URL_64 = new RegExp('"url":"([^"]{1,64})[^"]*"', "g");
-
-
-let log_json = function(o,lxx)
-{
-    if(o == null     ) return "null";
-    if(o == undefined) return "undefined";
-    if(o.id          ) return "#"+o.id+(o.className ? ("."+o.className.replace(/ /g,".")) : "");
-    if(o.tagName     ) return     o.tagName;
-
-
-    let         o_with_values = {};
-    Object.keys(o).filter((key) => {
-        let val = o[key];
-        if(   (val != null)
-           && (val !=    0)
-           && (val !=   "")
-          )
-            o_with_values[key] = val;
-    });
-
-    let result = "";
-    try {
-        result
-            = JSON.stringify(o_with_values)
-            .   replace(regexp_URL_64, '"url":"$1..."')
-            .   replace(regexp_BRACES, "")
-            .   replace(regexp_QUOTE , "")
-            .   replace(regexp_BSLASH, "")
-            .   trim()
-
-            .   replace(regexp_COMMA ," , ")
-        ;
-
-        if( result.length > 64)
-            result
-                = result
-                .   replace(regexp_URL_64, '"url":"$1..."')
-        ;
-
-        result
-            = result
-            . replace(regexp_BRACES , "")
-            . replace(regexp_QUOTE  , "")
-            . replace(regexp_BSLASH , "")
-            . trim()
-        ;
-
-        result
-            = (". "+result)
-            .  replace(regexp_COMMA    ,        LF_HEAD+". ")
-        ;
-
-        result
-            = result
-            .  replace(/\. *([^:]*):{/g, ".$1:"+LF_HEAD+". ")
-            .  replace(/}/g            , ""                 )
-        ;
-
-        result
-            =(LF_HEAD+ result)
-            .  replace(/^( *\. *)([^:]*):(.*)$/gm, mpad)
-        ;
-
-        result
-            = LF_HEAD+"┌───────────────────────────────────┐"
-            +          result
-            + LF_HEAD+"└───────────────────────────────────┘"
-        ;
-
-    } catch(ex) { result = LF+ex.message; }
-
-    if( lxx )
-        result = "%c"+ result;
-
-    return result;
-};
-
-let mpad = function(match, p1, p2, p3, offset, string)
-{
-    return mPadStart(p1+p2,39) +" : "+ p3;
-};
+const dom_log_SYM_DIGIT
+    = {   logSD0
+        , logSD1
+        , logSD2
+        , logSD3
+        , logSD4
+        , logSD5
+        , logSD6
+        , logSD7
+        , logSD8
+        , logSD9
+    };
 
 
 
-let log_json_one_liner = function(val)
-{
-    if(val == null     ) return "null";
-    if(val == undefined) return "undefined";
-    if(val.id          ) return "#"+val.id;
-    if(val.tagName     ) return     val.tagName;
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ LOG DATA TYPES                                                            │
+// └───────────────────────────────────────────────────────────────────────────┘
+//{{{
 
-    let result = JSON.stringify(val)
-        .        replace(regexp_URL_64 , '"url":"$1..."')
-        .        replace(regexp_BRACES , "")
-        .        replace(regexp_QUOTE  , "")
-        .        replace(regexp_BSLASH , "")
-        .        trim();
-
-    result = result.replace(regexp_COMMA, " .. ");
-
-    return result;
-};
-
-
+// LOG TRACE
 
 
 
@@ -8118,6 +7857,291 @@ const dom_log_log
     };
 
 
+// LOG PROCESS
+
+let log_caller = function(level_max)
+{
+    let stack_trace = get_callers( level_max );
+
+    if( stack_trace.includes(LF) ) console.log("%c"+stack_trace.replace(LF,"%c"+LF), lbH+lf6, lf8);
+    else                         { console.log("%c"+stack_trace                    , lf6+lbF     ); console.trace(); }
+};
+let get_callers = function(level_max)
+{
+    let xx, ex_stack;
+    try {   xx.raise(); } catch(ex) { ex_stack = parse_ex_stack_FUNC_FILE_LINE_COL(ex.stack, level_max); }
+    return  ex_stack.trim();
+};
+
+
+
+
+
+let parse_ex_stack_FUNC_FILE_LINE_COL = function(text, level_max=10)
+{
+    let  result = "";
+    let   lines = text.split(LF);
+    let     sym = L_ARL;
+    let line_match;
+    for(let i=2; i<=(2+level_max); ++i)
+    {
+        if( String(lines[i]).includes("at log_caller") ) continue;
+        if( String(lines[i]).includes("log.js"       ) ) continue;
+
+        if( line_match = get_ex_stack_line_match(lines[i]) )
+            result    += (result ? LF : "") + sym+" "+line_match;
+        sym = L_ARU;
+    }
+
+    return result;
+};
+
+
+
+const regexp_FUNC_FILE_LINE_COL = new RegExp("\\s*at\\s*([^\\(]+)\\s+\\((?:[^\\/]*\\/)*(\..+?):(\\d+?):(\\d+?)");
+
+
+let get_ex_stack_line_match = function(ex_stack_line)
+{
+    let matches = regexp_FUNC_FILE_LINE_COL.exec(ex_stack_line);
+
+    if(!matches ) return "";
+
+    let func = matches[1].replace("Object.","");
+    let file = matches[2];
+    let line = matches[3];
+    let col  = matches[4];
+    let match= mPadStart(func, 48)+".. "+file+" "+line+":"+col;
+
+
+    return match;
+};
+
+
+// LOG OBJECTS
+
+
+const LF_HEAD = LF+"    ";
+
+
+let log_key_val       = function(name, o, lxx       ) { return log_key_val_group(name, o, lxx, true); };
+let log_key_val_group = function(name, o, lfx=7, group=true)
+{
+    let lxx = (typeof lfx == "number")
+        ?         lfX[lfx]
+        :             lfx;
+
+    if(!o) {
+        console.log(name+": %c null object ", (lxx || lb0));
+        return "";
+    }
+
+
+
+    name = mPadEnd(name, 60);
+    if(group) console.groupCollapsed("  %c"+ name+" ...", ((lbH+lxx) || lb0));
+    else      console.log           ("  %c"+ name       , ((lbH+lxx) || lb0));
+
+    let result = "";
+
+    if( Array.isArray(o) )
+    {
+        console.table(o);
+
+        Array.from(o).forEach(
+                              (value,index) => {
+                                  result += (index ? LF:"")
+                                      +      index +" .. "
+                                      +((value.key && value.val)
+                                        ?    "{ key:"+mPadEnd(value.key,32)
+                                        +    ", val:"+value.val
+                                        +    "}"
+                                        :    value.toString()
+                                       );
+                              });
+    }
+    else {
+
+        let n = 1;
+        Object.keys(o)
+            .forEach(
+                      function(key) {
+                          let   val = o[key];
+                          let   l_v = lf2;
+                          try { l_v =      (val          ==  null        ) ?     lb0
+                                  :        (val          ==  undefined   ) ?     lb0
+                                  :        (val          ==  "null_node" ) ?     lb0
+                                  :        (val          ==  "NO"        ) ?     lf3
+                                  :        (val          ==  "[]"        ) ?     lf3
+                                  :        (val          ==  false       ) ?     lf3
+                                  :        (val          ==  true        ) ?     lb5
+                                  :        (typeof val   == "object"     ) ?     lb7
+                                  :  String(val).startsWith( L_NEW       ) ? lbH+lf9
+                                  :  String(val).startsWith( L_CHK       ) ?     lf8
+                                  :  String(val).includes  ( LF          ) ? lbF+lf5
+                                  :  String(val).includes  ( " "         ) ? lbH+lf5
+                                  :                                              lf4
+                              ;
+                          } catch(ex) { val = LF+ex.message; l_v = lbb+lb2; }
+
+                          let ovf = log_object_val_format(val, lxx);
+
+                          let l_O = ovf.includes("%c") ? lxx : "";
+
+                          console.log(" %c|||%c "+mPadStart(   key, 36) +" %c"+ovf
+                                      , lb0 ,(lxx || lb0)                 ,l_v,l_O);
+
+                          result +=   "||| "  +             key      +" <em class='cc"+(++n)+"'>"+ ovf   +"</em><br>"+LF       ;
+                      }
+                    );
+    }
+    if(group) console.groupEnd();
+    return result;
+};
+
+
+
+const TEXT_LENGTH_MAX = 96;
+
+
+
+let log_object_val_format = function(val,lxx)
+{
+    let text;
+    try    {                                            text = String(val); } catch(ex) { text = LF+ex.message; }
+    if     (                                   !text )  text = "[]";
+
+    if(       text.includes(        L_ARU           ))  text = text.replace(L_ARU, " %c");
+    if(      !text.includes(        LF              )
+         &&   text.length > TEXT_LENGTH_MAX          )  text = ellipsis(text, TEXT_LENGTH_MAX);
+
+    if     (               val instanceof HTMLElement)  text = get_id_or_tag_and_className(val);
+    else if( Array.isArray(val)                      )  text = "ARRAY["+val.length+"] "+  ellipsis(val.toString().replace(/,/g," _ "), TEXT_LENGTH_MAX);
+    else if(        typeof val   == "object"         )  text = log_json(val,lxx);
+    else if(        typeof val   == "function"       ) {
+        if(String(val).indexOf("=>") >= 0)              text = L_FNC +" "+ (val.name || "anonymous")+" "+val;
+        else                                            text = L_FNC +" "+ (val.name || "anonymous");
+    }
+
+    return    text;
+};
+
+
+// LOG JSON
+
+
+const regexp_BRACES = new RegExp("^{|}$"                    , "g");
+const regexp_BSLASH = new RegExp("\\\\"                     , "g");
+
+const regexp_COMMA  = new RegExp(" *, *"                    , "g");
+const regexp_QUOTE  = new RegExp("[\\u0022\\u0027]"         , "g");
+
+const regexp_URL_64 = new RegExp('"url":"([^"]{1,64})[^"]*"', "g");
+
+
+let log_json = function(o,lxx)
+{
+    if(o == null     ) return "null";
+    if(o == undefined) return "undefined";
+    if(o.id          ) return "#"+o.id+(o.className ? ("."+o.className.replace(/ /g,".")) : "");
+    if(o.tagName     ) return     o.tagName;
+
+
+    let         o_with_values = {};
+    Object.keys(o).filter((key) => {
+        let val = o[key];
+        if(   (val != null)
+           && (val !=    0)
+           && (val !=   "")
+          )
+            o_with_values[key] = val;
+    });
+
+    let result = "";
+    try {
+        result
+            = JSON.stringify(o_with_values)
+            .   replace(regexp_URL_64, '"url":"$1..."')
+            .   replace(regexp_BRACES, "")
+            .   replace(regexp_QUOTE , "")
+            .   replace(regexp_BSLASH, "")
+            .   trim()
+
+            .   replace(regexp_COMMA ," , ")
+        ;
+
+        if( result.length > 64)
+            result
+                = result
+                .   replace(regexp_URL_64, '"url":"$1..."')
+        ;
+
+        result
+            = result
+            . replace(regexp_BRACES , "")
+            . replace(regexp_QUOTE  , "")
+            . replace(regexp_BSLASH , "")
+            . trim()
+        ;
+
+        result
+            = (". "+result)
+            .  replace(regexp_COMMA    ,        LF_HEAD+". ")
+        ;
+
+        result
+            = result
+            .  replace(/\. *([^:]*):{/g, ".$1:"+LF_HEAD+". ")
+            .  replace(/}/g            , ""                 )
+        ;
+
+        result
+            =(LF_HEAD+ result)
+            .  replace(/^( *\. *)([^:]*):(.*)$/gm, mpad)
+        ;
+
+        result
+            = LF_HEAD+"┌───────────────────────────────────┐"
+            +          result
+            + LF_HEAD+"└───────────────────────────────────┘"
+        ;
+
+    } catch(ex) { result = LF+ex.message; }
+
+    if( lxx )
+        result = "%c"+ result;
+
+    return result;
+};
+
+let mpad = function(match, p1, p2, p3, offset, string)
+{
+    return mPadStart(p1+p2,39) +" : "+ p3;
+};
+
+
+
+let log_json_one_liner = function(val)
+{
+    if(val == null     ) return "null";
+    if(val == undefined) return "undefined";
+    if(val.id          ) return "#"+val.id;
+    if(val.tagName     ) return     val.tagName;
+
+    let result = JSON.stringify(val)
+        .        replace(regexp_URL_64 , '"url":"$1..."')
+        .        replace(regexp_BRACES , "")
+        .        replace(regexp_QUOTE  , "")
+        .        replace(regexp_BSLASH , "")
+        .        trim();
+
+    result = result.replace(regexp_COMMA, " .. ");
+
+    return result;
+};
+
+
+// LOG ANCHOR
 
 let log_label_URDL = function(label, urdl)
 {
@@ -8216,6 +8240,7 @@ let log_not_an_anchor_target = function(node)
 };
 
 
+// LOG TRANSCRIPT
 
 
 let log_tr1;
@@ -8373,6 +8398,8 @@ const dom_log_transcript
     };
 
 
+//}}}
+
 
 
 return { name : "dom_log"
@@ -8410,6 +8437,7 @@ return { name : "dom_log"
 
 })();
 
+// @see $APROJECTS/Chrome_Web_Store/RTabsExtension/javascript/log.js
 
 
 
@@ -8916,7 +8944,7 @@ let dom_util_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_UTIL_JS_ID        = "dom_util";
-const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (230928:16h:38)";
+const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (231013:19h:41)";
 
 let dom_util    = (function() {
 "use strict";
@@ -10678,6 +10706,23 @@ let log_this = DOM_UTIL_TAG || DOM_UTIL_LOG || LOG_MAP.T1_DOM_LOAD;
 if( log_this) log(caller+": %c"+(results || "no "+tag+" tag to remove from page"), lbH+(removed ? lf7:lf8));
 
     return results;
+};
+
+
+let t_REMOVE_FIXED = function()
+{
+
+let   caller = "t_REMOVE_FIXED";
+let log_this = DOM_UTIL_TAG || DOM_UTIL_LOG || LOG_MAP.T1_DOM_LOAD;
+
+
+    Array.from(document.body.getElementsByTagName("*"  )).forEach((el) => {
+        if((window.getComputedStyle(el).getPropertyValue("position") == "fixed"))
+        {
+if( log_this) log(caller+" ● "+(el.id || el.tagName)+LF, el);
+            el.style.display = "none";
+        }
+    });
 };
 
 
@@ -13083,6 +13128,7 @@ return { name : "dom_util"
     , t_REMOVE_EventListeners
     , t_REMOVE_ADS
     , t_REMOVE_ADS_results
+    , t_REMOVE_FIXED
     , t_TEXT_LINES_to_COLORED_HTML
     , t_get_divs_style_z_index_max
     , t_get_e_target_proxy
@@ -13321,9 +13367,8 @@ let dom_i18n_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 
-
 const DOM_I18N_JS_ID        = "dom_i18n_js";
-const DOM_I18N_JS_TAG       = DOM_I18N_JS_ID  +" (230820:21h:09)";
+const DOM_I18N_JS_TAG       = DOM_I18N_JS_ID  +" (231013:18h:16)";
 
 let dom_i18n    = (function() {
 "use strict";
@@ -13341,7 +13386,7 @@ const LF    = String.fromCharCode(10);
 
 
 
-let t_data     = {}        ;
+
 let t_log      = {}        ;
 let t_util     = {}        ;
 
@@ -13370,7 +13415,7 @@ let t_i18n_IMPORT  = function(log_this)
 {
 
 
-    t_data    = dom_data   ;
+
     t_log     = dom_log    ;
     t_util    = dom_util   ;
 
@@ -13519,7 +13564,7 @@ log_caller(2);
 
 
     if( el_id )
-        value += LF+ t_util.unicode_to_charCode(   t_data.SYMBOL_BLACK_SUN ) +" "+el_id;
+        value += LF+ t_util.unicode_to_charCode(   SYMBOL_BLACK_SUN ) +" "+el_id;
 
 
 
@@ -13625,6 +13670,8 @@ const WORDS8_DROP_S                  = "Drop [s] word treminations";
 
 
 
+const SYMBOL_BLACK_SUN                 = "\u2600";
+
 const AS_SET_BY_USER                   = "As set by user";
 const BAGS_CONTENT                     = "Current content";
 const IS_EMPTY                         = " is empty";
@@ -13645,7 +13692,7 @@ const MOVE_IN_GUTTER_TO_CLEAR_STORAGE
 ;
 const ALL_PAGE_LOCAL_STORAGE_REMOVED
     = "No stored information for this page."+LF
-    +  t_data.SYMBOL_BLACK_SUN+" Local Storage is empty"
+    +  SYMBOL_BLACK_SUN+" Local Storage is empty"
 ;
 
 const NOT_FOUND                        = "not found";
@@ -13724,7 +13771,7 @@ const ARRAY_FR  = [
  + "pour supprimer les paramètres associés."
         ]
         , [ ALL_PAGE_LOCAL_STORAGE_REMOVED   , "Aucune information enregistrée pour cette page."+LF
- +  t_data.SYMBOL_BLACK_SUN+" Local Storage est vide"]
+ +  SYMBOL_BLACK_SUN+" Local Storage est vide"]
 
         , [ STICKY_FIX_TOOLTIP               , "SUPPRIMER"                   ]
         , [ STICKY_HAND_MOV_TOOLTIP          , "DÉPLACER"                    ]
@@ -21319,7 +21366,7 @@ let dom_hide_js_data ="data:text/javascript;charset='utf-8',"+ escape(`
 
 
 const DOM_HIDE_JS_ID        = "dom_hide_js";
-const DOM_HIDE_JS_TAG       = DOM_HIDE_JS_ID  +" (230820:21h:09)";
+const DOM_HIDE_JS_TAG       = DOM_HIDE_JS_ID  +" (231013:19h:40)";
 
 let dom_hide    = (function() {
 "use strict";
@@ -37476,7 +37523,7 @@ let dom_ipc_js_data ="data:text/javascript;charset='utf-8',"+ `
 
 
 const DOM_IPC_JS_ID         = "dom_ipc_js";
-const DOM_IPC_JS_TAG        = DOM_IPC_JS_ID     +" (230820:21h:09)";
+const DOM_IPC_JS_TAG        = DOM_IPC_JS_ID     +" (230821:16h:00)";
 
 let dom_ipc     = (function() {
 "use strict";

@@ -1,5 +1,5 @@
 
-#popup_css_tag  { content: "popup_css (231006:19h:36)"; }
+#popup_css_tag  { content: "popup_css (231015:22h:03)"; }
 
 body { /*{{{*/
     padding        : 0.5em;
@@ -79,6 +79,10 @@ em { /*{{{*/
 
 #p_status {
     margin           :        0.5em auto;
+/*{{{
+    font-family      : "Segoe UI", Tahoma, sans-serif;
+    font-family      : 'Noto Color Emoji', sans-serif;
+}}}*/
     white-space      :          pre-wrap;
     text-align       :              left;
     transition       : all ease-in 250ms;
@@ -90,6 +94,11 @@ em { /*{{{*/
     border-radius    :          0.5em;
     cursor           :           help;
 }
+/* Bard solution (not working) {{{
+.tooltip {
+  font-family: 'Noto Color Emoji', sans-serif;
+}
+}}}*/
 
 #p_error {
     width            :    "100%";
@@ -122,4 +131,7 @@ em { /*{{{*/
    font-size   : 16px;
    border      : 1px solid #444;
    padding     : 0.5em;
+}
+#close_span:hover {
+    background-color: red;
 }

@@ -9,11 +9,11 @@
   <script src="javascript/options.js" defer></script>
  </head> <!--}}}-->
   <body>
-   <div style="position:absolute; top:.5em; right:.5em; z-index:2; font-style:italic;">
-    <span id="options_html_tag" style="color:#BBB;margin-right:1em; font-size:80%; font-weight:900;">RTabs options (230803:14h:08)</span>
-    <a target="json" title="Introducing JSON" href="http://www.json.org/">json.org</a>
-   </div>
-   <pre id="statusline" title="Last error"></pre>
+
+  <div id="OPTIONS_TAG_DIV"> <span>RTabs options_TAG (231013:17h:14)</span>
+  <a target="json" title="Introducing JSON" href="http://www.json.org/">json.org</a>
+  <pre id="statusline" title="Last error">statusline</pre>
+  </div>
 
    <div id="BUTTONS_DIV">
     <!-- title {{{-->
@@ -22,7 +22,7 @@
     <br>
 
     <!--}}}-->
-    RELAX <!--{{{-->
+   <!-- RELAX {{{-->
     <div title="...to make extension work on protected sites" class="box_container">
      <div  class="box cb_filled_pin cb_6 light">
       <input  id="FILTER5_RELAX" type="checkbox"/>
@@ -33,7 +33,7 @@
     </div>
 
     <!--}}}-->
-    CUSTOM <!--{{{-->
+   <!-- CUSTOM {{{-->
     <div title="...enforce site protections" class="box_container">
      <div  class="box cb_filled_pin cb_4 light">
       <input  id="FILTER4_CUSTOM" type="checkbox"/>
@@ -44,7 +44,7 @@
     </div>
 
     <!--}}}-->
-    REMOVE <!--{{{-->
+   <!-- REMOVE {{{-->
     <div  title="...delete paranoid protections" class="box_container">
      <div  class="box cb_filled_pin cb_3 light">
       <input  id="FILTER3_REMOVE" type="checkbox"/>
@@ -55,7 +55,7 @@
     </div>
 
     <!--}}}-->
-    DO NOT FILTER <!--{{{-->
+   <!-- DO NOT FILTER {{{-->
     <div title="...your rules" class="box_container">
      <div  class="box cb_filled_pin cb_9 light">
       <input  id="FILTER6_NONE" type="checkbox"/>
@@ -66,7 +66,7 @@
     </div>
 
     <!--}}}-->
-    LOG_PANEL <!--{{{-->
+   <!-- LOG_PANEL {{{-->
     <div  title="LOG_PANEL" class="box_container">
      <div  class="box cb_filled_pin cb_9 light">
       <input  id="LOG_PANEL" type="checkbox"/>
@@ -77,7 +77,7 @@
     </div>
 
     <!--}}}-->
-    RESET <!--{{{-->
+   <!-- RESET {{{-->
     <div  title="STORAGE_CLEAR" class="box_container">
      <div  class="box cb_filled_pin cb_2 light on_hold" style="float: right; background-color:black !important;" >
       <input  id="STORAGE_CLEAR" type="checkbox"/>
@@ -88,7 +88,7 @@
     </div>
 
     <!--}}}-->
-    CONSOLE_CLEAR <!--{{{-->
+   <!-- CONSOLE_CLEAR {{{-->
     <div  title="CONSOLE_CLEAR" class="box_container">
      <div  class="box cb_filled_pin cb_2 light on_hold" style="float: right; background-color:black !important;" >
       <input  id="CONSOLE_CLEAR" type="checkbox"/>

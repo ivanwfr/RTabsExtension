@@ -1,13 +1,15 @@
 
-#options_css_tag  { content: "options_css (230810:21h:05)"; }
+#options_css_tag  { content: "options_css (231013:18h:05)"; }
 html {
     min-width : fit-content;
+/*{{{
     min-height: fit-content;
     overflow  : auto;
+}}}*/
 }
 body /*{{{*/
 {
-/*
+/*{{{
     background       : linear-gradient(to top, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%) !important;
     background       : linear-gradient(to bottom, #fff 0%, #fff 10%, #bbb 21%, #fff 22%, #fff 100%);
     background       : linear-gradient(to top, #000 0%, #444 100%) !important;
@@ -15,11 +17,13 @@ body /*{{{*/
     background       : linear-gradient(to bottom, #fff 0%, #fff 10%, #bbb 21%, #fff 22%, #fff 100%);
     background-color : #222;
     color            : #DDD;
-*/
-    color            : #55A;
-    background       : linear-gradient(to bottom, #fff 0%, #AAA 19.5%, #000 20%, #444 20.5%, #222 32%, #888 100%);
+    }}}*/
+    color              : #55A;
+    background         : linear-gradient(to bottom, #fff 0%, #AAA 19.5%, #000 20%, #444 20.5%, #222 32%, #888 100%);
 
-    overflow         : hidden;
+    overflow           : hidden;
+    display            : grid;
+    grid-template-rows : 1fr 4fr;
 }
 /*}}}*/
 
@@ -62,6 +66,21 @@ button /*{{{*/
 }
 /*}}}*/
 
+#OPTIONS_TAG_DIV /*{{{*/
+{
+ z-index            : 2;
+ position           : absolute; top: 0.5em; right: 0.5em;
+ font-style         : italic;
+}
+/*}}}*/
+#OPTIONS_TAG_DIV>span /*{{{*/
+{
+    margin-right    :  1em;
+    font-size       :  80%;
+    font-weight     :  900;
+    color           : #BBB;
+}
+/*}}}*/
 #statusline /*{{{*/
 {
     position         : absolute;
@@ -71,11 +90,13 @@ button /*{{{*/
 
     border-radius    : 1em;
     box-shadow       : 0 2px 3px rgba(0,0,0,0.3) inset;
-    width            : 20em;
+/*{{{
+    width            : 16em;
+}}}*/
 
     padding-left     : 0.3em;
     text-align       : center;
-    min-width        : 50ch;
+    min-width        : 36ch;
 
     font-size        : 15px;
     font-weight      : 900;
@@ -89,9 +110,13 @@ button /*{{{*/
 #FILTER_TEXTAREA /*{{{*/
 {
     display          : none;
+/*{{{
+}}}*/
+/*{{{
     margin-top       :  1em;
+}}}*/
     width            : 75em;
-    height           : 25em;
+    height           : 30em;
     background-color : #DDF;
     font-size        : 12px;
     font-weight      :  900;
@@ -102,7 +127,9 @@ button /*{{{*/
 #LOG_MAP_DIV
 {
     user-select      : none;
+/*{{{
     margin-top       :  1em;
+}}}*/
     width            : 85em;
     height           : 30em;
     font-size        : 12px;
@@ -137,6 +164,11 @@ button /*{{{*/
     grid-template-columns: 5fr 1fr; /* LOG_MAP [background_js options_js popup_js] ● logging [bg_xxx_js] */
                  grid-gap: 0.2em;
             align-content: space-around;
+            align-items  : start;
+            justify-items: center;
+}
+#LOG_MAP_DIV_LEFT>div>div {
+    vertical-align: middle;
 }
 
 #LOG_MAP_DIV_LEFT       { grid-column: 1; }
@@ -148,7 +180,7 @@ button /*{{{*/
     display              : grid;
     grid-template-columns: min-content min-content;
 
-    font-size            :   80%;
+    font-size            :   65%;
     margin               : 1.0em;
     padding              : 1.5em 0.5em 0.5em 0.5em;
 /*

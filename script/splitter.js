@@ -10,14 +10,14 @@ javascript: (function () { /* eslint-disable-line no-labels, no-unused-labels */
 /*}}}*/
 /* DOM_LOAD_ID {{{*/
 let DOM_LOAD_ID         = "dom_splitter";
-let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (231001:02h:29)";
+let DOM_LOAD_TAG        =  DOM_LOAD_ID +" (231025:15h:32)";
 let DOM_HOST_CSS_ID     = "dom_host_css";
 let DOM_TOOLS_HTML_ID   = "dom_tools_html";
 /*}}}*/
 /* TOOLS ALREADY LOADED {{{*/
 if((typeof DOM_TOOLS_JS_ID) != "undefined") {
     let   msg = "*** TOOLS ALREADY LOADED";
-    try { msg += "\n*** DOM_TOOLS_JS_ID\n*** "+DOM_LOAD_ID ; alert(msg); } catch(ex) { console.log(msg); }
+    try { msg += LF+"*** DOM_TOOLS_JS_ID"+LF+"*** "+DOM_LOAD_ID ; alert(msg); } catch(ex) { console.log(msg); }
     return null;
 }
 /*}}}*/

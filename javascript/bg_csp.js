@@ -20,7 +20,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_CSP_SCRIPT_ID  = "bg_csp";
-const BG_CSP_SCRIPT_TAG =  BG_CSP_SCRIPT_ID +" (230823:17h:06)"; /* eslint-disable-line no-unused-vars */
+const BG_CSP_SCRIPT_TAG =  BG_CSP_SCRIPT_ID +" (231024:17h:01)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ CSP FILTERS                                       B_LOG4_CSP B_LOG8_STORE │
@@ -42,6 +42,7 @@ const BG_CSP_SCRIPT_TAG =  BG_CSP_SCRIPT_ID +" (230823:17h:06)"; /* eslint-disab
 /* └─────────────────────────────┘*/
 let bg_csp  = (function() {
 "use strict";
+let BG_CSP_JS_LOG  = false;
 
 /* IMPORT {{{*/
 /* modules {{{*/
@@ -132,7 +133,6 @@ let _import = function()
     setTimeout(_import,0);
 /*}}}*/
 /* LOGGING {{{*/
-let BG_CSP_JS_LOG  = false;
 /*_ logging {{{*/
 let logging = function(state)
 {
@@ -169,7 +169,7 @@ let log_this_get = function(_caller)
 };
 /*}}}*/
 /*}}}*/
-/* FILTER ● NAME ● APPLIED ● EFFECT ● STRINGS ● CACHE {{{*/
+/*  ● FILTER ● NAME ● APPLIED ● EFFECT ● STRINGS ● CACHE {{{*/
 /* FILTER NAME {{{*/
 const FILTER3_REMOVE       = "FILTER3_REMOVE";
 const FILTER4_CUSTOM       = "FILTER4_CUSTOM";
@@ -707,12 +707,13 @@ let trim_space_lf = function(text)
 
 /*➔ EXPORT {{{*/
     return {  name : "bg_csp"
-        ,             bg_csp_load_filter
-        ,             bg_csp_load_filter_from_store
-        ,             bg_csp_load_filter_rules
-        ,             bg_csp_get_filter_rules
-        ,             bg_csp_save_filter_to_store
-        , logging
+        ,     logging
+
+        ,     bg_csp_load_filter
+        ,     bg_csp_load_filter_from_store
+        ,     bg_csp_load_filter_rules
+        ,     bg_csp_get_filter_rules
+        ,     bg_csp_save_filter_to_store
 
         , FILTER3_REMOVE
         , FILTER4_CUSTOM

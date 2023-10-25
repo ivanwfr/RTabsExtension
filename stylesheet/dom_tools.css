@@ -4922,7 +4922,7 @@ padding    : 5px             !important;
 
 /* sticky_msg_edit {{{*/
 .sticky_msg_edit {
-    outline      : 2px dotted red; /*//FIXME*/
+    outline     : 2px dotted red;
     box-shadow  : rgba(000,000,000,0.5) 6px 2px  7px 0px;
 /*{{{
     line-height : 1.4em           !important;
@@ -5619,7 +5619,7 @@ padding    : 5px             !important;
 .sticky_ring .sticky_resize { height           : 66px !important; }
 .sticky_ring .sticky_resize { width            : 66px !important; }
 
-             .sticky_resize { border-radius    : 50% !important; }/*//FIXME*/
+             .sticky_resize { border-radius    : 50% !important; }
 
 /*}}}*/
 /* sticky_resize_dir {{{*/

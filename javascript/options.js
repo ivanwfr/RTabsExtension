@@ -16,7 +16,7 @@
 /* eslint-enable  no-redeclare              */
 
 const    O_SCRIPT_ID         = "options_js";
-const    O_SCRIPT_TAG        = O_SCRIPT_ID +" (230817:18h:19)";
+const    O_SCRIPT_TAG        = O_SCRIPT_ID +" (231024:17h:05)";
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ OPTIONS                                                         EXTENSION │
@@ -89,13 +89,13 @@ let _import = function()
     log_sep_top                     = log_js.log_sep_top;                                       li("log_js","log_sep_top"   , log_sep_top);
 
     /*}}}*/
-    log_js.log_set_type("O");
+    log_js.log_set_type("O", true);
 
     log_js.log_import(options_js, modules);
 };
 /*}}}*/
+    setTimeout(_import,0); /* ONLOAD IMPORT */
 /*}}}*/
-    setTimeout(_import,0);
 /*_ LOG_MAP {{{*/
 let LOG_MAP = {
     O_LOG1_MESSAGE    : false,

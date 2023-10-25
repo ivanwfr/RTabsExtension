@@ -4,7 +4,6 @@
 /* globals Map       */
 /* globals window    */
 
-/* globals dom_data  */
 /* globals dom_log   */
 /* globals dom_util  */
 /* globals dom_store */
@@ -18,7 +17,7 @@
 */
 
 const DOM_I18N_JS_ID        = "dom_i18n_js";
-const DOM_I18N_JS_TAG       = DOM_I18N_JS_ID  +" (230820:21h:09)";
+const DOM_I18N_JS_TAG       = DOM_I18N_JS_ID  +" (231013:18h:16)";
 /*}}}*/
 let dom_i18n    = (function() {
 "use strict";
@@ -36,7 +35,7 @@ const LF    = String.fromCharCode(10);
 /*➔ t_i18n_IMPORT {{{*/
 /*{{{*/
 /*....................................*/
-let t_data     = {}        ;    /* 05 */
+/*  t_data     = {}        ; */ /* 05 */
 let t_log      = {}        ;    /* 06 */
 let t_util     = {}        ;    /* 07 */
 /*  t_i18n     = {}        ; */ /* 08 */
@@ -65,7 +64,7 @@ let t_i18n_IMPORT  = function(log_this)
 {
 /* LOAD {{{*/
 /* ...................................*/
-    t_data    = dom_data   ;    /* 05 */
+/*  t_data    = dom_data   ; */ /* 05 */
     t_log     = dom_log    ;    /* 06 */
     t_util    = dom_util   ;    /* 07 */
 /*  t_i18n    = dom_i18n   ; */ /* 08 */
@@ -214,7 +213,7 @@ log_caller(2);
     /*}}}*/
     /* [el_id] .. (tooltip added line) {{{*/
     if( el_id )
-        value += LF+ t_util.unicode_to_charCode(   t_data.SYMBOL_BLACK_SUN ) +" "+el_id;
+        value += LF+ t_util.unicode_to_charCode(   SYMBOL_BLACK_SUN ) +" "+el_id;
 
     /*}}}*/
 /*{{{
@@ -322,6 +321,8 @@ const WORDS8_DROP_S                  = "Drop [s] word treminations";
 
 /*}}}*/
 /*_ I18N STRING {{{*/
+const SYMBOL_BLACK_SUN                 = "\u2600"; /* ☀ BS */
+
 const AS_SET_BY_USER                   = "As set by user";
 const BAGS_CONTENT                     = "Current content";
 const IS_EMPTY                         = " is empty";
@@ -342,7 +343,7 @@ const MOVE_IN_GUTTER_TO_CLEAR_STORAGE
 ;
 const ALL_PAGE_LOCAL_STORAGE_REMOVED
     = "No stored information for this page."+LF
-    +  t_data.SYMBOL_BLACK_SUN+" Local Storage is empty"
+    +  SYMBOL_BLACK_SUN+" Local Storage is empty"
 ;
 
 const NOT_FOUND                        = "not found";
@@ -421,7 +422,7 @@ const ARRAY_FR  = [
             /*...................................*/ + "pour supprimer les paramètres associés."
         ]
         , [ ALL_PAGE_LOCAL_STORAGE_REMOVED   , "Aucune information enregistrée pour cette page."+LF
-            /*...................................*/ +  t_data.SYMBOL_BLACK_SUN+" Local Storage est vide"]
+            /*...................................*/ +  SYMBOL_BLACK_SUN+" Local Storage est vide"]
 
         , [ STICKY_FIX_TOOLTIP               , "SUPPRIMER"                   ]
         , [ STICKY_HAND_MOV_TOOLTIP          , "DÉPLACER"                    ]

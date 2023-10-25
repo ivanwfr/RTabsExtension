@@ -11,7 +11,6 @@
 
 /* globals  console, chrome           */
 
-/* globals  worker_js                 */
 /* exported bg_header                 */
 /* globals  background_js             */
 /* globals  bg_csp                    */
@@ -25,7 +24,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_HEADER_SCRIPT_ID  = "bg_header";
-const BG_HEADER_SCRIPT_TAG =  BG_HEADER_SCRIPT_ID +" (230928:21h:22)"; /* eslint-disable-line no-unused-vars */
+const BG_HEADER_SCRIPT_TAG =  BG_HEADER_SCRIPT_ID +" (231024:17h:01)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ HTTP HEADER                                    B_LOG4_CSP B_LOG6_ONHEADER │
@@ -47,6 +46,7 @@ const BG_HEADER_SCRIPT_TAG =  BG_HEADER_SCRIPT_ID +" (230928:21h:22)"; /* eslint
 /* └─────────────────────────────┘*/
 let bg_header  = (function() {
 "use strict";
+let BG_HEADER_JS_LOG  = false;
 
 /* IMPORT {{{*/
 /* modules {{{*/
@@ -79,8 +79,6 @@ let   log
 
 /*}}}*/
 /*_ background_js {{{*/
-let B_ON_HEADER_RECEIVED;
-let CHROME_SCHEME;
 let LOG_MAP;
 
 let log_ACTIVATED;
@@ -122,7 +120,8 @@ let bg_page_POPUP_pageAction;
 
 /*}}}*/
 /*_ bg_settings {{{*/
-let bg_settings_tabs6_get_url_settings;
+let bg_settings_get_url_settings;
+let bg_settings_is_a_supported_URL;
 
 /*}}}*/
 /*_ bg_store {{{*/
@@ -169,8 +168,6 @@ let _import = function()
 
     /*}}}*/
     modules.push( background_js ); /*{{{*/
-    B_ON_HEADER_RECEIVED                = background_js.B_ON_HEADER_RECEIVED;               li("background_js","B_ON_HEADER_RECEIVED",B_ON_HEADER_RECEIVED);
-    CHROME_SCHEME                       = background_js.CHROME_SCHEME;                      li("background_js","CHROME_SCHEME",CHROME_SCHEME);
     LOG_MAP                             = background_js.LOG_MAP;                            li("background_js","LOG_MAP",LOG_MAP);
 
     log_ACTIVATED                       = background_js.log_ACTIVATED;                      li("background_js","log_ACTIVATED",log_ACTIVATED);
@@ -212,7 +209,8 @@ let _import = function()
 
     /*}}}*/
     modules.push( bg_settings   ); /*{{{*/
-    bg_settings_tabs6_get_url_settings  = bg_settings.bg_settings_tabs6_get_url_settings;   li("bg_settings","bg_settings_tabs6_get_url_settings",bg_settings_tabs6_get_url_settings);
+    bg_settings_get_url_settings        = bg_settings.bg_settings_get_url_settings;         li("bg_settings","bg_settings_get_url_settings",bg_settings_get_url_settings);
+    bg_settings_is_a_supported_URL      = bg_settings.bg_settings_is_a_supported_URL;       li("bg_settings","bg_settings_is_a_supported_URL",bg_settings_is_a_supported_URL);
 
     /*}}}*/
     modules.push( bg_store      ); /*{{{*/
@@ -234,7 +232,6 @@ let _import = function()
     setTimeout(_import,0);
 /*}}}*/
 /* LOGGING {{{*/
-let BG_HEADER_JS_LOG  = false;
 /*_ logging {{{*/
 let logging = function(state)
 {
@@ -248,7 +245,7 @@ let logging = function(state)
 let log_this_get = function(_caller)
 {
     switch(_caller) {
-    case "bg_header_addListener"                            : return BG_HEADER_JS_LOG || LOG_MAP.B_LOG6_ONHEADER || worker_js.logging();
+    case "bg_header_addListener"                            : return BG_HEADER_JS_LOG || LOG_MAP.B_LOG6_ONHEADER;
     case "bg_header_onHeadersReceived"                      : return BG_HEADER_JS_LOG || LOG_MAP.B_LOG6_ONHEADER || PROVIDING_DEFAULT_HEADER_CSP_TO_FILTER;
     case "bg_header_onHeadersReceived_PATCH_CSP"            : return BG_HEADER_JS_LOG || LOG_MAP.B_LOG6_ONHEADER || PROVIDING_DEFAULT_HEADER_CSP_TO_FILTER;
 
@@ -364,10 +361,12 @@ let ohr_listener = function(details) /* eslint-disable-line no-unused-vars */
 };
 /*}}}*/
 /*_ bg_header_onHeadersReceived {{{*/
-// async {{{
-//  bg_header_onHeadersReceived = async function(details)
-//}}}
-let bg_header_onHeadersReceived =       function(details)
+/*{{{*/
+const B_ON_HEADER_RECEIVED = "HEADER RECEIVED";
+
+/*}}}*/
+let bg_header_onHeadersReceived = /*async*/ function(details)
+
 {
 /*LOG{{{*/
 let   caller = "bg_header_onHeadersReceived";
@@ -389,8 +388,8 @@ let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
     let ohr   = bg_tabs_get_tabId_key(tabId, "onHeadersReceived");
     /*}}}*/
-    /* IGNORING CHROME_SCHEME {{{*/
-    if( url && url.includes(CHROME_SCHEME))
+    /* IGNORING UNSUPPORTED URL {{{*/
+    if( url && !bg_settings_is_a_supported_URL(url))
     {
         log_IGNORING(url, caller);
 
@@ -579,7 +578,14 @@ if( log_more) log_sep_bot(caller+" "+log_result, log_tag);
 if( log_this && (csp_idx >= 0)) log_object(" ● PATCHED CSP HEADER "+SYN+" ["+csp_filter_applied+" → "+csp_filter_effect+"] "+SYN+" "+details.url, details.responseHeaders[csp_idx], lbH+lxx);
 //console.log("details.responseHeaders["+csp_idx+"]", details.responseHeaders[csp_idx]);
 
-    if(details.tabId >= 0) bg_page_POPUP_pageAction(details.tabId, caller);
+    if(details.tabId >= 0)
+        bg_page_POPUP_pageAction( details.tabId
+                                , { caller
+                                  , csp_filter_applied
+                                  , csp_filter_effect
+                                  , url: details.url
+                                  , csp: details.responseHeaders[csp_idx]}
+                                );
 
 if( log_this || log_ACTIVATED() || LOG_MAP.B_LOG0_MORE) log_STORAGE();
 }
@@ -694,14 +700,14 @@ try {
        && !bg_tabs_get_tabId_key(tabId, "get_settings_called"    )
        && !bg_tabs_get_tabId_key(tabId, "get_settings_answered"  )
     ) {
-        log_result =  "CALLING bg_settings_tabs6_get_url_settings";
+        log_result =  "CALLING bg_settings_get_url_settings";
 
-//      if(!await bg_settings_tabs6_get_url_settings(tabId, url))
-        if(      !bg_settings_tabs6_get_url_settings(tabId, url))
+//      if(!await bg_settings_get_url_settings(tabId, url))
+        if(      !bg_settings_get_url_settings(tabId, url))
             return false;
     }
     else {
-        log_result = "SKIPPING bg_settings.bg_settings_tabs6_get_url_settings";
+        log_result = "SKIPPING bg_settings.bg_settings_get_url_settings";
 
     }
     return true;
@@ -828,10 +834,10 @@ try {
 
         csp_filter = "";
         let message
-            = {   REPLY  : log_result
+            = {   REPLY      : log_result
+                , type       : "answer"
                 , csp_filter
-                , type   : "answer"
-                , caller : BG_HEADER_SCRIPT_ID+".".caller
+                , caller     : BG_HEADER_SCRIPT_ID+".".caller
             };
         setTimeout(bg_message_sendMessage, 1000, message, caller); /* let popup icon blink */
 
@@ -848,9 +854,9 @@ try {
         bg_csp_load_filter( csp_filter );
 
         let message
-            = {   csp_filter
-                , type   : "answer"
-                , caller : BG_HEADER_SCRIPT_ID+".".caller
+            = {   type       : "answer"
+                , csp_filter
+                , caller     : BG_HEADER_SCRIPT_ID+".".caller
             };
         setTimeout(bg_message_sendMessage, 1000, message, caller);
 
@@ -1086,11 +1092,13 @@ if( log_this) log_object("FILTER APPLIED "+SYN+" "+log_result, { url, csp_filter
 // └──────────┘
 /*➔ EXPORT {{{*/
     return { name : "bg_header"
-        ,    bg_header_addListener
         ,    logging
+
+        ,    bg_header_addListener
+
         // DEBUG
-        ,  bg_header_hasListener    : () => chrome.webRequest.onHeadersReceived.hasListener   ( bg_header_onHeadersReceived )
-        ,  bg_header_removeListener : () => chrome.webRequest.onHeadersReceived.removeListener( bg_header_onHeadersReceived )
+        ,    bg_header_hasListener    : () => chrome.webRequest.onHeadersReceived.hasListener   ( bg_header_onHeadersReceived )
+        ,    bg_header_removeListener : () => chrome.webRequest.onHeadersReceived.removeListener( bg_header_onHeadersReceived )
     };
 /*}}}*/
 }());

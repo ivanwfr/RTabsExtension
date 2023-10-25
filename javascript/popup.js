@@ -16,7 +16,7 @@
 /* eslint-enable  no-redeclare              */
 
 const    P_SCRIPT_ID         = "popup_js";
-const    P_SCRIPT_TAG        = P_SCRIPT_ID +"(231007:19h:57)";
+const    P_SCRIPT_TAG        = P_SCRIPT_ID +"(231024:17h:04)";
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ POPUP                                                           EXTENSION │
@@ -98,14 +98,13 @@ let _import = function()
     strip_CR_LF                     = log_js.strip_CR_LF;                                       li("log_js","strip_CR_LF"   , strip_CR_LF);
 
     /*}}}*/
-    log_js.log_set_type("P");
+    log_js.log_set_type("P", true);
 
     log_js.log_import(popup_js, modules);
 };
 /*}}}*/
+    setTimeout(_import,0); /* ONLOAD IMPORT */
 /*}}}*/
-    /* ONLOAD IMPORT */
-    setTimeout(_import,0);
 /*_ LOG_MAP {{{*/
 let LOG_MAP = {
     P_LOG1_MESSAGE    : false,
@@ -301,7 +300,7 @@ let popup_tab_settings
 const P_GET_ACTIVE_TAB_URL  = "GET ACTIVE TAB URL";
 
 let   popup_url;
-let   popup_showing_windowId;
+let   popup_is_connected;
 /*}}}*/
 let popup_query_tab = async function()
 {
@@ -320,16 +319,16 @@ if( log_this) log("QUERY %c popup_url %c"+popup_url+"%c last_activated_tabId %c"
 /*}}}*/
     /* MESSAGE TO background_js {{{*/
     let popup_window       =  await chrome.windows.getLastFocused();
-    popup_showing_windowId =  popup_window.id || 0;
+    popup_is_connected =  popup_window.id || 0;
 /*{{{*/
 if( log_this) log_object("popup_window",  popup_window);
-if( log_this) log(       "popup_showing_windowId=["+ popup_showing_windowId +"]");
+if( log_this) log(       "popup_is_connected=["+ popup_is_connected +"]");
 /*}}}*/
 
     let queryInfo = {    active : true /*, currentWindow:true*/ , status: "complete" };
     let   message = {     query : "tabId"
         ,             queryInfo
-        ,             popup_showing_windowId
+        ,             popup_is_connected
         ,             caller    : P_SCRIPT_ID+"."+caller
     };
 
@@ -360,8 +359,6 @@ log("●●● DOMContentLoaded_listener");
 
         /* CLEAR BUTTON_START STATE */
         p_UI_set_checked_id(BUTTON_START_ID, false);
-
-        if(p_status) p_status.title = "@@@";//FIXME
 
         /* DISABLE CSP FILTER BUTTONS */
         show_id_state(BUTTON_START_ID, false);
@@ -717,33 +714,46 @@ if( log_this) log("%c"+caller+"%c"+id+"%c →→→ "+checked
 /*}}}*/
 /*_ p_UI_show_message {{{*/
 /*{{{*/
-const CSS_COLOR_ERROR      = "#FF6666";
-const CSS_COLOR_PENDING    = "#FFDD66";
-const CSS_COLOR_ANSWER     = "#66FF66";
-const CSS_COLOR_UNKNOWN    = "#6666FF";
+const CSS_COLOR_ERROR      = "#F00";
+const CSS_COLOR_PENDING    = "#DD0";
+const CSS_COLOR_ANSWER     = "#DDD";
+const CSS_COLOR_UNKNOWN    = "#888";
 
-const P_SHOW_MESSAGE_DELAY = 3000;
+const CSS_COLOR_STARTED    = "#0F0";
+const CSS_COLOR_STOPPED    = "#666";
+const CSS_COLOR_STANDBY    = "#88F";
+
+const P_HIDE_MESSAGE_DELAY = 3000;
 let p_status;
 
 /*}}}*/
+let last_show_message;
 let p_UI_show_message = function(message)
 {
+/*{{{*/
 let log_this = log_ACTIVATED();
-    log_this=true;//FIXME
-    /* [p_status] CREATE {{{*/
+if(message != last_show_message) last_show_message = message;
+
+if( log_this) log_object("p_UI_show_message", message);
+/*}}}*/
+    /* [p_status] ● create {{{*/
     if(!p_status )
     {
         p_status                   = document.createElement("P");
         p_status.id                = "p_status";
+/*{{{
+        p_status.style.fontFamily  = "Noto Color Emoji";
+}}}*/
 
         p_status.addEventListener("click", (e) => e.target.classList.toggle("collapsed"));
 
         document.body.insertBefore(p_status, null); // i.e. at the end
     }
     /*}}}*/
-    /*  [p_status] UPDATE {{{*/
+    /*  [p_status] ● title ● innerHTML {{{*/
     p_status.title
         = log_js.log_object_val_format(message)
+        .  replace(   /\u21B5↑\s*/g,        "↑ "   )
         .  replace(   /\u21B5 */g, LF_TAB+"\u21B5 ")
         .  replace(        /← */g, LF_TAB+"← "     )
         .  replace(        /↑ */g, LF_TAB+" ↑ "    )
@@ -751,32 +761,65 @@ let log_this = log_ACTIVATED();
         .  replace(    /^\. *●/gm,          "●"    )
         .  replace(       /^\./gm,        " - "    )
     ;
-if( log_this) console.log(p_status.title);
+
+    let message_str = JSON.stringify(message);
+
+    let standby     = message.title && message.title.includes("STANDBY");
+    let started     = message.title && message.title.includes("STARTED");
+//  let started     = !!message.start;
+    let stopped     = message_str.match(/start=.*false/);
 
     p_status.innerHTML
-        = (    message.REPLY
-           ||  message.caller
-           ||  message.status
+        = (   (started       && "STARTED")
+           || (stopped       && "STOPPED")
+           || (standby       && "STANDBY")
            ||  message.title
+           ||  message.REPLY
+           ||  message.status
+           ||  message.caller
            || p_status.title
           )
-        .  replace(LF,"<br>");
+        .  replace(/ *●/gm, "<br> ●")
+        .  replace(     LF, "<br>"  );
 
     del_el_class(p_status, "collapsed");
 
-    p_status.style.color
-        = (message.type ==   "error") ? CSS_COLOR_ERROR
-        : (message.type == "pending") ? CSS_COLOR_PENDING
-        : (message.type ==  "answer") ? CSS_COLOR_ANSWER
-        :                               CSS_COLOR_UNKNOWN
-    ;
-
-
-    if(message.type == "answer")
-        setTimeout(() => {
-            if( p_status ) add_el_class(p_status, "collapsed");
-        }, P_SHOW_MESSAGE_DELAY);
     /*}}}*/
+    /*  [p_status] ● color {{{*/
+    if( started ) {
+        p_status.style.color =  CSS_COLOR_STARTED;
+    }
+    else if( stopped ) {
+        p_status.style.color =  CSS_COLOR_STOPPED;
+    }
+    else if( standby ) {
+        p_status.style.color =  CSS_COLOR_STANDBY;
+    }
+    /*}}}*/
+    /*  [p_status] ● color f(message.type) {{{*/
+    else if(message.type)
+    {
+        p_status.style.color
+            = (message.type.startsWith(  "error")) ? CSS_COLOR_ERROR
+            : (message.type.startsWith("pending")) ? CSS_COLOR_PENDING
+            : (message.type.startsWith( "answer")) ? CSS_COLOR_ANSWER
+            :                                        CSS_COLOR_UNKNOWN
+        ;
+
+
+        /* DELAY-HIDE ANSWER */
+        if(message    .type.startsWith("answer") )
+            setTimeout(() => {
+                if( p_status ) add_el_class(p_status, "collapsed");
+            }, P_HIDE_MESSAGE_DELAY);
+
+    }
+    /*}}}*/
+/* {{{
+// ● trying to get colored emojis in title tooltips
+    window.getComputedStyle( p_status         );
+    p_status.outerHTML = " "+p_status.outerHTML;
+}}}*/
 };
 /*}}}*/
 /*_ p_UI_show_error {{{*/
@@ -845,9 +888,9 @@ let log_this = log_ACTIVATED();
     p_error.innerHTML = msg_HTML;
     /*}}}*/
     /* [p_error] SHOW {{{*/
-    p_error.style.display = "block";
-    p_reload_button  .style.display = "inline-block";
-    p_logging_label  .style.display = "inline-block";
+    p_error            .style.display =        "block";
+    p_reload_button    .style.display = "inline-block";
+    p_logging_label    .style.display = "inline-block";
 
 if( log_this ) log("%c"+p_error.innerHTML.replace("<br>"," "), lbb);
 if( log_this ) log_caller();
@@ -859,9 +902,9 @@ let p_UI_hide_error = function()
 {
     if( p_error )
     {
-        p_error          .style.display = "none";
-        p_reload_button  .style.display = "none";
-        p_logging_label  .style.display = "none";
+        p_error        .style.display = "none";
+        p_reload_button.style.display = "none";
+        p_logging_label.style.display = "none";
     }
 };
 /*}}}*/
@@ -945,20 +988,20 @@ if(log_this) log("color_badge_container.click: e.target.id=["+e.target.id+"]");
 
 /*{{{
 //▼ NEVER CALLED ▼
-    chrome.windows.onRemoved.addListener((windowId) => {
-        log("%c chrome.runtime.onRemoved", lbb);
-        log_object("onRemoved", { popup_showing_windowId, windowId }, lb4, false);
-        if(windowId == popup_showing_windowId) p_sendMessage({ removed: "popup_window" }, "onRemoved");
-        else                                   p_sendMessage({ removed:  "some_window" }, "onRemoved");
+        chrome.windows.onRemoved.addListener((windowId) => {
+log("%c chrome.runtime.onRemoved", lbb);
+log_object("onRemoved"     , {popup_is_connected, windowId }, lb4, false);
+        if(windowId        == popup_is_connected) p_sendMessage({ removed: "popup_window" }, "onRemoved");
+        else                                      p_sendMessage({ removed:  "some_window" }, "onRemoved");
     }, {filters : ["popup"]});
 //▲ NEVER CALLED ▲
 }}}*/
 /*{{{
-    chrome.windows.onFocusChanged.addListener((windowId) => {
-        log("%c chrome.runtime.onFocusChanged");
-        log_object("onFocusChanged", { popup_showing_windowId, windowId }, lb4, false);
-        if(windowId != popup_showing_windowId) p_sendMessage({   focus:          "OUT" }, "onFocusChanged");
-        else                                   p_sendMessage({   focus:           "IN" }, "onFocusChanged");
+        chrome.windows.onFocusChanged.addListener((windowId) => {
+log("%c chrome.runtime.onFocusChanged");
+log_object("onFocusChanged",{ popup_is_connected, windowId }, lb4, false);
+           if(windowId     != popup_is_connected) p_sendMessage({ focus: "OUT" }, "onFocusChanged");
+           else                                   p_sendMessage({ focus:  "IN" }, "onFocusChanged");
     });
 }}}*/
 // see javascript/bg_message.js
@@ -979,7 +1022,7 @@ let log_this = LOG_MAP.P_LOG9_EVENT || !chrome.runtime;
         || e.target.parentElement.getElementsByTagName("INPUT")[0]
     ;
     if(!check_el                ) return;
-//log("check_el.id=["+check_el.id+"] ● check_el.parentElement.className=["+check_el.parentElement.className+"]");//FIXME
+//log("check_el.id=["+check_el.id+"] ● check_el.parentElement.className=["+check_el.parentElement.className+"]");
     if( check_el.parentElement.classList.contains("disabled")) return;
     if( check_el.id == "logging") return;
 
@@ -1298,9 +1341,7 @@ let p_onMessage_CB = function(message, sender, response_handler)
 /*{{{*/
 let   caller = "p_onMessage_CB";
 let log_this = LOG_MAP.P_LOG1_MESSAGE && !message.set_log_tag;
-    log_this=true;//FIXME
 let log_more = log_this && LOG_MAP.P_LOG0_MORE;
-    log_more=true;//FIXME
 
 let log_tag  = "LOG8_TAG";
 /*}}}*/
@@ -1315,6 +1356,7 @@ if( log_this) {
     log_object("message", message, lf8, false);
     log_sep_bot(label,log_tag);
 }
+        if(response_handler) response_handler({ caller , handling: label });
         return false; // whether to wait for an async response .. or not
     }
 /*}}}*/
@@ -1323,8 +1365,8 @@ if( log_this) {
     {
         log_js.log_console_clear(message.preserve, caller);
 
-        if(     response_handler) response_handler({ caller , handling: message.cmd });
-        return (response_handler != null); // whether to wait for an async response .. or not
+        if(response_handler) response_handler({ caller , handling: message.cmd });
+        return false; // whether to wait for an async response .. or not
     }
     /*}}}*/
     /* LOGGING [message.set_log_tag] {{{*/
@@ -1337,14 +1379,6 @@ if( log_this) log("SET %c set_log_tag %c "+message.set_log_tag, lbL+lf9, lbR+lf5
     else if(response_handler)
     {
         response_handler({ caller , expected: "message.set_log_tag" , got: message.cmd });
-    }
-    /*}}}*/
-    /* LOGGING REPLY {{{*/
-    if(typeof   message.REPLY != "undefined")
-    {
-if( log_this) log("SET %c REPLY %c "+message.REPLY, lbL+lf9, lbR+lf5);
-
-        p_UI_show_message( message.REPLY );
     }
     /*}}}*/
 try {
@@ -1394,7 +1428,7 @@ if( log_this) log("ACTION %c caller %c "+message.caller, lbL+lf9, lbR+lf5);
     /*}}}*/
 
     // ATTRIBUTES
-    /*             [message.tabId] AND [message.url] {{{*/
+    /*            [message.tabId] AND [message.url] {{{*/
     if(    (typeof message.tabId != "undefined")
         && (typeof message.url   != "undefined")
     ) {
@@ -1403,8 +1437,6 @@ if( log_ACTIVATED() ) log("SET %c tabId %c"+message.tabId+"%c  URL %c "+message.
 
         last_activated_tabId = message.tabId;
         popup_url            = message.url;
-
-//      bg_settings_tabs6_get_url_settings();
     }
 //    else {
 //if( log_ACTIVATED() ) log("%c"+SD2+"%c RESPONSE TO: "+P_GET_ACTIVE_TAB_URL+" %c NO ACTIVE TAB URL", lbB+lf4, lbb+lbL+lf0, lbb+lbR+lf0);
@@ -1491,12 +1523,24 @@ if( log_this) log_object("popup_tab_settings ["+(popup_url || "NO URL")+"]", pop
 
 /*}}}*/
     // RELOAD REQUIRED {{{*/
+/*{{{
+//  let url_required
+//      =  !message.url
+//      && (message.cmd !=   "t_load")
+//      && (message.cmd != "t_unload")
+//  ;
+}}}*/
+
     let reload_required
-        = !last_activated_tabId         ? "NO tabId"
-        : !message.status               ? "NO message.status"
-//      :  message.status != "complete" ? "(status != complete)"
-//      : !popup_url                    ? "NO URL"   // not an error .. a query will fix it
-        :                                ""
+        = !last_activated_tabId                       ? "NO last_activated_tabId"
+        : !message.tabId                              ? "NO tabId"
+/*{{{
+//      : !message.status                             ? "NO message.status"
+//      :  url_required                               ? "URL required"
+//      :  message.status != "complete"               ? "(status != complete)"
+//      : !popup_url                                  ? "NO URL"   // not an error .. a query will fix it
+}}}*/
+        :                                              ""
     ;
 
     if(reload_required)
@@ -1511,17 +1555,11 @@ if( log_this) log_object("popup_tab_settings ["+(popup_url || "NO URL")+"]", pop
     show_id_state(BUTTON_START_ID, !reload_required && !ignored_url);
 
     /*}}}*/
-
-    // RETURN
-    /*{{{*/
-    if(log_more) log("...return (response_handler != null)=["+(response_handler != null)+"]");
-
-    return (response_handler != null); // whether to wait for an async response .. or not
-    /*}}}*/
+    return false; // whether to wait for an async response .. or not
 
 } finally {
-    p_UI_show_message( message );
 if(log_this) log_sep_bot(P_SCRIPT_ID+"."+caller, log_tag);
+    p_UI_show_message( message );
 }
 };
 /*}}}*/
@@ -1550,15 +1588,16 @@ let p_onMessage_CB_SET_LOG_MAP = function(message, response_handler=null)
 
         LOG_MAP.P_LOG2_ERROR = (message.set_log_tag != "P_LOG2_ERROR") && log_ACTIVATED();
 
-        /* P_LOG2_ERROR may have changed .. sync with caller */
-        if( response_handler )
-            response_handler({ P_LOG2_ERROR: LOG_MAP.P_LOG2_ERROR });
-
         log_LOG_MAP();
 
         return "LOG9_TAG";
     }
     /*}}}*/
+
+    /* P_LOG2_ERROR may have changed .. sync with caller */
+    if( response_handler )
+        response_handler({ P_LOG2_ERROR: LOG_MAP.P_LOG2_ERROR });
+
     return "LOG0_TAG";
 };
 /*}}}*/
@@ -1700,6 +1739,7 @@ const TEST_SETTINGS_TEST
         , clear       : () => p_sendMessage_response_handler({ console_clear:"OK" , preserve:true                                 }, { sender:"Devtools" }, (o) => console.warn(JSON.stringify(o)))
 
         // P_MESSAGE_CB _____ pcb({ RESPONSE___________________________________________________________}, { SENDER____________}, response_handler_____________________ )
+        , show_message: () => p_UI_show_message( last_show_message )
         , CLEAR       : () => pcb({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_CLEAR})
         , TEST        : () => pcb({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_TEST })
         , OFF         : () => pcb({ tabId: last_activated_tabId, url: popup_url, ...TEST_SETTINGS_OFF  })

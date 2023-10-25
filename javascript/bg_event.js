@@ -11,7 +11,6 @@
 
 /* globals  chrome                    */
 
-/* globals  worker_js                 */
 /* globals  log_js                    */
 /* globals  background_js             */
 /* exported bg_event                  */
@@ -25,7 +24,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_EVENT_SCRIPT_ID  = "bg_event";
-const BG_EVENT_SCRIPT_TAG =  BG_EVENT_SCRIPT_ID +" (231006:23h:58)"; /* eslint-disable-line no-unused-vars */
+const BG_EVENT_SCRIPT_TAG =  BG_EVENT_SCRIPT_ID +" (231024:17h:01)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ EVENT LISTENERS                                              B_LOG8_STORE │
@@ -47,6 +46,7 @@ const BG_EVENT_SCRIPT_TAG =  BG_EVENT_SCRIPT_ID +" (231006:23h:58)"; /* eslint-d
 /* └─────────────────────────────┘*/
 let bg_event  = (function() {
 "use strict";
+let BG_EVENT_JS_LOG  = false;
 
 /* IMPORT {{{*/
 /* modules {{{*/
@@ -90,20 +90,22 @@ let bg_message_onMessage_CB_query;
 
 /*}}}*/
 /*_ bg_page {{{*/
-let bg_page1_UNLOAD_TAB;
+let bg_page_onRemoved;
+let bg_page_onReplaced;
 
 /*}}}*/
 /*_ bg_settings {{{*/
-let bg_settings_tabs1_onActivated;
-let bg_settings_tabs2_onUpdated;
-let bg_settings_tabs3_onRemoved;
-let bg_settings_tabs4_query_active_tab_url;
-let bg_settings_tabs6_get_url_settings;
+let bg_tabs_onActivated;
+let bg_settings_get_url_settings;
 
 /*}}}*/
 /*_ bg_tabs {{{*/
-let bg_tabs_get_last_activated_tabId;
+let bg_tabs_declarativeNetRequest_onRuleMatchedDebug_listener;
+let bg_tabs_get_tabId_last_activated;
 let bg_tabs_get_tabId_key;
+let bg_tabs_get_url;
+let bg_tabs_onRemoved;
+let bg_tabs_onUpdated;
 
 /*}}}*/
 /*_ bg_store {{{*/
@@ -153,15 +155,12 @@ let _import = function()
 
     /*}}}*/
     modules.push( bg_page       ); /*{{{*/
-    bg_page1_UNLOAD_TAB             = bg_page.bg_page1_UNLOAD_TAB;                  li("bg_page","bg_page1_UNLOAD_TAB",bg_page1_UNLOAD_TAB);
+    bg_page_onRemoved               = bg_page.bg_page_onRemoved;                  li("bg_page","bg_page_onRemoved",bg_page_onRemoved);
+    bg_page_onReplaced              = bg_page.bg_page_onReplaced;                 li("bg_page","bg_page_onReplaced",bg_page_onReplaced);
 
     /*}}}*/
     modules.push( bg_settings   ); /*{{{*/
-    bg_settings_tabs1_onActivated          = bg_settings.bg_settings_tabs1_onActivated;          li("bg_settings","bg_settings_tabs1_onActivated",bg_settings_tabs1_onActivated);
-    bg_settings_tabs2_onUpdated            = bg_settings.bg_settings_tabs2_onUpdated;            li("bg_settings","bg_settings_tabs2_onUpdated",bg_settings_tabs2_onUpdated);
-    bg_settings_tabs3_onRemoved            = bg_settings.bg_settings_tabs3_onRemoved;            li("bg_settings","bg_settings_tabs3_onRemoved",bg_settings_tabs3_onRemoved);
-    bg_settings_tabs4_query_active_tab_url = bg_settings.bg_settings_tabs4_query_active_tab_url; li("bg_settings","bg_settings_tabs4_query_active_tab_url",bg_settings_tabs4_query_active_tab_url);
-    bg_settings_tabs6_get_url_settings     = bg_settings.bg_settings_tabs6_get_url_settings;     li("bg_settings","bg_settings_tabs6_get_url_settings",bg_settings_tabs6_get_url_settings);
+    bg_settings_get_url_settings    = bg_settings.bg_settings_get_url_settings;   li("bg_settings","bg_settings_get_url_settings",bg_settings_get_url_settings);
 
     /*}}}*/
     modules.push( bg_store      ); /*{{{*/
@@ -169,8 +168,13 @@ let _import = function()
 
     /*}}}*/
     modules.push( bg_tabs       ); /*{{{*/
-    bg_tabs_get_last_activated_tabId    = bg_tabs.bg_tabs_get_last_activated_tabId;                 li("bg_store","bg_tabs_get_last_activated_tabId",bg_tabs_get_last_activated_tabId);
-    bg_tabs_get_tabId_key               = bg_tabs.bg_tabs_get_tabId_key;                 li("bg_store","bg_tabs_get_tabId_key",bg_tabs_get_tabId_key);
+    bg_tabs_declarativeNetRequest_onRuleMatchedDebug_listener   = bg_tabs.bg_tabs_declarativeNetRequest_onRuleMatchedDebug_listener; li("bg_tabs","bg_tabs_declarativeNetRequest_onRuleMatchedDebug_listener",bg_tabs_declarativeNetRequest_onRuleMatchedDebug_listener);
+    bg_tabs_get_tabId_last_activated                            = bg_tabs.bg_tabs_get_tabId_last_activated;                          li("bg_tabs","bg_tabs_get_tabId_last_activated",bg_tabs_get_tabId_last_activated);
+    bg_tabs_get_tabId_key                                       = bg_tabs.bg_tabs_get_tabId_key;                                     li("bg_tabs","bg_tabs_get_tabId_key",bg_tabs_get_tabId_key);
+    bg_tabs_get_url                                             = bg_tabs.bg_tabs_get_url;                                           li("bg_settings","bg_tabs_get_url",bg_tabs_get_url);
+    bg_tabs_onRemoved                                           = bg_tabs.bg_tabs_onRemoved;                                         li("bg_tabs","bg_tabs_onRemoved",bg_tabs_onRemoved);
+    bg_tabs_onActivated                                         = bg_tabs.bg_tabs_onActivated;                                       li("bg_tabs","bg_tabs_onActivated",bg_tabs_onActivated);
+    bg_tabs_onUpdated                                           = bg_tabs.bg_tabs_onUpdated;                                         li("bg_tabs","bg_tabs_onUpdated",bg_tabs_onUpdated);
 
     /*}}}*/
     log_js.log_import(bg_event     , modules);
@@ -179,7 +183,6 @@ let _import = function()
     setTimeout(_import,0);
 /*}}}*/
 /* LOGGING {{{*/
-let BG_EVENT_JS_LOG  = false;
 /*_ logging {{{*/
 let logging = function(state)
 {
@@ -194,16 +197,22 @@ let log_this_get = function(_caller)
 {
     switch(_caller) {
 
-    case "bg_event_addListeners"                      : return BG_EVENT_JS_LOG || worker_js.logging();
-    case "bg_event_declarativeNetRequest_addListener" : return BG_EVENT_JS_LOG || worker_js.logging();
-    case "bg_event_onLoad_check_current_tab"          : return BG_EVENT_JS_LOG || worker_js.logging();
-    case "bg_event_onActivated_addListener"           : return BG_EVENT_JS_LOG || worker_js.logging();
-    case "bg_event_onBeforeunload_addListener"        : return BG_EVENT_JS_LOG || log_ACTIVATED();
-    case "bg_event_onRemoved_addListener"             : return BG_EVENT_JS_LOG || worker_js.logging();
-    case "bg_event_onUpdated_addListener"             : return BG_EVENT_JS_LOG || worker_js.logging();
-    case "bg_event_webNavigation_addListener"         : return BG_EVENT_JS_LOG || worker_js.logging();
+    case "bg_event_addListeners"                      : return BG_EVENT_JS_LOG || log_ACTIVATED();
 
-    case "bg_event_onUpdated_declarativeNetRequest"   : return BG_EVENT_JS_LOG;// add specific LOG for declarativeNetRequest //FIXME
+    case "bg_event_onLoad_check_current_tab"          : return BG_EVENT_JS_LOG;
+
+    case "bg_event_tabs_onActivated_addListener"      : return BG_EVENT_JS_LOG;
+    case "bg_event_tabs_onUpdated_addListener"        : return BG_EVENT_JS_LOG;
+
+    case "bg_event_webNavigation_addListener"         : return BG_EVENT_JS_LOG;
+
+    case "bg_event_tabs_onRemoved_addListener"        : return BG_EVENT_JS_LOG;
+    case "bg_event_tabs_onReplaced_addListener"       : return BG_EVENT_JS_LOG;
+
+    case "bg_event_declarativeNetRequest_addListener" : return BG_EVENT_JS_LOG;
+
+    case "bg_event_sleep"                             : return BG_EVENT_JS_LOG || log_ACTIVATED();
+
     }
 
 /*{{{*/
@@ -215,14 +224,7 @@ let log_this_get = function(_caller)
 };
 /*}}}*/
 /*}}}*/
-/*{{{*/
-/* EMBED INTO IPC FOLD OF dom_tools.js */
 
-// NOTE:
-// to be duplicated in popup_onMessage_CB
-// to be duplicated in dom_tools.js IPC
-
-/*}}}*/
 
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ ADD LISTENERS                                                             │
@@ -240,10 +242,11 @@ if( log_this) log_js.log_group("%c ADDING LISTENERS "+SAD, lbH+lf3);
 
 if( log_more) chrome.permissions.getAll().then((args) => log_object("BROWSER PERMISSIONS",args.permissions));
 
-    bg_event_onActivated_addListener();
-    bg_event_onBeforeunload_addListener();
-    bg_event_onRemoved_addListener();
-    bg_event_onUpdated_addListener();
+    bg_event_tabs_onActivated_addListener();
+    bg_event_tabs_onRemoved_addListener();
+    bg_event_tabs_onReplaced_addListener();
+    bg_event_tabs_onRemoved_addListener();
+    bg_event_tabs_onUpdated_addListener();
     bg_header_addListener();
     bg_message_onMessage_addListener();
 
@@ -254,70 +257,76 @@ if( log_more) chrome.permissions.getAll().then((args) => log_object("BROWSER PER
 
 if( log_this) console.groupEnd();
 
-if( log_this || log_ACTIVATED() || LOG_MAP.B_LOG0_MORE) log_STORAGE();
+if( log_this || LOG_MAP.B_LOG0_MORE) log_STORAGE();
 
     bg_event_onLoad_check_current_tab();
 };
 /*}}}*/
-/*_ bg_event_onActivated_addListener {{{*/
-let bg_event_onActivated_addListener = function()
+// ● tab [activated updated replaced removed]
+/*_ bg_event_tabs_onActivated_addListener {{{*/
+let bg_event_tabs_onActivated_addListener = function()
 {
 /*{{{*/
-let   caller = "bg_event_onActivated_addListener";
+let   caller = "bg_event_tabs_onActivated_addListener";
 let log_this = log_this_get(caller);
 /*}}}*/
     /* .........................SCRIPT_ID..NAMESPACE.....LISTENING TO FUNCTIONALITY......PERMISSION */
     if(!log_permission(BG_EVENT_SCRIPT_ID, chrome.tabs, "Listening to tabs activation", "activeTab", log_this))
         return;
 
-    chrome.tabs.onActivated.addListener( bg_settings_tabs1_onActivated );
+    chrome.tabs.onActivated.addListener( bg_tabs_onActivated );
 
 };
 /*}}}*/
-/*_ bg_event_onBeforeunload_addListener {{{*/
-let bg_event_onBeforeunload_addListener = function()
+/*_ bg_event_tabs_onUpdated_addListener {{{*/
+let bg_event_tabs_onUpdated_addListener = function()
 {
 /*{{{*/
-let   caller = "bg_event_onBeforeunload_addListener";
-let log_this = log_this_get(caller);
-/*}}}*/
-    /* .........................SCRIPT_ID..NAMESPACE.....LISTENING TO FUNCTIONALITY......PERMISSION */
-    if(!log_permission(BG_EVENT_SCRIPT_ID, chrome.tabs, "Listening to tabs activation", "activeTab", log_this))
-        return;
-
-  //chrome.tabs.onBeforeunload.addListener( bg_page1_UNLOAD_TAB );
-    chrome.tabs.onRemoved     .addListener( bg_page1_UNLOAD_TAB );
-    chrome.tabs.onReplaced    .addListener( bg_page1_UNLOAD_TAB );
-};
-/*}}}*/
-/*_ bg_event_onRemoved_addListener {{{*/
-let bg_event_onRemoved_addListener = function()
-{
-/*{{{*/
-let   caller = "bg_event_onRemoved_addListener";
-let log_this = log_this_get(caller);
-/*}}}*/
-    /* .........................SCRIPT_ID..NAMESPACE.....LISTENING TO FUNCTIONALITY...PERMISSION */
-    if(!log_permission(BG_EVENT_SCRIPT_ID, chrome.tabs, "Listening to tabs removed", "tabs", log_this))
-        return;
-
-    chrome.tabs.onRemoved.addListener( bg_settings_tabs3_onRemoved );
-};
-/*}}}*/
-/*_ bg_event_onUpdated_addListener {{{*/
-let bg_event_onUpdated_addListener = function()
-{
-/*{{{*/
-let   caller = "bg_event_onUpdated_addListener";
+let   caller = "bg_event_tabs_onUpdated_addListener";
 let log_this = log_this_get(caller);
 /*}}}*/
     /* .........................SCRIPT_ID..NAMESPACE.....LISTENING TO FUNCTIONALITY...PERMISSION */
     if(!log_permission(BG_EVENT_SCRIPT_ID, chrome.tabs, "Listening to tabs updated", "tabs", log_this))
         return;
 
-    chrome.tabs.onUpdated.addListener( bg_settings_tabs2_onUpdated );
+    chrome.tabs.onUpdated.addListener( bg_tabs_onUpdated );
 };
 /*}}}*/
+/*_ bg_event_tabs_onReplaced_addListener {{{*/
+let bg_event_tabs_onReplaced_addListener = function()
+{
+/*{{{*/
+let   caller = "bg_event_tabs_onReplaced_addListener";
+let log_this = log_this_get(caller);
+/*}}}*/
+    /* .........................SCRIPT_ID..NAMESPACE.....LISTENING TO FUNCTIONALITY......PERMISSION */
+    if(!log_permission(BG_EVENT_SCRIPT_ID, chrome.tabs, "Listening to tabs activation", "activeTab", log_this))
+        return;
+
+    chrome.tabs.onReplaced.addListener( bg_page_onReplaced );
+    chrome.tabs.onReplaced.addListener( bg_tabs_onRemoved  );
+};
+/*}}}*/
+/*_ bg_event_tabs_onRemoved_addListener {{{*/
+let bg_event_tabs_onRemoved_addListener = function()
+{
+/*{{{*/
+let   caller = "bg_event_tabs_onRemoved_addListener";
+let log_this = log_this_get(caller);
+/*}}}*/
+    /* .........................SCRIPT_ID..NAMESPACE.....LISTENING TO FUNCTIONALITY......PERMISSION */
+    if(!log_permission(BG_EVENT_SCRIPT_ID, chrome.tabs, "Listening to tabs activation", "activeTab", log_this))
+        return;
+
+    /* .........................SCRIPT_ID..NAMESPACE.....LISTENING TO FUNCTIONALITY...PERMISSION */
+    if(!log_permission(BG_EVENT_SCRIPT_ID, chrome.tabs, "Listening to tabs removed", "tabs", log_this))
+        return;
+
+    chrome.tabs.onRemoved.addListener( bg_page_onRemoved );
+    chrome.tabs.onRemoved.addListener( bg_tabs_onRemoved );
+};
+/*}}}*/
+// ● navigation
 /*_ bg_event_webNavigation_addListener {{{*/
 let bg_event_webNavigation_addListener = function()
 {
@@ -342,6 +351,7 @@ if( log_this) log_object("webNavigation.onCommitted "+details.url, details, lbH+
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ ONLOAD                                                                    │
 // └───────────────────────────────────────────────────────────────────────────┘
+// ● query current tab when extension is installed
 /*_ bg_event_onLoad_check_current_tab {{{*/
 let bg_event_onLoad_check_current_tab = async function()
 {
@@ -352,15 +362,15 @@ let log_this = log_this_get(caller);
 /*}}}*/
     let message
         = {   query   : "url"
-            , tabId   : bg_tabs.bg_tabs_get_last_activated_tabId()
+            , tabId   : bg_tabs.bg_tabs_get_tabId_last_activated()
             , queryObj: {}
             , caller
         };
 
-    await        bg_settings_tabs4_query_active_tab_url(message.tabId, message);
-    let tabId  = bg_tabs_get_last_activated_tabId();
+    await        bg_tabs_get_url(message.tabId, message);
+    let tabId  = bg_tabs_get_tabId_last_activated();
     let url    = bg_tabs_get_tabId_key(tabId, "url");
-    /*........*/ bg_settings_tabs6_get_url_settings(tabId, url);
+    /*........*/ bg_settings_get_url_settings(tabId, url);
 
 if( log_this) log("%c"+caller+"%c tabId "+tabId+" %c url "+url
                   ,lbL+lb0    ,lbC+lb0  ,lbR+lb0              );
@@ -370,13 +380,8 @@ if( log_this) log("%c"+caller+"%c tabId "+tabId+" %c url "+url
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ declarativeNetRequest                                     ● manifest.json │
 // └───────────────────────────────────────────────────────────────────────────┘
+// ● remove CSP Response headers
 /*_ bg_event_declarativeNetRequest_addListener {{{*/
-/*{{{*/
-const LOG_RULEMATCHED_COOLDOWN_MS = 2000;
-let   last_onRuleMatchedDebug_call_time              =    0;
-let   last_onRuleMatchedDebug_burst_nb               =    0;
-
-/*}}}*/
 let bg_event_declarativeNetRequest_addListener = function()
 {
 /*{{{*/
@@ -387,77 +392,51 @@ let log_this = log_this_get(caller);
     if(!log_permission(BG_EVENT_SCRIPT_ID, chrome.declarativeNetRequest, "Listening to declarativeNetRequest", "declarativeNetRequest", log_this))
         return;
 
-    chrome.declarativeNetRequest.onRuleMatchedDebug.addListener(function(details) {
-
-        /* ONLY LOG THE FIRST OF A BURST */
-        let this_time = new Date().getTime() % 86400000;
-        if((this_time - last_onRuleMatchedDebug_call_time) > LOG_RULEMATCHED_COOLDOWN_MS)
-        {
-            last_onRuleMatchedDebug_call_time = this_time;  // LOGGING FIRST OF BUNCH
-            last_onRuleMatchedDebug_burst_nb  = 1;
-        }
-        else {
-            last_onRuleMatchedDebug_burst_nb += 1;          // ONLY COUNT THE FOLLOWERS
-            return;
-        }
-
-if( log_this) log_object("onRuleMatchedDebug ● FIRST RULE MATCH", details);
-//( log_this) log       ("onRuleMatchedDebug", log_js.log_o_keys_toString(details));
-//( log_this) log       ("onRuleMatchedDebug", log_js.log_json_prettify(details));
-    });
+    chrome.declarativeNetRequest.onRuleMatchedDebug.addListener( bg_tabs.bg_tabs_declarativeNetRequest_onRuleMatchedDebug_listener );
 
 };
 /*}}}*/
-/*_ bg_event_onUpdated_declarativeNetRequest {{{*///FIXME
-let bg_event_onUpdated_declarativeNetRequest = async function(tabId,changeInfo)
+
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ UTIL                                                                      │
+// └───────────────────────────────────────────────────────────────────────────┘
+/*_ bg_event_sleep {{{*/
+let bg_event_sleep = async function(delay)
 {
 /*{{{*/
-let   caller = "bg_event_onUpdated_declarativeNetRequest";
+let   caller = "bg_event_sleep";
 let log_this = log_this_get(caller);
-let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
+if( log_this) log("%c"+SD6+"%c SLEEPING "+delay+"ms %c "+log_js.get_callers_bot(), lbB+lf6, lbH+lf6, lbb+lbH+lb6);
 /*}}}*/
-//FIXME
-if( log_this) log("tabs.onUpdated %c"+last_onRuleMatchedDebug_burst_nb+" RULES MATCHED %c"+changeInfo.status, lbb+lbL+lb5, lbb+lbR+lb5);
-/*{{{
-    let      enabledRulesets = await chrome.declarativeNetRequest.getEnabledRulesets();
-console.log("enabledRulesets", enabledRulesets );
-}}}*/
 
-    let      matchedRules = await chrome.declarativeNetRequest.getMatchedRules({tabId});
-/*{{{
-console.log("matchedRules"   , matchedRules    );
-}}}*/
+    await new Promise(function executor(resolve)
+                      {
+                          setTimeout(() => resolve((log_this) && log("resolve: sleep "+delay+" DONE") ), delay);
+                      });
 
-    let         matched_array = matchedRules.rulesMatchedInfo;
-if( log_more && matched_array.length) {
-    let cnt = "1...";
-    log_object(       "matched[  0  ]",                    matched_array[0], lb0);
-    for(let i=1;  i < matched_array.length;++i) {
-        let matched = matched_array[i];
-//      log_object(   "matched["+i+"]", matched                            , lb0);
-        log       ("%c matched["+cnt+"]"+ log_js.log_o_keys_toString(matched), lb0);
-//      log       ("%c matched["+cnt+"]"+ log_js.log_json_prettify  (matched), lb0);
-    }
-}
 /*{{{*/
+if( log_this) log("bg_event_sleep DONE");
 /*}}}*/
-
 };
 /*}}}*/
 
     /*  EXPORT {{{*/
     return { name : "bg_event"
-        ,            bg_event_addListeners
-        ,            bg_event_onUpdated_declarativeNetRequest
-        ,            logging
+        ,    logging
+
+        ,    bg_event_addListeners
+        ,    bg_event_sleep
     };
     //}}}
 })();
 
-/* //FIXME
+// ┌───────────────────────────────────────────────────────────────────────────┐
+// │ DOC ● Response headers                                                    │
+// └───────────────────────────────────────────────────────────────────────────┘
+/*{{{
 :vnew C:/LOCAL/USR/ivan/VIM/after/syntax/javascript_BAK_BOT_LOG_TOP.vim
-:so ~/VIM/after/syntax/javascript_BAK_BOT_LOG_TOP.vim
+:so ~/VIM/_BAK/after/syntax/javascript_BAK_BOT_LOG_TOP.vim
 
   ┌────────────────────────────────────────────────────────────────────────────┐
   │ ● https://developer.chrome.com/docs/devtools/overrides/#override-headers   │
@@ -478,4 +457,4 @@ if( log_more && matched_array.length) {
   │   for HTTP response headers.                                               │
   └────────────────────────────────────────────────────────────────────────────┘
 
-*/
+}}}*/
