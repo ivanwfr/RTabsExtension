@@ -30,7 +30,7 @@
 const MANIFEST_VERSION      = (typeof chrome.tabs.executeScript == "undefined") ?  "v3" : "v2";
 
 const B_SCRIPT_ID           = "background_js";
-const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (231025:15h:24)"; /* eslint-disable-line no-unused-vars */
+const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (231026:19h:27)"; /* eslint-disable-line no-unused-vars */
 const DOM_TOOLS_JS_ID       = "dom_tools_js";
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐

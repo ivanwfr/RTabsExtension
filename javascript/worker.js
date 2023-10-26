@@ -33,7 +33,7 @@
 /* eslint-enable  no-unused-vars */
 
 const    S_SCRIPT_ID         = "worker_js";
-const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (231024:17h:03)";
+const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (231026:19h:28)";
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ SERVICE WORKER                                                            │
@@ -56,7 +56,7 @@ const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (231024:17h:03)";
 let worker_js;
     worker_js = (function() {
 "use strict";
-let WORKER_LOG  = false;
+let WORKER_LOG  = true;//FIXME
 
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ [importScripts]                                                           │
