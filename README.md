@@ -1,4 +1,4 @@
-<!-- README.md _TAG (231026:14h:52) -->
+<!-- README.md _TAG (231026:15h:02) -->
 # RTabs - Web page words highlighting
 ● ***Browser extension*** version
 ● of a __Search-in-Page Highliter Toolset__
@@ -155,5 +155,29 @@ https://github.com/ivanwfr/RTabsExtension
 https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
 
 > ![features](https://remotetabs.com/dev/RTabsExtension/images/features.png)
+
+NOW, YOU CAN SEND THIS MAIL
+
+________________________________________________________________________________
+RECEIVING MAIL PROCEDURE .. (IMPORT-SIDE):
+1 . copy this message body to the clipboard .. (select all is ok)
+2 . then click navigator import button
+________________________________________________________________________________
+RTabs export: ivanwfr_RTabsExtension
+https://github.com/ivanwfr/RTabsExtension
+domain: github.com
+________________________________________________________________________________
+
+[{"key":"ivanwfr_RTabsExtension.headsup_w","val":"{\"selected\":true,\"pinned\":false,\"xy\":{\"x\":395,\"y\":85},\"magnified\":false}"}
+,{"key":"github_com.spread_ratio_x","val":"0.301010101010101"}
+,{"key":"ivanwfr_RTabsExtension.pat_arr","val":"[\"Bookmarklet|E\",\"content|E\",\"Extension|E\",\"find in page|E\",\"highlight(ing)?|E\",\"RegEx|E\",\"script(s)?|E\",\"tool(s)?|E\",\"word(s)?|E\"]"}
+,{"key":"ivanwfr_RTabsExtension.words_exact","val":"true"}
+,{"key":"ivanwfr_RTabsExtension.window_scrollY","val":"100"}
+,{"key":"ivanwfr_RTabsExtension.bin_arr","val":"[\"231008|H\",\"The content scripts provide a collection of tools|H\",\"keyword(s)?|E\"]"}
+,{"key":"github_com.pivot_PANEL","val":"headsup_w"}
+,{"key":"github_com.pivotXY","val":"{\"x\":493,\"y\":218}"}
+,{"key":"github_com.hotspotXY","val":"{\"x\":374,\"y\":64,\"gutter_urdl\":null,\"x_in_gutter\":24,\"y_in_gutter\":70}"}
+,{"key":"ivanwfr_RTabsExtension.test_panel","val":"{\"selected\":true,\"pinned\":true,\"xy\":{\"x\":650,\"y\":515},\"magnified\":false}"}
+,{"key":"github_com.spread_ratio_y","val":"0.601145038167939"}]
 
 }}}-->
