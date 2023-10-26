@@ -1,40 +1,54 @@
-<!-- README.md _TAG (220325:18h:05) -->
-# RTabs - Web Annotation - DOM highlighting Browser extension
-
-Browser Search-in-Page Highliter Toolset ( built on standard HTML5 DOM3 JS and JSON )
+<!-- README.md _TAG (231026:14h:52) -->
+# RTabs - Web page words highlighting
+● ***Browser extension*** version
+● of a __Search-in-Page Highliter Toolset__
+● built on ● HTML5 ● DOM3 ● JS and JSON
 
 ### ✔ [ZIP archive on GitHub](../../archive/master.zip)
 
-INTRODUCTION:
-    https://remotetabs.com/dev/rtabs/intro.html
+### EXTENSION FEATURES:
 
-SCREENSHOTS:
-    https://remotetabs.com/dev/rtabs/screenshots.html
+● This is the ***Chrome Extension*** version of this [***Bookmarklet***](https://github.com/ivanwfr/dom_load)
+which is all about web page content parsing and highlighting
+of keywords or regular expressions (RegEx).
 
-This is the Chrome Extension version of the bookmarklet:
-    https://github.com/ivanwfr/dom_load
+_● The content scripts provide a collection of tools_
+_to start with a find in page selection to colorise_
+_some interesting words and see all the other places_
+_they are mentionned again._
 
-<!--{{{
-:r !tree $APROJECTS/GITHUB/RTabsExtension | sed -e 's/^/    /'
+> ![features](/images/features.png)
 
-}}}-->
- EXTENSION FILES: <!--{{{-->
+<hr>
+
+● [ON-LINE INTRODUCTION PAGE (only in French at the moment)](https://remotetabs.com/dev/rtabs/intro.html)
+
+● [SCREENSHOTS](https://remotetabs.com/dev/rtabs/screenshots.html)
+
+ EXTENSION FILES <!-- ● README manifest background options popup {{{-->
 ```
      README.md
      manifest.json
+     manifest_v2.json
+     manifest_v3.json
 
      background.html
      options.html
      popup.html
 
+     rules_REMOVE_CSP.json
+     rules_SET_CHARSET_UTF8.json
+     rules_SET_CSP.json
+
 ```
 <!--}}}-->
- EXTENSION SCRIPT: <!--{{{-->
+ EXTENSION SCRIPT: <!-- ● javascript {{{-->
 ```
      javascript
      |-- background.js
      |-- bg_content.js
      |-- bg_csp.js
+     |-- bg_event.js
      |-- bg_header.js
      |-- bg_message.js
      |-- bg_page.js
@@ -49,7 +63,7 @@ This is the Chrome Extension version of the bookmarklet:
 
 ```
 <!--}}}-->
- EXTENSION IMAGES: <!--{{{-->
+ EXTENSION IMAGES: <!-- ● rtabs png {{{-->
 ```
      images
      |-- rtabs128.png
@@ -75,14 +89,14 @@ This is the Chrome Extension version of the bookmarklet:
      └-- rtabs96.png
 ```
 <!--}}}-->
-EXTENSION CSS: <!--{{{-->
+EXTENSION CSS: <!-- ● options popup {{{-->
 ```
      stylesheet
      |-- options.css
      └-- popup.css
 ```
 <!--}}}-->
- CONTENT SCRIPT: <!--{{{-->
+ CONTENT SCRIPT: <!-- ● script {{{-->
 ```
      script
      |-- dom_data.js
@@ -118,15 +132,28 @@ EXTENSION CSS: <!--{{{-->
      └-- splitter.js
 ```
 <!--}}}-->
-CONTENT CSS: <!--{{{-->
+CONTENT CSS: <!-- ● checkbox dom_grid dom_host dom_tools {{{-->
 ```
      stylesheet
      |-- checkbox.css
      |-- dom_grid.css
      |-- dom_host.css
-     └-- dom_tools.css
+     |-- dom_tools.css
+     |-- options.css
+     └-- popup.css
 ```
 <!--}}}-->
-
 <hr>
 
+<!-- tree {{{
+:r !tree $APROJECTS/GITHUB/RTabsExtension | sed -e 's/^/    /'
+
+https://github.com/ivanwfr/RTabsExtension
+
+../../P.txt
+
+https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
+
+> ![features](https://remotetabs.com/dev/RTabsExtension/images/features.png)
+
+}}}-->
