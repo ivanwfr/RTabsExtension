@@ -26,7 +26,7 @@
 
 /* eslint-enable  no-redeclare        */
 const BG_STORE_SCRIPT_ID  = "bg_store";
-const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (231024:17h:02)"; /* eslint-disable-line no-unused-vars */
+const BG_STORE_SCRIPT_TAG =  BG_STORE_SCRIPT_ID +" (231028:01h:01)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ STORE                                                        B_LOG8_STORE │
@@ -342,6 +342,7 @@ if( log_this) log_sep_bot(BG_STORE_SCRIPT_ID+" manifest ("+MANIFEST_VERSION+") S
     if(typeof items.BG_TABS_JS_LOG     != "undefined") bg_tabs          .logging( items.BG_TABS_JS_LOG    );
 
     /* log background script status */
+if( log_this)
     background_js.logn();
 
 };
@@ -382,6 +383,7 @@ if( log_more)   log_object("items", { ...items , callers: LF+get_callers() }, lb
     catch(error) {
         console.error(BG_STORE_SCRIPT_ID+" ERROR:\n"+ error);
     }
+if( log_this)
     log_STORAGE();
 };
 /*}}}*/

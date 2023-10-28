@@ -33,7 +33,7 @@
 /* eslint-enable  no-unused-vars */
 
 const    S_SCRIPT_ID         = "worker_js";
-const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (231026:19h:28)";
+const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (231028:00h:49)";
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ SERVICE WORKER                                                            │
@@ -56,7 +56,7 @@ const    S_SCRIPT_TAG        =  S_SCRIPT_ID +" (231026:19h:28)";
 let worker_js;
     worker_js = (function() {
 "use strict";
-let WORKER_LOG  = true;//FIXME
+let WORKER_LOG  = false;
 
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ [importScripts]                                                           │
@@ -321,7 +321,7 @@ if(WORKER_LOG) console.log("...webNavigation_addListeners()");
     chrome.webNavigation.onTabReplaced             .addListener( (details) => _lo(S_SCRIPT_ID+" ● onTabReplaced"             , details) );
 };
 /*}}}*/
-
+if(chrome.webNavigation)
     webNavigation_addListeners();
 /*}}}*/
 /* [install] {{{*/

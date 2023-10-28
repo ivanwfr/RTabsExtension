@@ -9,7 +9,7 @@
 /* eslint-disable prefer-rest-params */
 
 const LOG_JS_ID         = "log_js";
-const LOG_JS_TAG        =  LOG_JS_ID +" (231025:14h:01)";
+const LOG_JS_TAG        =  LOG_JS_ID +" (231028:00h:49)";
 /*}}}*/
 let log_js = (function() {
 "use strict";
@@ -1141,21 +1141,20 @@ let log_permission = function(script_id, namespace, functionality, permission, l
 
     script_id = mPadEnd(script_id,20);
 
+if(logging) {
     if(namespace != undefined)
     {
-if(logging) log("%c"+script_id+"%c"+fnc+'%c ... manifest permission specified %c'+perm     /* eslint-disable-line quotes */
-                ,lbL           ,lbC     ,lbC+lf5                             ,lbR    +lf5);
-
-        return true;
+        log("%c"+script_id+"%c"+fnc+'%c ... manifest permission specified %c'+perm     /* eslint-disable-line quotes */
+            ,lbL           ,lbC     ,lbC+lf5                             ,lbR    +lf5);
     }
     else {
-console    .log("%c"+script_id+"%c"+fnc+'%c *** manifest permission required  %c'+perm     /* eslint-disable-line quotes */
-                ,lbL          ,lbR      ,lbb+lbL+lf2                         ,lbb+lbR+lf2);
-
+        log("%c"+script_id+"%c"+fnc+'%c *** manifest permission required  %c'+perm     /* eslint-disable-line quotes */
+            ,lbL          ,lbR      ,lbb+lbL+lf2                         ,lbb+lbR+lf2);
         log_caller();
-
-        return false;
     }
+}
+
+    return (namespace != undefined);
 };
 /*}}}*/
 /*➔ log_socket {{{*/

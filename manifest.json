@@ -8,30 +8,30 @@
     "version"            : "1.23.09.29",
     "permissions"        : [
         "activeTab",
-        "alarms",
-        "browsingData",
-        "declarativeNetRequest",
-        "declarativeNetRequestWithHostAccess",
-        "declarativeNetRequestFeedback",
-        "history",
-        "notifications",
+
+
+
+
+
+
+
         "scripting",
         "storage",
-        "tabs",
-        "webNavigation",
-        "webRequest"
+        "tabs"
+
+
 
     ],
-    "host_permissions"   : [
-        "<all_urls>"
-    ],
-    "declarative_net_request": {
-        "rule_resources"      : [
-            { "id": "rules_SET_CHARSET_UTF8", "path": "rules_SET_CHARSET_UTF8.json", "enabled":   true },
-            { "id": "rules_SET_CSP"         , "path": "rules_SET_CSP.json"         , "enabled":  false },
-            { "id": "rules_REMOVE_CSP"      , "path": "rules_REMOVE_CSP.json"      , "enabled":  false }
-        ]
-    },
+
+
+
+
+
+
+
+
+
+
     "icons"              : {
         "16"              : "images/rtabs16.png",
         "24"              : "images/rtabs24.png",

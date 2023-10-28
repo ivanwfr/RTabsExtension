@@ -1,4 +1,4 @@
-<!-- README.md _TAG (231026:15h:02) -->
+<!-- README.md _TAG (231027:17h:50) -->
 # RTabs - Web page words highlighting
 ● ***Browser extension*** version
 ● of a __Search-in-Page Highliter Toolset__
@@ -8,14 +8,17 @@
 
 ### EXTENSION FEATURES:
 
-● This is the ***Chrome Extension*** version of this [***Bookmarklet***](https://github.com/ivanwfr/dom_load)
-which is all about web page content parsing and highlighting
+● This is the ***Chrome Extension*** version of the bookmarklet
+below which is all about web page content parsing and highlighting
 of keywords or regular expressions (RegEx).
 
-_● The content scripts provide a collection of tools_
-_to start with a find in page selection to colorise_
-_some interesting words and see all the other places_
-_they are mentionned again._
+_● The bookmarklet is embedded as a content script providing_
+_a collection of tools starting from a find in page selection_
+_to colorize some interesting words and see all the other places_
+_they are mentioned again as well as some other fun stuff._
+
+🔗 [GitHub extension:   ](https://github.com/ivanwfr/RTabsExtension)
+🔗 [GitHub bookmarklet: ](https://github.com/ivanwfr/dom_load)
 
 > ![features](/images/features.png)
 

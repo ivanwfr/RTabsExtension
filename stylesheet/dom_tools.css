@@ -1,5 +1,5 @@
 
-#dom_tools_css_tag  { content: "dom_tools_css (230816:16h:05) XXX"; }
+#dom_tools_css_tag  { content: "dom_tools_css (231027:18h:48) XXX"; }
 
 :host { all: initial; }
 
@@ -167,6 +167,7 @@ fails in webview at load time...
     min-height    :12em;
     margin-bottom : 5em;
     font-weight   : 900;
+    font-size     : 10px;
 }
 
  #pat_bag.scrolled

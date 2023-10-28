@@ -30,7 +30,7 @@
 const MANIFEST_VERSION      = (typeof chrome.tabs.executeScript == "undefined") ?  "v3" : "v2";
 
 const B_SCRIPT_ID           = "background_js";
-const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (231026:19h:27)"; /* eslint-disable-line no-unused-vars */
+const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (231028:01h:03)"; /* eslint-disable-line no-unused-vars */
 const DOM_TOOLS_JS_ID       = "dom_tools_js";
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
@@ -468,10 +468,10 @@ let   log_STORAGE_timer;
 /*}}}*/
 let log_STORAGE = function()
 {
-    /*{{{*/
-    let caller = "log_STORAGE";
+/*{{{*/
+let caller = "log_STORAGE";
 
-    /*}}}*/
+/*}}}*/
 
     if( log_STORAGE_timer) clearTimeout(log_STORAGE_timer  );
 
