@@ -58,7 +58,7 @@
 /* eslint-disable no-warning-comments */
 
 const DOM_TOOLS_JS_ID       = "dom_tools_js" ;
-const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (231001:02h:27)";
+const DOM_TOOLS_JS_TAG      = DOM_TOOLS_JS_ID   +" (231030:16h:26)";
 /*}}}*/
 let dom_tools   = (function() {
 "use strict";
@@ -24411,7 +24411,7 @@ let move_drag_cursor = function(e)
     if(                  drag_cursor_div.classList.contains( CSS_DRAG_CURSOR_DIV_ONLOAD ))
         setTimeout(() => drag_cursor_div.classList.remove  ( CSS_DRAG_CURSOR_DIV_ONLOAD ), DRAG_CURSOR_DIV_ONLOAD_DELAY);
 
-    let      xy = t_util.get_event_XY(e);
+    let       xy = t_util.get_event_XY(e);
     let offset_x = drag_cursor_div.className
         ? drag_cursor_div.offsetWidth / 2
         : drag_cursor_div.offsetWidth;

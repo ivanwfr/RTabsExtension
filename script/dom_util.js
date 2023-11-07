@@ -25,7 +25,7 @@
 /* exported dom_util */
 
 const DOM_UTIL_JS_ID        = "dom_util";
-const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (231013:19h:41)";  /* eslint-disable-line no-unused-vars */
+const DOM_UTIL_JS_TAG       = DOM_UTIL_JS_ID  +" (231030:17h:14)";  /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_util    = (function() {
 "use strict";
@@ -4145,6 +4145,7 @@ const regexp_URL = new RegExp("^([^:]+):\\/\\/(?:([^@]+)@)?([^\\/:]*)?(?::([\\d]
 
 /*{{{
     dom_util.parseURL("http://myUserName:myPassword@myDomain:8081/images/logo.jpg");
+    dom_util.parseURL("https://www.google.com/search?q=Liu+Cixin+et+%C2%AB+Le+probl%C3%A8me+%C3%A0+trois+corps+%C2%BB%2C+un+succ%C3%A8s+international+m%C3%A9rit%C3%A9.&oq=Liu+Cixin+et+%C2%AB+Le+probl%C3%A8me+%C3%A0+trois+corps+%C2%BB%2C+un+succ%C3%A8s+international+m%C3%A9rit%C3%A9.&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIHCAEQIRiPAjIHCAIQIRiPAtIBCjE5Mjg4ajBqMTWoAgCwAgA&sourceid=chrome&ie=UTF-8#ip=1");
 }}}*/
 
 let parseURL = function(url)

@@ -108,7 +108,7 @@ let bg_message_tabs_sendMessage;
 let TOOLS4_DEPLOYED;
 
 let bg_page_POPUP_pageAction;
-let bg_page2_RELOAD_if_required;
+let bg_page_RELOAD_if_required;
 
 /*}}}*/
 //_______________ bg_settings
@@ -196,7 +196,7 @@ let _import = function()
     TOOLS4_DEPLOYED             = bg_page.TOOLS4_DEPLOYED;                                      li("bg_page","TOOLS4_DEPLOYED",TOOLS4_DEPLOYED);
 
     bg_page_POPUP_pageAction    = bg_page.bg_page_POPUP_pageAction;                             li("bg_page","bg_page_POPUP_pageAction",bg_page_POPUP_pageAction);
-    bg_page2_RELOAD_if_required = bg_page.bg_page2_RELOAD_if_required;                          li("bg_page","bg_page2_RELOAD_if_required",bg_page2_RELOAD_if_required);
+    bg_page_RELOAD_if_required = bg_page.bg_page_RELOAD_if_required;                          li("bg_page","bg_page_RELOAD_if_required",bg_page_RELOAD_if_required);
 
     /*}}}*/
     //_______________________ bg_settings
@@ -493,7 +493,7 @@ if( log_more) log_object(caller+": TABS #"+tabId, bg_tabs_get_tabId(tabId), lbH+
             bg_tabs_set_tabId_key_items(tabId, "csp_filter", items);
             bg_tabs_set_tabId_key_items(tabId, "cancelreq" , items);
 
-           result = await bg_page2_RELOAD_if_required({tabId});
+           result = await bg_page_RELOAD_if_required({tabId});
         }
         /*}}}*/
         /* NO ACTIVATED TO SYNC WITH {{{*/

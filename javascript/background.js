@@ -30,7 +30,7 @@
 const MANIFEST_VERSION      = (typeof chrome.tabs.executeScript == "undefined") ?  "v3" : "v2";
 
 const B_SCRIPT_ID           = "background_js";
-const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (231028:01h:03)"; /* eslint-disable-line no-unused-vars */
+const B_SCRIPT_TAG          =  B_SCRIPT_ID +" "+MANIFEST_VERSION+" (231107:18h:25)"; /* eslint-disable-line no-unused-vars */
 const DOM_TOOLS_JS_ID       = "dom_tools_js";
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
@@ -86,11 +86,7 @@ let   ellipsis
 
 /*}}}*/
 //_______________ background_js
-/*_ bg_content {{{*/
-let bg_content_scripts_loaded;
-let bg_content_scripts_reload;
-
-/*}}}*/
+//_______________ bg_content
 //_______________ bg_csp
 /*_ bg_event {{{*/
 let bg_event_addListeners;
@@ -145,11 +141,7 @@ let _import = function()
 
     /*}}}*/
     //_______________________ background_js
-    modules.push( bg_content    ); /*{{{*/
-    bg_content_scripts_loaded       = bg_content.bg_content_scripts_loaded;                     li("bg_content","bg_content_scripts_loaded",bg_content_scripts_loaded);
-    bg_content_scripts_reload       = bg_content.bg_content_scripts_reload;                     li("bg_content","bg_content_scripts_reload",bg_content_scripts_reload);
-
-    /*}}}*/
+    //_______________________ bg_content
     //_______________________ bg_csp
     modules.push( bg_event      ); /*{{{*/
     bg_event_addListeners           = bg_event.bg_event_addListeners;                           li("bg_event","bg_event_addListeners",bg_event_addListeners);
@@ -346,7 +338,7 @@ let logn_USAGE = function()
     /**/ s += "%c"                                    +" b.p    == pause"       ; args.push(    lf8);
     args[0] = s;
 
-    log_js.log_group ("%c"+SAR    +"%c LOG_MAP "+SAD+"%c ...toggle with b.l(n) .. bl(-1) for all"
+    log_js.log_group ("%c"+SAR    +"%c LOG_MAP "+SAD+"%c ...toggle with b.l(n) .. -1 for all"
                       ,lbb+lbH+lb0 ,lbH+lb0          ,lf8);
     console.log.apply(console, args);
     console.groupEnd();
@@ -468,10 +460,10 @@ let   log_STORAGE_timer;
 /*}}}*/
 let log_STORAGE = function()
 {
-/*{{{*/
-let caller = "log_STORAGE";
+    /*{{{*/
+    let caller = "log_STORAGE";
 
-/*}}}*/
+    /*}}}*/
 
     if( log_STORAGE_timer) clearTimeout(log_STORAGE_timer  );
 
@@ -607,17 +599,17 @@ let p = function()
     log(sym +" .. l_paused=["+l_paused+"]");
 };
 /*}}}*/
-/*_ p_reload {{{*/
+/*_ b_reload {{{*/
 /* eslint-disable no-shadow */
-let p_reload = function(logging=false)
+let b_reload = function(logging=false)
 {
-console.log("p_reload");
+console.log("b_reload");
 
     let message = { cmd: "reload" , logging };
 
     chrome.tabs.query(    { currentWindow : false, active: true }) // any window
         .then ((tabs ) => { message.tabId = tabs[0].id;     bg_message.bg_message_onMessage_CB_query(message); })
-        .catch((error) => { console.error(B_SCRIPT_ID+". p_reload: "+message.cmd, error); })
+        .catch((error) => { console.error(B_SCRIPT_ID+". b_reload: "+message.cmd, error); })
     ;
 };
 /* eslint-enable  no-shadow */
@@ -638,6 +630,7 @@ let tdel = bg_tabs_del_tabId;
     /* ● return {{{*/
 
     return { name : B_SCRIPT_ID
+        ,     tag : B_SCRIPT_TAG
         ,    logging
 
         , init                          // reload storage
@@ -657,29 +650,28 @@ let tdel = bg_tabs_del_tabId;
 
         , "---------- RUN SCRIPTS ----------------" : "---------------------------------------"
 
-        , reload  : ()    => setTimeout(() => bg_page.bg_page2_RELOAD            ({tabId: tl()}            ), 1000)
-        , relreq  : ()    =>                  bg_page.bg_page2_RELOAD_if_required({tabId: tl()})
+        , reload  : ()    => setTimeout(() => bg_page.bg_page_RELOAD            ({tabId: tl()}            ), 1000)
+        , relreq  : ()    =>                  bg_page.bg_page_RELOAD_if_required({tabId: tl()})
 
-        , p_reload
+        , b_reload
 
-        , loaded  : ()    => setTimeout(() => bg_content_scripts_loaded(        tl()                       ), 1000)
-        , loadedic: ()    => setTimeout(() => bg_content_scripts_loaded(        tl(), true/*ignore_cache*/ ), 1000)
+        , loaded  : ()    => setTimeout(() => bg_content.bg_content_scripts_loaded(        tl()                       ), 1000)
+        , loadedic: ()    => setTimeout(() => bg_content.bg_content_scripts_loaded(        tl(), true/*ignore_cache*/ ), 1000)
 
         , "---------- MESSAGES TO content_scripts-" : "---------------------------------------"
-        , m_start : ()    =>       bg_message.bg_message_tabs_sendMessage              (tl(), {cmd:   "t_load"}, "Devtools")
-        , m_stop  : ()    =>       bg_message.bg_message_tabs_sendMessage              (tl(), {cmd: "t_unload"}, "Devtools")
+        , m_start : ()    =>                  bg_message.bg_message_tabs_sendMessage              (tl(), {cmd:   "t_load"}, "Devtools")
+        , m_stop  : ()    =>                  bg_message.bg_message_tabs_sendMessage              (tl(), {cmd: "t_unload"}, "Devtools")
 
-        , m_csp3  : ()    =>       bg_message.bg_message_onMessage_CB({ tabId: tl(), csp_filter: bg_csp.FILTER3_REMOVE },"Devtools")
-        , m_csp4  : ()    =>       bg_message.bg_message_onMessage_CB({ tabId: tl(), csp_filter: bg_csp.FILTER4_CUSTOM },"Devtools")
-        , m_csp5  : ()    =>       bg_message.bg_message_onMessage_CB({ tabId: tl(), csp_filter: bg_csp.FILTER5_RELAX  },"Devtools")
-        , m_csp6  : ()    =>       bg_message.bg_message_onMessage_CB({ tabId: tl(), csp_filter: bg_csp.FILTER6_NONE   },"Devtools")
+        , "---------- MESSAGES FROM popup --------" : "---------------------------------------"
+        , m_csp3  : ()    =>                  bg_message.bg_message_onMessage_CB({ tabId: tl(), csp_filter: bg_csp.FILTER3_REMOVE },"Devtools")
+        , m_csp4  : ()    =>                  bg_message.bg_message_onMessage_CB({ tabId: tl(), csp_filter: bg_csp.FILTER4_CUSTOM },"Devtools")
+        , m_csp5  : ()    =>                  bg_message.bg_message_onMessage_CB({ tabId: tl(), csp_filter: bg_csp.FILTER5_RELAX  },"Devtools")
+        , m_csp6  : ()    =>                  bg_message.bg_message_onMessage_CB({ tabId: tl(), csp_filter: bg_csp.FILTER6_NONE   },"Devtools")
 
         , "---------- MESSAGES TO popup ----------" : "---------------------------------------"
         , pa      : ()    =>                  bg_page.bg_page_POPUP_pageAction (tl(), { caller: "Devtools", ...bg_tabs.bg_tabs_get_tabId(tl()) })
         , pan     : (n)   =>                  bg_page.bg_page_SHOW_ICON_NUM    (tl(), n)
         , sm      : (msg={cmd:"Devtools"}) => bg_message.bg_message_sendMessage(msg, "Devtools") // (msg,_caller)
-
-        , "---------- MESSAGES FROM popup --------" : "---------------------------------------"
         , p_start : ()    => setTimeout(() => bg_message.bg_message_onMessage_CB_TAB_start(tl()                      ), 1000)
         , p_stop  : ()    => setTimeout(() => bg_message.bg_message_onMessage_CB_TAB_stop (tl()                      ), 1000)
 
@@ -688,8 +680,8 @@ let tdel = bg_tabs_del_tabId;
         , last
         , tabs
         , tdel
-        , rules   : ()    => bg_tabs.bg_tabs_declarativeNetRequest_onUpdated(tl())
-        , active  : ()    => bg_tabs.bg_tabs_onActivated()
+        , rules   : ()    =>                  bg_tabs.bg_tabs_declarativeNetRequest_onUpdated(tl())
+        , active  : ()    =>                  bg_tabs.bg_tabs_onActivated()
 
         , "---------- STORAGE --------------------" : "---------------------------------------"
         , ls      : log_STORAGE
@@ -698,6 +690,7 @@ let tdel = bg_tabs_del_tabId;
 
         , "---------- USED BY [bg_<modules>] -----" :  "---------------------------------------"
         , B_SCRIPT_ID
+        , B_SCRIPT_TAG
         , DOM_TOOLS_JS_ID
         , LF
         , LOG_MAP

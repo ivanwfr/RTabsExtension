@@ -26,7 +26,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_CONTENT_SCRIPT_ID  = "bg_content";
-const BG_CONTENT_SCRIPT_TAG =  BG_CONTENT_SCRIPT_ID +" (231024:17h:01)"; /* eslint-disable-line no-unused-vars */
+const BG_CONTENT_SCRIPT_TAG =  BG_CONTENT_SCRIPT_ID +" (231107:18h:24)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ CONTENT SCRIPT                                   B_LOG7_TABS B_LOG9_STAGE │
@@ -78,7 +78,7 @@ let   get_callers
 
 /*}}}*/
 /*_ background_js {{{*/
-let B_SCRIPT_ID;
+let B_SCRIPT_TAG;
 let DOM_TOOLS_JS_ID;
 let LOG_MAP;
 let MANIFEST_VERSION;
@@ -121,6 +121,7 @@ let bg_tabs_set_tabId_key_val;
 let _import = function()
 {
     let modules=[ log_js        ]; /*{{{*/
+    LF                                                               = log_js.LF;
 
     [ lb0, lb1, lb2, lb3, lb4, lb5, lb6, lb7, lb8, lb9, lbX        ] = log_js.LOG_BG_ARR;
     [ lbA, lbB, lbC, lbF, lbH, lbL, lbR, lbS, lbb                  ] = log_js.LOG_XX_ARR;
@@ -142,7 +143,7 @@ let _import = function()
 
     /*}}}*/
     modules.push( background_js ); /*{{{*/
-    B_SCRIPT_ID                     = background_js.B_SCRIPT_ID;                   li("background_js","B_SCRIPT_ID",B_SCRIPT_ID);
+    B_SCRIPT_TAG                    = background_js.B_SCRIPT_TAG;                  li("background_js","B_SCRIPT_TAG",B_SCRIPT_TAG);
     DOM_TOOLS_JS_ID                 = background_js.DOM_TOOLS_JS_ID;               li("background_js","DOM_TOOLS_JS_ID",DOM_TOOLS_JS_ID);
     LOG_MAP                         = background_js.LOG_MAP;                       li("background_js","LOG_MAP",LOG_MAP);
     MANIFEST_VERSION                = background_js.MANIFEST_VERSION;              li("background_js","MANIFEST_VERSION",MANIFEST_VERSION);
@@ -429,7 +430,7 @@ if( log_more) log_sep_top_FOR_caller_callee(caller,"scripting.executeScript bg_p
                 await chrome.scripting
                 .executeScript( { target : { tabId }
                                 ,   func : bg_page_RUN_CheckContentScript
-                                ,   args : [ { tabId, DOM_LOAD_ID, DOM_TOOLS_JS_ID, B_SCRIPT_ID, log_this, log_more } ]
+                                ,   args : [ { tabId, DOM_LOAD_ID, DOM_TOOLS_JS_ID, B_SCRIPT_TAG, log_this, log_more } ]
                 })
                 .then((array_of_any) => {
 if( log_more) log("%c "+caller+": (MANIFEST_VERSION=='v3'): ..... THEN", lbH+lf7);
@@ -461,7 +462,8 @@ if( log_more) log_object("third_then_arg", third_then_arg);
                 .catch((error) => {
 if( log_more) log_object("catch_error", error);
 
-                    log("%c "+caller+":\n%c"+error.message, lbC+lf2, lbC+lf2);
+                    log("%c "+caller+":\n%c● "+error.message.replace(/\.\s/,"."+LF+"  ● ","g"), lb2, lf2);
+//console.dir(error);
 
                     bg_tabs_log_LAST_ACTIVATED_TAB(caller+" ERROR", get_callers());
 

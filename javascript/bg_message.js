@@ -25,7 +25,7 @@
 
 /* eslint-enable  no-redeclare        */
 const BG_MESSAGE_SCRIPT_ID  = "bg_message";
-const BG_MESSAGE_SCRIPT_TAG =  BG_MESSAGE_SCRIPT_ID +" (231024:17h:01)"; /* eslint-disable-line no-unused-vars */
+const BG_MESSAGE_SCRIPT_TAG =  BG_MESSAGE_SCRIPT_ID +" (231107:17h:00)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ MESSAGE POPUP                                              B_LOG1_MESSAGE │
@@ -120,7 +120,7 @@ let bg_csp_save_filter_to_store;
 //_______________ bg_message
 /*_ bg_page {{{*/
 let bg_page_POPUP_pageAction;
-let bg_page2_RELOAD_if_required;
+let bg_page_RELOAD_if_required;
 
 /*}}}*/
 /*_ bg_settings {{{*/
@@ -217,7 +217,7 @@ let _import = function()
     //_______________________ bg_message
     modules.push( bg_page       ); /*{{{*/
     bg_page_POPUP_pageAction               = bg_page.bg_page_POPUP_pageAction;                    li("bg_page","bg_page_POPUP_pageAction",bg_page_POPUP_pageAction);
-    bg_page2_RELOAD_if_required            = bg_page.bg_page2_RELOAD_if_required;                 li("bg_page","bg_page2_RELOAD_if_required",bg_page2_RELOAD_if_required);
+    bg_page_RELOAD_if_required            = bg_page.bg_page_RELOAD_if_required;                 li("bg_page","bg_page_RELOAD_if_required",bg_page_RELOAD_if_required);
 
     /*}}}*/
     modules.push( bg_settings   ); /*{{{*/
@@ -500,7 +500,7 @@ if( log_this) log_object(  caller+action_tags
                          , (message.start ? lf5 : lf0), !log_more); // collapsed
 /*}}}*/
     /* [message.cmd == "reload"] ● POPUP BUTTON CLICKED {{{*/
-    if(message.cmd == "reload")
+    if( message.cmd == "reload")
     {
         log("● RELOAD");
         // NO tabs ● MANUAL RELOAD {{{
@@ -581,7 +581,6 @@ if( log_this) log("%c"+SD2    +"%c SET %c LOG_MAP %c "+message.set_log_tag
     /*}}}*/
     /* [query] {{{*/
     else if(   (typeof message.query  != "undefined")
-            || (       message.cmd    == "reload"   )
            ) {
 if( log_this) log("%c"+SD3    +"%c calling bg_message_onMessage_CB_query"
                   ,lbb+lbH+lb3 ,lf4                                     );
@@ -590,15 +589,6 @@ if( log_this) log("%c"+SD3    +"%c calling bg_message_onMessage_CB_query"
 
     }
     /*}}}*/
-//    /* [RUN_script] {{{*/
-//    else if(   (message.caller == "bg_page_RUN_CheckContentScript")
-//            || (message.caller == "bg_page1_START_RUN_script")
-//    ) {
-//if( log_more) log("13 (v3) ➔ FETCH: bg_message_onMessage_CB → bg_page4_FETCH_CB");
-//
-//        setTimeout(bg_page4_FETCH_CB, 0, message.tabId, [ message ]);
-//    }
-//    /*}}}*/
     /* [bg_message_onMessage_CB_tab] {{{*/
     else {
 if( log_this) log("%c"+SD4    +"%c calling bg_message_onMessage_CB_tab"
@@ -939,15 +929,15 @@ if( log_this) log_object(caller+" start: "+message.start, message, (message.star
     /*}}}*/
 if( log_more) log_sep_top(caller,"LOG8_TAG");
 try {
-    /* [start TOGGLE] .. [start OFF] {{{*/
-    let start_changed      = false;
+    /* [start TOGGLE] .. [start ON/OFF] {{{*/
+    let start_changed        = false;
     if(typeof message.start != "undefined")
     {
         start_changed = message.start != bg_tabs_get_tabId_key(message.tabId, "start");
 
     }
 
-    /* [start ON] .. [by csp_filter] */
+    /* [csp_filter] .. if set ● [start ON] */
     if(message.csp_filter && (message.start != true))
     {
         message.start = true;
@@ -975,7 +965,7 @@ if(log_more) log_SYN("CANCEL HTTP REQUESTS "+ message.cancelreq);
         }
      }
     /*}}}*/
-    /* [csp_filter] REJECT REMOVE ACCEPT {{{*/
+    /* [csp_filter] .. SET FILTER ● REJECT ● REMOVE ● ACCEPT {{{*/
     let csp_filter_changed = false;
     if(typeof message.csp_filter != "undefined")
     {
@@ -1000,7 +990,7 @@ if(log_more) log_SYN("CANCEL HTTP REQUESTS "+ message.cancelreq);
       //bg_tabs_del_tabId_key(message.tabId, "tools_FETCH_called_once");
     }
     /*}}}*/
-    /* STORE AND SYNC .. [csp_filter_changed] [cancelreq_changed] {{{*/
+    /* [csp_filter_changed] [cancelreq_changed] .. STORE AND SYNC {{{*/
 if(log_more) log("...csp_filter_changed=["+csp_filter_changed+"] ["+ message.csp_filter +"]");
 if(log_more) log("........start_changed=["+start_changed     +"] ["+ message.start      +"]");
 if(log_more) log("....cancelreq_changed=["+cancelreq_changed +"] ["+ message.cancelreq  +"]");
@@ -1037,6 +1027,7 @@ if( log_more) log_object("TAB["+message.tabId+"]", bg_tabs_get_tabId(message.tab
         /*}}}*/
     }
     /*}}}*/
+    /* [response_handler] .. SEND MESSAGE REPLY {{{*/
     if( response_handler )
     {
         if( message.caller )
@@ -1059,6 +1050,7 @@ if( log_this) log_object("sending response_handler message", message, lf5);
     ;
 
     //}}}
+    /*}}}*/
 }
 finally {
 if(log_more) log_sep_bot(caller,"LOG8_TAG");
@@ -1091,7 +1083,7 @@ if( log_more) log_sep_top_FOR_caller_callee(caller, "bg_content_scripts_loaded")
     /*......................................*/ await bg_content_scripts_loaded(tabId);
 if( log_more) log_sep_bot_FOR_caller_callee(caller, "bg_content_scripts_loaded");
 
-    let result = await bg_page2_RELOAD_if_required({tabId});
+    let result = await bg_page_RELOAD_if_required({tabId});
 
     /*}}}*/
     /* OR .. SEND TAB_CMD [t_load  ] .. IF [content_scripts] LOADED {{{*/
