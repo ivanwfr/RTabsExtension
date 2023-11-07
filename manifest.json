@@ -5,7 +5,7 @@
     "description"        : "Find In Page (v3)",
     "author"             : "Ivan Wellesz",
     "homepage_url"       : "https://remotetabs.com",
-    "version"            : "1.23.09.29",
+    "version"            : "1.23.11.7",
     "permissions"        : [
         "activeTab",
 
@@ -22,9 +22,9 @@
 
 
     ],
-
-
-
+    "host_permissions"   : [
+        "<all_urls>"
+    ],
 
 
 

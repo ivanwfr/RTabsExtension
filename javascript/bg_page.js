@@ -24,7 +24,7 @@
 /* eslint-enable  no-redeclare        */
 
 const BG_PAGE_SCRIPT_ID  = "bg_page";
-const BG_PAGE_SCRIPT_TAG =  BG_PAGE_SCRIPT_ID +" (231024:17h:02)"; /* eslint-disable-line no-unused-vars */
+const BG_PAGE_SCRIPT_TAG =  BG_PAGE_SCRIPT_ID +" (231107:18h:38)"; /* eslint-disable-line no-unused-vars */
 /*}}}*/
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ PAGE ACTION                                                   B_LOG7_TABS │
@@ -202,14 +202,13 @@ let logging = function(state)
 let log_this_get = function(_caller)
 {
     switch(_caller) {
-    case "bg_page1_UNLOAD"                : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG9_STAGE;
-    case "bg_page2_RELOAD"                : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG9_STAGE;
-    case "bg_page2_RELOAD_GET_script"     : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG9_STAGE;
-    case "bg_page2_RELOAD_if_required"    : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG9_STAGE;
-    case "bg_page3_RELOAD_FROM_SCRATCH"   : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG9_STAGE;
     case "bg_page_GET_CheckContentScript" : return BG_PAGE_JS_LOG;
+    case "bg_page_POPUP_GET_title"        : return BG_PAGE_JS_LOG;
     case "bg_page_POPUP_pageAction"       : return BG_PAGE_JS_LOG;
-    case "bg_page_get_popup_title"        : return BG_PAGE_JS_LOG;
+    case "bg_page_RELOAD"                 : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG9_STAGE;
+    case "bg_page_RELOAD_FROM_SCRATCH"    : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG9_STAGE;
+    case "bg_page_RELOAD_if_required"     : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG9_STAGE;
+    case "bg_page_UNLOAD"                 : return BG_PAGE_JS_LOG || LOG_MAP.B_LOG9_STAGE;
     }
 
 /*{{{*/
@@ -338,7 +337,7 @@ if( log_more) log_object (caller+"("+pageAction+"): TAB #"+tabId, page_info, lbH
     let title
         = (url && !bg_settings_is_a_supported_URL(url))
         ?  "IGNORED URL"+LF+"➔ "+url
-        :  bg_page_get_popup_title(tabId, status, url, start, csp_filter, cancelreq, t_load, tools_deployed);
+        :  bg_page_POPUP_GET_title(tabId, status, url, start, csp_filter, cancelreq, t_load, tools_deployed);
 
     bg_tabs.bg_tabs_set_tabId_key_val(tabId,     "title", log_js.strip_CR_LF(title));
     /*}}}*/
@@ -351,12 +350,16 @@ if( log_more) log_object (caller+"("+pageAction+"): TAB #"+tabId, page_info, lbH
     /* [PAGE_ACTION_COMPLETE] ● MESSAGE TO POPUP {{{*/
     if(pageAction.includes( PAGE_ACTION_COMPLETE ))
     {
+        let domain
+            = bg_store_GET_url_domain(url);
+
         let message
             = {   REPLY : "● PAGE LOAD COMPLETE"
                 , type  : page_info.type
                 , title
                 , tabId
                 ,"● PARAMS"   : "●"
+                , domain
                 , url
                 , start
                 , csp_filter
@@ -445,12 +448,12 @@ log("%c"+_caller+"(TAB#"+tabId+"): ABORTED ON ERROR:\n"+lastError_message, lbH+l
 console.trace();
 };
 /*}}}*/
-/*_ bg_page_get_popup_title {{{*/
+/*_ bg_page_POPUP_GET_title {{{*/
 
-let bg_page_get_popup_title = function(tabId, status, url, start, csp_filter, cancelreq, t_load, tools_deployed)
+let bg_page_POPUP_GET_title = function(tabId, status, url, start, csp_filter, cancelreq, t_load, tools_deployed)
 {
 /*{{{*/
-let   caller = "bg_page_get_popup_title";
+let   caller = "bg_page_POPUP_GET_title";
 let log_this = log_this_get(caller);
 
 /*}}}*/
@@ -460,7 +463,6 @@ let log_this = log_this_get(caller);
         let lastError_message = bg_tabs.bg_tabs_get_tabId_key(tabId, "lastError_message");
         let reloaded_once     = bg_tabs.bg_tabs_del_tabId_key(tabId, "reloaded_once");
         t_load
-//          = bg_page3_FETCH_POLL_in_progress(tabId) ? "POLLING"
             = lastError_message                      ? lastError_message
             : start                                  ? "STARTED"
             : t_load                                 ? "TOOLS LOADED"
@@ -547,11 +549,11 @@ let log_this = log_this_get(caller);
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ UNLOAD ● CURRENT PAGE SESSION DATA                                        │
 // └───────────────────────────────────────────────────────────────────────────┘
-/*_ bg_page1_UNLOAD {{{*/
-let bg_page1_UNLOAD = async function(details)
+/*_ bg_page_UNLOAD {{{*/
+let bg_page_UNLOAD = async function(details)
 {
 /*{{{*/
-let   caller = "bg_page1_UNLOAD";
+let   caller = "bg_page_UNLOAD";
 let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
@@ -647,15 +649,15 @@ if( log_more) log_sep_bot(caller+"("+log_json_prettify(details)+")", "LOG0_TAG")
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ RELOAD ● FROM PAGE URL                                                    │
 // └───────────────────────────────────────────────────────────────────────────┘
-/*➔ bg_page2_RELOAD_if_required {{{*/
+/*➔ bg_page_RELOAD_if_required {{{*/
 /*{{{*/
 const RELOAD_REQUIRED     = "RELOAD REQUIRED";
 
 /*}}}*/
-let bg_page2_RELOAD_if_required = async function(details)
+let bg_page_RELOAD_if_required = async function(details)
 {
 /*{{{*/
-let   caller = "bg_page2_RELOAD_if_required";
+let   caller = "bg_page_RELOAD_if_required";
 let log_this = log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
@@ -671,14 +673,14 @@ if( log_this) log_object(" ● "+RELOAD_REQUIRED+": "+reload_required
                         , lb0+lf5, !log_more); // collapsed
 
     if( !reload_required ) {                                 return ""             ; }
-    else                   { await bg_page2_RELOAD(details); return RELOAD_REQUIRED; }
+    else                   { await bg_page_RELOAD(details); return RELOAD_REQUIRED; }
 };
 /*}}}*/
-/*➔ bg_page2_RELOAD {{{*/
-let bg_page2_RELOAD = async function(details)
+/*➔ bg_page_RELOAD {{{*/
+let bg_page_RELOAD = async function(details)
 {
 /*{{{*/
-let   caller = "bg_page2_RELOAD";
+let   caller = "bg_page_RELOAD";
 let log_this = DEBUG_OPERA || log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
@@ -704,15 +706,15 @@ if(log_more) log("DO NOT RELOAD [url "+url+"] tab");
         return;
     }
     /*}}}*/
-    await bg_page1_UNLOAD             ( details );
-    await bg_page3_RELOAD_FROM_SCRATCH( details );
+    await bg_page_UNLOAD             ( details );
+    await bg_page_RELOAD_FROM_SCRATCH( details );
 };
 /*}}}*/
-/*_ bg_page3_RELOAD_FROM_SCRATCH {{{*/
-let bg_page3_RELOAD_FROM_SCRATCH = async function(details)
+/*_ bg_page_RELOAD_FROM_SCRATCH {{{*/
+let bg_page_RELOAD_FROM_SCRATCH = async function(details)
 {
 /*{{{*/
-let   caller = "bg_page3_RELOAD_FROM_SCRATCH";
+let   caller = "bg_page_RELOAD_FROM_SCRATCH";
 let log_this = DEBUG_OPERA || log_this_get(caller);
 let log_more = log_this && LOG_MAP.B_LOG0_MORE;
 
@@ -748,6 +750,14 @@ if( log_more) log_sep_bot(caller+details.status, "LOG1_TAG");
 
 // ┌───────────────────────────────────────────────────────────────────────────┐
 // │ CONTENT SCRIPT EXECUTION                  ● manifest v2     ● manifest v3 │
+// ├───────────────────────────────────────────────────────────────────────────┤
+// │ "chrome.scripting.executeScript" must have access to the page DOM         │
+// │ in order to to check dom_load tools running status.                       │
+// │                                                                           │
+// │ "host_permissions"   : [                                                  │
+// │     "<all_urls>"                                                          │
+// │ ],                                                                        │
+// │                                                                           │
 // └───────────────────────────────────────────────────────────────────────────┘
 /*➔ bg_page_GET_CheckContentScript ● manifest v2 {{{*/
 let bg_page_GET_CheckContentScript = function()
@@ -805,14 +815,14 @@ let { tabId, dom_load_id, dom_tools_js_id, b_script_id } = _args; /* eslint-disa
         ,     logging
 
         // EVENTS
-        ,     bg_page_onReplaced        : (tabId) => bg_page1_UNLOAD({tabId, status: "onReplaced"})
-        ,     bg_page_onRemoved         : (tabId) => bg_page1_UNLOAD({tabId, status: "onRemoved" })
+        ,     bg_page_onReplaced        : (tabId) => bg_page_UNLOAD({tabId, status: "onReplaced"})
+        ,     bg_page_onRemoved         : (tabId) => bg_page_UNLOAD({tabId, status: "onRemoved" })
 
         // RELOAD
-        ,     bg_page2_RELOAD_if_required
+        ,     bg_page_RELOAD_if_required
 
         // CHECK STATUS
-        ,     bg_page2_RELOAD
+        ,     bg_page_RELOAD
         ,     bg_page_GET_CheckContentScript
         ,     bg_page_RUN_CheckContentScript
         ,     TOOLS4_DEPLOYED
